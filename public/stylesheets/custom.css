@@ -1,0 +1,32 @@
+
+.custom-link a:link {
+    text-decoration: none;
+    color: blue
+}
+
+.custom-link a:active {
+    text-decoration: blink
+}
+
+.custom-link a:hover {
+    text-decoration: underline;
+    color: red
+}
+
+.custom-link a:visited {
+    text-decoration: none;
+    color: green
+}
+
+.center {
+    height: 90%;
+    width: 40%;
+    position:absolute;
+    left:0; right:0;
+    top:0; bottom:0;
+    margin:auto;
+
+    max-width:100%;
+    max-height:100%;
+    overflow:auto;
+}

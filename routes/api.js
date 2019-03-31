@@ -2,12 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 
-router.get('/', function (req, res) {
-    res.send('req.query' + JSON.stringify(req.query));
+router.post('/login', function (req, res) {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    let canLogin = false;
+    if (username === "root" && password === "toor") {
+        canLogin = true;
+    }
+    res.send("OK" ? canLogin : "Wrong");
 });
 
-router.get('/:first/:second', function (req, res) {
-    res.send('req.params' + JSON.stringify(req.params))
-});
 
 module.exports = router;

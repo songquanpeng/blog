@@ -1,0 +1,19 @@
+<!--Navigation Bar here-->
+<div class="w3-bar w3-black w3-border w3-card-4">
+    <a href="http://justsong.xyz" class="w3-bar-item w3-button w3-mobile w3-green">Home</a>
+    <a href="#" class="w3-bar-item w3-button w3-mobile">Archive</a>
+    <a href="about.html" class="w3-bar-item w3-button w3-mobile">About</a>
+    <a href="bookmark.html" class="w3-bar-item w3-button w3-mobile">Bookmark</a>
+    <input type="text" class="w3-bar-item w3-input w3-mobile" placeholder="Search with Baidu...">
+    <a href="#" class="w3-bar-item w3-button w3-dark-gray w3-mobile">Go</a>
+    <div class="w3-dropdown-hover w3-mobile">
+        <button class="w3-button">Top Articles</button>
+        <div class="w3-dropdown-content w3-bar-block w3-dark-grey">
+            <% if (topArticles.length){ %>
+                <% topArticles.forEach((topArticle)=>{ %>
+                    <a href="<%= topArticle.link%>" class="w3-bar-item w3-button w3-mobile"><%= topArticle.title%></a>
+            <% })} %>
+        </div>
+    </div>
+    <span class="w3-bar-item w3-mobile">Keep learning forever.</span>
+</div>

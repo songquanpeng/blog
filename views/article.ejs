@@ -1,0 +1,16 @@
+<%- include('header') %>
+<%- include('navigation')%>
+<!--Content here-->
+<div class="w3-content" style="max-width:1400px">
+    <div class="w3-card-4 w3-margin w3-white">
+        <div class="w3-container">
+            <h3><b><%= title %></b></h3>
+            <h5><%= tag %> <span class="w3-opacity"><%= time %></span></h5>
+        </div>
+        <div class="w3-container w3-large">
+            <%- content %>
+        </div>
+        <hr>
+    </div>
+</div>
+<%- include('footer')%>
