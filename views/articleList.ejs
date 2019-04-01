@@ -1,0 +1,99 @@
+<%- include('header') %>
+<%- include('navigation') %>
+<!--Content here-->
+<div class="w3-content" style="max-width:1400px">
+    <div class="w3-row">
+        <!--Articles here-->
+        <div class="w3-col l8 s12">
+            <% if (articles.length){ %>
+                <% articles.forEach((article)=>{ %>
+                    <!--Article here-->
+                    <div class="w3-card-4 w3-margin w3-white">
+                        <div class="w3-container">
+                            <h3><b><%= article.title %></b></h3>
+                            <h5><%= article.tag %><span class="w3-opacity"><%= article.time %></span></h5>
+                        </div>
+                        <div class="w3-container w3-large">
+                            <p>
+                                <%= article.content %>
+                            </p>
+                            <div class="w3-row">
+                                <div class="w3-row">
+                                    <div class="w3-col m8 s12">
+                                        <p>
+                                            <button class="w3-button w3-padding-large w3-white w3-border"
+                                                    onclick="window.location.href='/article/<%= article.id %>'"><b>READ MORE »</b>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+            <% })} %>
+        </div>
+        <!--Sidebar here-->
+        <div class="w3-col l4">
+            <!-- Introduce here-->
+            <div class="w3-card w3-margin w3-margin-top">
+                <div class="w3-container w3-white">
+                    <h4><b>Song</b></h4>
+                    <p>Nothing special</p>
+                    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=4010239&auto=1&height=66"></iframe>
+                </div>
+            </div>
+            <hr>
+
+            <!-- Recommendation here -->
+            <div class="w3-card w3-margin">
+                <div class="w3-container w3-padding">
+                    <h4>Recommendation</h4>
+                </div>
+                <ul class="w3-ul w3-hoverable w3-white custom-link">
+                    <li class="w3-padding-16">
+                        <a href="">
+                            <div>
+                                <span class="w3-large">Title</span><br>
+                                <span>Short description</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="w3-padding-16">
+                        <a href="">
+                            <div>
+                                <span class="w3-large">Title</span><br>
+                                <span>Short description</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="w3-padding-16">
+                        <a href="">
+                            <div>
+                                <span class="w3-large">Title</span><br>
+                                <span>Short description</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <hr>
+
+            <!-- Tags here -->
+            <div class="w3-card w3-margin">
+                <div class="w3-container w3-padding">
+                    <h4>Tags</h4>
+                </div>
+                <div class="w3-container w3-white">
+                    <p>
+                        <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">C++</span>
+                        <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Python</span>
+                        <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Web</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

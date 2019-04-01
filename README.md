@@ -14,6 +14,8 @@ A toy web app that support:
 - [ ] markdown support
 
 ### Client Part
+- [ ] website home page
+- [ ] tag management page
 - [x] article view page
 - [ ] article edit page
 - [ ] article manage page
