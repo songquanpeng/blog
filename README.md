@@ -1,3 +1,11 @@
+## Try it yourself
+1. Install node.js v10.14.2 or compatible version
+2. `git clone https://github.com/songwonderful/practice-nodejs.git`
+3. `cd practice-nodejs`
+4. `npm install`
+5. `node ./bin/www`
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 ## Description
 A toy web app that support:
 + article edit, view and save
