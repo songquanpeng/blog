@@ -17,6 +17,7 @@ router.get('/', function (req, res) {
 
 });
 
+
 router.get('/article/:id', function (req, res) {
     console.log("id: " + req.params.id);
     Article.find(req.params.id, (error, article) => {
