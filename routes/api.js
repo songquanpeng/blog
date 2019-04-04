@@ -9,7 +9,17 @@ router.post('/login', function (req, res) {
     const password = req.body.password;
 
     User.checkCredential(username, password, (canLogin) => {
-        res.send("OK\n" ? canLogin : "Wrong\n");
+        // res.send("OK\n" ? canLogin : "Wrong\n");
+        if (canLogin) {
+            req.session.user = {
+                name: username
+            };
+            res.redirect('/');
+
+        } else {
+            req.flash("info", "Invalid credentials, please try again!");
+            res.redirect('/login');
+        }
     });
 });
 

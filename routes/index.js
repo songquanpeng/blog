@@ -8,10 +8,6 @@ router.get('/', function (req, res) {
     Article.all((error, articles) => {
         // if (error) return next(error);
         res.render('articleList', {
-            topArticles: [{'link': 'http://justsong.xyz', "title": "Example A"}, {
-                'link': 'http://justsong.xyz',
-                "title": "Example B"
-            }],
             articles: articles
         });
     });
@@ -33,8 +29,23 @@ router.get('/article/:id', function (req, res) {
 
 
 router.get('/login', function (req, res) {
-    res.render("login", {});
+    res.render("login", {message:req.flash('info')});
 });
 
+router.get('/bookmark', function (req, res) {
+    res.render("bookmark");
+});
+
+router.get('/about', function (req, res) {
+    res.render("about");
+});
+
+router.get('/archive', function (req, res) {
+    res.render("archive");
+});
+
+router.get('/post', function (req, res) {
+    res.render("post");
+});
 
 module.exports = router;

@@ -20,6 +20,7 @@ A toy web app that support:
 - [ ] system permission design
 - [ ] file upload and download
 - [ ] markdown support
+- [ ] log middleware
 
 ### Client Part
 - [ ] website home page

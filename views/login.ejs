@@ -1,7 +1,8 @@
-<%- include('header')%>
-
+<%- include('header') %>
+<%- include('navigation') %>
+<%- include('message') %>
 <div class="center">
-    <div class="w3-card-4" >
+    <div class="w3-card-4">
         <div class="w3-container w3-green">
             <h3>Provide credentials</h3>
         </div>
@@ -9,10 +10,12 @@
             <div class="w3-container w3-center">
                 <div class="w3-panel">
                     <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow" type="text" name="username" placeholder="username" required>
+                        <input class="w3-input w3-animate-input w3-hover-shadow" type="text" name="username"
+                               placeholder="username" required>
                     </label><br>
                     <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow" type="password" name="password" placeholder="password" required>
+                        <input class="w3-input w3-animate-input w3-hover-shadow" type="password" name="password"
+                               placeholder="password" required>
                     </label><br>
                 </div>
                 <div class="w3-section">
@@ -25,4 +28,4 @@
 </div>
 
 
-<%- include('end')%>
+<%- include('end') %>

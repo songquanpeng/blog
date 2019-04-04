@@ -1,13 +1,14 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const session = require('express-session');
+const flash = require('connect-flash');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var apiRouter = require('./routes/api');
+const indexRouter = require('./routes/index');
+const apiRouter = require('./routes/api');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -17,8 +18,20 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
+app.use(cookieParser("better"));
+app.use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: 'better'
+}));
+app.use(flash());
+
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"}, {
+    'link': 'http://justsong.xyz',
+    "title": "Example B"
+}];
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
@@ -26,9 +39,12 @@ app.use('/api', apiRouter);
 // catch 404
 app.use(function (req, res, next) {
     // next(createError(404));
-    if(!res.headersSent){
-        res.status(404).render('404');
+    if (!res.headersSent) {
+        res.status(404).render('404', {
+            "message": ":{404 Not Found}"
+        });
     }
+    next()
 });
 
 // error handler
@@ -40,9 +56,10 @@ app.use(function (err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error', {
-        "error": "We are sorry. Some error occurred."
+        "message": "We are sorry. Some error occurred."
     });
     //res.send("error");
+    next();
 });
 
 module.exports = app;
