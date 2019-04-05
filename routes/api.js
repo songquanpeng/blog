@@ -19,7 +19,7 @@ router.post('/login', function (req, res) {
 
         } else {
             req.flash("error", "Invalid credentials, please try again!");
-            res.redirect('/login');
+            res.redirect('/user');
         }
     });
 });
@@ -39,6 +39,35 @@ router.post('/post', function (req, res) {
             res.redirect('/');
         }
     )
+});
+
+router.delete('/article/:id', function (req, res) {
+    Article.delete(req.params.id, () => {
+        res.send("Successfully deleted article.");
+    })
+});
+
+router.delete('/user/:name', function (req, res) {
+    User.delete(req.params.name, () => {
+        res.send("Successfully deleted user.");
+    })
+});
+
+router.post('/update_user', function (req, res) {
+    const oldName = req.session.user.name;
+    const newName = req.body.name.trim();
+    const newPassword = req.body.password.trim();
+    if (newName === "" || newPassword === "") {
+        res.send("Invalid tokens.");
+    }
+    User.update(oldName, newName, newPassword, (error) => {  // Pass the error parameter to the callback function
+        if (error != null) {
+            console.log(error.message);
+            res.send("Sorry, something went wrong.");
+        } else {
+            res.send("Successfully update your information.");
+        }
+    })
 });
 
 module.exports = router;

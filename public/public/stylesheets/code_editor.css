@@ -1,5 +1,5 @@
 ﻿.code-editor-body {
-    font-family: 'Source Code Pro', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: Consolas, Monaco, monospace;
     font-size: 20px;
     /*border-radius: 20px;*/
     background-color: rgb(60, 60, 60);

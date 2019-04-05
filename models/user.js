@@ -4,7 +4,7 @@ const db = new sqlite3.Database('data.db');
 db.serialize(function () {
     const createUserTable = "" +
         "CREATE TABLE IF NOT EXISTS users" +
-        "(id integer primary key, name TEXT, password TEXT, level integer)";
+        "(id integer primary key, name TEXT UNIQUE, password TEXT, level integer)";
     db.run(createUserTable);
 });
 
@@ -27,16 +27,19 @@ class User {
         }
     }
 
+    static update(oldName, newName, newPassword, callback) {
+        db.run('UPDATE users SET name = ?, password = ? WHERE name = ?', [newName, newPassword, oldName], callback);
+    }
+
     static checkCredential(name, password, callback) {
-        console.log("user offer: " + name + ' ' + password);
         this.find(name, (error, user) => {
             //console.log("database" + JSON.stringify(user));
             if (error) {
                 callback(false);
             } else {
-                if (user===undefined){
+                if (user === undefined) {
                     callback(false);
-                }else {
+                } else {
                     callback(user.password === password);
                 }
             }

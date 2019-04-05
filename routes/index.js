@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/article').Article;
 const Bookmark = require('../models/bookmark').Bookmark;
+const User = require('../models/user').User;
+
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -34,8 +36,21 @@ router.get('/article/:id', function (req, res) {
 });
 
 
-router.get('/login', function (req, res) {
-    res.render("login", {error: req.flash('error'), info: req.flash('info')});
+router.get('/user', function (req, res) {
+    if (req.session.user == null) {
+        res.render("login", {error: req.flash('error'), info: req.flash('info')});
+    } else {
+        Article.all((error, articles) => {
+            User.all((error, users) => {
+                res.render('user', {
+                    "info": "",
+                    "error": "",
+                    articles: articles,
+                    users: users
+                });
+            });
+        });
+    }
 });
 
 
