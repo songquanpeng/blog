@@ -1,0 +1,1 @@
+**You should copy the folder "public" to the server's www directory.**

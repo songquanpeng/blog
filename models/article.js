@@ -4,13 +4,13 @@ const db = new sqlite3.Database('data.db');
 db.serialize(function () {
     const createArticleTable = '' +
         'CREATE TABLE IF NOT EXISTS articles' +
-        '(id integer primary key, title TEXT, tag TEXT, time integer, content TEXT)';
+        '(id integer primary key, title TEXT, tag TEXT, time TEXT, content TEXT, description TEXT)';
     db.run(createArticleTable);
 });
 
 class Article {
     static all(callback) {
-        db.all('SELECT * FROM articles', callback);
+        db.all('SELECT id, title, tag, time, description FROM articles', callback);
     }
 
     static find(id, callback) {
@@ -18,7 +18,7 @@ class Article {
     }
 
     static create(data, callback) {
-        db.run('INSERT INTO articles(title, tag, time, content) VALUES (?, ?, ?, ?)', data.title, data.tag, data.time, data.content, callback);
+        db.run('INSERT INTO articles(title, tag, time, content, description) VALUES (?, ?, ?, ?, ?)', data.title, data.tag, data.time, data.content, data.description, callback);
     }
 
     static delete(id, callback) {

@@ -8,26 +8,13 @@
             <th>Tag</th>
             <th>Description</th>
         </tr>
-        <tr onclick="window.open('https://www.w3schools.com/')">
-            <td>Web Tutorial</td>
-            <td>w3schools</td>
-        </tr>
-        <tr onclick="window.open('https://www.tutorialspoint.com/')">
-            <td>Tutorial</td>
-            <td>tutorialspoint</td>
-        </tr>
-        <tr onclick="window.open('https://www.geeksforgeeks.org')">
-            <td>Algorithm</td>
-            <td>GeeksForGeeks</td>
-        </tr>
-        <tr onclick="window.open('https://www.runoob.com/')">
-            <td>Tutorial</td>
-            <td>runoob</td>
-        </tr>
-        <tr onclick="window.open('https://www.javatpoint.com/')">
-            <td>Tutorial</td>
-            <td>JavaPoint</td>
-        </tr>
+        <% if (bookmarks.length){ %>
+            <% bookmarks.forEach((bookmark)=>{ %>
+                <tr onclick="window.open('<%= bookmark.link %>')">
+                    <td><%= bookmark.tag %></td>
+                    <td><%= bookmark.name %></td>
+                </tr>
+        <% })} %>
     </table>
 </div>
 <%- include('end') %>

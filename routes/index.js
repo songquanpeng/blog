@@ -1,27 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/article').Article;
-
+const Bookmark = require('../models/bookmark').Bookmark;
 
 /* GET home page. */
 router.get('/', function (req, res) {
     Article.all((error, articles) => {
         // if (error) return next(error);
-        res.render('articleList', {
-            articles: articles
+        res.render('index', {
+            articles: articles,
+            info: req.flash('info'),
+            error: req.flash('error')
         });
     });
 });
 
+router.get('/bookmark', function (req, res) {
+    Bookmark.all((error, bookmarks) => {
+        // if (error) return next(error);
+        res.render('bookmark', {
+            bookmarks: bookmarks
+        });
+    });
+});
 
 router.get('/article/:id', function (req, res) {
     Article.find(req.params.id, (error, article) => {
         // if (error) return next(error);
         res.render('article', {
-            topArticles: [{'link': 'http://justsong.xyz', "title": "Example A"}, {
-                'link': 'http://justsong.xyz',
-                "title": "Example B"
-            }],
             article: article
         });
     });
@@ -29,12 +35,9 @@ router.get('/article/:id', function (req, res) {
 
 
 router.get('/login', function (req, res) {
-    res.render("login", {message:req.flash('info')});
+    res.render("login", {error: req.flash('error'), info: req.flash('info')});
 });
 
-router.get('/bookmark', function (req, res) {
-    res.render("bookmark");
-});
 
 router.get('/about', function (req, res) {
     res.render("about");

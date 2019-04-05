@@ -1,0 +1,33 @@
+﻿.code-editor-body {
+    font-family: 'Source Code Pro', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    /*border-radius: 20px;*/
+    background-color: rgb(60, 60, 60);
+    text-align: center;
+}
+
+
+.code-editor-body input {
+    background-color: rgb(60, 60, 60);
+    color: white;
+}
+
+textarea {
+    height: auto;
+    width: 100%;
+    scrollbar-base-color: aqua;
+    overflow: hidden;
+    resize: none;
+}
+
+.code-editor-body .input {
+    font-size: 20px;
+    background-color: black;
+    color: rgb(26, 165, 230);
+}
+
+
+#code {
+    font-size: 24px;
+    color: aliceblue;
+}

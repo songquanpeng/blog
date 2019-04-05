@@ -14,21 +14,29 @@ router.post('/login', function (req, res) {
             req.session.user = {
                 name: username
             };
+            req.flash("info", "Login Successfully");
             res.redirect('/');
 
         } else {
-            req.flash("info", "Invalid credentials, please try again!");
+            req.flash("error", "Invalid credentials, please try again!");
             res.redirect('/login');
         }
     });
 });
 
 
-router.post('/article', function (req, res) {
+router.post('/post', function (req, res) {
     Article.create(
-        {title: req.body.title, tag: req.body.tag, time: req.body.time, content: req.body.content},
+        {
+            title: req.body.title,
+            tag: req.body.tag,
+            time: req.body.time,
+            content: req.body.content,
+            description: req.body.description
+        },
         () => {
-            res.send('OK\n');
+            req.flash("info", "Article has been successfully uploaded");
+            res.redirect('/');
         }
     )
 });

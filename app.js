@@ -41,7 +41,8 @@ app.use(function (req, res, next) {
     // next(createError(404));
     if (!res.headersSent) {
         res.status(404).render('404', {
-            "message": ":{404 Not Found}"
+            "error": ":{404 Not Found}",
+            "info": ""
         });
     }
     next()
@@ -56,7 +57,8 @@ app.use(function (err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error', {
-        "message": "We are sorry. Some error occurred."
+        "error": "We are sorry. Some error occurred.",
+        "info": ""
     });
     //res.send("error");
     next();

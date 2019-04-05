@@ -1,5 +1,6 @@
 <%- include('header') %>
 <%- include('navigation') %>
+<%- include('message') %>
 <!--Content here-->
 <div class="w3-content" style="max-width:1400px">
     <div class="w3-row">
@@ -11,11 +12,11 @@
                     <div class="w3-card-4 w3-margin w3-white">
                         <div class="w3-container">
                             <h3><b><%= article.title %></b></h3>
-                            <h5><%= article.tag %><span class="w3-opacity"><%= article.time %></span></h5>
+                            <h5><%= article.tag %> <span class="w3-opacity"><%= article.time %></span></h5>
                         </div>
                         <div class="w3-container w3-large">
                             <p>
-                                <%= article.content %>
+                                <%= article.description %>
                             </p>
                             <div class="w3-row">
                                 <div class="w3-row">
