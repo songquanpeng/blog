@@ -3,7 +3,6 @@ const router = express.Router();
 const Article = require('../models/article').Article;
 const User = require('../models/user').User;
 
-
 router.post('/login', function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
@@ -15,7 +14,7 @@ router.post('/login', function (req, res) {
                 name: username
             };
             req.flash("info", "Login Successfully");
-            res.redirect('/');
+            res.redirect('/user');
 
         } else {
             req.flash("error", "Invalid credentials, please try again!");
@@ -26,11 +25,12 @@ router.post('/login', function (req, res) {
 
 
 router.post('/post', function (req, res) {
+    const currentTime = new Date();
     Article.create(
         {
             title: req.body.title,
             tag: req.body.tag,
-            time: req.body.time,
+            time: currentTime.toLocaleString(),
             content: req.body.content,
             description: req.body.description
         },
