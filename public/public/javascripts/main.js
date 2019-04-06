@@ -48,12 +48,24 @@ function updateMyInfo() {
     });
 }
 
+var lastVideoPath = "";
 function openVideo(videoPath) {
     videoPath = "public/videos/show/" + videoPath;
-    $("#videoSource").attr('src', videoPath);
-    $("#videoPlayer")[0].load();
-    $("#videoPlayer")[0].play();
-    $("#videoDescription").text(videoPath);  // TODO: Video description and comment
+    if(videoPath===lastVideoPath){
+        if($("#videoPlayer")[0].paused){
+            $("#videoPlayer")[0].play();
+        }
+        else {
+            $("#videoPlayer")[0].pause();
+        }
+    }
+    else {
+        $("#videoSource").attr('src', videoPath);
+        $("#videoPlayer")[0].load();
+        $("#videoPlayer")[0].play();
+        $("#videoDescription").text(videoPath);  // TODO: Video description and comment
+        lastVideoPath = videoPath;
+    }
 }
 
 function randomColor() {

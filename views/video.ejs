@@ -1,7 +1,7 @@
 <%- include('header') %>
 <%- include('navigation') %>
 <%- include('message') %>
-<div class="w3-content" style="max-width:1400px">
+<div class="w3-content" style="max-width:1400px;">
     <div class="w3-row">
         <div class="w3-col l9 s12">
             <div class="w3-card-4 w3-margin">
@@ -9,10 +9,10 @@
                     <h3>Watch Videos</h3>
                 </div>
                 <div class="w3-card w3-padding">
-                    <video width="100%" controls id="videoPlayer">
+                    <video width="100%" controls id="videoPlayer" style="height: 560px">
                         <source id="videoSource" src="" type="video/mp4">
                     </video>
-                    <div class="w3-container">
+                    <div class="w3-container" style="height: 50px">
                         <h5 id="videoDescription"></h5>
                     </div>
                 </div>
@@ -23,12 +23,12 @@
                 <div class="w3-container random-color">
                     <h3>Available Videos</h3>
                 </div>
-                <div style="max-height: 524px;overflow: scroll">
+                <div style="max-height: 631px;overflow: auto">
                     <ul class="w3-ul w3-card-4">
                         <% if (videos.length){ %>
                             <% videos.forEach((video)=>{ %>
                                 <li class="w3-bar" style="cursor: pointer" onclick=openVideo('<%= video.path %>')>
-                                    <P><%= video.path %></P>
+                                    <P style="overflow: scroll"><%= video.path %></P>
                                 </li>
                         <% })} %>
                     </ul>
