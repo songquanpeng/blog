@@ -5,7 +5,7 @@ const Article = require('../models/article').Article;
 const Bookmark = require('../models/bookmark').Bookmark;
 const User = require('../models/user').User;
 const markdown = require('markdown').markdown;
-const Image = require('../models/image').Image;
+const LocalFile = require('../models/localFile').LocalFile;
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -74,11 +74,21 @@ router.get('/post', function (req, res) {
 });
 
 router.get('/image', function (req, res) {
-    Image.loadAllImages((images) => {
+    LocalFile.loadAllImages((images) => {
         res.render("image", {
-            "info": "Welcome to the image view part",
+            "info": "",
             "error": "",
             images: images
+        });
+    });
+});
+
+router.get('/video', function (req, res) {
+    LocalFile.loadAllVideos((videos) => {
+        res.render("video", {
+            "info": "",
+            "error": "",
+            videos: videos,
         });
     });
 });

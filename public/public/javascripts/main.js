@@ -48,6 +48,14 @@ function updateMyInfo() {
     });
 }
 
+function openVideo(videoPath) {
+    videoPath = "public/videos/show/" + videoPath;
+    $("#videoSource").attr('src', videoPath);
+    $("#videoPlayer")[0].load();
+    $("#videoPlayer")[0].play();
+    $("#videoDescription").text(videoPath);  // TODO: Video description and comment
+}
+
 function randomColor() {
     $('.random-color').each(function (index, tag) {
         const selectedColor = colorsList[Math.floor((Math.random() * colorsList.length))];

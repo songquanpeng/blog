@@ -37,9 +37,11 @@ app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"},
 app.locals.services = [
     {'link': '/image', "title": "Image Show"},
     {'link': '/video', "title": "Watch Videos"},
+    {'link': '/music', "title": "Listen Music"},
+    {'link': '/book', "title": "Read Book"},
     {'link': '/file', "title": "Cloud Disk"},
     {'link': '/message', "title": "Message Board"},
-    {'link': '/form', "title": "Information collection"},
+    {'link': '/form', "title": "Information Collection"},
     {'link': '/help', "title": "Help Center"},
 ];
 
