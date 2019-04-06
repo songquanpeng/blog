@@ -7,11 +7,14 @@ const multer = require('multer');
 
 const uploadPath = "D:\\Project\\Web\\www\\public\\upload";
 const storage = multer.diskStorage({
-    destination: uploadPath,
+    destination: function (req, file, cb) {
+        cb(null, uploadPath);
+    },
     filename: function (req, file, cb) {
-        cb(null, Date.now()+'_'+file.originalname);
+        cb(null, file.originalname);
     }
 });
+
 const upload = multer({storage: storage});
 
 router.post('/login', function (req, res) {
@@ -80,10 +83,11 @@ router.post('/update_user', function (req, res) {
     })
 });
 
-router.post('/upload', upload.single("test"), function (req, res) {
+router.post('/upload', upload.single("file"), function (req, res) {
+    // console.log(req.files);
+    // console.log(req.body);
     req.flash("info", "Successful upload");
     res.redirect('/file');
-
 });
 
 module.exports = router;
