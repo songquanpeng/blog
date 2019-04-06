@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/article').Article;
 const User = require('../models/user').User;
+const Data = require('../models/data').Data;
 const multer = require('multer');
 
 const uploadPath = "D:\\Project\\Web\\www\\public\\upload";
@@ -84,10 +85,21 @@ router.post('/update_user', function (req, res) {
 });
 
 router.post('/upload', upload.single("file"), function (req, res) {
-    // console.log(req.files);
-    // console.log(req.body);
-    req.flash("info", "Successful upload");
-    res.redirect('/file');
+    const currentTime = new Date();
+    Data.uploadNewFile({
+        name: req.file.filename,
+        tag: req.body.tag,
+        description: req.body.description,
+        time: currentTime.toLocaleString()
+    }, (error) => {
+        if (error != null) {
+            console.log(error.message);
+            req.flash("error", "Sorry file upload failed");
+        } else {
+            req.flash("info", "Successful upload");
+        }
+        res.redirect('/file');
+    });
 });
 
 module.exports = router;

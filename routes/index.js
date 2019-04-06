@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/article').Article;
-const Bookmark = require('../models/bookmark').Bookmark;
+const Data = require('../models/data').Data;
 const User = require('../models/user').User;
 const markdown = require('markdown').markdown;
 const LocalFile = require('../models/localFile').LocalFile;
@@ -20,7 +20,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/bookmark', function (req, res) {
-    Bookmark.all((error, bookmarks) => {
+    Data.getAllBookmarks((error, bookmarks) => {
         // if (error) return next(error);
         res.render('bookmark', {
             bookmarks: bookmarks

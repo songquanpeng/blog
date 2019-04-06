@@ -2,15 +2,23 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('data.db');
 
 db.serialize(function () {
-    const createArticleTable = '' +
+    const createBookmarkTable = '' +
         'CREATE TABLE IF NOT EXISTS bookmarks' +
         '(id integer primary key, name TEXT, tag TEXT, link TEXT)';
-    db.run(createArticleTable);
+    db.run(createBookmarkTable);
+    const createFileTable = '' +
+        'CREATE TABLE IF NOT EXISTS files' +
+        '(id integer primary key, name TEXT, tag TEXT, time TEXT, description TEXT)';
+    db.run(createFileTable);
 });
 
-class Bookmark {
-    static all(callback) {
+class Data {
+    static getAllBookmarks(callback) {
         db.all('SELECT * FROM bookmarks', callback);
+    }
+
+    static uploadNewFile(data, callback) {
+        db.run('INSERT INTO files(name, tag, time, description) VALUES (?, ?, ?, ?)', data.name, data.tag, data.time, data.description, callback);
     }
 
     static find(id, callback) {
@@ -29,4 +37,4 @@ class Bookmark {
 }
 
 module.exports = db;
-module.exports.Bookmark = Bookmark;
+module.exports.Data = Data;
