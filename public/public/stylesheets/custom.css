@@ -20,6 +20,27 @@
 
 
 .center {
-    max-width:500px;
-    margin:20px auto;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.Responsive-Box video {
+    height: 600px;
+}
+
+@media screen and (max-height: 800px) {
+    .Responsive-Box video {
+        max-height: 600px;
+    }
+
+}
+
+.main {
+    max-width: 1400px;
+}
+
+@media screen and (max-width: 1400px) {
+    .main {
+        max-width: 100%;
+    }
 }

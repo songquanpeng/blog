@@ -1,0 +1,65 @@
+<%- include('header') %>
+<%- include('navigation') %>
+<%- include('message') %>
+<div class="w3-content" style="max-width:1400px">
+    <div class="w3-row">
+        <div class="w3-col l9 s12">
+            <div class="w3-card-4 w3-margin">
+                <div class="w3-container w3-deep-purple">
+                    <h3>Download Files</h3>
+                </div>
+                <ul class="w3-ul w3-card-4">
+                    <li class="w3-bar">
+                        <div class="w3-bar-item">
+                            <span class="w3-xlarge">File Name</span> <span class="w3-tag w3-gray ">Time</span> <span
+                                    class="w3-tag w3-blue">Tag</span> <span onclick="location.href='/article/id'"
+                                                                            class="w3-tag w3-indigo"
+                                                                            style="cursor: pointer">Download</span>
+                            <br>
+                            <span>Description</span>
+                        </div>
+                    </li>
+                    <li class="w3-bar">
+                        <div class="w3-bar-item">
+                            <span class="w3-xlarge">File Name</span> <span class="w3-tag w3-gray ">Time</span> <span
+                                    class="w3-tag w3-blue">Tag</span> <span onclick="location.href='/article/id'"
+                                                                            class="w3-tag w3-indigo"
+                                                                            style="cursor: pointer">Download</span>
+                            <br>
+                            <span>Description</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="w3-col l3 s12">
+            <div class="w3-card-4 w3-margin">
+                <div class="w3-container w3-deep-orange">
+                    <h3>Upload file</h3>
+                </div>
+                <form method='post' action='/api/upload' enctype='multipart/form-data'>
+                    <div class="w3-container w3-center">
+                        <label>
+                            <input class="w3-input w3-animate-input w3-hover-shadow"
+                                   type="text"
+                                   placeholder="tag"
+                                   name="tag">
+                        </label>
+                        <label>
+                            <input class="w3-input w3-animate-input w3-hover-shadow"
+                                   type="text"
+                                   placeholder="description"
+                                   name="description">
+                        </label>
+                        <br>
+                        <input type="file" name="file" class="w3-input" style="width: 100%;">
+                        <br>
+                        <input type="submit" name="Submit" class="w3-button w3-green" style="width: 100%;">
+                        <br>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('end') %>

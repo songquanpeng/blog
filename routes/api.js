@@ -1,7 +1,18 @@
+'use strict';
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/article').Article;
 const User = require('../models/user').User;
+const multer = require('multer');
+
+const uploadPath = "D:\\Project\\Web\\www\\public\\upload";
+const storage = multer.diskStorage({
+    destination: uploadPath,
+    filename: function (req, file, cb) {
+        cb(null, Date.now()+'_'+file.originalname);
+    }
+});
+const upload = multer({storage: storage});
 
 router.post('/login', function (req, res) {
     const username = req.body.username;
@@ -67,6 +78,12 @@ router.post('/update_user', function (req, res) {
             res.send("Successfully update your information.");
         }
     })
+});
+
+router.post('/upload', upload.single("test"), function (req, res) {
+    req.flash("info", "Successful upload");
+    res.redirect('/file');
+
 });
 
 module.exports = router;

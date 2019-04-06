@@ -50,8 +50,8 @@ router.get('/user', function (req, res) {
         Article.all((error, articles) => {
             User.all((error, users) => {
                 res.render('user', {
-                    "info": "",
-                    "error": "",
+                    info: req.flash('info'),
+                    error: req.flash('error'),
                     articles: articles,
                     users: users
                 });
@@ -60,6 +60,12 @@ router.get('/user', function (req, res) {
     }
 });
 
+router.get('/file', function (req, res) {
+    res.render('file', {
+        info: req.flash('info'),
+        error: req.flash('error'),
+    })
+});
 
 router.get('/about', function (req, res) {
     res.render("about");

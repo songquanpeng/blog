@@ -9,11 +9,11 @@
                     <h3>Watch Videos</h3>
                 </div>
                 <div class="w3-card w3-padding">
-                    <video width="100%" controls id="videoPlayer" style="height: 560px">
+                    <video width="100%" controls id="videoPlayer" class="Responsive-Box">
                         <source id="videoSource" src="" type="video/mp4">
                     </video>
                     <div class="w3-container" style="height: 50px">
-                        <h5 id="videoDescription"></h5>
+                        <h5 id="videoDescription" style="overflow: scroll"></h5>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <div class="w3-container random-color">
                     <h3>Available Videos</h3>
                 </div>
-                <div style="max-height: 631px;overflow: auto">
+                <div style="overflow: scroll;max-height: 631px">
                     <ul class="w3-ul w3-card-4">
                         <% if (videos.length){ %>
                             <% videos.forEach((video)=>{ %>
