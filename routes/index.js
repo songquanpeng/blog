@@ -1,10 +1,11 @@
+'use strict';
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/article').Article;
 const Bookmark = require('../models/bookmark').Bookmark;
 const User = require('../models/user').User;
 const markdown = require('markdown').markdown;
-
+const Image = require('../models/image').Image;
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -30,10 +31,9 @@ router.get('/bookmark', function (req, res) {
 router.get('/article/:id', function (req, res) {
     Article.find(req.params.id, (error, article) => {
         // if (error) return next(error);
-        if (error != null || article===undefined) {
+        if (error != null || article === undefined) {
             res.render('404');
-        }
-        else {
+        } else {
             article.content = markdown.toHTML(article.content);
             res.render('article', {
                 article: article
@@ -71,6 +71,16 @@ router.get('/archive', function (req, res) {
 
 router.get('/post', function (req, res) {
     res.render("post");
+});
+
+router.get('/image', function (req, res) {
+    Image.loadAllImages((images) => {
+        res.render("image", {
+            "info": "Welcome to the image view part",
+            "error": "",
+            images: images
+        });
+    });
 });
 
 module.exports = router;

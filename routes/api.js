@@ -15,7 +15,6 @@ router.post('/login', function (req, res) {
             };
             req.flash("info", "Login Successfully");
             res.redirect('/user');
-
         } else {
             req.flash("error", "Invalid credentials, please try again!");
             res.redirect('/user');

@@ -13,7 +13,16 @@
         <div class="w3-dropdown-content w3-bar-block w3-dark-grey">
             <% if (topArticles.length){ %>
                 <% topArticles.forEach((topArticle)=>{ %>
-                    <a href="<%= topArticle.link%>" class="w3-bar-item w3-button w3-mobile"><%= topArticle.title%></a>
+                    <a href="<%= topArticle.link%>" class="random-color w3-bar-item w3-button w3-mobile"><%= topArticle.title%></a>
+            <% })} %>
+        </div>
+    </div>
+    <div class="w3-dropdown-hover w3-mobile">
+        <button class="w3-button">Services</button>
+        <div class="w3-dropdown-content w3-bar-block">
+            <% if (services.length){ %>
+                <% services.forEach((service)=>{ %>
+                    <a href="<%= service.link%>" class="random-color w3-bar-item w3-button w3-mobile"><%= service.title%></a>
             <% })} %>
         </div>
     </div>

@@ -34,6 +34,15 @@ app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"},
     "title": "Example B"
 }];
 
+app.locals.services = [
+    {'link': '/image', "title": "Image Show"},
+    {'link': '/video', "title": "Watch Videos"},
+    {'link': '/file', "title": "Cloud Disk"},
+    {'link': '/message', "title": "Message Board"},
+    {'link': '/form', "title": "Information collection"},
+    {'link': '/help', "title": "Help Center"},
+];
+
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 

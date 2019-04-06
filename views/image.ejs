@@ -1,0 +1,17 @@
+<%- include('header') %>
+<%- include('navigation') %>
+<%- include('message') %>
+<div class="w3-row-padding w3-margin-top">
+<% if (images.length){ %>
+    <% images.forEach((image)=>{ %>
+            <div class="w3-quarter w3-padding">
+                <div class="w3-card">
+                    <img src="public/images/show/<%= image.path %>" style="width:100%" alt="image.path">
+                    <div class="w3-container">
+                        <h5><%= image.description %></h5>
+                    </div>
+                </div>
+            </div>
+<% })} %>
+</div>
+<%- include('end') %>
