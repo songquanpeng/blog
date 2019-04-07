@@ -6,11 +6,11 @@ const Data = require('../models/data').Data;
 const User = require('../models/user').User;
 const markdown = require('markdown').markdown;
 const LocalFile = require('../models/localFile').LocalFile;
+const checkLogin = require('../middlewares/check').checkLogin;
 
 /* GET home page. */
 router.get('/', function (req, res) {
     Article.all((error, articles) => {
-        // if (error) return next(error);
         res.render('index', {
             articles: articles,
             info: req.flash('info'),
@@ -44,7 +44,7 @@ router.get('/article/:id', function (req, res) {
 
 
 router.get('/user', function (req, res) {
-    if (req.session.user == null) {
+    if (req.session.user === undefined) {
         res.render("login", {error: req.flash('error'), info: req.flash('info')});
     } else {
         Article.all((error, articles) => {
@@ -59,6 +59,17 @@ router.get('/user', function (req, res) {
         });
     }
 });
+
+router.get('/user/:name', function (req, res) {
+    Article.getArticlesByAuthor(req.params.name, (error, articles) => {
+        res.render('visit', {
+            info: req.flash('info'),
+            error: req.flash('error'),
+            articles: articles
+        });
+    });
+});
+
 
 router.get('/file', function (req, res) {
     res.render('file', {
@@ -75,7 +86,7 @@ router.get('/archive', function (req, res) {
     res.render("archive");
 });
 
-router.get('/post', function (req, res) {
+router.get('/post', checkLogin, function (req, res) {
     res.render("post");
 });
 
@@ -98,5 +109,6 @@ router.get('/video', function (req, res) {
         });
     });
 });
+
 
 module.exports = router;

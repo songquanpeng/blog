@@ -49,17 +49,16 @@ function updateMyInfo() {
 }
 
 var lastVideoPath = "";
+
 function openVideo(videoPath) {
     videoPath = "public/videos/show/" + videoPath;
-    if(videoPath===lastVideoPath){
-        if($("#videoPlayer")[0].paused){
+    if (videoPath === lastVideoPath) {
+        if ($("#videoPlayer")[0].paused) {
             $("#videoPlayer")[0].play();
-        }
-        else {
+        } else {
             $("#videoPlayer")[0].pause();
         }
-    }
-    else {
+    } else {
         $("#videoSource").attr('src', videoPath);
         $("#videoPlayer")[0].load();
         $("#videoPlayer")[0].play();
@@ -73,6 +72,12 @@ function randomColor() {
         const selectedColor = colorsList[Math.floor((Math.random() * colorsList.length))];
         $(tag).addClass(selectedColor);
     });
+}
+
+
+function onTimeTagClicked(time) {
+    const date = time.split(" ")[0];
+    window.location.href = "/date/" + date;
 }
 
 $(document).ready(function () {

@@ -5,7 +5,7 @@ const Article = require('../models/article').Article;
 const User = require('../models/user').User;
 const Data = require('../models/data').Data;
 const multer = require('multer');
-
+const checkLogin = require('../middlewares/check').checkLogin;
 const uploadPath = "D:\\Project\\Web\\www\\public\\upload";
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -38,11 +38,12 @@ router.post('/login', function (req, res) {
 });
 
 
-router.post('/post', function (req, res) {
+router.post('/post', checkLogin, function (req, res) {
     const currentTime = new Date();
     Article.create(
         {
             title: req.body.title,
+            author: req.session.user.name,
             tag: req.body.tag,
             time: currentTime.toLocaleString(),
             content: req.body.content,

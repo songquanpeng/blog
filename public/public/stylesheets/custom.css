@@ -44,3 +44,7 @@
         max-width: 100%;
     }
 }
+
+.tag {
+    cursor: pointer;
+}

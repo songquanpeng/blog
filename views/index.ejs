@@ -12,7 +12,7 @@
                     <div class="w3-card-4 w3-margin w3-white">
                         <div class="w3-container">
                             <h3><b><%= article.title %></b></h3>
-                            <h5><%= article.tag %> <span class="w3-opacity"><%= article.time %></span></h5>
+                            <span class="w3-tag w3-deep-orange tag" onclick="location.href='/article_tag/<%= article.tag %>'"><%= article.tag %></span> <span class="w3-tag w3-green tag" onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span> <span class="w3-opacity w3-tag w3-deep-purple tag" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
                         </div>
                         <div class="w3-container w3-large">
                             <p>
