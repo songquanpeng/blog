@@ -91,7 +91,9 @@ router.post('/upload', upload.single("file"), function (req, res) {
         name: req.file.filename,
         tag: req.body.tag,
         description: req.body.description,
-        time: currentTime.toLocaleString()
+        time: currentTime.toLocaleString(),
+        link: '/public/upload/' + req.file.filename,
+        uploader: req.session.user.name
     }, (error) => {
         if (error != null) {
             console.log(error.message);

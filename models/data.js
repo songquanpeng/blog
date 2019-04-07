@@ -8,7 +8,7 @@ db.serialize(function () {
     db.run(createBookmarkTable);
     const createFileTable = '' +
         'CREATE TABLE IF NOT EXISTS files' +
-        '(id integer primary key, name TEXT, tag TEXT, time TEXT, description TEXT)';
+        '(id integer primary key, name TEXT, tag TEXT, time TEXT, description TEXT, link TEXT, uploader TEXT)';
     db.run(createFileTable);
     const createCommentsTable = '' +
         'CREATE TABLE IF NOT EXISTS comments' +
@@ -23,7 +23,11 @@ class Data {
     }
 
     static uploadNewFile(data, callback) {
-        db.run('INSERT INTO files(name, tag, time, description) VALUES (?, ?, ?, ?)', data.name, data.tag, data.time, data.description, callback);
+        db.run('INSERT INTO files(name, tag, time, description, link, uploader) VALUES (?, ?, ?, ?, ?, ?)', data.name, data.tag, data.time, data.description, data.link, data.uploader, callback);
+    }
+
+    static getAllFiles(callback){
+        db.all('SELECT * FROM files', callback);
     }
 
     static getCommentBySubmitPath(path, callback) {

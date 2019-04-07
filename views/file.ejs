@@ -9,26 +9,21 @@
                     <h3>Download Files</h3>
                 </div>
                 <ul class="w3-ul w3-card-4">
-                    <li class="w3-bar">
-                        <div class="w3-bar-item">
-                            <span class="w3-xlarge">File Name</span> <span class="w3-tag w3-gray ">Time</span> <span
-                                    class="w3-tag w3-blue">Tag</span> <span onclick="location.href='/article/id'"
-                                                                            class="w3-tag w3-indigo"
-                                                                            style="cursor: pointer">Download</span>
-                            <br>
-                            <span>Description</span>
-                        </div>
-                    </li>
-                    <li class="w3-bar">
-                        <div class="w3-bar-item">
-                            <span class="w3-xlarge">File Name</span> <span class="w3-tag w3-gray ">Time</span> <span
-                                    class="w3-tag w3-blue">Tag</span> <span onclick="location.href='/article/id'"
-                                                                            class="w3-tag w3-indigo"
-                                                                            style="cursor: pointer">Download</span>
-                            <br>
-                            <span>Description</span>
-                        </div>
-                    </li>
+                    <% if (files.length){ %>
+                        <% files.forEach((file)=>{ %>
+                            <li class="w3-bar" style="cursor: pointer">
+                                <a href="<%= file.link %>" download>
+                                    <div class="w3-bar-item">
+                                        <span class="w3-xlarge"><%= file.name %></span> <span
+                                                class="w3-tag w3-gray "><%= file.time %></span> <span
+                                                class="w3-tag w3-blue"><%= file.tag %></span> <span
+                                                class="w3-tag w3-indigo"><%= file.uploader %></span><br>
+                                        <br>
+                                        <span><%= file.description %></span>
+                                    </div>
+                                </a>
+                            </li>
+                    <% })} %>
                 </ul>
             </div>
         </div>

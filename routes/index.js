@@ -71,11 +71,14 @@ router.get('/user/:name', function (req, res) {
 });
 
 
-router.get('/file', function (req, res) {
-    res.render('file', {
-        info: req.flash('info'),
-        error: req.flash('error'),
-    })
+router.get('/file', checkLogin, function (req, res) {
+    Data.getAllFiles((error, files) => {
+        res.render('file', {
+            info: req.flash('info'),
+            error: req.flash('error'),
+            files: files
+        })
+    });
 });
 
 router.get('/about', function (req, res) {
