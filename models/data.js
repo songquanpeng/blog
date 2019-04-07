@@ -18,38 +18,35 @@ db.serialize(function () {
 });
 
 class Data {
+    // Bookmark Part
     static getAllBookmarks(callback) {
         db.all('SELECT * FROM bookmarks', callback);
     }
 
+    // File Service Part
     static uploadNewFile(data, callback) {
         db.run('INSERT INTO files(name, tag, time, description, link, uploader) VALUES (?, ?, ?, ?, ?, ?)', data.name, data.tag, data.time, data.description, data.link, data.uploader, callback);
     }
 
-    static getAllFiles(callback){
+    static getAllFiles(callback) {
         db.all('SELECT * FROM files', callback);
     }
 
+    static deleteFileByName(name, callback) {
+        db.run('DELETE FROM files WHERE name = ?', name, callback);
+    }
+
+    // Comment Service Part
     static getCommentBySubmitPath(path, callback) {
         db.all('SELECT * FROM comments WHERE path = ?', path, callback);
     }
 
-    static createComment(data, callback){
+    static createComment(data, callback) {
         db.run('INSERT INTO comments(path, time, author, content) VALUES (?, ?, ?, ?)', data.path, data.time, data.author, data.content, callback);
     }
 
-    static find(id, callback) {
-        db.get('SELECT * FROM bookmarks WHERE id = ?', id, callback);
-    }
-
-    static create(data, callback) {
-        db.run('INSERT INTO bookmarks(name, tag, link) VALUES (?, ?, ?)', data.name, data.tag, data.link, callback);
-    }
-
-    static delete(id, callback) {
-        if (id) {
-            db.run('DELETE FROM bookmarks WHERE id = ?', id, callback);
-        }
+    static deleteCommentBySubmitPath(path, callback) {
+        db.run('DELETE FROM comments WHERE path = ?', path, callback);
     }
 }
 

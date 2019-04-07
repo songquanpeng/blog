@@ -1,3 +1,10 @@
+## Description
+A toy web application that support:
++ article edit, view and save
++ file download and upload
++ user management
++ and many other things
+
 ## Try it yourself
 1. Install node.js v10.14.2 or compatible version
 2. `git clone https://github.com/songwonderful/practice-nodejs.git`
@@ -6,35 +13,45 @@
 5. `node ./bin/www`
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Description
-A toy web app that support:
-+ article edit, view and save
-+ file download and upload
-+ user management
-
 ## TODO:
 ### Server Part
-- [ ] system login, keep activate and logout
-- [ ] post, delete, modify and hide articles
-- [ ] add, delete user
+- [x] system login
+- [ ] system logout
+- [x] post and delete articles
+- [ ] modify and hide articles
+- [x] modify user information
+- [ ] add user
+- [x] delete user
 - [ ] system permission design
-- [ ] file upload and download
-- [ ] markdown support
-- [ ] log middleware
+- [x] file upload and download
+- [x] markdown support
+- [ ] statistics middleware
+- [ ] tag management
 
 ### Client Part
-- [ ] website home page
+- [x] website home page
 - [ ] tag management page
 - [x] article view page
-- [ ] article edit page
-- [ ] article manage page
-- [ ] system login page
-- [ ] file upload and download page
-- [ ] user management page
-- [ ] tag management page
+- [x] article edit page
+- [x] article manage page
+- [x] system login page
+- [x] file upload and download page
+- [x] user management page
 - [ ] article recommendation page
-
+- [x] message box page
+- [x] image display page
+- [x] video play page
+- [ ] music play page
+- [ ] information collection page
+- [ ] Help page
 
 ### Test Part
 - [ ] Stress test script
 - [ ] Url test script
+- [ ] Unit test
+
+## Reference
++ [Node.js Tutorial](https://www.tutorialspoint.com/nodejs)
++ [Express Guide](https://expressjs.com/en/guide/routing.html)
++ [《一起学 Node.js》](https://github.com/nswbmw/N-blog)
++ [ 使用Express与MongoDB 搭建多人博客](http://wiki.jikexueyuan.com/project/express-mongodb-setup-blog/simple-blog.html)
