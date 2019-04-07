@@ -29,7 +29,7 @@ router.post('/login', function (req, res) {
                 name: username
             };
             req.flash("info", "Login Successfully");
-            res.redirect('/user');
+            res.redirect('/');
         } else {
             req.flash("error", "Invalid credentials, please try again!");
             res.redirect('/user');
@@ -100,6 +100,24 @@ router.post('/upload', upload.single("file"), function (req, res) {
             req.flash("info", "Successful upload");
         }
         res.redirect('/file');
+    });
+});
+
+
+router.post('/comment/:subpath', checkLogin, function (req, res) {
+    const currentTime = new Date();
+    Data.createComment({
+        path: '/api/comment/' + req.params.subpath,
+        time: currentTime.toLocaleString(),
+        author: req.session.user.name,
+        content: req.body.content,
+    }, (error) => {
+        if (error != null) {
+            console.log(error.message);
+            res.send("Sorry file upload failed");
+        } else {
+            res.send("Successful Comment");
+        }
     });
 });
 

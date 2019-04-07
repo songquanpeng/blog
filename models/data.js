@@ -10,6 +10,11 @@ db.serialize(function () {
         'CREATE TABLE IF NOT EXISTS files' +
         '(id integer primary key, name TEXT, tag TEXT, time TEXT, description TEXT)';
     db.run(createFileTable);
+    const createCommentsTable = '' +
+        'CREATE TABLE IF NOT EXISTS comments' +
+        '(id integer primary key, path TEXT, time TEXT, author TEXT, content TEXT)';
+    db.run(createCommentsTable);
+
 });
 
 class Data {
@@ -19,6 +24,14 @@ class Data {
 
     static uploadNewFile(data, callback) {
         db.run('INSERT INTO files(name, tag, time, description) VALUES (?, ?, ?, ?)', data.name, data.tag, data.time, data.description, callback);
+    }
+
+    static getCommentBySubmitPath(path, callback) {
+        db.all('SELECT * FROM comments WHERE path = ?', path, callback);
+    }
+
+    static createComment(data, callback){
+        db.run('INSERT INTO comments(path, time, author, content) VALUES (?, ?, ?, ?)', data.path, data.time, data.author, data.content, callback);
     }
 
     static find(id, callback) {

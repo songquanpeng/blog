@@ -40,7 +40,7 @@ app.locals.services = [
     {'link': '/music', "title": "Listen Music"},
     {'link': '/book', "title": "Read Book"},
     {'link': '/file', "title": "Cloud Disk"},
-    {'link': '/message', "title": "Message Board"},
+    {'link': '/message_board', "title": "Message Board"},
     {'link': '/form', "title": "Information Collection"},
     {'link': '/help', "title": "Help Center"},
 ];

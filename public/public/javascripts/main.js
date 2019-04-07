@@ -83,3 +83,13 @@ function onTimeTagClicked(time) {
 $(document).ready(function () {
     randomColor();
 });
+
+function submitComment(path) {
+    const content = $('#comment-input').val();
+    $.post(path, {
+        content: content,
+        path: path
+    }, function (data, status) {
+        document.location.reload();
+    });
+}

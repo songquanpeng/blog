@@ -90,6 +90,18 @@ router.get('/post', checkLogin, function (req, res) {
     res.render("post");
 });
 
+router.get('/message_board', checkLogin, function (req, res) {
+    const commentSubmitPath = '/api/comment/message_board';
+    Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
+        res.render('message_board', {
+            info: req.flash('info'),
+            error: req.flash('error'),
+            commentSubmitPath: commentSubmitPath,
+            comments: comments.reverse(),
+        });
+    });
+});
+
 router.get('/image', function (req, res) {
     LocalFile.loadAllImages((images) => {
         res.render("image", {
