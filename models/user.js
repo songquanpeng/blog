@@ -17,6 +17,10 @@ class User {
         db.get('SELECT * FROM users WHERE name = ?', name, callback);
     }
 
+    static getUserPermission(name, callback){
+        db.get('SELECT level FROM users WHERE name = ?', name, callback);
+    }
+
     static create(data, callback) {
         db.run('INSERT INTO users(name, password) VALUES (?, ?)', data.name, data.password, callback);
     }

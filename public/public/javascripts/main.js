@@ -26,6 +26,11 @@ function deleteUser(name) {
             success: function (result) {
                 document.getElementById("user_" + name).style.display = "none";
                 alert(result);
+            },
+            statusCode:{
+                403:function () {
+                    document.location.reload();
+                }
             }
         });
     }

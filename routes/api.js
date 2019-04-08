@@ -6,6 +6,7 @@ const User = require('../models/user').User;
 const Data = require('../models/data').Data;
 const multer = require('multer');
 const checkLogin = require('../middlewares/check').checkLogin;
+const checkPermission = require('../middlewares/check').checkPermission;
 const uploadPath = "D:\\Project\\Web\\www\\public\\upload";
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -29,7 +30,7 @@ router.post('/login', function (req, res) {
                 name: username
             };
             req.flash("info", "Login Successfully");
-            res.redirect('/');
+            res.redirect('/user');
         } else {
             req.flash("error", "Invalid credentials, please try again!");
             res.redirect('/user');
@@ -62,7 +63,7 @@ router.delete('/article/:id', function (req, res) {
     })
 });
 
-router.delete('/user/:name', function (req, res) {
+router.delete('/user/:name', checkPermission, function (req, res) {
     User.delete(req.params.name, () => {
         res.send("Successfully deleted user.");
     })
