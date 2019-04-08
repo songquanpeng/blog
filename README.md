@@ -16,13 +16,13 @@ A toy web application that support:
 ## TODO:
 ### Server Part
 - [x] system login
-- [ ] system logout
+- [x] system logout
 - [x] post and delete articles
 - [ ] modify and hide articles
 - [x] modify user information
-- [ ] add user
+- [x] add user
 - [x] delete user
-- [ ] system permission design
+- [x] system permission design
 - [x] file upload and download
 - [x] markdown support
 - [ ] statistics middleware
@@ -43,7 +43,7 @@ A toy web application that support:
 - [x] video play page
 - [ ] music play page
 - [ ] information collection page
-- [ ] Help page
+- [ ] help page
 
 ### Test Part
 - [ ] Stress test script

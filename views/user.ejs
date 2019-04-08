@@ -62,6 +62,34 @@
                     <h3>Logout</h3>
                 </div>
             </div>
+            <div class="w3-card-4 w3-margin">
+                <div class="w3-container w3-amber">
+                    <h3>Add user</h3>
+                </div>
+
+                <div class="w3-container w3-center">
+                    <label>
+                        <input class="w3-input w3-animate-input w3-hover-shadow"
+                               type="text"
+                               placeholder="user name"
+                               name="name"
+                               id="addUserName"
+                               required>
+                    </label>
+                    <label>
+                        <input class="w3-input w3-animate-input w3-hover-shadow"
+                               type="password"
+                               placeholder="password"
+                               name="password"
+                               id="addUserPassword"
+                               required>
+                    </label>
+                    <div class="w3-section">
+                        <input type="reset" value="Clear" class="w3-button w3-red">
+                        <input type="submit" value="Add" class="w3-button w3-green" onclick="addUser()">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="w3-col l4 w3-container" style="max-width: 500px">
             <div class="w3-card-4 w3-margin">

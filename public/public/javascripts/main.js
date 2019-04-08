@@ -27,13 +27,35 @@ function deleteUser(name) {
                 document.getElementById("user_" + name).style.display = "none";
                 alert(result);
             },
-            statusCode:{
-                403:function () {
+            statusCode: {
+                403: function () {
                     document.location.reload();
                 }
             }
         });
     }
+}
+
+function addUser() {
+    const newName = $("#addUserName").val().trim();
+    const newPassword = $("#addUserPassword").val().trim();
+    if (newName === "" || newPassword === "") {
+        alert("Please check your input.");
+        return;
+    }
+    $.ajax({
+        url: "/api/addUser",
+        type: 'POST',
+        data: {"name": newName, "password": newPassword},
+        statusCode: {
+            403: function () {
+                document.location.reload();
+            },
+            200: function () {
+                document.location.reload();
+            }
+        }
+    });
 }
 
 function updateMyInfo() {
@@ -47,8 +69,13 @@ function updateMyInfo() {
         url: "/api/update_user",
         type: 'POST',
         data: {"name": newName, "password": newPassword},
-        success: function (result) {
-            alert(result);
+        statusCode: {
+            403: function () {
+                document.location.reload();
+            },
+            200: function () {
+                document.location.reload();
+            }
         }
     });
 }

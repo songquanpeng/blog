@@ -21,8 +21,8 @@ class User {
         db.get('SELECT level FROM users WHERE name = ?', name, callback);
     }
 
-    static create(data, callback) {
-        db.run('INSERT INTO users(name, password) VALUES (?, ?)', data.name, data.password, callback);
+    static addUser(data, callback) {
+        db.run('INSERT INTO users(name, password, level) VALUES (?, ?, ?)', data.name, data.password, data.level, callback);
     }
 
     static delete(name, callback) {

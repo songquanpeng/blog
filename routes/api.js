@@ -126,11 +126,29 @@ router.post('/comment/:subpath', checkLogin, function (req, res) {
 
 
 router.get('/logout', function (req, res) {
-    if(req.session.user !== undefined){
+    if (req.session.user !== undefined) {
         req.session.user = undefined;
     }
     req.flash('info', "Successfully logout!");
     res.redirect('/user');
+});
+
+
+router.post('/addUser', checkPermission, function (req, res) {
+    User.addUser({
+        name: req.body.name,
+        password: req.body.password,
+        level: 2
+    }, (error) => {
+        if (error != null) {
+            console.log(error.message);
+            req.flash("error", error.message);
+            res.sendStatus(403);
+        } else {
+            req.flash("info", "Successfully added user");
+            res.sendStatus(200);
+        }
+    })
 });
 
 module.exports = router;
