@@ -123,4 +123,13 @@ router.post('/comment/:subpath', checkLogin, function (req, res) {
     });
 });
 
+
+router.get('/logout', function (req, res) {
+    if(req.session.user !== undefined){
+        req.session.user = undefined;
+    }
+    req.flash('info', "Successfully logout!");
+    res.redirect('/user');
+});
+
 module.exports = router;
