@@ -93,6 +93,15 @@ function updateMyInfo() {
     });
 }
 
+function addNewMessage(message) {
+    const newListItem = '<li class="w3-bar"> <div> <span class="w3-tag random-color">' + message.author +
+        '</span> <span class="w3-opacity">' + message.time +
+        '</span> <p class="w3-serif w3-large">' + message.content +
+        '</p> </div></li>';
+    $("#messageUl").append(newListItem);
+    document.getElementById("messageDiv").scrollTop = document.getElementById("messageDiv").scrollHeight;
+}
+
 var lastVideoPath = "";
 
 function openVideo(videoPath) {
@@ -131,10 +140,9 @@ $(document).ready(function () {
 
 function submitComment(path) {
     const content = $('#comment-input').val();
-    if(content===""){
+    if (content === "") {
         $('#comment-input').focus();
-    }
-    else {
+    } else {
         $.post(path, {
             content: content,
             path: path
@@ -143,3 +151,31 @@ function submitComment(path) {
         });
     }
 }
+
+$(document).ready(
+    function () {
+        $("#messageBox").keydown(function (event) {
+            if (event.keyCode === 13) {
+                const content = $("#messageBox").val().trim();
+                if (content !== "") {
+                    $.ajax({
+                        url: "/api/chat",
+                        type: 'POST',
+                        data: {"content": content},
+                        statusCode: {
+                            500: function () {
+                                document.location.reload();
+                            },
+                            200: function () {
+                                document.location.reload();
+                            }
+                        }
+                    });
+                }
+                else {
+                    document.location.reload();
+                }
+            }
+        })
+    }
+);

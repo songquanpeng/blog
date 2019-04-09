@@ -125,5 +125,14 @@ router.get('/video', function (req, res) {
     });
 });
 
+router.get('/chat', checkLogin, function (req, res) {
+    Data.getRecentChats((error, messages) => {
+        res.render('chat', {
+            info: req.flash('info'),
+            error: req.flash('error'),
+            messages: messages.reverse(),
+        });
+    });
+});
 
 module.exports = router;

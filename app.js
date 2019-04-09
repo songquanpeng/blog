@@ -43,6 +43,7 @@ app.locals.services = [
     {'link': '/message_board', "title": "Message Board"},
     {'link': '/form', "title": "Information Collection"},
     {'link': '/help', "title": "Help Center"},
+    {'link': '/chat', "title": "Chat With Others"},
 ];
 
 app.use('/', indexRouter);

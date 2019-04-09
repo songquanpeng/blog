@@ -16,6 +16,10 @@ db.serialize(function () {
         'CREATE TABLE IF NOT EXISTS comments' +
         '(id integer primary key, path TEXT, time TEXT, author TEXT, content TEXT)';
     db.run(createCommentsTable);
+    const createChatsTable = '' +
+        'CREATE TABLE IF NOT EXISTS chats' +
+        '(id integer primary key, author TEXT, time TEXT, content TEXT)';
+    db.run(createChatsTable);
 
 });
 
@@ -53,6 +57,19 @@ class Data {
 
     static deleteCommentBySubmitPath(path, callback) {
         db.run('DELETE FROM comments WHERE path = ?', path, callback);
+    }
+
+    // Chat Service Part
+    static getAllChats(callback){
+        db.all('SELECT * FROM chats', callback)
+    }
+
+    static getRecentChats(callback){
+        db.all('SELECT * FROM chats order by id desc limit 10 ', callback)
+    }
+
+    static createChat(data, callback){
+        db.run('INSERT INTO chats(author, time, content) VALUES (?, ?, ?)', data.author, data.time, data.content, callback);
     }
 }
 

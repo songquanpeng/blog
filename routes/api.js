@@ -157,4 +157,20 @@ router.post('/addUser', checkPermission, function (req, res) {
     })
 });
 
+router.post('/chat', checkLogin, function (req, res) {
+    const currentTime = new Date();
+    Data.createChat({
+        time: currentTime.toLocaleString(),
+        author: req.session.user.name,
+        content: req.body.content,
+    }, (error) => {
+        if (error != null) {
+            console.log(error.message);
+            res.sendStatus(500);
+        } else {
+            res.sendStatus(200);
+        }
+    });
+});
+
 module.exports = router;
