@@ -44,6 +44,7 @@ A toy web application that support:
 - [ ] music play page
 - [ ] information collection page
 - [ ] help page
+- [ ] archive page
 
 ### Test Part
 - [ ] Stress test script

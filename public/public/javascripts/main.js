@@ -12,11 +12,24 @@ function deleteArticle(id) {
             type: 'DELETE',
             success: function (result) {
                 document.getElementById("article_" + id).style.display = "none";
-                alert(result);
+                //alert(result);
             }
         });
     }
 }
+
+function deleteFile(name) {
+    if (confirm("This file will be deleted soon")) {
+        $.ajax({
+            url: "/api/file/" + name,
+            type: 'DELETE',
+            success: function (result) {
+                document.getElementById("file_" + name).style.display = "none";
+            }
+        });
+    }
+}
+
 
 function deleteUser(name) {
     if (confirm("This user will be deleted soon")) {
@@ -118,10 +131,15 @@ $(document).ready(function () {
 
 function submitComment(path) {
     const content = $('#comment-input').val();
-    $.post(path, {
-        content: content,
-        path: path
-    }, function (data, status) {
-        document.location.reload();
-    });
+    if(content===""){
+        $('#comment-input').focus();
+    }
+    else {
+        $.post(path, {
+            content: content,
+            path: path
+        }, function (data, status) {
+            document.location.reload();
+        });
+    }
 }

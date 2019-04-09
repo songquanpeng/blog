@@ -9,7 +9,7 @@ db.serialize(function () {
 });
 
 class Article {
-    static all(callback) {
+    static getAllArticlesIntroduction(callback) {
         db.all('SELECT id, title, author, tag, time, description FROM articles', callback);
     }
 

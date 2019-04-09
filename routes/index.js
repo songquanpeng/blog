@@ -10,9 +10,9 @@ const checkLogin = require('../middlewares/check').checkLogin;
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    Article.all((error, articles) => {
+    Article.getAllArticlesIntroduction((error, articles) => {
         res.render('index', {
-            articles: articles,
+            articles: articles.reverse(),
             info: req.flash('info'),
             error: req.flash('error')
         });
@@ -47,7 +47,7 @@ router.get('/user', function (req, res) {
     if (req.session.user === undefined) {
         res.render("login", {error: req.flash('error'), info: req.flash('info')});
     } else {
-        Article.all((error, articles) => {
+        Article.getAllArticlesIntroduction((error, articles) => {
             User.all((error, users) => {
                 res.render('user', {
                     info: req.flash('info'),

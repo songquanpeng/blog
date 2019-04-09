@@ -1,5 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('data.db');
+const fs = require("fs");
+const uploadPath =  "D:\\Project\\Web\\www\\public\\upload";
 
 db.serialize(function () {
     const createBookmarkTable = '' +
@@ -33,7 +35,11 @@ class Data {
     }
 
     static deleteFileByName(name, callback) {
-        db.run('DELETE FROM files WHERE name = ?', name, callback);
+        fs.unlink(uploadPath+'\\'+name, (error)=>{
+            if (error) throw error;
+            console.log("delete file: "+name);
+            db.run('DELETE FROM files WHERE name = ?', name, callback);
+        });
     }
 
     // Comment Service Part
@@ -52,3 +58,4 @@ class Data {
 
 module.exports = db;
 module.exports.Data = Data;
+module.exports.uploadPath = uploadPath;

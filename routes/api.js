@@ -7,7 +7,7 @@ const Data = require('../models/data').Data;
 const multer = require('multer');
 const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
-const uploadPath = "D:\\Project\\Web\\www\\public\\upload";
+const uploadPath = require('../models/data').uploadPath;
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, uploadPath);
@@ -57,15 +57,21 @@ router.post('/post', checkLogin, function (req, res) {
     )
 });
 
-router.delete('/article/:id', function (req, res) {
+router.delete('/article/:id', checkPermission, function (req, res) {
     Article.delete(req.params.id, () => {
-        res.send("Successfully deleted article.");
+        res.send("Successfully delete article.");
+    })
+});
+
+router.delete('/file/:name', checkPermission, function (req, res) {
+    Data.deleteFileByName(req.params.name, () => {
+        res.send("Successfully delete article.");
     })
 });
 
 router.delete('/user/:name', checkPermission, function (req, res) {
     User.delete(req.params.name, () => {
-        res.send("Successfully deleted user.");
+        res.send("Successfully delete user.");
     })
 });
 

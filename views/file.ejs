@@ -11,7 +11,8 @@
                 <ul class="w3-ul w3-card-4">
                     <% if (files.length){ %>
                         <% files.forEach((file)=>{ %>
-                            <li class="w3-bar" style="cursor: pointer">
+                            <li class="w3-bar" style="cursor: pointer" id="file_<%= file.name %>">
+                                <span onclick="deleteFile('<%=  file.name %>')" class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
                                 <a href="<%= file.link %>" download>
                                     <div class="w3-bar-item">
                                         <span class="w3-xlarge"><%= file.name %></span> <span
