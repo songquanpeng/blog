@@ -143,11 +143,18 @@ function submitComment(path) {
     if (content === "") {
         $('#comment-input').focus();
     } else {
-        $.post(path, {
-            content: content,
-            path: path
-        }, function (data, status) {
-            document.location.reload();
+        $.ajax({
+            url: path,
+            type: 'POST',
+            data: {"content": content},
+            statusCode: {
+                403: function () {
+                    document.location.href = "/user"
+                },
+                200: function () {
+                    document.location.reload();
+                }
+            }
         });
     }
 }
@@ -171,8 +178,7 @@ $(document).ready(
                             }
                         }
                     });
-                }
-                else {
+                } else {
                     document.location.reload();
                 }
             }

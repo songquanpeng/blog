@@ -7,6 +7,7 @@ const Data = require('../models/data').Data;
 const multer = require('multer');
 const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
+const checkLoginWithoutRedirect = require('../middlewares/check').checkLoginWithoutRedirect;
 const uploadPath = require('../models/data').uploadPath;
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -121,7 +122,7 @@ router.post('/upload', upload.single("file"), function (req, res) {
 });
 
 
-router.post('/comment/:subpath', checkLogin, function (req, res) {
+router.post('/comment/:subpath', checkLoginWithoutRedirect, function (req, res) {
     const currentTime = new Date();
     Data.createComment({
         path: '/api/comment/' + req.params.subpath,

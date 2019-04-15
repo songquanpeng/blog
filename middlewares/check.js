@@ -9,6 +9,14 @@ module.exports = {
             next();
         }
     },
+    checkLoginWithoutRedirect: function checkLoginWithoutRedirect(req, res, next) {
+        if (req.session.user === undefined) {
+            req.flash('error', "This operation requires login");
+            res.sendStatus(403);
+        } else {
+            next();
+        }
+    },
 
     checkPermission: function (req, res, next) {
         if (req.session.user === undefined) {

@@ -30,16 +30,23 @@ router.get('/bookmark', function (req, res) {
 
 router.get('/article/:id', function (req, res) {
     Article.find(req.params.id, (error, article) => {
+        const commentSubmitPath = '/api/comment/article_'+req.params.id;
         // if (error) return next(error);
         if (error != null || article === undefined) {
             res.render('404');
         } else {
             article.content = markdown.toHTML(article.content);
-            res.render('article', {
-                article: article
+            Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
+                res.render('article', {
+                    article: article,
+                    commentSubmitPath: commentSubmitPath,
+                    comments: comments.reverse(),
+                });
             });
         }
     });
+
+
 });
 
 
