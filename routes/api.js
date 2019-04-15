@@ -41,14 +41,22 @@ router.post('/login', function (req, res) {
 
 router.post('/post', checkLogin, function (req, res) {
     const currentTime = new Date();
+    let tag = req.body.tag.trim();
+    if (tag === "") {
+        tag = "others"
+    }
+    let description = req.body.description.trim();
+    if (description === "") {
+        description = req.body.content.slice(0, 20) + " ...";
+    }
     Article.create(
         {
             title: req.body.title,
             author: req.session.user.name,
-            tag: req.body.tag,
+            tag: tag,
             time: currentTime.toLocaleString(),
             content: req.body.content,
-            description: req.body.description
+            description: description
         },
         () => {
             req.flash("info", "Article has been successfully uploaded");

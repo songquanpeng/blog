@@ -15,8 +15,9 @@
                     <span onclick="deleteArticle(<%= article.id %>)"
                           class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
                                 <div class="w3-bar-item">
-                                    <span class="w3-xlarge"><%= article.title %></span> <span
-                                            class="w3-tag w3-gray tag" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span> <span
+                                    <span class="w3-xlarge"><%= article.title %> </span><span
+                                                class="w3-tag w3-green tag" onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span> <span
+                                                class="w3-tag w3-gray tag" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span> <span
                                             class="w3-tag w3-blue tag" onclick="location.href='/article_tag/<%= article.tag %>'"><%= article.tag %></span> <span
                                             onclick="location.href='/article/<%= article.id %>'"
                                             class="w3-tag w3-indigo tag">View</span>

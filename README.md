@@ -27,6 +27,7 @@ A toy web application that support:
 - [x] markdown support
 - [ ] statistics middleware
 - [ ] tag management
+- [ ] use socket io to update chat service
 
 ### Client Part
 - [x] website home page
@@ -45,7 +46,7 @@ A toy web application that support:
 - [ ] information collection page
 - [ ] help page
 - [ ] archive page
-- [ ] chat page
+- [x] chat page
 
 ### Test Part
 - [ ] Stress test script

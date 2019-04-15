@@ -52,7 +52,7 @@ router.get('/user', function (req, res) {
                 res.render('user', {
                     info: req.flash('info'),
                     error: req.flash('error'),
-                    articles: articles,
+                    articles: articles.reverse(),
                     users: users
                 });
             });
