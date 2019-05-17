@@ -7,6 +7,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
+const record = require('./middlewares/record').record;
 
 const app = express();
 
@@ -45,7 +46,7 @@ app.locals.services = [
     // {'link': '/help', "title": "Help Center"},
     // {'link': '/chat', "title": "Chat With Others"},
 ];
-
+app.use('*', record);
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 

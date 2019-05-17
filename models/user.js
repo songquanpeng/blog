@@ -6,6 +6,8 @@ db.serialize(function () {
         "CREATE TABLE IF NOT EXISTS users" +
         "(id integer primary key, name TEXT UNIQUE, password TEXT, level integer)";
     db.run(createUserTable);
+    const createSystemLogTable = 'create table if not exists system_log(logID integer, time varchar(30), name varchar(10), ip varchar(20), primary key (logID));';
+    db.run(createSystemLogTable);
 });
 
 class User {
