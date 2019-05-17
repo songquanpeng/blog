@@ -29,21 +29,21 @@ app.use(flash());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"}, {
-    'link': 'http://justsong.xyz',
-    "title": "Example B"
-}];
+// app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"}, {
+//     'link': 'http://justsong.xyz',
+//     "title": "Example B"
+// }];
 
 app.locals.services = [
-    {'link': '/image', "title": "Image Show"},
-    {'link': '/video', "title": "Watch Videos"},
-    {'link': '/music', "title": "Listen Music"},
-    {'link': '/book', "title": "Read Book"},
-    {'link': '/file', "title": "Cloud Disk"},
-    {'link': '/message_board', "title": "Message Board"},
-    {'link': '/form', "title": "Information Collection"},
-    {'link': '/help', "title": "Help Center"},
-    {'link': '/chat', "title": "Chat With Others"},
+    // {'link': '/image', "title": "Image Show"},
+    // {'link': '/video', "title": "Watch Videos"},
+    // {'link': '/music', "title": "Listen Music"},
+    // {'link': '/book', "title": "Read Book"},
+    // {'link': '/file', "title": "Cloud Disk"},
+    // {'link': '/message_board', "title": "Message Board"},
+    // {'link': '/form', "title": "Information Collection"},
+    // {'link': '/help', "title": "Help Center"},
+    // {'link': '/chat', "title": "Chat With Others"},
 ];
 
 app.use('/', indexRouter);
