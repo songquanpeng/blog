@@ -39,6 +39,9 @@ router.get('/article/:id', function (req, res) {
             Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
                 res.render('article', {
                     article: article,
+                    title:article.title,
+                    keywords:article.tag,
+                    description:article.description,
                     commentSubmitPath: commentSubmitPath,
                     comments: comments.reverse(),
                 });
