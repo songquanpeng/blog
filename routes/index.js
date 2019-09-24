@@ -4,9 +4,10 @@ const router = express.Router();
 const Article = require('../models/article').Article;
 const Data = require('../models/data').Data;
 const User = require('../models/user').User;
-const markdown = require('markdown').markdown;
+const showdown = require('showdown');
 const LocalFile = require('../models/localFile').LocalFile;
 const checkLogin = require('../middlewares/check').checkLogin;
+const converter = new showdown.Converter();
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -30,18 +31,18 @@ router.get('/bookmark', function (req, res) {
 
 router.get('/article/:id', function (req, res) {
     Article.find(req.params.id, (error, article) => {
-        const commentSubmitPath = '/api/comment/article_'+req.params.id;
+        const commentSubmitPath = '/api/comment/article_' + req.params.id;
         // if (error) return next(error);
         if (error != null || article === undefined) {
             res.render('404');
         } else {
-            article.content = markdown.toHTML(article.content);
+            article.content = converter.makeHtml(article.content);
             Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
                 res.render('article', {
                     article: article,
-                    title:article.title,
-                    keywords:article.tag,
-                    description:article.description,
+                    title: article.title,
+                    keywords: article.tag,
+                    description: article.description,
                     commentSubmitPath: commentSubmitPath,
                     comments: comments.reverse(),
                 });
