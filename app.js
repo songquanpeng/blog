@@ -4,7 +4,7 @@ const flash = require('connect-flash');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+const serveStatic = require('serve-static');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const record = require('./middlewares/record').record;
@@ -28,7 +28,10 @@ app.use(session({
 }));
 app.use(flash());
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+app.use(serveStatic(path.join(__dirname, 'public'), {
+    maxAge: '10d',
+}));
 
 // app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"}, {
 //     'link': 'http://justsong.xyz',
