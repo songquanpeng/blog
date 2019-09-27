@@ -91,7 +91,19 @@ router.get('/file', checkLogin, function (req, res) {
 });
 
 router.get('/about', function (req, res) {
-    res.render("about");
+    Article.getAboutPage((error, article) => {
+        if (error != null || article === undefined) {
+            res.render('404');
+        } else {
+            article.content = converter.makeHtml(article.content);
+            res.render('about', {
+                article: article,
+                title: "About",
+                keywords: "about 关于",
+                description: "about this sites 关于本网站",
+            });
+        }
+    });
 });
 
 router.get('/archive', function (req, res) {
