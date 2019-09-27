@@ -33,23 +33,6 @@ app.use(serveStatic(path.join(__dirname, 'public'), {
     maxAge: '10d',
 }));
 
-// app.locals.topArticles = [{'link': 'http://justsong.xyz', "title": "Example A"}, {
-//     'link': 'http://justsong.xyz',
-//     "title": "Example B"
-// }];
-
-app.locals.services = [
-    // {'link': '/image', "title": "Image Show"},
-    // {'link': '/video', "title": "Watch Videos"},
-    // {'link': '/music', "title": "Listen Music"},
-    // {'link': '/book', "title": "Read Book"},
-    // {'link': '/file', "title": "Cloud Disk"},
-    // {'link': '/message_board', "title": "Message Board"},
-    // {'link': '/form', "title": "Information Collection"},
-    // {'link': '/help', "title": "Help Center"},
-    // {'link': '/chat', "title": "Chat With Others"},
-];
-
 app.locals.title = "JustSong's blog";
 app.locals.keywords = "JustSong blog";
 app.locals.description = "JustSong's blog";

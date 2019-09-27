@@ -1,6 +1,6 @@
-<%- include('header') %>
-<%- include('navigation') %>
-<%- include('message') %>
+<%- include('./partials/header') %>
+<%- include('./partials/navigation') %>
+<%- include('./partials/message') %>
 <div class="w3-row-padding w3-margin-top">
 <% if (images.length){ %>
     <% images.forEach((image)=>{ %>
@@ -14,4 +14,4 @@
             </div>
 <% })} %>
 </div>
-<%- include('end') %>
+<%- include('./partials/end') %>

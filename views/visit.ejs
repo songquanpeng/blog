@@ -1,6 +1,6 @@
-<%- include('header') %>
-<%- include('navigation') %>
-<%- include('message') %>
+<%- include('./partials/header') %>
+<%- include('./partials/navigation') %>
+<%- include('./partials/message') %>
 <div class="w3-content w3-margin-top" style="max-width:1400px">
     <ul class="w3-ul w3-card-4">
         <% if (articles.length){ %>
@@ -22,4 +22,4 @@
         <% })} %>
     </ul>
 </div>
-<%- include('end') %>
+<%- include('./partials/end') %>
