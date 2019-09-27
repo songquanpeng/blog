@@ -47,3 +47,7 @@
 .tag {
     cursor: pointer;
 }
+
+.article-font {
+    font-family: "Segoe UI",Helvetica,"Microsoft YaHei",华文细黑,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"; !important;
+}
