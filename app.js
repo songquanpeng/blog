@@ -49,11 +49,12 @@ app.locals.services = [
     // {'link': '/help', "title": "Help Center"},
     // {'link': '/chat', "title": "Chat With Others"},
 ];
+
 app.locals.title = "JustSong's blog";
 app.locals.keywords = "JustSong blog";
 app.locals.description = "JustSong's blog";
 
-app.use('*', record);
+//app.use('*', record);
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 
