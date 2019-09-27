@@ -1,27 +1,6 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('data.db');
+const db = require('../util').db;
 const fs = require("fs");
-const uploadPath =  "D:\\Project\\Web\\www\\public\\upload";
-
-db.serialize(function () {
-    const createBookmarkTable = '' +
-        'CREATE TABLE IF NOT EXISTS bookmarks' +
-        '(id integer primary key, name TEXT, tag TEXT, link TEXT)';
-    db.run(createBookmarkTable);
-    const createFileTable = '' +
-        'CREATE TABLE IF NOT EXISTS files' +
-        '(id integer primary key, name TEXT, tag TEXT, time TEXT, description TEXT, link TEXT, uploader TEXT)';
-    db.run(createFileTable);
-    const createCommentsTable = '' +
-        'CREATE TABLE IF NOT EXISTS comments' +
-        '(id integer primary key, path TEXT, time TEXT, author TEXT, content TEXT)';
-    db.run(createCommentsTable);
-    const createChatsTable = '' +
-        'CREATE TABLE IF NOT EXISTS chats' +
-        '(id integer primary key, author TEXT, time TEXT, content TEXT)';
-    db.run(createChatsTable);
-
-});
+const uploadPath =  "~/uploadPath/";
 
 class Data {
     // Bookmark Part

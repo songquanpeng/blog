@@ -1,14 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('data.db');
-
-db.serialize(function () {
-    const createUserTable = "" +
-        "CREATE TABLE IF NOT EXISTS users" +
-        "(id integer primary key, name TEXT UNIQUE, password TEXT, level integer)";
-    db.run(createUserTable);
-    const createSystemLogTable = 'create table if not exists system_log(logID integer, time varchar(30), name varchar(10), ip varchar(20), primary key (logID));';
-    db.run(createSystemLogTable);
-});
+const db = require('../util').db;
 
 class User {
     static all(callback) {

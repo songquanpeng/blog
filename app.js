@@ -8,15 +8,12 @@ const serveStatic = require('serve-static');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const record = require('./middlewares/record').record;
-
+const util = require('./util');
 const app = express();
 
-
-// view engine setup
+util.initializeDatabase();
 app.set('views', path.join(__dirname, 'views'));
-// app.engine('.html', require('ejs').__express)
 app.set('view engine', 'ejs');
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -27,23 +24,16 @@ app.use(session({
     secret: 'better'
 }));
 app.use(flash());
-
-// app.use(express.static(path.join(__dirname, 'public')));
 app.use(serveStatic(path.join(__dirname, 'public'), {
     maxAge: '10d',
 }));
-
 app.locals.title = "JustSong's blog";
 app.locals.keywords = "JustSong blog";
 app.locals.description = "JustSong's blog";
-
 //app.use('*', record);
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
-
-// catch 404
 app.use(function (req, res, next) {
-    // next(createError(404));
     if (!res.headersSent) {
         res.status(404).render('404', {
             "error": ":{404 Not Found}",
@@ -52,20 +42,14 @@ app.use(function (req, res, next) {
     }
     next()
 });
-
-// error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
     res.status(err.status || 500);
     res.render('error', {
         "error": "We are sorry. Some error occurred.",
         "info": ""
     });
-    //res.send("error");
     next();
 });
 
