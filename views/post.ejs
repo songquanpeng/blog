@@ -1,6 +1,6 @@
 <%- include('header') %>
 <%- include('navigation') %>
-<form>
+<div>
     <div class="w3-content" style="max-width:1400px">
         <div class="w3-row">
             <div class="w3-col l8 s12">
@@ -33,12 +33,14 @@
                                    type="text"
                                    required
                                    placeholder="title"
+                                   id="title"
                                    name="title">
                         </label>
                         <label>
                             <input class="w3-input w3-animate-input w3-hover-shadow"
                                    type="text"
                                    placeholder="tag"
+                                   id="tag"
                                    name="tag">
                         </label>
                         <label>
@@ -57,19 +59,24 @@
         </div>
     </div>
     <script>
-        $("#submit").click(() => {
-            $.post("/api/post", {
-                title: $("input[name='title']").val(),
-                tag: $("input[name='tag']").val(),
-                description: $("input[name='description']").val(),
-                content: simplemde.value()
-            }, () => {
-                $("input[name='title']").val("");
-                $("input[name='tag']").val("");
-                $("input[name='description']").val("");
-                simplemde.value("");
-            })
+        $(document).ready(function() {
+            $("#submit").click(() => {
+                const canSubmit = (simplemde.value() !== "") && ($("#title").val()!== "") && ($("#tag").val()!== "");
+                if (canSubmit) {
+                    $.post("/api/post", {
+                        title: $("input[name='title']").val(),
+                        tag: $("input[name='tag']").val(),
+                        description: $("input[name='description']").val(),
+                        content: simplemde.value()
+                    }, () => {
+                        $("input[name='title']").val("");
+                        $("input[name='tag']").val("");
+                        $("input[name='description']").val("");
+                        simplemde.value("");
+                    });
+                }
+            });
         });
     </script>
-</form>
+</div>
 <%- include('end') %>
