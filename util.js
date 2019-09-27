@@ -13,7 +13,12 @@ function initializeDatabase() {
     });
 }
 
+function titleToLink(title) {
+    return title.trim().replace(" ","-");
+}
+
 module.exports = {
     initializeDatabase: initializeDatabase,
-    db: db
+    db: db,
+    titleToLink: titleToLink
 };

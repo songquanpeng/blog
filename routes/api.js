@@ -9,6 +9,7 @@ const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 const checkLoginWithoutRedirect = require('../middlewares/check').checkLoginWithoutRedirect;
 const uploadPath = require('../models/data').uploadPath;
+const titleToLink = require('../util').titleToLink;
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, uploadPath);
@@ -57,7 +58,8 @@ router.post('/post', checkLogin, function (req, res) {
             tag: tag,
             time: currentTime.toLocaleString(),
             content: req.body.content,
-            description: description
+            description: description,
+            link: titleToLink(req.body.title)
         },
         () => {
             req.flash("info", "Article has been successfully uploaded");

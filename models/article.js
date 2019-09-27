@@ -2,15 +2,15 @@ const db = require('../util').db;
 
 class Article {
     static getAllArticlesIntroduction(callback) {
-        db.all('SELECT id, title, author, tag, time, description FROM articles', callback);
+        db.all('SELECT id, title, author, tag, time, description, link FROM articles', callback);
     }
 
-    static find(id, callback) {
-        db.get('SELECT * FROM articles WHERE id = ?', id, callback);
+    static find(link, callback) {
+        db.get('SELECT * FROM articles WHERE link = ?', link, callback);
     }
 
     static create(data, callback) {
-        db.run('INSERT INTO articles(title, author, tag, time, content, description) VALUES (?, ?, ?, ?, ?, ?)', data.title, data.author, data.tag, data.time, data.content, data.description, callback);
+        db.run('INSERT INTO articles(title, author, tag, time, content, description, link) VALUES (?, ?, ?, ?, ?, ?, ?)', data.title, data.author, data.tag, data.time, data.content, data.description, data.link, callback);
     }
 
     static delete(id, callback) {
@@ -20,7 +20,7 @@ class Article {
     }
 
     static getArticlesByAuthor(author, callback){
-        db.all('SELECT * FROM articles WHERE author = ?', author, callback);
+        db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE author = ?', author, callback);
     }
 }
 

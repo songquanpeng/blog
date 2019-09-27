@@ -29,9 +29,9 @@ router.get('/bookmark', function (req, res) {
     });
 });
 
-router.get('/article/:id', function (req, res) {
-    Article.find(req.params.id, (error, article) => {
-        const commentSubmitPath = '/api/comment/article_' + req.params.id;
+router.get('/article/:link', function (req, res) {
+    Article.find(req.params.link, (error, article) => {
+        const commentSubmitPath = '/api/comment/article-' + req.params.link;
         // if (error) return next(error);
         if (error != null || article === undefined) {
             res.render('404');
@@ -44,13 +44,11 @@ router.get('/article/:id', function (req, res) {
                     keywords: article.tag,
                     description: article.description,
                     commentSubmitPath: commentSubmitPath,
-                    comments: comments.reverse(),
+                    comments: comments.reverse()
                 });
             });
         }
     });
-
-
 });
 
 

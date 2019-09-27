@@ -1,10 +1,11 @@
-CREATE TABLE articles(
+CREATE TABLE IF NOT EXISTS articles(
 id integer primary key,
 title TEXT,
 author TEXT,
 tag TEXT,
 time TEXT,
 content TEXT,
+link TEXT,
 description TEXT);
 
 CREATE TABLE IF NOT EXISTS bookmarks(
@@ -35,14 +36,14 @@ description TEXT,
 link TEXT,
 uploader TEXT);
 
-CREATE TABLE system_log(
+CREATE TABLE IF NOT EXISTS system_log(
 logID integer,
 time varchar(30),
 name varchar(10),
 ip varchar(20),
 primary key (logID));
 
-CREATE TABLE users(
+CREATE TABLE IF NOT EXISTS users(
 id integer primary key,
 name TEXT UNIQUE,
 password TEXT,
