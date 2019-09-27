@@ -5,7 +5,7 @@ class Article {
         db.all('SELECT id, title, author, tag, time, description, link FROM articles', callback);
     }
 
-    static find(link, callback) {
+    static getArticleByLink(link, callback) {
         db.get('SELECT * FROM articles WHERE link = ?', link, callback);
     }
 
@@ -19,12 +19,20 @@ class Article {
         }
     }
 
-    static getArticlesByAuthor(author, callback){
+    static getArticlesByAuthor(author, callback) {
         db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE author = ?', author, callback);
     }
 
-    static getAboutPage(callback){
+    static getAboutPage(callback) {
         db.get('SELECT * FROM articles WHERE author = "root" and title = "about"', callback);
+    }
+
+    static getArticleAuthorByLink(link, callback) {
+        db.get('SELECT author FROM articles WHERE link = ?', link, callback);
+    }
+
+    static updateArticleByLink(link, article, callback) {
+        db.run('UPDATE articles SET title = ?, author = ?, tag = ?, time = ?, content = ?, description = ?, link = ? WHERE link = ?', article.title, article.author, article.tag, article.time, article.content, article.description, article.link, link, callback);
     }
 }
 

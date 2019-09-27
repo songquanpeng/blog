@@ -30,9 +30,8 @@ router.get('/bookmark', function (req, res) {
 });
 
 router.get('/article/:link', function (req, res) {
-    Article.find(req.params.link, (error, article) => {
+    Article.getArticleByLink(req.params.link, (error, article) => {
         const commentSubmitPath = '/api/comment/article-' + req.params.link;
-        // if (error) return next(error);
         if (error != null || article === undefined) {
             res.render('404');
         } else {
@@ -51,6 +50,28 @@ router.get('/article/:link', function (req, res) {
     });
 });
 
+router.get('/edit/:link', function (req, res) {
+    const link = req.params.link;
+    const username = req.session.user.name;
+    Article.getArticleAuthorByLink(link, (error, data) => {
+        if (error) {
+            res.render("error");
+        } else if (data.author !== username) {
+            req.flash('error', "Permission denied");
+            res.redirect('/user');
+        } else {
+            Article.getArticleByLink(link, (error, article) => {
+                if (error !== null || article === undefined) {
+                    res.render('404');
+                } else {
+                    res.render('post', {
+                        article: article
+                    })
+                }
+            })
+        }
+    })
+});
 
 router.get('/user', function (req, res) {
     if (req.session.user === undefined) {
@@ -78,7 +99,6 @@ router.get('/user/:name', function (req, res) {
         });
     });
 });
-
 
 router.get('/file', checkLogin, function (req, res) {
     Data.getAllFiles((error, files) => {
@@ -111,7 +131,9 @@ router.get('/archive', function (req, res) {
 });
 
 router.get('/post', checkLogin, function (req, res) {
-    res.render("post");
+    res.render("post", {
+        article: undefined
+    });
 });
 
 router.get('/message_board', checkLogin, function (req, res) {

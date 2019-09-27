@@ -103,6 +103,47 @@ router.post('/update_user', function (req, res) {
     })
 });
 
+router.post('/edit/:link', checkLogin, function (req, res) {
+    const link = req.params.link;
+    const username = req.session.user.name;
+    Article.getArticleAuthorByLink(link, (error, data) => {
+        if (error) {
+            res.render("error");
+        } else if (data.author !== username) {
+            req.flash('error', "Permission denied");
+            res.redirect('/user');
+        } else {
+            let tag = req.body.tag.trim();
+            if (tag === "") {
+                tag = "others"
+            }
+            let description = req.body.description.trim();
+            if (description === "") {
+                description = req.body.content.slice(0, 20) + " ...";
+            }
+            const currentTime = new Date();
+            Article.updateArticleByLink(link, {
+                    title: req.body.title,
+                    author: username,
+                    tag: tag,
+                    time: currentTime.toLocaleString(),
+                    content: req.body.content,
+                    description: description,
+                    link: titleToLink(req.body.title)
+                },
+                (error) => {
+                    if (error !== null) {
+                        req.flash("info", "Article has been successfully updated.");
+                        res.redirect('/user');
+                    } else {
+                        req.flash("error", "Unable to update!");
+                        res.redirect('/user');
+                    }
+                });
+        }
+    })
+});
+
 router.post('/upload', upload.single("file"), function (req, res) {
     const currentTime = new Date();
     Data.uploadNewFile({

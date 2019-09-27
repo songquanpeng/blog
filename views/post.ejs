@@ -6,7 +6,7 @@
             <div class="w3-col l8 s12">
                 <div class="w3-card-4 w3-margin">
                     <div class="w3-container w3-green">
-                        <h3>New Article</h3>
+                        <h3>Edit Article</h3>
                     </div>
                     <div>
                         <label for='editor'></label>
@@ -59,11 +59,19 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
+        let postPath = "/api/post";
+        <% if(article !== undefined){ %>
+        postPath = "/api/edit/<%- article.link %>";
+        $("input[name='title']").val("<%- article.title %>");
+        $("input[name='tag']").val("<%- article.tag %>");
+        $("input[name='description']").val("<%- article.description %>");
+        simplemde.value("<%- article.content %>");
+        <% } %>
+        $(document).ready(function () {
             $("#submit").click(() => {
-                const canSubmit = (simplemde.value() !== "") && ($("#title").val()!== "") && ($("#tag").val()!== "");
+                const canSubmit = (simplemde.value() !== "") && ($("#title").val() !== "") && ($("#tag").val() !== "");
                 if (canSubmit) {
-                    $.post("/api/post", {
+                    $.post(postPath, {
                         title: $("input[name='title']").val(),
                         tag: $("input[name='tag']").val(),
                         description: $("input[name='description']").val(),
@@ -77,6 +85,7 @@
                 }
             });
         });
+
     </script>
 </div>
 <%- include('./partials/end') %>
