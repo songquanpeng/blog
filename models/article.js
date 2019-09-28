@@ -23,6 +23,10 @@ class Article {
         db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE author = ?', author, callback);
     }
 
+    static getArticlesByTag(tag, callback) {
+        db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE tag = ?', tag, callback);
+    }
+
     static getAboutPage(callback) {
         db.get('SELECT * FROM articles WHERE author = "root" and title = "about"', callback);
     }

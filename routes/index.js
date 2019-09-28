@@ -92,7 +92,7 @@ router.get('/user', function (req, res) {
 
 router.get('/user/:name', function (req, res) {
     Article.getArticlesByAuthor(req.params.name, (error, articles) => {
-        res.render('visit', {
+        res.render('list', {
             info: req.flash('info'),
             error: req.flash('error'),
             articles: articles
@@ -174,6 +174,16 @@ router.get('/chat', checkLogin, function (req, res) {
             info: req.flash('info'),
             error: req.flash('error'),
             messages: messages.reverse(),
+        });
+    });
+});
+
+router.get('/tag/:tag', function (req, res) {
+    Article.getArticlesByTag(req.params.tag, (error, articles) => {
+        res.render('list', {
+            info: req.flash('info'),
+            error: req.flash('error'),
+            articles: articles
         });
     });
 });
