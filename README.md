@@ -11,7 +11,7 @@ This is a blog system that based on Node.js, Express.js and SQLite3.
 - [ ] Optimize the sidebar of the homepage.
 - [ ] Optimize the background management page.
 - [ ] Refactoring the front end of the website using Bootstrap 4.
-- [ ] Links page.
+- [x] Links page.
 - [ ] Article view number.
 - [ ] Site configuration.
 

@@ -51,3 +51,24 @@
 .article-font {
     font-family: "Segoe UI",Helvetica,"Microsoft YaHei",华文细黑,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"; !important;
 }
+
+/* Table */
+table {
+    border-collapse: collapse;
+    margin: 10px auto;
+}
+
+th, td {
+    border: 1px solid #111;
+    padding: 3px 7px 2px 7px;
+}
+
+th {
+    font-size: 1.1em;
+    font-weight: normal;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color: #333;
+    color: #ffffff;
+}

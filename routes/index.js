@@ -113,14 +113,36 @@ router.get('/file', checkLogin, function (req, res) {
 router.get('/about', function (req, res) {
     Article.getAboutPage((error, article) => {
         if (error != null || article === undefined) {
-            res.render('404');
+            res.render('error', {
+                "error": 'The root user has not created the "about" page yet.',
+                "info": ""
+            });
         } else {
-            article.content = converter.makeHtml(article.content);
-            res.render('about', {
+            article.content = parser(lexer(article.content));
+            res.render('page', {
                 article: article,
                 title: "About",
                 keywords: "about 关于",
                 description: "about this sites 关于本网站",
+            });
+        }
+    });
+});
+
+router.get('/links', function (req, res) {
+    Article.getLinksPage((error, article) => {
+        if (error != null || article === undefined) {
+            res.render('error', {
+                "error": 'The root user has not created the "links" page yet.',
+                "info": ""
+            });
+        } else {
+            article.content = parser(lexer(article.content));
+            res.render('page', {
+                article: article,
+                title: "Links",
+                keywords: "links 友链",
+                description: "links 友链",
             });
         }
     });

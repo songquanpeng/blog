@@ -37,6 +37,10 @@ class Article {
         db.get('SELECT * FROM articles WHERE author = "root" and title = "about"', callback);
     }
 
+    static getLinksPage(callback) {
+        db.get('SELECT * FROM articles WHERE author = "root" and title = "links"', callback);
+    }
+
     static getArticleAuthorByLink(link, callback) {
         db.get('SELECT author FROM articles WHERE link = ?', link, callback);
     }
