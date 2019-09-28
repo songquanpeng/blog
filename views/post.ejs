@@ -61,11 +61,15 @@
     <script>
         let postPath = "/api/post";
         <% if(article !== undefined){ %>
+        $(document).ready(function () {
+            $.get("/api/article/<%- article.link %>", function (data) {
+                $("input[name='title']").val(data.title);
+                $("input[name='tag']").val(data.tag);
+                $("input[name='description']").val(data.description);
+                simplemde.value(data.content);
+            });
+        });
         postPath = "/api/edit/<%- article.link %>";
-        $("input[name='title']").val("<%- article.title %>");
-        $("input[name='tag']").val("<%- article.tag %>");
-        $("input[name='description']").val("<%- article.description %>");
-        simplemde.value("<%- article.content %>");
         <% } %>
         $(document).ready(function () {
             $("#submit").click(() => {

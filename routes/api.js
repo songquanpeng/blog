@@ -40,6 +40,15 @@ router.post('/login', function (req, res) {
     });
 });
 
+router.get('/article/:link', function (req, res) {
+    Article.getArticleByLink(req.params.link, (error, article) => {
+        if (error != null || article === undefined) {
+            res.json();
+        } else {
+            res.json(article);
+        }
+    });
+});
 
 router.post('/post', checkLogin, function (req, res) {
     const currentTime = new Date();
