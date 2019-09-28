@@ -4,10 +4,10 @@ const router = express.Router();
 const Article = require('../models/article').Article;
 const Data = require('../models/data').Data;
 const User = require('../models/user').User;
-const showdown = require('showdown');
 const LocalFile = require('../models/localFile').LocalFile;
 const checkLogin = require('../middlewares/check').checkLogin;
-const converter = new showdown.Converter();
+const lexer = require("marked").lexer;
+const parser = require("marked").parser;
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -35,7 +35,7 @@ router.get('/article/:link', function (req, res) {
         if (error != null || article === undefined) {
             res.render('404');
         } else {
-            article.content = converter.makeHtml(article.content);
+            article.content = parser(lexer(article.content));
             Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
                 res.render('article', {
                     article: article,
