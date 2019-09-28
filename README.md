@@ -12,6 +12,8 @@ This is a blog system that based on Node.js, Express.js and SQLite3.
 - [ ] Optimize the background management page.
 - [ ] Refactoring the front end of the website using Bootstrap 4.
 - [ ] Links page.
+- [ ] Article view number.
+- [ ] Site configuration.
 
 ## Try it now
 1. Install node.js `v10.14.2` or compatible version.

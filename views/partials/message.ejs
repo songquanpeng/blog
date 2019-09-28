@@ -1,19 +1,12 @@
 <% if(error && error != ""){ %>
     <div id="error-message" class="center w3-panel w3-red w3-card-4" onclick="window.location.href='/'" style="cursor: pointer">
-        <p class="w3-xlarge"><%= error %></p>
+        <p><%= error %></p>
         <p class="w3-small">Click back to the home page</p>
     </div>
     <script>
-        // $(document).ready(function () {
-        //     setTimeout(function () {
-        //         window.location.replace("/");
-        //         //history.go(-1);
-        //     }, 5000)
-        // });
         $(document).ready(function () {
-            $("#error-message").delay(5000).hide(300);
+            $("#error-message").delay(25000).hide(300);
         });
-
     </script>
 <% } %>
 <% if(info && info != ""){ %>

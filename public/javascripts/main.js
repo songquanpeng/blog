@@ -130,8 +130,8 @@ function randomColor() {
 
 
 function onTimeTagClicked(time) {
-    const date = time.split(" ")[0];
-    window.location.href = "/date/" + date;
+    const date = time.split(",")[0];
+    window.location.href = "/date/" + date.split("/")[2] + "-" + date.split("/")[0];
 }
 
 $(document).ready(function () {
