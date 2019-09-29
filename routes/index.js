@@ -13,7 +13,9 @@ const parser = require("marked").parser;
 router.get('/', function (req, res) {
     Article.getAllArticlesIntroduction((error, articles) => {
         Article.getSpecialPage("notice", (error, article) => {
-            article.content = parser(lexer(article.content.split("\n").splice(3).join('\n')));
+            if (article !== undefined) {
+                article.content = parser(lexer(article.content.split("\n").splice(3).join('\n')));
+            }
             res.render('index', {
                 articles: articles.reverse(),
                 notice: article,
