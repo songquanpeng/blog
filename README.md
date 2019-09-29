@@ -10,7 +10,7 @@ This is a blog system that based on Node.js, Express.js and SQLite3.
 - [ ] Add archive page.
 - [ ] Optimize the sidebar of the homepage.
 - [ ] Optimize the background management page.
-- [ ] Refactoring the front end of the website using Bootstrap 4.
+- [x] Refactoring the front end of the website using Bootstrap 4.
 - [x] Links page.
 - [ ] Article view number.
 - [ ] Site configuration.

@@ -30,7 +30,15 @@ app.use(serveStatic(path.join(__dirname, 'public'), {
 app.locals.title = "JustSong's blog";
 app.locals.keywords = "JustSong blog";
 app.locals.description = "JustSong's blog";
-//app.use('*', record);
+app.use('*', (req, res, next) => {
+    res.locals.loggedIn = false;
+    res.locals.isRootUser = false;
+    if (req.session.user !== undefined) {
+        res.locals.loggedIn = true;
+        res.locals.isRootUser = req.session.user.username === "root";
+    }
+    next();
+});
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use(function (req, res, next) {

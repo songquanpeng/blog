@@ -11,12 +11,21 @@
             <li class="nav-item">
                 <a class="nav-link" href="/archive">Archive</a>
             </li>
+            <% if(loggedIn) {%>
             <li class="nav-item">
-                <a class="nav-link" href="/user">User</a>
+                <a class="nav-link" href="/user">Mine</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/post">Post</a>
             </li>
+            <% } else { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/user">Login</a>
+            </li>
+            <% } %>
             <li class="nav-item">
                 <a class="nav-link" href="/about">About</a>
             </li>

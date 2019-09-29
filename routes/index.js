@@ -220,4 +220,10 @@ router.get('/date/:date', function (req, res) {
     });
 });
 
+router.get('/logout', function (req, res, next) {
+    req.session.user = undefined;
+    req.flash("info", "Logout Successfully");
+    res.redirect('/');
+});
+
 module.exports = router;

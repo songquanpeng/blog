@@ -46,58 +46,64 @@
             </div>
         </div>
     </div>
+    <% if(isRootUser) { %>
     <div class="row">
-        <div class="col-lg-6" style="margin-bottom: 16px">
-            <div class="card hover-effect">
-                <div class="card-header font-weight-bold">Manage users</div>
-                <div class="card-body table-responsive" style="padding: 0">
-                    <table class="table table-bordered table-striped table-hover thead-light" style="margin-bottom: 0">
-                        <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Operation</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% if (users.length){ %>
-                            <% users.forEach((user)=>{ %>
-                                <tr id="user_<%= user.name %>">
-                                    <td><%= user.name %></td>
-                                    <td>
-                                        <div>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">Freeze</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteUser('<%= user.name %>')">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                        <% })} %>
-                        </tbody>
-                    </table>
+            <div class="col-lg-6" style="margin-bottom: 16px">
+                <div class="card hover-effect">
+                    <div class="card-header font-weight-bold">Manage users</div>
+                    <div class="card-body table-responsive" style="padding: 0">
+                        <table class="table table-bordered table-striped table-hover thead-light"
+                               style="margin-bottom: 0">
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Operation</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% if (users.length){ %>
+                                <% users.forEach((user)=>{ %>
+                                    <tr id="user_<%= user.name %>">
+                                        <td><%= user.name %></td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn btn-sm btn-outline-warning">Freeze
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        onclick="deleteUser('<%= user.name %>')">Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                            <% })} %>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4 offset-lg-1" style="margin-bottom: 16px">
-            <div class="card hover-effect">
-                <div class="card-header font-weight-bold">Others</div>
-                <div class="card-body" style="padding: 0">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <button type="button" class="btn btn-outline-primary btn-block">Add user</button>
-                        </li>
-                        <li class="list-group-item">
-                            <button type="button" class="btn btn-outline-success btn-block">Edit sidebar</button>
-                        </li>
-                        <li class="list-group-item">
-                            <button type="button" class="btn btn-outline-info btn-block">Change theme</button>
-                        </li>
-                    </ul>
+            <div class="col-lg-4 offset-lg-1" style="margin-bottom: 16px">
+                <div class="card hover-effect">
+                    <div class="card-header font-weight-bold">Others</div>
+                    <div class="card-body" style="padding: 0">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <button type="button" class="btn btn-outline-primary btn-block">Add user</button>
+                            </li>
+                            <li class="list-group-item">
+                                <button type="button" class="btn btn-outline-success btn-block">Edit sidebar</button>
+                            </li>
+                            <li class="list-group-item">
+                                <button type="button" class="btn btn-outline-info btn-block">Change theme</button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
+    <% } %>
 </div>
 
 <%- include('./partials/end') %>
