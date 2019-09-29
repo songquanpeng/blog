@@ -18,18 +18,6 @@ function deleteArticle(id) {
     }
 }
 
-function deleteFile(name) {
-    if (confirm("This file will be deleted soon")) {
-        $.ajax({
-            url: "/api/file/" + name,
-            type: 'DELETE',
-            success: function (result) {
-                document.getElementById("file_" + name).style.display = "none";
-            }
-        });
-    }
-}
-
 
 function deleteUser(name) {
     if (confirm("This user will be deleted soon")) {
@@ -93,70 +81,11 @@ function updateMyInfo() {
     });
 }
 
-function addNewMessage(message) {
-    const newListItem = '<li class="w3-bar"> <div> <span class="w3-tag random-color">' + message.author +
-        '</span> <span class="w3-opacity">' + message.time +
-        '</span> <p class="w3-serif w3-large">' + message.content +
-        '</p> </div></li>';
-    $("#messageUl").append(newListItem);
-    document.getElementById("messageDiv").scrollTop = document.getElementById("messageDiv").scrollHeight;
-}
-
-var lastVideoPath = "";
-
-function openVideo(videoPath) {
-    videoPath = "public/videos/show/" + videoPath;
-    if (videoPath === lastVideoPath) {
-        if ($("#videoPlayer")[0].paused) {
-            $("#videoPlayer")[0].play();
-        } else {
-            $("#videoPlayer")[0].pause();
-        }
-    } else {
-        $("#videoSource").attr('src', videoPath);
-        $("#videoPlayer")[0].load();
-        $("#videoPlayer")[0].play();
-        $("#videoDescription").text(videoPath);  // TODO: Video description and comment
-        lastVideoPath = videoPath;
-    }
-}
-
-function randomColor() {
-    $('.random-color').each(function (index, tag) {
-        const selectedColor = colorsList[Math.floor((Math.random() * colorsList.length))];
-        $(tag).addClass(selectedColor);
-    });
-}
 
 
 function onTimeTagClicked(time) {
     const date = time.split(",")[0];
     window.location.href = "/date/" + date.split("/")[2] + "-" + date.split("/")[0];
-}
-
-$(document).ready(function () {
-    randomColor();
-});
-
-function submitComment(path) {
-    const content = $('#comment-input').val();
-    if (content === "") {
-        $('#comment-input').focus();
-    } else {
-        $.ajax({
-            url: path,
-            type: 'POST',
-            data: {"content": content},
-            statusCode: {
-                403: function () {
-                    document.location.href = "/user"
-                },
-                200: function () {
-                    document.location.reload();
-                }
-            }
-        });
-    }
 }
 
 $(document).ready(

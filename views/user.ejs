@@ -1,117 +1,103 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
 <%- include('./partials/message') %>
-<div class="w3-content" style="max-width:1400px">
-    <div class="w3-row">
-        <div class="w3-col l10 s12">
-            <div class="w3-card-4 w3-margin">
-                <div class="w3-container w3-deep-purple">
-                    <h3>Manage Articles</h3>
-                </div>
-                <ul class="w3-ul w3-card-4">
-                    <% if (articles.length){ %>
-                        <% articles.forEach((article)=>{ %>
-                            <li class="w3-bar" id="article_<%= article.id %>">
-                    <span onclick="deleteArticle(<%= article.id %>)"
-                          class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
-                                <div class="w3-bar-item">
-                                    <span class="w3-xlarge"><%= article.title %> </span><span
-                                                class="w3-tag w3-green tag" onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span> <span
-                                                class="w3-tag w3-gray tag" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span> <span
-                                            class="w3-tag w3-blue tag" onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span> <span
-                                            class="w3-tag w3-orange tag" onclick="location.href='/edit/<%= article.link %>'">Edit</span> <span
-                                            onclick="location.href='/article/<%= article.link %>'"
-                                            class="w3-tag w3-indigo tag">View</span>
-                                    <br>
-                                    <span><%= article.description %></span>
-                                </div>
-                            </li>
-                    <% })} %>
-                </ul>
-            </div>
-        </div>
-        <div class="w3-col l2">
-            <div class="w3-card-4 w3-margin">
-                <div class="w3-container w3-deep-orange">
-                    <h3>Update</h3>
-                </div>
 
-                <div class="w3-container w3-center">
-                    <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow"
-                               type="text"
-                               placeholder="new name"
-                               name="name"
-                               id="newName"
-                               required>
-                    </label>
-                    <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow"
-                               type="password"
-                               placeholder="new password"
-                               name="password"
-                               id="newPassword"
-                               required>
-                    </label>
-                    <div class="w3-section">
-                        <input type="reset" value="Clear" class="w3-button w3-red">
-                        <input type="submit" value="Update" class="w3-button w3-green" onclick="updateMyInfo()">
-                    </div>
+<!-- Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12" style="margin-bottom: 16px">
+            <div class="card hover-effect">
+                <div class="card-header font-weight-bold">Manage articles</div>
+                <div class="card-body table-responsive" style="padding: 0">
+                    <table class="table table-bordered table-striped table-hover thead-light" style="margin-bottom: 0">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Tag</th>
+                            <th>Time</th>
+                            <th>Operation</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% if (articles.length){ %>
+                            <% articles.forEach((article)=>{ %>
+                                <tr id="article_<%= article.id %>">
+                                    <td class="small"><%= article.title %></td>
+                                    <td><%= article.author %></td>
+                                    <td><%= article.tag %></td>
+                                    <td><%= article.time %></td>
+                                    <td>
+                                        <div class="">
+                                            <button type="button" class="btn btn-sm btn-outline-success">Export</button>
+                                            <button type="button" class="btn btn-sm btn-outline-warning">Freeze</button>
+                                            <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    onclick="deleteArticle(<%= article.id %>)">Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                        <% })} %>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-            <div class="w3-card-4 w3-margin">
-                <div class="w3-container w3-blue-grey w3-hover-red w3-center" style="cursor: pointer" onclick="location.href='/api/logout'">
-                    <h3>Logout</h3>
-                </div>
-            </div>
-            <div class="w3-card-4 w3-margin">
-                <div class="w3-container w3-amber">
-                    <h3>Add user</h3>
-                </div>
-
-                <div class="w3-container w3-center">
-                    <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow"
-                               type="text"
-                               placeholder="user name"
-                               name="name"
-                               id="addUserName"
-                               required>
-                    </label>
-                    <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow"
-                               type="password"
-                               placeholder="password"
-                               name="password"
-                               id="addUserPassword"
-                               required>
-                    </label>
-                    <div class="w3-section">
-                        <input type="reset" value="Clear" class="w3-button w3-red">
-                        <input type="submit" value="Add" class="w3-button w3-green" onclick="addUser()">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="w3-col l4 w3-container" style="max-width: 500px">
-            <div class="w3-card-4 w3-margin">
-                <div class="w3-container w3-red">
-                    <h3>Manage Users</h3>
-                </div>
-                <ul class="w3-ul w3-card-4">
-                    <% if (users.length){ %>
-                        <% users.forEach((user)=>{ %>
-                            <li class="w3-bar" id="user_<%= user.name %>">
-                    <span onclick="deleteUser('<%= user.name %>')"
-                          class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
-                                <div class="w3-bar-item">
-                                    <span class="w3-xlarge"><%= user.name %></span>
-                                </div>
-                            </li>
-                    <% })} %>
-                </ul>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-6" style="margin-bottom: 16px">
+            <div class="card hover-effect">
+                <div class="card-header font-weight-bold">Manage users</div>
+                <div class="card-body table-responsive" style="padding: 0">
+                    <table class="table table-bordered table-striped table-hover thead-light" style="margin-bottom: 0">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Operation</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% if (users.length){ %>
+                            <% users.forEach((user)=>{ %>
+                                <tr id="user_<%= user.name %>">
+                                    <td><%= user.name %></td>
+                                    <td>
+                                        <div>
+                                            <button type="button" class="btn btn-sm btn-outline-warning">Freeze</button>
+                                            <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteUser('<%= user.name %>')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                        <% })} %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 offset-lg-1" style="margin-bottom: 16px">
+            <div class="card hover-effect">
+                <div class="card-header font-weight-bold">Others</div>
+                <div class="card-body" style="padding: 0">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-outline-primary btn-block">Add user</button>
+                        </li>
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-outline-success btn-block">Edit sidebar</button>
+                        </li>
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-outline-info btn-block">Change theme</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
+
 <%- include('./partials/end') %>

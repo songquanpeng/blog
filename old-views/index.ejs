@@ -1,0 +1,47 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navigation') %>
+<%- include('./partials/message') %>
+<!--Content here-->
+<div class="w3-content" style="max-width:1400px">
+    <div class="w3-row">
+        <!--Articles here-->
+        <div class="w3-col l8 s12">
+            <% if (articles.length){ %>
+                <% articles.forEach((article)=>{ %>
+                    <!--Article here-->
+                    <div class="w3-card-4 w3-margin w3-white">
+                        <div class="w3-container">
+                            <h3><b><%= article.title %></b></h3>
+                            <span class="w3-tag w3-deep-orange tag" onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span> <span class="w3-tag w3-green tag" onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span> <span class="w3-opacity w3-tag w3-deep-purple tag" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
+                        </div>
+                        <div class="w3-container w3-large">
+                            <p>
+                                <%= article.description %>
+                            </p>
+                            <div class="w3-row">
+                                <div class="w3-row">
+                                    <div class="w3-col m8 s12">
+                                        <p>
+                                            <button class="w3-button w3-padding-large w3-white w3-border"
+                                                    onclick="window.location.href='/article/<%= article.link %>'"><b>READ MORE »</b>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+            <% })} %>
+        </div>
+        <!--Sidebar here-->
+        <div class="w3-col l4">
+            <div class="w3-card w3-margin w3-margin-top">
+                <div class="w3-container w3-white">
+                    <h3>Life is boring. 😔</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('./partials/footer') %>

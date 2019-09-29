@@ -55,7 +55,7 @@ router.get('/edit/:link', function (req, res) {
     const username = req.session.user.name;
     Article.getArticleAuthorByLink(link, (error, data) => {
         if (error) {
-            res.render("error");
+            res.render("message");
         } else if (data.author !== username) {
             req.flash('error', "Permission denied");
             res.redirect('/user');
@@ -119,7 +119,7 @@ router.get('/about', function (req, res) {
             });
         } else {
             article.content = parser(lexer(article.content));
-            res.render('page', {
+            res.render('article', {
                 article: article,
                 title: "About",
                 keywords: "about 关于",
@@ -138,7 +138,7 @@ router.get('/links', function (req, res) {
             });
         } else {
             article.content = parser(lexer(article.content));
-            res.render('page', {
+            res.render('article', {
                 article: article,
                 title: "Links",
                 keywords: "links 友链",

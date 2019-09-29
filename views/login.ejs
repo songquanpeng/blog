@@ -1,29 +1,18 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
 <%- include('./partials/message') %>
-<div class="center">
-    <div class="w3-card-4">
-        <div class="w3-container w3-green">
-            <h3>Provide credentials</h3>
-        </div>
-        <form action="/api/login" method="post">
-            <div class="w3-container w3-center">
-                <div class="w3-panel">
-                    <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow" type="text" name="username"
-                               placeholder="username" required>
-                    </label><br>
-                    <label>
-                        <input class="w3-input w3-animate-input w3-hover-shadow" type="password" name="password"
-                               placeholder="password" required>
-                    </label><br>
-                </div>
-                <div class="w3-section">
-                    <input type="reset" value="Clear" class="w3-button w3-red">
-                    <input type="submit" value="Login" class="w3-button w3-green">
-                </div>
-            </div>
-        </form>
-    </div>
+<div class="text-center">
+    <form class="login-form" action="/api/login" method="post">
+        <img class="mb-4"
+             src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/heavy-black-heart_2764.png"
+             alt="" width="72"
+             height="72">
+        <h1 class="h3 mb-3 font-weight-bold">Provide credentials</h1>
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="text" id="inputUsername" class="form-control" placeholder="Username" name="username" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
 </div>
 <%- include('./partials/end') %>

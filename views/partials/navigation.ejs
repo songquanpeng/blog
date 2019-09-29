@@ -1,9 +1,41 @@
-<!--Navigation Bar here-->
-<div class="w3-bar w3-black w3-border w3-card-4" style="border-width: 0 !important;">
-    <a href="/" class="w3-bar-item w3-button w3-mobile w3-red">Home</a>
-    <a href="/archive" class="w3-bar-item w3-button w3-mobile">Archive</a>
-    <a href="/user" class="w3-bar-item w3-button w3-mobile">User</a>
-    <a href="/post" class="w3-bar-item w3-button w3-mobile">Post</a>
-    <a href="/about" class="w3-bar-item w3-button w3-mobile">About</a>
-    <a href="/links" class="w3-bar-item w3-button w3-mobile">Links</a>
-</div>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light font-weight-bold">
+    <a class="navbar-brand" href="/">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/archive">Archive</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user">User</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/post">Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/links">Links</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    More
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Message board</a>
+                    <a class="dropdown-item" href="#">Contact me</a>
+                    <a class="dropdown-item" href="#">Request friend link</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">License</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

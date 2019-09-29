@@ -1,21 +1,26 @@
-<% if(error && error != ""){ %>
-    <div id="error-message" class="center w3-panel w3-red w3-card-4" onclick="window.location.href='/'" style="cursor: pointer">
-        <p><%= error %></p>
-        <p class="w3-small">Click back to the home page</p>
-    </div>
-    <script>
-        $(document).ready(function () {
-            $("#error-message").delay(25000).hide(300);
-        });
-    </script>
-<% } %>
-<% if(info && info != ""){ %>
-    <div id="info-message" class="center w3-panel w3-green w3-card-4">
-        <p class="w3-xlarge"><%= info %></p>
-    </div>
-    <script>
-        $(document).ready(function () {
-            $("#info-message").delay(2000).hide(300);
-        });
-    </script>
-<% } %>
+<div class="container d-flex justify-content-center">
+    <% if(error && error != ""){ %>
+        <div id="error-message" class="alert alert-danger alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error!</strong>
+            <p><%= error %></p>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $("#error-message").delay(25000).hide(300);
+            });
+        </script>
+    <% } %>
+    <% if(info && info != ""){ %>
+        <div id="info-message" class="alert alert-danger alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Info!</strong>
+            <p><%= info %></p>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $("#info-message").delay(2000).hide(300);
+            });
+        </script>
+    <% } %>
+</div>

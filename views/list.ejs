@@ -1,25 +1,29 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
 <%- include('./partials/message') %>
-<div class="w3-content w3-margin-top" style="max-width:1400px">
-    <ul class="w3-ul w3-card-4">
-        <% if (articles.length){ %>
-            <% articles.forEach((article)=>{ %>
-                <li class="w3-bar" id="article_<%= article.id %>">
-                    <div class="w3-bar-item">
-                        <span class="w3-xlarge"><%= article.title %></span> <span
-                                class="w3-tag w3-gray tag"
-                                onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span> <span
-                                class="w3-tag w3-blue tag"
-                                onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
-                        <span
-                                onclick="location.href='/article/<%= article.link %>'"
-                                class="w3-tag w3-indigo tag">View</span>
-                        <br>
-                        <span><%= article.description %></span>
-                    </div>
-                </li>
-        <% })} %>
-    </ul>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <ul class="list-group">
+                <% if (articles.length){ %>
+                    <% articles.forEach((article)=>{ %>
+                        <li class="list-group-item hover-effect" id="article_<%= article.id %>">
+                            <div class="card-body" style="padding: 4px">
+                                <h5 class="card-title"><%= article.title %></h5>
+                                <div>
+                                    <span class="badge badge-primary badge-hover" onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
+                                    <span class="badge badge-success badge-hover" onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span>
+                                    <span class="badge badge-secondary badge-hover" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
+                                    <span class="badge badge-info badge-hover" onclick="location.href='/article/<%= article.link %>'">View</span>
+                                    <span class="badge badge-danger badge-hover" onclick="deleteArticle(<%= article.id %>)">Delete</span>
+                                    <span class="badge badge-dark badge-hover" onclick="location.href='/edit/<%= article.link %>'">Edit</span>
+                                </div>
+                            </div>
+                        </li>
+                <% })} %>
+            </ul>
+        </div>
+    </div>
 </div>
+
 <%- include('./partials/end') %>

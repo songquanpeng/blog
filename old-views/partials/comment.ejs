@@ -1,0 +1,32 @@
+<div class="w3-card-4">
+    <div class="w3-container w3-deep-purple">
+        <h3>Comments</h3>
+    </div>
+    <ul class="w3-ul w3-card-4">
+        <li class="w3-bar">
+                    <span onclick="submitComment('<%= commentSubmitPath %>')" style="min-width:60px"
+                          class="w3-bar-item w3-button w3-xlarge w3-right w3-purple">POST</span>
+            <div class="w3-bar-item" style="width: 90%">
+                <label>
+                    <input class="w3-input w3-animate-input w3-hover-shadow"
+                           id="comment-input"
+                           type="text"
+                           placeholder="Comment here"
+                           name="comment"
+                           style="overflow: scroll">
+                </label>
+            </div>
+        </li>
+        <% if (comments.length){ %>
+            <% comments.forEach((comment)=>{ %>
+                <li class="w3-bar">
+                    <div class="w3-bar-item">
+                        <p class="w3-serif w3-xlarge"><i><strong>"</strong><%= comment.content %><strong>"</strong></i>
+                        </p>
+                        <span class="w3-tag w3-deep-orange"><%= comment.author %></span> <span
+                                class="w3-tag w3-deep-purple"><%= comment.time %></span>
+                    </div>
+                </li>
+        <% })} %>
+    </ul>
+</div>

@@ -1,95 +1,56 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
-<div>
-    <div class="w3-content" style="max-width:1400px">
-        <div class="w3-row">
-            <div class="w3-col l8 s12">
-                <div class="w3-card-4 w3-margin">
-                    <div class="w3-container w3-green">
-                        <h3>Edit Article</h3>
-                    </div>
-                    <div>
-                        <label for='editor'></label>
-                        <textarea id="editor" name="content" required></textarea>
-                        <script>
-                            const simplemde = new SimpleMDE({
-                                autofocus: true,
-                                element: document.getElementById("editor"),
-                                spellChecker: false
-                            });
-                        </script>
-                    </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Article edit</h4>
                 </div>
-            </div>
-            <div class="w3-col l4">
-                <div class="w3-card-4 w3-margin">
-                    <div class="w3-container w3-green">
-                        <h3>Input Form</h3>
-                    </div>
-
-                    <div class="w3-container w3-center">
-                        <label>
-                            <input class="w3-input w3-animate-input w3-hover-shadow"
-                                   type="text"
-                                   required
-                                   placeholder="title"
-                                   id="title"
-                                   name="title">
-                        </label>
-                        <label>
-                            <input class="w3-input w3-animate-input w3-hover-shadow"
-                                   type="text"
-                                   placeholder="tag"
-                                   id="tag"
-                                   name="tag">
-                        </label>
-                        <label>
-                            <input class="w3-input w3-animate-input w3-hover-shadow"
-                                   type="text"
-                                   placeholder="description"
-                                   name="description">
-                        </label>
-                        <div class="w3-section">
-                            <input type="reset" value="Clear" class="w3-button w3-red">
-                            <input type="submit" value="Post" class="w3-button w3-green" id="submit">
-                        </div>
-                    </div>
+                <div>
+                    <textarea id="editor" name="content" required></textarea>
+                    <script>
+                        const simplemde = new SimpleMDE({
+                            autofocus: true,
+                            element: document.getElementById("editor"),
+                            spellChecker: false
+                        });
+                    </script>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        let postPath = "/api/post";
-        <% if(article !== undefined){ %>
-        $(document).ready(function () {
-            $.get("/api/article/<%- article.link %>", function (data) {
-                $("input[name='title']").val(data.title);
-                $("input[name='tag']").val(data.tag);
-                $("input[name='description']").val(data.description);
-                simplemde.value(data.content);
-            });
-        });
-        postPath = "/api/edit/<%- article.link %>";
-        <% } %>
-        $(document).ready(function () {
-            $("#submit").click(() => {
-                const canSubmit = (simplemde.value() !== "") && ($("#title").val() !== "") && ($("#tag").val() !== "");
-                if (canSubmit) {
-                    $.post(postPath, {
-                        title: $("input[name='title']").val(),
-                        tag: $("input[name='tag']").val(),
-                        description: $("input[name='description']").val(),
-                        content: simplemde.value()
-                    }, () => {
-                        $("input[name='title']").val("");
-                        $("input[name='tag']").val("");
-                        $("input[name='description']").val("");
-                        simplemde.value("");
-                    });
-                }
-            });
-        });
-
-    </script>
 </div>
+<script>
+    let postPath = "/api/post";
+    <% if(article !== undefined){ %>
+    $(document).ready(function () {
+        $.get("/api/article/<%- article.link %>", function (data) {
+            $("input[name='title']").val(data.title);
+            $("input[name='tag']").val(data.tag);
+            $("input[name='description']").val(data.description);
+            simplemde.value(data.content);
+        });
+    });
+    postPath = "/api/edit/<%- article.link %>";
+    <% } %>
+    $(document).ready(function () {
+        $("#submit").click(() => {
+            const canSubmit = (simplemde.value() !== "") && ($("#title").val() !== "") && ($("#tag").val() !== "");
+            if (canSubmit) {
+                $.post(postPath, {
+                    title: $("input[name='title']").val(),
+                    tag: $("input[name='tag']").val(),
+                    description: $("input[name='description']").val(),
+                    content: simplemde.value()
+                }, () => {
+                    $("input[name='title']").val("");
+                    $("input[name='tag']").val("");
+                    $("input[name='description']").val("");
+                    simplemde.value("");
+                });
+            }
+        });
+    });
+</script>
 <%- include('./partials/end') %>

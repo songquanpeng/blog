@@ -117,7 +117,7 @@ router.post('/edit/:link', checkLogin, function (req, res) {
     const username = req.session.user.name;
     Article.getArticleAuthorByLink(link, (error, data) => {
         if (error) {
-            res.render("error");
+            res.render("message");
         } else if (data.author !== username) {
             req.flash('error', "Permission denied");
             res.redirect('/user');
