@@ -50,7 +50,7 @@ router.get('/article/:link', function (req, res) {
     });
 });
 
-router.get('/edit/:link', function (req, res) {
+router.get('/edit/:link', checkLogin, function (req, res) {
     const link = req.params.link;
     const username = req.session.user.name;
     Article.getArticleAuthorByLink(link, (error, data) => {
@@ -110,39 +110,20 @@ router.get('/file', checkLogin, function (req, res) {
     });
 });
 
-router.get('/about', function (req, res) {
-    Article.getAboutPage((error, article) => {
+router.get('/page/:pageName', function (req, res) {
+    Article.getSpecialPage(req.params.pageName, (error, article) => {
         if (error != null || article === undefined) {
             res.render('error', {
-                "error": 'The root user has not created the "about" page yet.',
+                "error": 'The root user has not created this page yet.',
                 "info": ""
             });
         } else {
-            article.content = parser(lexer(article.content));
+            article.content = parser(lexer(article.content.split("\n").splice(3).join('\n')));
             res.render('article', {
                 article: article,
-                title: "About",
-                keywords: "about 关于",
-                description: "about this sites 关于本网站",
-            });
-        }
-    });
-});
-
-router.get('/links', function (req, res) {
-    Article.getLinksPage((error, article) => {
-        if (error != null || article === undefined) {
-            res.render('error', {
-                "error": 'The root user has not created the "links" page yet.',
-                "info": ""
-            });
-        } else {
-            article.content = parser(lexer(article.content));
-            res.render('article', {
-                article: article,
-                title: "Links",
-                keywords: "links 友链",
-                description: "links 友链",
+                title: article.title,
+                keywords: article.tag,
+                description: article.description,
             });
         }
     });

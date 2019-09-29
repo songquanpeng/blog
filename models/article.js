@@ -26,19 +26,15 @@ class Article {
     static getArticlesByDate(date, callback) {
         const year = date.split('-')[0];
         const mouth = date.split('-')[1];
-        db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE time like ?', mouth+"/%/"+year+"%", callback);
+        db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE time like ?', mouth + "/%/" + year + "%", callback);
     }
 
     static getArticlesByTag(tag, callback) {
         db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE tag = ?', tag, callback);
     }
 
-    static getAboutPage(callback) {
-        db.get('SELECT * FROM articles WHERE author = "root" and title = "about"', callback);
-    }
-
-    static getLinksPage(callback) {
-        db.get('SELECT * FROM articles WHERE author = "root" and title = "links"', callback);
+    static getSpecialPage(pageName, callback) {
+        db.get('SELECT * FROM articles WHERE author = "root" and title = ?', pageName, callback);
     }
 
     static getArticleAuthorByLink(link, callback) {
