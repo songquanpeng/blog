@@ -114,3 +114,7 @@ $(document).ready(
         })
     }
 );
+
+function submitArticle() {
+
+}

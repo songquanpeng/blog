@@ -35,7 +35,7 @@ app.use('*', (req, res, next) => {
     res.locals.isRootUser = false;
     if (req.session.user !== undefined) {
         res.locals.loggedIn = true;
-        res.locals.isRootUser = req.session.user.username === "root";
+        res.locals.isRootUser = req.session.user.name === "root";
     }
     next();
 });
