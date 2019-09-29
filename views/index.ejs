@@ -8,13 +8,17 @@
             <% if (articles.length){ %>
                 <% articles.forEach((article)=>{ %>
                     <div class="card article-list">
-                        <div class="card-body" >
+                        <div class="card-body">
                             <h4 class="card-title"><%= article.title %></h4>
                             <div>
-                                <span class="badge badge-primary badge-hover" onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
-                                <span class="badge badge-success badge-hover" onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span>
-                                <span class="badge badge-secondary badge-hover" onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
-                                <span class="badge badge-info badge-hover" onclick="location.href='/article/<%= article.link %>'">View</span>
+                                <span class="badge badge-primary badge-hover"
+                                      onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
+                                <span class="badge badge-success badge-hover"
+                                      onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span>
+                                <span class="badge badge-secondary badge-hover"
+                                      onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
+                                <span class="badge badge-info badge-hover"
+                                      onclick="location.href='/article/<%= article.link %>'">View</span>
                             </div>
                             <p class="card-text">
                                 <%= article.description %>
@@ -23,14 +27,18 @@
                     </div>
             <% })} %>
         </div>
-        <div class="col-sm-12 col-md-3">
-            <div class="card hover-effect">
-                <div class="card-header font-weight-bold">Notice</div>
-                <div class="card-body">
-                    <h4>Life is boring. 😔</h4>
+        <% if(notice) { %>
+            <div class="col-sm-12 col-md-3">
+                <div class="card hover-effect">
+                    <div class="card-header font-weight-bold">Notice</div>
+                    <div class="container" style="padding-top: 8px">
+                        <div>
+                            <%- notice.content %>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        <% } %>
     </div>
 </div>
 

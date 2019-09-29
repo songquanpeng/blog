@@ -12,11 +12,16 @@ const parser = require("marked").parser;
 /* GET home page. */
 router.get('/', function (req, res) {
     Article.getAllArticlesIntroduction((error, articles) => {
-        res.render('index', {
-            articles: articles.reverse(),
-            info: req.flash('info'),
-            error: req.flash('error')
+        Article.getSpecialPage("notice", (error, article) => {
+            article.content = parser(lexer(article.content.split("\n").splice(3).join('\n')));
+            res.render('index', {
+                articles: articles.reverse(),
+                notice: article,
+                info: req.flash('info'),
+                error: req.flash('error')
+            });
         });
+
     });
 });
 
