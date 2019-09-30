@@ -7,14 +7,46 @@ function initializeDatabase() {
     db.exec(sql, error => {
         if (!error) {
             console.log("Database initialization succeeded.");
+            insertSpecialPages();
         } else {
             console.error(error.message);
         }
     });
 }
 
+function insertSpecialPages() {
+    db.get("select count(1) as count where exists (select * from articles)", (error, data) => {
+        if (error) {
+            console.error(error.message);
+        } else {
+            if (data.count === 0) {
+                const currentTime = new Date();
+                const time = currentTime.toLocaleString();
+                db.run('INSERT INTO articles(title, author, tag, time, content, description, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    "about", "root", "page", time, "# about \n**tags:** page \n**description:** about page here\n\n Your introduce here.", "", "about", function (error) {
+                        if (error) {
+                            console.error(error.message);
+                        }
+                    });
+                db.run('INSERT INTO articles(title, author, tag, time, content, description, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    "links", "root", "page", time, "# links \n**tags:** page \n**description:** links page here\n\n Your links here.", "", "links", function (error) {
+                        if (error) {
+                            console.error(error.message);
+                        }
+                    });
+                db.run('INSERT INTO articles(title, author, tag, time, content, description, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    "notice", "root", "page", time, "# notice \n**tags:** page \n**description:** notice page here\n\n Your notice here.", "", "notice", function (error) {
+                        if (error) {
+                            console.error(error.message);
+                        }
+                    });
+            }
+        }
+    });
+}
+
 function titleToLink(title) {
-    return title.trim().replace(" ","-");
+    return title.trim().replace(" ", "-");
 }
 
 module.exports = {

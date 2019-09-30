@@ -19,6 +19,13 @@
                                       onclick='onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
                                 <span class="badge badge-info badge-hover"
                                       onclick="location.href='/article/<%= article.link %>'">View</span>
+                                <% if(isAbleToModify) { %>
+                                <span class="badge badge-danger badge-hover"
+                                      onclick="deleteArticle(<%= article.id %>)">Delete</span>
+                                <span class="badge badge-dark badge-hover"
+                                      onclick="location.href='/edit/<%= article.link %>'">Edit</span>
+                                <% } %>
+
                             </div>
                             <p class="card-text">
                                 <%= article.description %>
@@ -44,11 +51,12 @@
                     <div class="card-header font-weight-bold">Notice</div>
                     <div class="card-body">
                         <p>Publish an article called "notice" as the root user, which you will see here.😃</p>
-                        <p>Similarly, publish articles called "about" and "links" that you will be able to access in the navigation bar.😉</p>
+                        <p>Similarly, publish articles called "about" and "links" that you will be able to access in the
+                            navigation bar.😉</p>
                     </div>
                 </div>
             </div>
-        <% }%>
+        <% } %>
     </div>
 </div>
 

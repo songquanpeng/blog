@@ -48,3 +48,7 @@ id integer primary key,
 name TEXT UNIQUE,
 password TEXT,
 level integer);
+
+INSERT into users (name, password, level)
+SELECT "root", "toor", 0
+WHERE not exists( SELECT 1 from users WHERE level = 0);

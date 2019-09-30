@@ -16,11 +16,16 @@ router.get('/', function (req, res) {
             if (article !== undefined) {
                 article.content = parser(lexer(article.content.split("\n").splice(3).join('\n')));
             }
+            let isAbleToModify = false;
+            if (req.session.user !== undefined) {
+                isAbleToModify = req.session.user.name === req.params.name;
+            }
             res.render('index', {
                 articles: articles.reverse(),
                 notice: article,
                 info: req.flash('info'),
-                error: req.flash('error')
+                error: req.flash('error'),
+                isAbleToModify: isAbleToModify
             });
         });
 
