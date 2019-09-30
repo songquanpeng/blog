@@ -10,7 +10,7 @@
 
 ## Todo
 - [ ] Add archive page.
-- [ ] Optimize the sidebar of the homepage.
+- [x] Optimize the sidebar of the homepage.
 - [ ] Optimize the background management page.
 - [x] Refactoring the front end of the website using Bootstrap 4.
 - [x] Links page.

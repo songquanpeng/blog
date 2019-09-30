@@ -111,7 +111,7 @@ router.get('/file', checkLogin, function (req, res) {
 router.get('/page/:pageName', function (req, res) {
     Article.getSpecialPage(req.params.pageName.toLowerCase(), (error, article) => {
         if (error != null || article === undefined) {
-            res.render('error', {
+            res.render('message', {
                 "error": 'The root user has not created this page yet.',
                 "info": ""
             });
