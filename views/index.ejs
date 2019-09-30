@@ -32,13 +32,23 @@
                 <div class="card hover-effect">
                     <div class="card-header font-weight-bold">Notice</div>
                     <div class="container" style="padding-top: 8px">
-                        <div>
+                        <article>
                             <%- notice.content %>
-                        </div>
+                        </article>
                     </div>
                 </div>
             </div>
-        <% } %>
+        <% }else{ %>
+            <div class="col-sm-12 col-md-3">
+                <div class="card hover-effect">
+                    <div class="card-header font-weight-bold">Notice</div>
+                    <div class="card-body">
+                        <p>Publish an article called "notice" as the root user, which you will see here.😃</p>
+                        <p>Similarly, publish articles called "about" and "links" that you will be able to access in the navigation bar.😉</p>
+                    </div>
+                </div>
+            </div>
+        <% }%>
     </div>
 </div>
 

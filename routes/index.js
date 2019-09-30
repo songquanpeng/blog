@@ -27,15 +27,6 @@ router.get('/', function (req, res) {
     });
 });
 
-router.get('/bookmark', function (req, res) {
-    Data.getAllBookmarks((error, bookmarks) => {
-        // if (error) return next(error);
-        res.render('bookmark', {
-            bookmarks: bookmarks
-        });
-    });
-});
-
 router.get('/article/:link', function (req, res) {
     Article.getArticleByLink(req.params.link, (error, article) => {
         const commentSubmitPath = '/api/comment/article-' + req.params.link;
@@ -118,7 +109,7 @@ router.get('/file', checkLogin, function (req, res) {
 });
 
 router.get('/page/:pageName', function (req, res) {
-    Article.getSpecialPage(req.params.pageName, (error, article) => {
+    Article.getSpecialPage(req.params.pageName.toLowerCase(), (error, article) => {
         if (error != null || article === undefined) {
             res.render('error', {
                 "error": 'The root user has not created this page yet.',
