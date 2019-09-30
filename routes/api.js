@@ -4,22 +4,11 @@ const router = express.Router();
 const Article = require('../models/article').Article;
 const User = require('../models/user').User;
 const Data = require('../models/data').Data;
-const multer = require('multer');
 const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 const checkLoginWithoutRedirect = require('../middlewares/check').checkLoginWithoutRedirect;
-const uploadPath = require('../models/data').uploadPath;
 const titleToLink = require('../util').titleToLink;
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    }
-});
 
-const upload = multer({storage: storage});
 
 router.post('/login', function (req, res) {
     const username = req.body.username;
@@ -79,12 +68,6 @@ router.post('/post', checkLogin, function (req, res) {
 
 router.delete('/article/:id', checkPermission, function (req, res) {
     Article.delete(req.params.id, () => {
-        res.send("Successfully delete article.");
-    })
-});
-
-router.delete('/file/:name', checkPermission, function (req, res) {
-    Data.deleteFileByName(req.params.name, () => {
         res.send("Successfully delete article.");
     })
 });
@@ -182,27 +165,6 @@ router.post('/edit/:link', checkLogin, function (req, res) {
     })
 });
 
-router.post('/upload', upload.single("file"), function (req, res) {
-    const currentTime = new Date();
-    Data.uploadNewFile({
-        name: req.file.filename,
-        tag: req.body.tag,
-        description: req.body.description,
-        time: currentTime.toLocaleString(),
-        link: '/public/upload/' + req.file.filename,
-        uploader: req.session.user.name
-    }, (error) => {
-        if (error != null) {
-            console.log(error.message);
-            req.flash("error", "Sorry file upload failed");
-        } else {
-            req.flash("info", "Successful upload");
-        }
-        res.redirect('/file');
-    });
-});
-
-
 router.post('/comment/:subpath', checkLoginWithoutRedirect, function (req, res) {
     const currentTime = new Date();
     Data.createComment({
@@ -220,29 +182,12 @@ router.post('/comment/:subpath', checkLoginWithoutRedirect, function (req, res) 
     });
 });
 
-
 router.get('/logout', function (req, res) {
     if (req.session.user !== undefined) {
         req.session.user = undefined;
     }
     req.flash('info', "Successfully logout!");
     res.redirect('/user');
-});
-
-router.post('/chat', checkLogin, function (req, res) {
-    const currentTime = new Date();
-    Data.createChat({
-        time: currentTime.toLocaleString(),
-        author: req.session.user.name,
-        content: req.body.content,
-    }, (error) => {
-        if (error != null) {
-            console.log(error.message);
-            res.sendStatus(500);
-        } else {
-            res.sendStatus(200);
-        }
-    });
 });
 
 module.exports = router;

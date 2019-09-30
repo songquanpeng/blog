@@ -4,12 +4,10 @@ const router = express.Router();
 const Article = require('../models/article').Article;
 const Data = require('../models/data').Data;
 const User = require('../models/user').User;
-const LocalFile = require('../models/localFile').LocalFile;
 const checkLogin = require('../middlewares/check').checkLogin;
 const lexer = require("marked").lexer;
 const parser = require("marked").parser;
 
-/* GET home page. */
 router.get('/', function (req, res) {
     Article.getAllArticlesIntroduction((error, articles) => {
         Article.getSpecialPage("notice", (error, article) => {
@@ -93,16 +91,6 @@ router.get('/user', function (req, res) {
     }
 });
 
-router.get('/file', checkLogin, function (req, res) {
-    Data.getAllFiles((error, files) => {
-        res.render('file', {
-            info: req.flash('info'),
-            error: req.flash('error'),
-            files: files
-        })
-    });
-});
-
 router.get('/page/:pageName', function (req, res) {
     Article.getSpecialPage(req.params.pageName.toLowerCase(), (error, article) => {
         if (error != null || article === undefined) {
@@ -140,26 +128,6 @@ router.get('/message_board', checkLogin, function (req, res) {
             error: req.flash('error'),
             commentSubmitPath: commentSubmitPath,
             comments: comments.reverse(),
-        });
-    });
-});
-
-router.get('/image', function (req, res) {
-    LocalFile.loadAllImages((images) => {
-        res.render("image", {
-            "info": "",
-            "error": "",
-            images: images
-        });
-    });
-});
-
-router.get('/video', function (req, res) {
-    LocalFile.loadAllVideos((videos) => {
-        res.render("video", {
-            "info": "",
-            "error": "",
-            videos: videos,
         });
     });
 });

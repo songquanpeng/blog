@@ -7,7 +7,6 @@ const logger = require('morgan');
 const serveStatic = require('serve-static');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
-const record = require('./middlewares/record').record;
 const util = require('./util');
 const app = express();
 
@@ -43,7 +42,7 @@ app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use(function (req, res, next) {
     if (!res.headersSent) {
-        res.status(404).render('404', {
+        res.status(404).render('message', {
             "error": ":{404 Not Found}",
             "info": ""
         });

@@ -2,7 +2,7 @@
 - [x] Refactoring the front end of the website using Bootstrap 4.
 - [x] Links page.
 - [ ] Site configuration.
-- [ ] Fix the add user feature.
+- [x] Fix the add user feature.
 - [ ] Freeze function and unfreeze function.
 
 ## Medium Priority
