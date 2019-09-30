@@ -9,7 +9,7 @@
                 <% articles.forEach((article)=>{ %>
                     <div class="card article-list">
                         <div class="card-body">
-                            <h4 class="card-title"><%= article.title %></h4>
+                            <h4 class="card-title" onclick="location.href='/article/<%= article.link %>'" style="cursor: pointer"><%= article.title %></h4>
                             <div>
                                 <span class="badge badge-primary badge-hover"
                                       onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
