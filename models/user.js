@@ -14,17 +14,17 @@ class User {
     }
 
     static addUser(data, callback) {
-        db.run('INSERT INTO users(name, password, level) VALUES (?, ?, ?)', data.name, data.password, data.level, callback);
+        db.run('INSERT INTO users(name, password, level) VALUES (?, ?, ?)', data.username, data.password, data.level, callback);
+    }
+
+    static update(data, callback) {
+        db.run('UPDATE users SET name = ?, password = ? WHERE name = ?', data.newName, data.newPassword, data.oldName, callback);
     }
 
     static delete(name, callback) {
         if (name) {
             db.run('DELETE FROM users WHERE name = ?', name, callback);
         }
-    }
-
-    static update(oldName, newName, newPassword, callback) {
-        db.run('UPDATE users SET name = ?, password = ? WHERE name = ?', [newName, newPassword, oldName], callback);
     }
 
     static checkCredential(name, password, callback) {

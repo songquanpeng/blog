@@ -14,6 +14,8 @@
 - [ ] Article export and import.
 - [ ] Article auto save in the browser storage.
 - [ ] Message board.
+- [ ] Replace texts with icons and add tooltip.
+- [ ] Pull down to refresh.
 
 ## Low Priority
 - [ ] Article view number.

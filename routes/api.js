@@ -95,21 +95,50 @@ router.delete('/user/:name', checkPermission, function (req, res) {
     })
 });
 
-router.post('/update_user', function (req, res) {
-    const oldName = req.session.user.name;
-    const newName = req.body.name.trim();
-    const newPassword = req.body.password.trim();
-    if (newName === "" || newPassword === "") {
-        res.send("Invalid tokens.");
-    }
-    User.update(oldName, newName, newPassword, (error) => {  // Pass the error parameter to the callback function
+router.post('/addUser', checkPermission, function (req, res) {
+    User.addUser({
+        username: req.body.username,
+        password: req.body.password,
+        level: 2
+    }, (error) => {
         if (error != null) {
             console.log(error.message);
-            res.send("Sorry, something went wrong.");
+            req.flash("error", error.message);
+            res.redirect('/user');
         } else {
-            res.send("Successfully update your information.");
+            req.flash("info", "Successfully added user.");
+            res.redirect('/user');
         }
     })
+});
+
+router.post('/updateUser', checkLogin, function (req, res) {
+    const oldName = req.session.user.name;
+    const newName = req.body.username.trim();
+    const newPassword = req.body.password.trim();
+    if (newName === "" || newPassword === "") {
+        req.flash("error", "Invalid tokens.");
+        res.redirect('/user');
+    }
+    if (oldName === "root" && oldName !== newName) {
+        req.flash("error", "Root user cannot change his name.");
+        res.redirect('/user');
+    } else {
+        User.update({
+            oldName: oldName,
+            newName: newName,
+            newPassword: newPassword
+        }, (error) => {  // Pass the error parameter to the callback function
+            if (error != null) {
+                req.flash("error", error.message);
+                res.redirect('/user');
+            } else {
+                req.flash("info", "Successfully update your information.");
+                req.session.user.name = newName;
+                res.redirect('/user');
+            }
+        })
+    }
 });
 
 router.post('/edit/:link', checkLogin, function (req, res) {
@@ -198,24 +227,6 @@ router.get('/logout', function (req, res) {
     }
     req.flash('info', "Successfully logout!");
     res.redirect('/user');
-});
-
-
-router.post('/addUser', checkPermission, function (req, res) {
-    User.addUser({
-        name: req.body.name,
-        password: req.body.password,
-        level: 2
-    }, (error) => {
-        if (error != null) {
-            console.log(error.message);
-            req.flash("error", error.message);
-            res.sendStatus(403);
-        } else {
-            req.flash("info", "Successfully added user");
-            res.sendStatus(200);
-        }
-    })
 });
 
 router.post('/chat', checkLogin, function (req, res) {
