@@ -3,7 +3,6 @@
 - [x] Links page.
 - [ ] Site configuration.
 - [x] Fix the add user feature.
-- [ ] Freeze function and unfreeze function.
 
 ## Medium Priority
 - [ ] Add archive page.
@@ -16,10 +15,11 @@
 - [ ] Message board.
 - [ ] Replace texts with icons and add tooltip.
 - [ ] Pull down to refresh.
+- [ ] Freeze function and unfreeze function.
 
 ## Low Priority
 - [ ] Article view number.
 - [ ] "Like" feature. 
-- [ ] Code optimization.
+- [x] Code optimization.
 - [ ] Detailed introduction document.
 - [ ] Gallery.
