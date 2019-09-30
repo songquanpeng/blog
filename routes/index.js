@@ -88,16 +88,6 @@ router.get('/user', function (req, res) {
     }
 });
 
-router.get('/user/:name', function (req, res) {
-    Article.getArticlesByAuthor(req.params.name, (error, articles) => {
-        res.render('list', {
-            info: req.flash('info'),
-            error: req.flash('error'),
-            articles: articles
-        });
-    });
-});
-
 router.get('/file', checkLogin, function (req, res) {
     Data.getAllFiles((error, files) => {
         res.render('file', {
@@ -184,7 +174,8 @@ router.get('/tag/:tag', function (req, res) {
         res.render('list', {
             info: req.flash('info'),
             error: req.flash('error'),
-            articles: articles
+            articles: articles,
+            isAbleToModify: false
         });
     });
 });
@@ -194,7 +185,23 @@ router.get('/date/:date', function (req, res) {
         res.render('list', {
             info: req.flash('info'),
             error: req.flash('error'),
-            articles: articles
+            articles: articles,
+            isAbleToModify: false
+        });
+    });
+});
+
+router.get('/user/:name', function (req, res) {
+    Article.getArticlesByAuthor(req.params.name, (error, articles) => {
+        let isAbleToModify = false;
+        if (req.session.user !== undefined) {
+            isAbleToModify = req.session.user.name === req.params.name;
+        }
+        res.render('list', {
+            info: req.flash('info'),
+            error: req.flash('error'),
+            articles: articles,
+            isAbleToModify: isAbleToModify
         });
     });
 });

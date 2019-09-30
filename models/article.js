@@ -34,7 +34,7 @@ class Article {
     }
 
     static getSpecialPage(pageName, callback) {
-        db.get('SELECT * FROM articles WHERE author = "root" and title = ?', pageName, callback);
+        db.get('SELECT * FROM articles WHERE author = "root" and title = ?', pageName.toLowerCase(), callback);
     }
 
     static getArticleAuthorByLink(link, callback) {
