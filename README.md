@@ -9,9 +9,11 @@
 + **Mobile support:** This website uses responsive layout.
 
 ## Try it now
-1. Install node.js `v10.14.2` or compatible version.
-2. `git clone https://github.com/songwonderful/blog-website.git`
-3. `cd blog-system`
-4. `npm install`
-5. `pm2 start ./bin/www --name blog-system` or `node ./bin/www`
+1. Install Node.js with version `v10.14.2` or any compatible version.[Download Node.js here](https://nodejs.org/en/download/)
+2. Clone this repository by type this on your terminal: `git clone https://github.com/songwonderful/blog-website.git`
+3. Change the working directory by type this on your terminal: `cd blog-website`
+4. Install required packages by type this command on your terminal: `npm install`
+5. Type `npm start` or `pm2 start ./bin/www --name blog-system` to start the server.
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+7. Notice that the system already has a user named `root`, whose initial password is `toor`. Please change it for security.
+8. Okay, now everything is done, enjoy your own website. If you have any questions, please feel free to issue me.
