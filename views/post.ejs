@@ -10,12 +10,14 @@
                 <div>
                     <textarea id="editor" name="content" required></textarea>
                     <script>
+                        const defaultValue = "# \n**Tags:** \n**Description:** \n\n";
+
                         const simplemde = new SimpleMDE({
                             autofocus: true,
                             element: document.getElementById("editor"),
                             spellChecker: false,
                             autoDownloadFontAwesome: false,
-                            initialValue: "# \n**tags:** \n**description:** \n",
+                            initialValue: defaultValue,
                             toolbar: [
                                 {
                                     name: "bold",
@@ -94,6 +96,14 @@
                                 },
                                 "|",
                                 {
+                                    name: "reset",
+                                    action: () => {
+                                        clearInput()
+                                    },
+                                    className: "fa fa-trash",
+                                    title: "Clear your input"
+                                },
+                                {
                                     name: "import",
                                     action: () => {
                                         importArticle()
@@ -119,6 +129,7 @@
 </div>
 <input type="file" id="upload" accept=".md" style="visibility: hidden;"/>
 <script>
+    //const defaultValue = "# \n**Tags:** \n**Description:** \n";
     let postPath = "/api/post";
     <% if(article !== undefined){ %>
     $(document).ready(function () {
@@ -147,7 +158,7 @@
                 description: description,
                 content: simplemde.value()
             }, (data) => {
-                simplemde.value("# \n**tags:** \n**description:** \n");
+                simplemde.value(defaultValue);
             });
         } else {
             alert(`The format of the beginning of the article is as follows: \n# You must have a title here.\n**tags:** Tag Tag Tag\n**description:** Description of the article`);
@@ -156,6 +167,12 @@
 
     function importArticle() {
         $('#upload').click();
+    }
+
+    function clearInput(){
+        if(confirm("Are you sure to clear you input?")){
+            simplemde.value(defaultValue);
+        }
     }
 
     document.getElementById("upload").onchange = function () {
