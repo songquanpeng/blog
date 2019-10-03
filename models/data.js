@@ -1,6 +1,6 @@
 const db = require('../util').db;
 const fs = require("fs");
-const uploadPath =  "~/uploadPath/";
+const uploadPath = "~/uploadPath/";
 
 class Data {
     // Bookmark Part
@@ -18,9 +18,9 @@ class Data {
     }
 
     static deleteFileByName(name, callback) {
-        fs.unlink(uploadPath+'\\'+name, (error)=>{
+        fs.unlink(uploadPath + '\\' + name, (error) => {
             if (error) throw error;
-            console.log("delete file: "+name);
+            console.log("delete file: " + name);
             db.run('DELETE FROM files WHERE name = ?', name, callback);
         });
     }
@@ -39,25 +39,30 @@ class Data {
     }
 
     // Chat Service Part
-    static getAllChats(callback){
+    static getAllChats(callback) {
         db.all('SELECT * FROM chats', callback)
     }
 
-    static getRecentChats(callback){
+    static getRecentChats(callback) {
         db.all('SELECT * FROM chats order by id desc limit 10 ', callback)
     }
 
-    static createChat(data, callback){
+    static createChat(data, callback) {
         db.run('INSERT INTO chats(author, time, content) VALUES (?, ?, ?)', data.author, data.time, data.content, callback);
     }
 
-    static getActiveMessage(callback){
+    static getActiveMessage(callback) {
         db.all('SELECT * FROM messages where state = 1', callback);
     }
 
-    static createMessage(data, callback){
+    static createMessage(data, callback) {
         db.run('INSERT INTO messages(source, content, state, time) VALUES (?, ?, 1, ?)', data.source, data.content, data.time, callback);
     }
+
+    static deactivateMessage(id, callback) {
+        db.run('UPDATE messages SET state = 0 where id = ?', id, callback);
+    }
+
 }
 
 module.exports = db;

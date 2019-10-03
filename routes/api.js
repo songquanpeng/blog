@@ -195,12 +195,22 @@ router.get('/logout', function (req, res) {
     res.redirect('/user');
 });
 
-router.get("/message", function (req, res) {
+router.get("/message", checkPermission, function (req, res) {
     Data.getActiveMessage((error, messages) => {
         if (error) {
             res.sendStatus(500);
         } else {
             res.json(messages);
+        }
+    });
+});
+
+router.delete("/deactivateMessage/:id", checkPermission, function (req, res) {
+    Data.deactivateMessage(req.params.id, (error) => {
+        if (error) {
+            res.sendStatus(500);
+        } else {
+            res.sendStatus(200);
         }
     });
 });
@@ -222,5 +232,6 @@ router.post("/requestFriendLink", function (req, res) {
         }
     });
 });
+
 
 module.exports = router;

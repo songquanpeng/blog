@@ -1,10 +1,3 @@
-const colorsList = [
-    'w3-red', 'w3-pink', 'w3-purple',
-    'w3-deep-purple', 'w3-indigo', 'w3-blue',
-    'w3-aqua', 'w3-green', 'w3-orange',
-    'w3-amber', 'w3-blue-gray', 'w3-dark-gray',
-];
-
 function deleteArticle(id) {
     if (confirm("This article will be deleted soon")) {
         $.ajax({
@@ -17,7 +10,6 @@ function deleteArticle(id) {
         });
     }
 }
-
 
 function deleteUser(name) {
     if (confirm("This user will be deleted soon")) {
@@ -39,19 +31,24 @@ function deleteUser(name) {
 
 function loadMessages() {
     $.get("/api/message", function (data) {
-        console.log(data);
         const tableBody = $("#messageTable tbody");
         tableBody.empty();
         let result = "";
         data.forEach(function (item) {
-            result += "<tr><td>" + item.source + "</td><td>" + item.time + "</td><td>" + item.content + `</td><td><button class='btn btn-sm btn-outline-danger' onclick="deactivateMessage(` + item.id + `)">Delete</button></td></tr>`;
+            result += "<tr id='message_" + item.id + "'><td>" + item.source + "</td><td>" + item.time + "</td><td>" + item.content + `</td><td><button class='btn btn-sm btn-outline-danger' onclick="deactivateMessage(` + item.id + `)">Delete</button></td></tr>`;
         });
         tableBody.append(result);
     });
 }
 
 function deactivateMessage(id) {
-
+    $.ajax({
+        url: '/api/deactivateMessage/'+id,
+        type: 'DELETE',
+        success: function(result) {
+            $("#message_" + id).remove();
+        }
+    });
 }
 
 function addUser() {
