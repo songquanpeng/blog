@@ -8,23 +8,23 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link" href="/archive">Archive</a>-->
-<!--            </li>-->
-            <% if(loggedIn) {%>
-            <li class="nav-item">
-                <a class="nav-link" href="/user">Mine</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/post">Post</a>
-            </li>
+            <!--            <li class="nav-item">-->
+            <!--                <a class="nav-link" href="/archive">Archive</a>-->
+            <!--            </li>-->
+            <% if(loggedIn) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user">Mine</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/post">Post</a>
+                </li>
             <% } else { %>
-            <li class="nav-item">
-                <a class="nav-link" href="/user">Login</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user">Login</a>
+                </li>
             <% } %>
             <li class="nav-item">
                 <a class="nav-link" href="/page/about">About</a>
@@ -38,13 +38,46 @@
                     More
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Message board</a>
-                    <a class="dropdown-item" href="#">Contact me</a>
-                    <a class="dropdown-item" href="#">Request friend link</a>
+                    <!--                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#myModal">Message board</a>-->
+                    <a class="dropdown-item" target="_blank"
+                       href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=M1JGR1xsXlJaX2xAVl1XVkFzQkIdUFxe">Contact
+                        me</a>
+                    <button type="button" class="dropdown-item" data-toggle="modal"
+                            data-target="#requestFriendLinkDialog">
+                        Request a friend link
+                    </button>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">License</a>
+                    <a class="dropdown-item" href="">License</a>
                 </div>
             </li>
         </ul>
+    </div>
+    <div class="modal fade" id="requestFriendLinkDialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/api/requestFriendLink" method="post">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Request a friend link</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="siteName">Your site name:</label>
+                            <input type="text" class="form-control" name="siteName"
+                                   id="siteName" placeholder="Enter your site name." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="link">Enter your link:</label>
+                            <input type="text" class="form-control" name="link"
+                                   id="link" placeholder="Make sure you add my site first. I will check it." required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </nav>

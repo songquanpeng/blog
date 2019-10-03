@@ -21,6 +21,13 @@ name TEXT UNIQUE,
 password TEXT,
 level integer);
 
+CREATE TABLE IF NOT EXISTS messages(
+id integer primary key,
+source TEXT,
+content TEXT,
+state integer,
+time TEXT);
+
 INSERT into users (name, password, level)
 SELECT "root", "toor", 0
 WHERE not exists( SELECT 1 from users WHERE level = 0);

@@ -50,6 +50,14 @@ class Data {
     static createChat(data, callback){
         db.run('INSERT INTO chats(author, time, content) VALUES (?, ?, ?)', data.author, data.time, data.content, callback);
     }
+
+    static getActiveMessage(callback){
+        db.all('SELECT * FROM messages where state = 1', callback);
+    }
+
+    static createMessage(data, callback){
+        db.run('INSERT INTO messages(source, content, state, time) VALUES (?, ?, 1, ?)', data.source, data.content, data.time, callback);
+    }
 }
 
 module.exports = db;

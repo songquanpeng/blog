@@ -195,4 +195,32 @@ router.get('/logout', function (req, res) {
     res.redirect('/user');
 });
 
+router.get("/message", function (req, res) {
+    Data.getActiveMessage((error, messages) => {
+        if (error) {
+            res.sendStatus(500);
+        } else {
+            res.json(messages);
+        }
+    });
+});
+
+router.post("/requestFriendLink", function (req, res) {
+    let source = "Request friend link";
+    let content = req.body.siteName + ": " + req.body.link;
+    let date = new Date();
+    Data.createMessage({
+        source: source,
+        content: content,
+        time: date.toLocaleString()
+    }, (error) => {
+        if (error) {
+            req.flash('error', error.message);
+            res.redirect('/');
+        } else {
+            res.redirect('/');
+        }
+    });
+});
+
 module.exports = router;

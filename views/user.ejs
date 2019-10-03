@@ -106,14 +106,14 @@
                                             <!-- Modal body -->
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                    <label for="username">New username:</label>
+                                                    <label for="newUsername">New username:</label>
                                                     <input type="text" class="form-control" name="username"
-                                                           id="username" placeholder="Enter new username" required>
+                                                           id="newUsername" placeholder="Enter new username" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="password">New password:</label>
+                                                    <label for="newPassword">New password:</label>
                                                     <input type="password" class="form-control" name="password"
-                                                           id="password" placeholder="Enter new password" required>
+                                                           id="newPassword" placeholder="Enter new password" required>
                                                 </div>
                                             </div>
                                             <!-- Modal footer -->
@@ -171,7 +171,47 @@
                                 </div>
                             </li>
                             <li class="list-group-item">
-                                <button type="button" class="btn btn-outline-success btn-block">Edit sidebar</button>
+                                <button type="button" class="btn btn-outline-success btn-block" data-toggle="modal"
+                                        data-target="#checkMessageModal">Check message
+                                </button>
+                                <div class="modal fade" id="checkMessageModal">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Check Message</h4>
+                                                <button type="button" class="close"
+                                                        data-dismiss="modal">&times;
+                                                </button>
+                                            </div>
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                                <table class="table table-hover table-bordered table-striped"
+                                                       id="messageTable">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Source</th>
+                                                        <th>Time</th>
+                                                        <th>Content</th>
+                                                        <th>Operation</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" onclick="loadMessages()">
+                                                    Refresh
+                                                </button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>
                             <li class="list-group-item">
                                 <button type="button" class="btn btn-outline-info btn-block">Change theme</button>

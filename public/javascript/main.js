@@ -37,6 +37,23 @@ function deleteUser(name) {
     }
 }
 
+function loadMessages() {
+    $.get("/api/message", function (data) {
+        console.log(data);
+        const tableBody = $("#messageTable tbody");
+        tableBody.empty();
+        let result = "";
+        data.forEach(function (item) {
+            result += "<tr><td>" + item.source + "</td><td>" + item.time + "</td><td>" + item.content + `</td><td><button class='btn btn-sm btn-outline-danger' onclick="deactivateMessage(` + item.id + `)">Delete</button></td></tr>`;
+        });
+        tableBody.append(result);
+    });
+}
+
+function deactivateMessage(id) {
+
+}
+
 function addUser() {
     const newName = $("#addUserName").val().trim();
     const newPassword = $("#addUserPassword").val().trim();
@@ -80,7 +97,6 @@ function updateMyInfo() {
         }
     });
 }
-
 
 
 function onTimeTagClicked(time) {
