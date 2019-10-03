@@ -41,6 +41,11 @@ router.get('/article/:link', function (req, res) {
 
 router.post('/post', checkLogin, function (req, res) {
     const currentTime = new Date();
+    let title = req.body.tag.title();
+    if (title === "") {
+        title = currentTime.toLocaleString();
+    }
+
     let tag = req.body.tag.trim();
     if (tag === "") {
         tag = "others"

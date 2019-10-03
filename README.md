@@ -9,7 +9,7 @@
 + **Mobile support:** This website uses responsive layout.
 
 ## Try it now
-1. Install Node.js with version `v10.14.2` or any compatible version.[Download Node.js here](https://nodejs.org/en/download/)
+1. Install Node.js with version `v10.14.2` or any compatible version. [Download Node.js here](https://nodejs.org/en/download/)
 2. Clone this repository by type this on your terminal: `git clone https://github.com/songwonderful/blog-website.git`
 3. Change the working directory by type this on your terminal: `cd blog-website`
 4. Install required packages by type this command on your terminal: `npm install`

@@ -94,6 +94,14 @@
                                 },
                                 "|",
                                 {
+                                    name: "import",
+                                    action: () => {
+                                        importArticle()
+                                    },
+                                    className: "fa fa-file",
+                                    title: "Import from file"
+                                },
+                                {
                                     name: "submit",
                                     action: () => {
                                         submitArticle()
@@ -109,6 +117,7 @@
         </div>
     </div>
 </div>
+<input type="file" id="upload" accept=".md" style="visibility: hidden;"/>
 <script>
     let postPath = "/api/post";
     <% if(article !== undefined){ %>
@@ -123,22 +132,45 @@
         let firstLine = simplemde.value().split('\n')[0];
         let secondLine = simplemde.value().split('\n')[1];
         let thirdLine = simplemde.value().split('\n')[2];
-        const canSubmit = (simplemde.value() !== "") && (firstLine.startsWith("#")) && (secondLine.startsWith("**") && (thirdLine.startsWith("**")));
+        let title = firstLine.replace(/#*/, "").trim();
+        let tags = secondLine.replace(/\*\*.*\*\*/, "").trim();
+        let description = thirdLine.replace(/\*\*.*\*\*/, "").trim();
+        const canSubmit = (simplemde.value() !== "")
+                        && (firstLine.startsWith("#"))
+                        && (secondLine.startsWith("**")
+                        && (thirdLine.startsWith("**"))
+                        && (title !== ""));
         if (canSubmit) {
-            let title = firstLine.replace(/#*/, "").trim();
-            let tags = secondLine.replace(/\*\*.*\*\*/, "").trim();
-            let description = thirdLine.replace(/\*\*.*\*\*/, "").trim();
             $.post(postPath, {
                 title: title,
                 tag: tags,
                 description: description,
                 content: simplemde.value()
-            }, () => {
-                simplemde.value("");
+            }, (data) => {
+                simplemde.value("# \n**tags:** \n**description:** \n");
             });
         } else {
-            alert("Notice your format!");
+            alert(`The format of the beginning of the article is as follows: \n# You must have a title here.\n**tags:** Tag Tag Tag\n**description:** Description of the article`);
+        }
+    }
+
+    function importArticle() {
+        $('#upload').click();
+    }
+
+    document.getElementById("upload").onchange = function () {
+        let fileInput = document.getElementById('upload');
+        if (fileInput.files && fileInput.files.length > 0 && fileInput.files[0].size > 0) {
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            reader.onloadend = function (event) {
+                if (event.target.readyState === FileReader.DONE) {
+                    simplemde.value(event.target.result);
+                }
+            };
+            reader.readAsText(file, 'utf-8');
         }
     }
 </script>
+
 <%- include('./partials/end') %>
