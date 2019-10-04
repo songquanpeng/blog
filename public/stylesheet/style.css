@@ -108,6 +108,7 @@ footer {
 
 article {
     overflow-wrap: break-word;
+    font-size: larger;
 }
 
 nav {
