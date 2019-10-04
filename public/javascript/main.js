@@ -35,7 +35,7 @@ function loadMessages() {
         tableBody.empty();
         let result = "";
         data.forEach(function (item) {
-            result += "<tr id='message_" + item.id + "'><td>" + item.source + "</td><td>" + item.time + "</td><td>" + item.content + `</td><td><button class='btn btn-sm btn-outline-danger' onclick="deactivateMessage(` + item.id + `)">Delete</button></td></tr>`;
+            result += "<tr id='message_" + item.id + "'><td>" + item.title + "</td><td>" + item.time + "</td><td>" + item.content + `</td><td><button class='btn btn-sm btn-outline-warning' onclick="deactivateMessage(` + item.id + `)">Make as read</button></td></tr>`;
         });
         tableBody.append(result);
     });

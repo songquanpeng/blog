@@ -23,7 +23,7 @@ level integer);
 
 CREATE TABLE IF NOT EXISTS messages(
 id integer primary key,
-source TEXT,
+title TEXT,
 content TEXT,
 state integer,
 time TEXT);

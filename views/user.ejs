@@ -171,8 +171,7 @@
                                 </div>
                             </li>
                             <li class="list-group-item">
-                                <button type="button" class="btn btn-outline-success btn-block" data-toggle="modal"
-                                        data-target="#checkMessageModal">Check message
+                                <button type="button" class="btn btn-outline-success btn-block" onclick="$('#checkMessageModal').modal('show');loadMessages();">Check message
                                 </button>
                                 <div class="modal fade" id="checkMessageModal">
                                     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -190,7 +189,7 @@
                                                        id="messageTable">
                                                     <thead>
                                                     <tr>
-                                                        <th>Source</th>
+                                                        <th>Title</th>
                                                         <th>Time</th>
                                                         <th>Content</th>
                                                         <th>Operation</th>

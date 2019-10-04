@@ -56,7 +56,7 @@ class Data {
     }
 
     static createMessage(data, callback) {
-        db.run('INSERT INTO messages(source, content, state, time) VALUES (?, ?, 1, ?)', data.source, data.content, data.time, callback);
+        db.run('INSERT INTO messages(title, content, state, time) VALUES (?, ?, 1, ?)', data.title, data.content, data.time, callback);
     }
 
     static deactivateMessage(id, callback) {

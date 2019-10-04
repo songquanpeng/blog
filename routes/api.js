@@ -215,12 +215,12 @@ router.delete("/deactivateMessage/:id", checkPermission, function (req, res) {
     });
 });
 
-router.post("/requestFriendLink", function (req, res) {
-    let source = "Request friend link";
-    let content = req.body.siteName + ": " + req.body.link;
+router.post("/message", function (req, res) {
+    let title = req.body.title;
+    let content = req.body.content;
     let date = new Date();
     Data.createMessage({
-        source: source,
+        title: title,
         content: content,
         time: date.toLocaleString()
     }, (error) => {
