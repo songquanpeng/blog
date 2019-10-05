@@ -131,3 +131,7 @@ $(document).ready(
 function submitArticle() {
 
 }
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});

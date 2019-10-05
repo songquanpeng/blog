@@ -24,7 +24,7 @@ app.use(session({
 }));
 app.use(flash());
 app.use(serveStatic(path.join(__dirname, 'public'), {
-    maxAge: '10d',
+    maxAge: '60000',
 }));
 app.locals.title = "JustSong's blog";
 app.locals.keywords = "JustSong blog";

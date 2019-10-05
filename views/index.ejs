@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             <% if (articles.length){ %>
                 <% articles.forEach((article)=>{ %>
-                    <div class="card article-list">
+                    <div class="card article-list shadow-box">
                         <div class="card-body">
                             <h4 class="card-title" onclick="location.href='/article/<%= article.link %>'" style="cursor: pointer"><%= article.title %></h4>
                             <div>
@@ -36,7 +36,7 @@
         </div>
         <% if(notice) { %>
             <div class="col-sm-12 col-md-3">
-                <div class="card hover-effect">
+                <div class="card shadow-box">
                     <div class="card-header font-weight-bold">Notice</div>
                     <div class="container" style="padding-top: 8px">
                         <article>
