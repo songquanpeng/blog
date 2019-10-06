@@ -79,6 +79,13 @@ nav {
     z-index: 2;
 }
 
+@media screen and (max-width: 600px) {
+    #go-to-top{
+        bottom: 20px;
+        right: 15px;
+    }
+}
+
 #go-to-top a {
     display: block;
     width: 100%;
