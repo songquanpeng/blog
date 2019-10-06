@@ -137,15 +137,14 @@ nav:hover {
     text-decoration: none;
 }
 
-body {
-    background-image: url("https://i.loli.net/2019/10/06/ZfF5IzVPAsCWMax.jpg");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    background-color: rgb(255, 255, 255);
-}
 
-.bg-light {
-    background-color: #f8f9fa!important
+@media screen and (min-width: 600px) {
+    body {
+        background-image: url("https://i.loli.net/2019/10/06/1W73eSXVjgKTl59.jpg");
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-color: rgb(255, 255, 255);
+    }
 }
