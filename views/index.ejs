@@ -9,10 +9,14 @@
                 <% articles.forEach((article)=>{ %>
                     <div class="card article-list shadow-box bg-transparent">
                         <div class="card-body">
-                            <h4 class="card-title" onclick="location.href='/article/<%= article.link %>'" style="cursor: pointer"><%= article.title %></h4>
+                            <h4 class="card-title font-weight-bold"
+                                onclick="location.href='/article/<%= article.link %>'"
+                                style="cursor: pointer"><%= article.title %></h4>
                             <div>
-                                <span class="badge badge-primary badge-hover"
-                                      onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
+                                <% article.tag.split(" ").forEach(function (tag) { %>
+                                    <span class="badge badge-primary badge-hover"
+                                          onclick="location.href='/tag/<%= tag %>'"><%= tag %></span>
+                                <% }); %>
                                 <span class="badge badge-success badge-hover"
                                       onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span>
                                 <span class="badge badge-secondary badge-hover"
@@ -20,10 +24,10 @@
                                 <span class="badge badge-info badge-hover"
                                       onclick="location.href='/article/<%= article.link %>'">View</span>
                                 <% if(isAbleToModify) { %>
-                                <span class="badge badge-danger badge-hover"
-                                      onclick="deleteArticle(<%= article.id %>)">Delete</span>
-                                <span class="badge badge-dark badge-hover"
-                                      onclick="location.href='/edit/<%= article.link %>'">Edit</span>
+                                    <span class="badge badge-danger badge-hover"
+                                          onclick="deleteArticle(<%= article.id %>)">Delete</span>
+                                    <span class="badge badge-dark badge-hover"
+                                          onclick="location.href='/edit/<%= article.link %>'">Edit</span>
                                 <% } %>
 
                             </div>

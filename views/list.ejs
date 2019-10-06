@@ -11,8 +11,10 @@
                             <div class="card-body" style="padding: 4px">
                                 <h5 class="card-title"><%= article.title %></h5>
                                 <div>
-                                    <span class="badge badge-primary badge-hover"
-                                          onclick="location.href='/tag/<%= article.tag %>'"><%= article.tag %></span>
+                                    <% article.tag.split(" ").forEach(function (tag) { %>
+                                        <span class="badge badge-primary badge-hover"
+                                              onclick="location.href='/tag/<%= tag %>'"><%= tag %></span>
+                                    <% }); %>
                                     <span class="badge badge-success badge-hover"
                                           onclick="location.href='/user/<%= article.author %>'"><%= article.author %></span>
                                     <span class="badge badge-secondary badge-hover"

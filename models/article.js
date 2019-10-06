@@ -30,7 +30,7 @@ class Article {
     }
 
     static getArticlesByTag(tag, callback) {
-        db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE tag = ?', tag, callback);
+        db.all('SELECT id, title, author, tag, time, description, link FROM articles WHERE tag like ?', "%"+tag+"%", callback);
     }
 
     static getSpecialPage(pageName, callback) {
