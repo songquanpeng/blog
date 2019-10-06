@@ -147,7 +147,7 @@ router.get('/tag/:tag', function (req, res) {
         res.render('list', {
             info: req.flash('info'),
             error: req.flash('error'),
-            articles: articles,
+            articles: articles.reverse(),
             isAbleToModify: false
         });
     });
@@ -158,7 +158,7 @@ router.get('/date/:date', function (req, res) {
         res.render('list', {
             info: req.flash('info'),
             error: req.flash('error'),
-            articles: articles,
+            articles: articles.reverse(),
             isAbleToModify: false
         });
     });
@@ -173,7 +173,7 @@ router.get('/user/:name', function (req, res) {
         res.render('list', {
             info: req.flash('info'),
             error: req.flash('error'),
-            articles: articles,
+            articles: articles.reverse(),
             isAbleToModify: isAbleToModify
         });
     });
