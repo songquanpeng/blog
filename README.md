@@ -5,6 +5,7 @@
 + This is a **dynamic blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
 + Use this system to **deploy your own website**.
 + [**Click here to see the online demo.**](https://iamazing.cn/)
++ For more detailed infomation, please see this [wiki](https://github.com/songwonderful/blog-website/wiki).
 
 ## Features
 + **Dynamic:** Write articles directly in the browser.
