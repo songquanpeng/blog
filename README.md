@@ -1,9 +1,13 @@
+![blog-website](https://user-images.githubusercontent.com/39998050/66268075-18b2e500-e86c-11e9-8e5a-d964eea47fe5.png)
+
+![stars](https://img.shields.io/github/stars/songwonderful/blog-website) ![forks](https://img.shields.io/github/forks/songwonderful/blog-website) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/blog-website) ![downloads](https://img.shields.io/github/downloads/songwonderful/blog-website/total) ![license](https://img.shields.io/github/license/songwonderful/blog-website) ![website](https://img.shields.io/website?down_color=red&down_message=offine&up_color=green&up_message=online&url=https%3A%2F%2Fiamazing.cn) ![release](https://img.shields.io/github/v/release/songwonderful/blog-website)
 ## Description
-+ This is a **blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
++ This is a **dynamic blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
 + Use this system to **deploy your own website**.
 + [**Click here to see the online demo.**](https://iamazing.cn/)
 
 ## Features
++ **Dynamic:** Write articles directly in the browser.
 + **Easy to deploy:** There is no need to configure the database.
 + **Complete SEO support:** Semantic link, server-side rendering and more.
 + **Mobile support:** This website uses responsive layout.
