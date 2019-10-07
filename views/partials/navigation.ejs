@@ -21,11 +21,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/post">Post</a>
                 </li>
-            <% } else { %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/user">Login</a>
-                </li>
-            <% } %>
+            <% }%>
             <li class="nav-item">
                 <a class="nav-link" href="/page/about">About</a>
             </li>
@@ -39,6 +35,9 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <!--                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#myModal">Message board</a>-->
+                    <% if(!loggedIn) { %>
+                        <a class="dropdown-item" href="/user">Administrator login</a>
+                    <% } %>
                     <a class="dropdown-item" target="_blank"
                        href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=M1JGR1xsXlJaX2xAVl1XVkFzQkIdUFxe">Contact
                         me</a>
@@ -48,11 +47,14 @@
                     </button>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="https://songwonderful.github.io/online-shell/">Online terminal</a>
-                    <a class="dropdown-item" href="https://songwonderful.github.io/population-simulator/">Population simulator</a>
-                    <a class="dropdown-item" href="https://songwonderful.github.io/online-battle-city/">Online battle city</a>
+                    <a class="dropdown-item" href="https://songwonderful.github.io/population-simulator/">Population
+                        simulator</a>
+                    <a class="dropdown-item" href="https://songwonderful.github.io/online-battle-city/">Online battle
+                        city</a>
                     <a class="dropdown-item" href="https://songwonderful.github.io/hacker-screen/">Hacker screen</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="https://github.com/songwonderful/blog-website"  data-toggle="tooltip" title="Please do it! 🥺">Star this project</a>
+                    <a class="dropdown-item" href="https://github.com/songwonderful/blog-website" data-toggle="tooltip"
+                       title="Please do it! 🥺">Star this project</a>
                 </div>
             </li>
         </ul>
