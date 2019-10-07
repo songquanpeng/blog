@@ -21,7 +21,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/post">Post</a>
                 </li>
-            <% }%>
+            <% } %>
             <li class="nav-item">
                 <a class="nav-link" href="/page/about">About</a>
             </li>
@@ -58,6 +58,26 @@
                 </div>
             </li>
         </ul>
+        <div class="form-inline my-2 my-lg-0" action="https://www.google.com/search?q=site%3Aiamazing.cn&oq=site">
+            <input class="form-control mr-sm-2" id="search" type="search" placeholder="Search this site..."
+                   aria-label="Search">
+            <button class="btn btn-outline-dark my-2 my-sm-0" onclick="search()">Search</button>
+            <script>
+              function search() {
+                let keyword = document.getElementById("search").value.replace(/\s+/g, "+");
+                let url = "https://www.google.com/search?q=" + keyword + "+site%3Aiamazing.cn";
+                window.open(url);
+              }
+
+              $(document).ready(function () {
+                document.getElementById("search").addEventListener("keydown", function (event) {
+                  if (event.key === "Enter") {
+                    search();
+                  }
+                })
+              });
+            </script>
+        </div>
     </div>
     <div class="modal fade" id="leaveMessageDialog">
         <div class="modal-dialog">
