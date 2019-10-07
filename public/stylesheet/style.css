@@ -80,7 +80,7 @@ nav {
 }
 
 @media screen and (max-width: 600px) {
-    #go-to-top{
+    #go-to-top {
         bottom: 20px;
         right: 15px;
     }
@@ -90,7 +90,7 @@ nav {
     display: block;
     width: 100%;
     height: 100%;
-    color: #ffffff;
+    color: #f2ecde;
     font-size: 40px;
     font-weight: normal;
     text-align: center;
@@ -144,16 +144,9 @@ nav:hover {
     text-decoration: none;
 }
 
-
-@media screen and (min-width: 600px) {
-    body {
-        background-image: url("https://i.loli.net/2019/10/06/1W73eSXVjgKTl59.jpg");
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        background-color: rgb(255, 255, 255);
-    }
+body {
+    background-image: url("https://i.loli.net/2019/10/07/xFWTVX2jCMHNcu1.png");
+    background-color: #f2ecde;
 }
 
 img {
