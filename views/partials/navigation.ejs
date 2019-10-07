@@ -33,7 +33,7 @@
                    aria-haspopup="true" aria-expanded="false">
                     More
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu plain-white-silk-color" aria-labelledby="navbarDropdown">
                     <!--                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#myModal">Message board</a>-->
                     <% if(!loggedIn) { %>
                         <a class="dropdown-item" href="/user">Administrator login</a>
@@ -59,7 +59,7 @@
             </li>
         </ul>
         <div class="form-inline my-2 my-lg-0" action="https://www.google.com/search?q=site%3Aiamazing.cn&oq=site">
-            <input class="form-control mr-sm-2" id="search" type="search" placeholder="Search this site..."
+            <input class="form-control mr-sm-2 plain-white-silk-color" id="search" type="search" placeholder="Search this site..."
                    aria-label="Search">
             <button class="btn btn-outline-dark my-2 my-sm-0" onclick="search()">Search</button>
             <script>
@@ -81,7 +81,7 @@
     </div>
     <div class="modal fade" id="leaveMessageDialog">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content plain-white-silk-color">
                 <form action="/api/message" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Leave a message</h4>
@@ -90,12 +90,12 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="title">Title:</label>
-                            <input type="text" class="form-control" name="title"
+                            <input type="text" class="form-control plain-white-silk-color" name="title"
                                    id="title" placeholder="Input your message's title here." required>
                         </div>
                         <div class="form-group">
                             <label for="content">Content</label>
-                            <textarea class="form-control" name="content" rows="5"
+                            <textarea class="form-control plain-white-silk-color" name="content" rows="5"
                                       id="content" placeholder="Input your message's content here." required></textarea>
                         </div>
                     </div>

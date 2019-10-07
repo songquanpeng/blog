@@ -90,7 +90,8 @@ nav {
     display: block;
     width: 100%;
     height: 100%;
-    color: #f2ecde;
+    background-color: #f2ecde;
+    color: #f9ffde;
     font-size: 40px;
     font-weight: normal;
     text-align: center;
@@ -98,7 +99,6 @@ nav {
 }
 
 #go-to-top:hover {
-    background-color: #111;
     border-width: 0;
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -146,6 +146,16 @@ nav:hover {
 
 body {
     background-image: url("https://i.loli.net/2019/10/07/xFWTVX2jCMHNcu1.png");
+    background-color: #f2ecde;
+}
+
+#search:focus {
+    border-color: rgba(242, 236, 222, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(242, 236, 222, 0.6);
+    outline: 0 none;
+}
+
+.plain-white-silk-color {
     background-color: #f2ecde;
 }
 
