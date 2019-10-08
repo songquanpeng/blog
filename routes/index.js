@@ -127,7 +127,16 @@ router.get('/page/:pageName', function(req, res) {
 });
 
 router.get('/archive', function(req, res) {
-  res.render('archive');
+  Article.getAllArticlesIntroduction((error, articles) => {
+    res.render('archive', {
+      articles: articles.reverse(),
+      title: 'Archive',
+      keywords: 'archive site map',
+      description: 'archive for this website',
+      info: req.flash('info'),
+      error: req.flash('error')
+    });
+  });
 });
 
 router.get('/post', checkLogin, function(req, res) {

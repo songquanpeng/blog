@@ -1,4 +1,14 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
 <!--Content here-->
+<div class="container">
+    <h4>Total number of articles: <%= articles.length%></h4>
+    <div class="list-group ">
+        <% if (articles.length){ %>
+            <% articles.forEach((article)=>{ %>
+                <a href='/article/<%= article.link %>' class="plain-white-silk-color list-group-item list-group-item-action"><%= article.title %></a>
+            <% }); %>
+        <% } %>
+    </div>
+</div>
 <%- include('./partials/end') %>
