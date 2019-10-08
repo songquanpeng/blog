@@ -65,8 +65,9 @@
             <script>
               function search() {
                 let keyword = document.getElementById("search").value.replace(/\s+/g, "+");
-                let url = "https://www.google.com/search?q=" + keyword + "+site%3Aiamazing.cn";
-                window.open(url);
+                let googleUrl = "https://www.google.com/search?q=" + keyword + "+site%3Aiamazing.cn";
+                let dogedogeUrl = "https://www.dogedoge.com/results?q=" + keyword + "+site%3Aiamazing.cn";
+                window.open(dogedogeUrl);
               }
 
               $(document).ready(function () {
