@@ -36,11 +36,11 @@ router.get('/', function(req, res) {
   });
 });
 
-router.get('/article/:link', function(req, res) {
+router.get('/article/:link', function(req, res, next) {
   Article.getArticleByLink(req.params.link, (error, article) => {
     const commentSubmitPath = '/api/comment/article-' + req.params.link;
     if (error != null || article === undefined) {
-      res.render('404');
+      next();
     } else {
       article.content = parser(lexer(article.content));
       Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
