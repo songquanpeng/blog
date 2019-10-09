@@ -21,8 +21,16 @@ router.get('/', function(req, res) {
           )
         );
       }
+      articles.sort(function(a, b) {
+        return new Date(b.time) - new Date(a.time);
+      });
+      let articlesByTimes = articles.slice(0, 3);
+      let articlesByViews = articles.slice(3);
+      articlesByViews.sort(function(a, b) {
+        return b.views - a.views;
+      });
       res.render('index', {
-        articles: articles.reverse(),
+        articles: articlesByTimes.concat(articlesByViews),
         notice: article,
         info: req.flash('info'),
         error: req.flash('error'),

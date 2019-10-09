@@ -9,7 +9,14 @@ class Article {
   }
 
   static getArticleByLink(link, callback) {
-    db.get('SELECT * FROM articles WHERE link = ?', link, callback);
+    db.get('SELECT * FROM articles WHERE link = ?', link, (error, article) => {
+      db.run(
+        'UPDATE articles set views = ? WHERE link = ?',
+        article.views + 1,
+        link
+      );
+      callback(error, article);
+    });
   }
 
   static create(data, callback) {
