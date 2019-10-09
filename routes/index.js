@@ -21,16 +21,12 @@ router.get('/', function(req, res) {
           )
         );
       }
-      let isAbleToModify = false;
-      if (req.session.user !== undefined) {
-        isAbleToModify = req.session.user.name === req.params.name;
-      }
       res.render('index', {
         articles: articles.reverse(),
         notice: article,
         info: req.flash('info'),
         error: req.flash('error'),
-        isAbleToModify: isAbleToModify
+        currentUser: req.session.user ? req.session.user.name : undefined
       });
     });
   });

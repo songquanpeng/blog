@@ -3,7 +3,7 @@ const db = require('../util').db;
 class Article {
   static getAllArticlesIntroduction(callback) {
     db.all(
-      'SELECT id, title, author, tag, time, description, link FROM articles',
+      'SELECT id, title, author, tag, time, description, link, views FROM articles',
       callback
     );
   }
@@ -14,7 +14,7 @@ class Article {
 
   static create(data, callback) {
     db.run(
-      'INSERT INTO articles(title, author, tag, time, content, description, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO articles(title, author, tag, time, content, description, link, views) VALUES (?, ?, ?, ?, ?, ?, ?, 0)',
       data.title,
       data.author,
       data.tag,
@@ -34,7 +34,7 @@ class Article {
 
   static getArticlesByAuthor(author, callback) {
     db.all(
-      'SELECT id, title, author, tag, time, description, link FROM articles WHERE author = ?',
+      'SELECT id, title, author, tag, time, description, link, views FROM articles WHERE author = ?',
       author,
       callback
     );
@@ -44,7 +44,7 @@ class Article {
     const year = date.split('-')[0];
     const mouth = date.split('-')[1];
     db.all(
-      'SELECT id, title, author, tag, time, description, link FROM articles WHERE time like ?',
+      'SELECT id, title, author, tag, time, description, link, views FROM articles WHERE time like ?',
       mouth + '/%/' + year + '%',
       callback
     );
@@ -52,7 +52,7 @@ class Article {
 
   static getArticlesByTag(tag, callback) {
     db.all(
-      'SELECT id, title, author, tag, time, description, link FROM articles WHERE tag like ?',
+      'SELECT id, title, author, tag, time, description, link, views FROM articles WHERE tag like ?',
       '%' + tag + '%',
       callback
     );
