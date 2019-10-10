@@ -7,6 +7,7 @@ const User = require('../models/user').User;
 const checkLogin = require('../middlewares/check').checkLogin;
 const lexer = require('marked').lexer;
 const parser = require('marked').parser;
+const sitemap = require('sitemap');
 
 router.get('/', function(req, res) {
   Article.getAllArticlesIntroduction((error, articles) => {
@@ -143,6 +144,27 @@ router.get('/archive', function(req, res) {
       info: req.flash('info'),
       error: req.flash('error')
     });
+  });
+});
+
+router.get('/sitemap.xml', function(req, res) {
+  const host = 'https://iamazing.cn';
+  let sitemapOption = {
+    hostname: host,
+    cacheTime: 600000,
+    urls: [host]
+  };
+  Article.getAllArticlesIntroduction((error, articles) => {
+    articles.forEach(item => {
+      sitemapOption.urls.push({
+        url: `/article/` + item.link,
+        changefreq: 'daily',
+        lastmod: new Date(item.time)
+      });
+    });
+    let xml = sitemap.createSitemap(sitemapOption).toString();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
   });
 });
 
