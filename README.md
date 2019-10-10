@@ -5,7 +5,7 @@
 + This is a **dynamic blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
 + Use this system to **deploy your own website**.
 + [**Click here to see the online demo.**](https://iamazing.cn/)
-+ For more detailed infomation, please see this [wiki](https://github.com/songwonderful/blog-website/wiki).
++ For more detailed information, please see this [wiki](https://github.com/songwonderful/blog-website/wiki).
 
 ## Features
 + **Dynamic:** Write articles directly in the browser.
@@ -22,3 +22,6 @@
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 7. Notice that the system already has a user named `root`, whose initial password is `toor`. Please change it for security.
 8. Okay, now everything is done, enjoy your own website. If you have any questions, please feel free to issue me.
+
+## Notice
++ For faster loading speed, non-Chinese users need to replace all the CDN links [in this file](https://github.com/songwonderful/blog-website/blob/master/views/partials/header.ejs). You can try https://cdn.jsdelivr.net or https://cdnjs.cloudflare.com.
