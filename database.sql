@@ -6,8 +6,8 @@ tag TEXT,
 time TEXT,
 content TEXT,
 link TEXT,
-description TEXT
-views INTEGER);
+views integer,
+description TEXT);
 
 CREATE TABLE IF NOT EXISTS comments(
 id integer primary key,

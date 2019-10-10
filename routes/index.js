@@ -10,6 +10,9 @@ const parser = require('marked').parser;
 
 router.get('/', function(req, res) {
   Article.getAllArticlesIntroduction((error, articles) => {
+    if(error){
+      console.error(error.message);
+    }
     Article.getSpecialPage('notice', (error, article) => {
       if (article !== undefined) {
         article.content = parser(
