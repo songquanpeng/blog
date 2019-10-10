@@ -29,6 +29,19 @@ router.post('/login', function(req, res) {
   });
 });
 
+router.get('/statistics', function(req, res) {
+  Data.getStatistics(7, (error, data) => {
+    if (error) {
+      console.error(error.message);
+    } else {
+      data = data.sort(function(a, b) {
+        return a.id > b.id;
+      });
+    }
+    res.json(data);
+  });
+});
+
 router.get('/article/:link', function(req, res) {
   Article.getArticleByLink(req.params.link, (error, article) => {
     if (error != null || article === undefined) {

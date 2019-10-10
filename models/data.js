@@ -38,22 +38,17 @@ class Data {
     db.run('UPDATE messages SET state = 0 where id = ?', id, callback);
   }
 
-  static updateViewsNumber() {
-    const time = new Date().toLocaleString();
-    const date = time.split(',')[0];
-    db.run('UPDATE statistics SET pv = pv + 1 WHERE date = ?', date, error => {
-      console.error(error.message);
-    });
-  }
-
   static createStatisticsRecord() {
     const time = new Date().toLocaleString();
     const date = time.split(',')[0];
     db.run(
-      'INSERT INTO statistics(pv, uv, date) VALUES (0, 0, ?)',
+      'INSERT INTO statistics(pv, uv, date) SELECT 0, 0, ? where not exists (select 1 from statistics where date = ?)',
+      date,
       date,
       error => {
-        console.error(error.message);
+        if (error) {
+          console.error(error.message);
+        }
       }
     );
   }

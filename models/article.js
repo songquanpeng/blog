@@ -16,6 +16,10 @@ class Article {
           article.views + 1,
           link
         );
+        // Update statistics pv
+        const time = new Date().toLocaleString();
+        const date = time.split(',')[0];
+        db.run('UPDATE statistics set pv = pv + 1 WHERE date = ?', date);
       }
       callback(error, article);
     });

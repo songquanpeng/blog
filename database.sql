@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS statistics(
 id integer primary key,
 pv integer,
 uv integer,
-date TEXT);
+date TEXT unique);
 
 INSERT into users (name, password, level)
 SELECT "root", "toor", 0
