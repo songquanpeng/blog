@@ -154,14 +154,14 @@ router.post('/edit/:link', checkLogin, function(req, res) {
       if (description === '') {
         description = req.body.content.slice(0, 20) + ' ...';
       }
-      const currentTime = new Date();
+      //const currentTime = new Date();
       Article.updateArticleByLink(
         link,
         {
           title: req.body.title,
           author: username,
           tag: tag,
-          time: currentTime.toLocaleString(),
+          // time: currentTime.toLocaleString(),
           content: req.body.content,
           description: description,
           link: titleToLink(req.body.title)

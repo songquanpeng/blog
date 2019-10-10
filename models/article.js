@@ -79,11 +79,10 @@ class Article {
 
   static updateArticleByLink(link, article, callback) {
     db.run(
-      'UPDATE articles SET title = ?, author = ?, tag = ?, time = ?, content = ?, description = ?, link = ? WHERE link = ?',
+      'UPDATE articles SET title = ?, author = ?, tag = ?, content = ?, description = ?, link = ? WHERE link = ?',
       article.title,
       article.author,
       article.tag,
-      article.time,
       article.content,
       article.description,
       article.link,
