@@ -1,40 +1,6 @@
-const db = require('../util').db;
-const fs = require('fs');
-const uploadPath = '~/uploadPath/';
+const db = require('../utils/util').db;
 
 class Data {
-  // Bookmark Part
-  static getAllBookmarks(callback) {
-    db.all('SELECT * FROM bookmarks', callback);
-  }
-
-  // File Service Part
-  static uploadNewFile(data, callback) {
-    db.run(
-      'INSERT INTO files(name, tag, time, description, link, uploader) VALUES (?, ?, ?, ?, ?, ?)',
-      data.name,
-      data.tag,
-      data.time,
-      data.description,
-      data.link,
-      data.uploader,
-      callback
-    );
-  }
-
-  static getAllFiles(callback) {
-    db.all('SELECT * FROM files', callback);
-  }
-
-  static deleteFileByName(name, callback) {
-    fs.unlink(uploadPath + '\\' + name, error => {
-      if (error) throw error;
-      console.log('delete file: ' + name);
-      db.run('DELETE FROM files WHERE name = ?', name, callback);
-    });
-  }
-
-  // Comment Service Part
   static getCommentBySubmitPath(path, callback) {
     db.all('SELECT * FROM comments WHERE path = ?', path, callback);
   }
@@ -54,25 +20,6 @@ class Data {
     db.run('DELETE FROM comments WHERE path = ?', path, callback);
   }
 
-  // Chat Service Part
-  static getAllChats(callback) {
-    db.all('SELECT * FROM chats', callback);
-  }
-
-  static getRecentChats(callback) {
-    db.all('SELECT * FROM chats order by id desc limit 10 ', callback);
-  }
-
-  static createChat(data, callback) {
-    db.run(
-      'INSERT INTO chats(author, time, content) VALUES (?, ?, ?)',
-      data.author,
-      data.time,
-      data.content,
-      callback
-    );
-  }
-
   static getActiveMessage(callback) {
     db.all('SELECT * FROM messages where state = 1', callback);
   }
@@ -90,8 +37,35 @@ class Data {
   static deactivateMessage(id, callback) {
     db.run('UPDATE messages SET state = 0 where id = ?', id, callback);
   }
+
+  static updateViewsNumber() {
+    const time = new Date().toLocaleString();
+    const date = time.split(',')[0];
+    db.run('UPDATE statistics SET pv = pv + 1 WHERE date = ?', date, error => {
+      console.error(error.message);
+    });
+  }
+
+  static createStatisticsRecord() {
+    const time = new Date().toLocaleString();
+    const date = time.split(',')[0];
+    db.run(
+      'INSERT INTO statistics(pv, uv, date) VALUES (0, 0, ?)',
+      date,
+      error => {
+        console.error(error.message);
+      }
+    );
+  }
+
+  static getStatistics(number, callback) {
+    db.all(
+      'SELECT * from statistics ORDER BY id DESC LIMIT ?',
+      number,
+      callback
+    );
+  }
 }
 
 module.exports = db;
 module.exports.Data = Data;
-module.exports.uploadPath = uploadPath;

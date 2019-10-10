@@ -7,7 +7,7 @@ const logger = require('morgan');
 const serveStatic = require('serve-static');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
-const util = require('./util');
+const util = require('./utils/util');
 const app = express();
 
 util.initializeDatabase();

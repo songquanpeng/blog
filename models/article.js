@@ -1,4 +1,4 @@
-const db = require('../util').db;
+const db = require('../utils/util').db;
 
 class Article {
   static getAllArticlesIntroduction(callback) {

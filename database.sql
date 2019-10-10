@@ -29,6 +29,12 @@ content TEXT,
 state integer,
 time TEXT);
 
+CREATE TABLE IF NOT EXISTS statistics(
+id integer primary key,
+pv integer,
+uv integer,
+date TEXT);
+
 INSERT into users (name, password, level)
 SELECT "root", "toor", 0
 WHERE not exists( SELECT 1 from users WHERE level = 0);

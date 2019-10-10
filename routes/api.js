@@ -8,7 +8,7 @@ const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 const checkLoginWithoutRedirect = require('../middlewares/check')
   .checkLoginWithoutRedirect;
-const titleToLink = require('../util').titleToLink;
+const titleToLink = require('../utils/util').titleToLink;
 
 router.post('/login', function(req, res) {
   const username = req.body.username;
