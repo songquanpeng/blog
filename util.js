@@ -76,7 +76,7 @@ function insertSpecialPages() {
 }
 
 function titleToLink(title) {
-  return title.trim().replace(' ', '-');
+  return title.trim().replace(/\s/g, '-');
 }
 
 module.exports = {
