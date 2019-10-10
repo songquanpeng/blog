@@ -45,7 +45,6 @@ router.post('/post', checkLogin, function(req, res) {
   if (title === '') {
     title = currentTime.toLocaleString();
   }
-
   let tag = req.body.tag.trim();
   if (tag === '') {
     tag = 'others';
@@ -54,15 +53,19 @@ router.post('/post', checkLogin, function(req, res) {
   if (description === '') {
     description = req.body.content.slice(0, 20) + ' ...';
   }
+  const link = titleToLink(req.body.title);
+  let copyright =
+    '\n\n---\n**未经本人允许，禁止一切形式的转载！**\n**原文链接：**https://iamazing.cn/article/' +
+    link;
   Article.create(
     {
-      title: req.body.title,
+      title: title,
       author: req.session.user.name,
       tag: tag,
       time: currentTime.toLocaleString(),
-      content: req.body.content,
+      content: req.body.content + copyright,
       description: description,
-      link: titleToLink(req.body.title)
+      link: link
     },
     () => {
       req.flash('info', 'Article has been successfully uploaded');
