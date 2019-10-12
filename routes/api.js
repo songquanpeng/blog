@@ -76,7 +76,7 @@ router.post('/post', checkLogin, function(req, res) {
       author: req.session.user.name,
       tag: tag,
       time: currentTime.toLocaleString(),
-      content: req.body.content + copyright,
+      content: req.body.content,
       description: description,
       link: link
     },

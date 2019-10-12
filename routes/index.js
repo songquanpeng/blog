@@ -8,6 +8,7 @@ const checkLogin = require('../middlewares/check').checkLogin;
 const lexer = require('marked').lexer;
 const parser = require('marked').parser;
 const sitemap = require('sitemap');
+const titleToLink = require('../utils/util').titleToLink;
 
 router.get('/', function(req, res) {
   Article.getAllArticlesIntroduction((error, articles) => {
@@ -51,6 +52,10 @@ router.get('/article/:link', function(req, res, next) {
     if (error != null || article === undefined) {
       next();
     } else {
+      let copyright =
+        '\n\n---\n**未经本人允许，禁止一切形式的转载！**\n**原文链接：**https://iamazing.cn/article/' +
+        req.params.link;
+      article.content += copyright;
       article.content = parser(lexer(article.content));
       Data.getCommentBySubmitPath(commentSubmitPath, (error, comments) => {
         res.render('article', {
