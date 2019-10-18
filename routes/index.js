@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
+const Stream = require('stream');
 const Article = require('../models/article').Article;
 const Data = require('../models/data').Data;
 const User = require('../models/user').User;
@@ -67,6 +68,29 @@ router.get('/article/:link', function(req, res, next) {
           comments: comments.reverse()
         });
       });
+    }
+  });
+});
+
+router.get('/export/:link', checkLogin, function(req, res, next) {
+  Article.getArticleByLink(req.params.link, (error, article) => {
+    if (error != null || article === undefined) {
+      next();
+    } else {
+      const filename = article.link + '.md';
+      res.setHeader(
+        'Content-disposition',
+        "attachment; filename*=UTF-8''" + encodeURIComponent(filename)
+      );
+      res.setHeader('Content-type', 'text/md');
+      const fileStream = new Stream.Readable({
+        read(size) {
+          return true;
+        }
+      });
+      fileStream.pipe(res);
+      fileStream.push(article.content);
+      res.end();
     }
   });
 });

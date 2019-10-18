@@ -28,8 +28,9 @@
                                     <td><%= article.tag %></td>
                                     <td><%= article.time %></td>
                                     <td>
-                                        <div class="">
-                                            <button type="button" class="btn btn-sm btn-outline-success">Export</button>
+                                        <div>
+                                            <a type="button" class="btn btn-sm btn-outline-success" target="_blank"
+                                                    href="/export/<%= article.link %>">Export</a>
                                             <button type="button" class="btn btn-sm btn-outline-warning">Freeze</button>
                                             <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
                                             </button>

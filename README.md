@@ -3,7 +3,7 @@
 ![stars](https://img.shields.io/github/stars/songwonderful/blog-website) ![forks](https://img.shields.io/github/forks/songwonderful/blog-website) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/blog-website) ![license](https://img.shields.io/github/license/songwonderful/blog-website) ![release](https://img.shields.io/github/v/release/songwonderful/blog-website)
 ## **Why should I try this one?**
 + This one is **simple**, which means you can easily personalize it and update it.
-+ I think of it as a simulation game, which means I will continue to maintain this project.
++ The developer will continue to improve it.
 
 ## Description
 + This is a **dynamic blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
