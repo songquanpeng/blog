@@ -16,7 +16,7 @@
                             <th>Author</th>
                             <th>Tag</th>
                             <th>Time</th>
-                            <th>Operation</th>
+                            <th>Operations</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,14 +29,14 @@
                                     <td><%= article.time %></td>
                                     <td>
                                         <div>
-                                            <a type="button" class="btn btn-sm btn-outline-success" target="_blank"
-                                                    href="/export/<%= article.link %>">Export</a>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">Freeze</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    onclick="deleteArticle(<%= article.id %>)">Delete
-                                            </button>
+                                            <a class="badge badge-success badge-hover" target="_blank"
+                                               href="/export/<%= article.link %>">Export</a> <span
+                                                    class="badge badge-warning badge-hover"
+                                                    onclick="">Freeze</span> <span
+                                                    class="badge badge-info badge-hover" onclick="">Unfreeze</span>
+                                            <span
+                                                    class="badge badge-danger badge-hover"
+                                                    onclick="deleteArticle(<%= article.id %>)">Delete</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -58,7 +58,7 @@
                             <thead>
                             <tr>
                                 <th>Username</th>
-                                <th>Operation</th>
+                                <th>Operations</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -68,13 +68,13 @@
                                         <td><%= user.name %></td>
                                         <td>
                                             <div>
-                                                <button type="button" class="btn btn-sm btn-outline-warning">Freeze
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-outline-warning">Unfreeze
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        onclick="deleteUser('<%= user.name %>')">Delete
-                                                </button>
+                                                <span
+                                                        class="badge badge-warning badge-hover"
+                                                        onclick="">Freeze</span> <span
+                                                        class="badge badge-info badge-hover"
+                                                        onclick="">Unfreeze</span> <span
+                                                        class="badge badge-danger badge-hover"
+                                                        onclick="deleteUser('<%= user.name %>')">Delete</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -172,7 +172,8 @@
                                 </div>
                             </li>
                             <li class="list-group-item plain-white-silk-color">
-                                <button type="button" class="btn btn-outline-success btn-block" onclick="$('#checkMessageModal').modal('show');loadMessages();">Check message
+                                <button type="button" class="btn btn-outline-success btn-block"
+                                        onclick="$('#checkMessageModal').modal('show');loadMessages();">Check message
                                 </button>
                                 <div class="modal fade" id="checkMessageModal">
                                     <div class="modal-dialog modal-dialog-centered modal-lg">
