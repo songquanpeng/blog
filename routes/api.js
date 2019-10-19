@@ -42,7 +42,7 @@ router.get('/statistics', function(req, res) {
   });
 });
 
-router.get('/article/:link', function(req, res) {
+router.get('/article/:link', checkLogin, function(req, res) {
   Article.getArticleByLink(req.params.link, (error, article) => {
     if (error != null || article === undefined) {
       res.json();
