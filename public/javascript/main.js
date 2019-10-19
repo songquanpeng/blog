@@ -152,3 +152,14 @@ function submitArticle() {}
 $(document).ready(function() {
   $('[data-toggle="tooltip"]').tooltip();
 });
+
+function gotToTop() {
+  console.log('Clicked');
+  $('body,html').animate(
+    {
+      scrollTop: 0
+    },
+    800
+  );
+  return false;
+}
