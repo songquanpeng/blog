@@ -1,9 +1,9 @@
 ![blog-website](https://user-images.githubusercontent.com/39998050/66268075-18b2e500-e86c-11e9-8e5a-d964eea47fe5.png)
 
 ![stars](https://img.shields.io/github/stars/songwonderful/blog-website) ![forks](https://img.shields.io/github/forks/songwonderful/blog-website) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/blog-website) ![license](https://img.shields.io/github/license/songwonderful/blog-website) ![release](https://img.shields.io/github/v/release/songwonderful/blog-website)
-## **Why should I try this one?**
-+ This one is **simple**, which means you can easily personalize it and update it.
-+ The developer will continue to improve it.
+## [**Why should I try this one?**](https://iamazing.cn/)
++ Simple yet powerful enough, which means you can understand the source code with ease and then develop your own blog website based on this one.
++ Continually update is promised.
 
 ## Description
 + This is a **dynamic blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
