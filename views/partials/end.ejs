@@ -1,5 +1,13 @@
 <div id="go-to-top">
     <a href="#top">↑</a>
+    <script>
+      top.onclick = ()=>{
+        $('body,html').animate({
+          scrollTop: 0
+        }, 800);
+        return false;
+      }
+    </script>
 </div>
 </body>
 </html>

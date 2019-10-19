@@ -90,8 +90,8 @@ nav {
     display: block;
     width: 100%;
     height: 100%;
-    background-color: #ffffff;
-    color: #f9ffde;
+    background-color: #757575;
+    color: #ffffff;
     font-size: 40px;
     font-weight: normal;
     text-align: center;
@@ -107,15 +107,17 @@ nav {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
     padding-top: 16px;
     padding-bottom: 16px;
+    font-size: 16px;
+    word-break: break-word;
+    line-height: 1.6;
+}
+article {
+    overflow-wrap: break-word;
+    font-size: larger;
 }
 
 footer {
     margin-top: 16px;
-}
-
-article {
-    overflow-wrap: break-word;
-    font-size: larger;
 }
 
 nav {
