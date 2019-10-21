@@ -1,6 +1,6 @@
-![blog-website](https://user-images.githubusercontent.com/39998050/66268075-18b2e500-e86c-11e9-8e5a-d964eea47fe5.png)
-
+# blog-website
 ![stars](https://img.shields.io/github/stars/songwonderful/blog-website) ![forks](https://img.shields.io/github/forks/songwonderful/blog-website) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/blog-website) ![license](https://img.shields.io/github/license/songwonderful/blog-website) ![release](https://img.shields.io/github/v/release/songwonderful/blog-website)
+
 ## [**Why should I try this one?**](https://iamazing.cn/)
 + **Simple yet powerful enough**, which means you can understand the source code with ease and then develop your own blog website based on this one.
 + **Continually update is promised**.
@@ -29,3 +29,54 @@
 
 ## Notice
 + For faster loading speed, non-Chinese users need to replace all the CDN links [in this file](https://github.com/songwonderful/blog-website/blob/master/views/partials/header.ejs). You can try https://cdn.jsdelivr.net or https://cdnjs.cloudflare.com.
+
+## Project structure
+```
+.
+├── LICENSE
+├── README.md
+├── app.js
+├── bin
+│   └── www
+├── data.db
+├── database.sql
+├── middlewares
+│   └── check.js
+├── models
+│   ├── article.js
+│   ├── data.js
+│   └── user.js
+├── package-lock.json
+├── package.json
+├── public
+│   ├── ads.txt
+│   ├── image
+│   │   ├── avatar.jpg
+│   │   └── background.png
+│   ├── javascript
+│   │   └── main.js
+│   └── stylesheet
+│       └── style.css
+├── routes
+│   ├── api.js
+│   └── index.js
+├── tree.txt
+├── utils
+│   └── util.js
+└── views
+    ├── archive.ejs
+    ├── article.ejs
+    ├── index.ejs
+    ├── list.ejs
+    ├── login.ejs
+    ├── message.ejs
+    ├── partials
+    │   ├── comment.ejs
+    │   ├── end.ejs
+    │   ├── footer.ejs
+    │   ├── header.ejs
+    │   ├── message.ejs
+    │   └── navigation.ejs
+    ├── post.ejs
+    └── user.ejs
+```
