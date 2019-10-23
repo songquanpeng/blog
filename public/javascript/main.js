@@ -1,3 +1,7 @@
+const UNCHECKED = 0;
+const ACTIVATE = 1;
+const DEACTIVATE = 2;
+
 function deleteArticle(id) {
   if (confirm('This article will be deleted soon')) {
     $.ajax({
@@ -35,18 +39,7 @@ function loadMessages() {
     tableBody.empty();
     let result = '';
     data.forEach(function(item) {
-      result +=
-        "<tr id='message_" +
-        item.id +
-        "'><td>" +
-        item.title +
-        '</td><td>' +
-        item.time +
-        '</td><td>' +
-        item.content +
-        `</td><td><button class='btn btn-sm btn-outline-warning' onclick="deactivateMessage(` +
-        item.id +
-        `)">Make as read</button></td></tr>`;
+      result += `<tr id='message_${item.id}'><td>${item.title}</td><td>${item.time}</td><td>${item.content}</td><td><button class='btn btn-sm btn-outline-warning' onclick="deactivateMessage(${item.id})">Make as read</button></td></tr>`;
     });
     tableBody.append(result);
   });
@@ -58,6 +51,37 @@ function deactivateMessage(id) {
     type: 'DELETE',
     success: function(result) {
       $('#message_' + id).remove();
+    }
+  });
+}
+
+function postComment() {
+  // TODO
+  $.ajax({
+    url: '/api/comment/',
+    type: 'POST',
+    data: {
+      author: undefined,
+      content: undefined
+    },
+    success: function(result) {
+      // TODO
+    }
+  });
+}
+
+function setCommentState(id, state) {
+  $.ajax({
+    url: '/api/setCommentState/',
+    type: 'POST',
+    data: {
+      id: id,
+      state: state
+    },
+    success: function(result) {
+      if (state === DEACTIVATE) {
+        $('#comment_' + id).remove();
+      }
     }
   });
 }

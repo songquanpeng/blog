@@ -1,14 +1,23 @@
 const db = require('../utils/util').db;
 
 class Data {
-  static getCommentBySubmitPath(path, callback) {
-    db.all('SELECT * FROM comments WHERE path = ?', path, callback);
+  static getCommentsByArticleId(articleId, callback) {
+    db.all(
+      'SELECT * FROM comments WHERE articleId = ?',
+      articleId,
+      (error, data) => {
+        if (error) {
+          console.error(error.message);
+        }
+        callback(data);
+      }
+    );
   }
 
   static createComment(data, callback) {
     db.run(
-      'INSERT INTO comments(path, time, author, content) VALUES (?, ?, ?, ?)',
-      data.path,
+      'INSERT INTO comments(articleId, time, author, content, state) VALUES (?, ?, ?, ?, 0)',
+      data.articleId,
       data.time,
       data.author,
       data.content,
@@ -16,8 +25,15 @@ class Data {
     );
   }
 
-  static deleteCommentBySubmitPath(path, callback) {
-    db.run('DELETE FROM comments WHERE path = ?', path, callback);
+  static updateCommentState(commentId, state, callback) {
+    db.run(
+      'UPDATE comments SET state = ? where id = ?',
+      state,
+      commentId,
+      error => {
+        callback(error === undefined);
+      }
+    );
   }
 
   static getActiveMessage(callback) {

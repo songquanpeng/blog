@@ -196,11 +196,37 @@ router.post('/edit/:link', checkLogin, function(req, res) {
   });
 });
 
-router.post('/comment/:subpath', checkLoginWithoutRedirect, function(req, res) {
+router.get('/comment/:articleId', function(req, res) {
+  const articleId = req.params.articleId;
+  let isAdmin = false;
+  if (req.session.user && req.session.user.username === 'root') {
+    isAdmin = true;
+  }
+  Data.getCommentsByArticleId(articleId, comments => {
+    res.json({
+      isAdmin: isAdmin,
+      comments: comments
+    });
+  });
+});
+
+router.post('/setCommentState', checkPermission, function(req, res) {
+  const commentId = req.body.commentId;
+  const state = req.body.state;
+  Data.updateCommentState(commentId, state, success => {
+    if (success) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(500);
+    }
+  });
+});
+
+router.post('/comment', function(req, res) {
   const currentTime = new Date();
   Data.createComment(
     {
-      path: '/api/comment/' + req.params.subpath,
+      articleId: req.params.articleId,
       time: currentTime.toLocaleString(),
       author: req.session.user.name,
       content: req.body.content
@@ -208,9 +234,9 @@ router.post('/comment/:subpath', checkLoginWithoutRedirect, function(req, res) {
     error => {
       if (error != null) {
         console.log(error.message);
-        res.send('Sorry file upload failed');
+        res.sendStatus(500);
       } else {
-        res.send('Successful Comment');
+        res.sendStatus(200);
       }
     }
   );

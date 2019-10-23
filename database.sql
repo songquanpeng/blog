@@ -11,9 +11,10 @@ description TEXT);
 
 CREATE TABLE IF NOT EXISTS comments(
 id integer primary key,
-path TEXT,
+articleId TEXT,
 time TEXT,
 author TEXT,
+state integer,
 content TEXT);
 
 CREATE TABLE IF NOT EXISTS users(
