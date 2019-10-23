@@ -1,23 +1,21 @@
 # LIGHTX-CMS
 ![stars](https://img.shields.io/github/stars/songwonderful/lightx-cms) ![forks](https://img.shields.io/github/forks/songwonderful/lightx-cms) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/lightx-cms) ![license](https://img.shields.io/github/license/songwonderful/lightx-cms) ![release](https://img.shields.io/github/v/release/songwonderful/lightx-cms)
 
-## [**Why should I try this one?**](https://iamazing.cn/)
-+ **Simple yet powerful enough**, which means you can understand the source code with ease and then develop your own blog website based on this one.
-+ **Continually update is promised**.
-
 ## Description
 + This is a **dynamic blog system** that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
-+ Use this system to **deploy your own website**.
++ You can use this system to **deploy your own website** with ease.
 + [**Click here to see the online demo.**](https://iamazing.cn/)
 + For more detailed information, please see this [wiki](https://github.com/songwonderful/lightx-cms/wiki).
 
-## Features
+## **Why should I try [this one](https://iamazing.cn/)?**
++ **Simple:** I make sure that you can understand the source code and then **develop your own blog website based on this one** with ease.
++ **Easy to deploy:** There is no need to configure the database and Nginx / Apache.
++ **Full SEO support:** Semantic link, server-side rendering and more.
 + **Dynamic:** Write articles directly in the browser.
-+ **Easy to deploy:** There is no need to configure the database.
-+ **Complete SEO support:** Semantic link, server-side rendering and more.
 + **Mobile support:** This website uses responsive layout.
++ **Development is still in progress:** Fork it and join me!
 
-## Try it now
+## Deploy it now
 1. Install Node.js with version `v10.14.2` or any compatible version. [Download Node.js here](https://nodejs.org/en/download/)
 2. Clone this repository by type this on your terminal: `git clone https://github.com/songwonderful/lightx-cms.git`
 3. Change the working directory by type this on your terminal: `cd lightx-cms`
@@ -29,8 +27,9 @@
 
 ## Notice
 + For faster loading speed, non-Chinese users need to replace all the CDN links [in this file](https://github.com/songwonderful/lightx-cms/blob/master/views/partials/header.ejs). You can try https://cdn.jsdelivr.net or https://cdnjs.cloudflare.com.
++ There is still some hard coding in the code, I will remove it in future updates.
 
-## Project structure
+## Project structure (I will add comments in the furture)
 ```
 .
 ├── LICENSE
