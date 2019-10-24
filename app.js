@@ -8,7 +8,13 @@ const serveStatic = require('serve-static');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const util = require('./utils/util');
+const config = require('./config').config;
 const app = express();
+
+app.locals.config = config;
+app.locals.title = config.motto + ' | ' + config.siteName;
+app.locals.keywords = config.siteName;
+app.locals.description = config.siteDescription;
 
 util.initializeDatabase();
 app.set('views', path.join(__dirname, 'views'));
@@ -31,9 +37,6 @@ app.use(
     maxAge: '600000'
   })
 );
-app.locals.title = "JustSong's blog";
-app.locals.keywords = 'JustSong blog';
-app.locals.description = "JustSong's blog";
 app.use('*', (req, res, next) => {
   res.locals.loggedIn = false;
   res.locals.isRootUser = false;
