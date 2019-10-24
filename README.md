@@ -26,10 +26,10 @@
 8. Okay, now everything is done, enjoy your own website. If you have any questions, please feel free to issue me.
 
 ## Notice
-+ For faster loading speed, non-Chinese users need to replace all the CDN links [in this file](https://github.com/songwonderful/lightx-cms/blob/master/views/partials/header.ejs). You can try https://cdn.jsdelivr.net or https://cdnjs.cloudflare.com.
++ For faster loading speed, you should use the proper cdn provider. You can easily change it in the file "config.js".
 + There is still some hard coding in the code, I will remove it in future updates.
 
-## Project structure (I will add comments in the furture)
+## Project structure (I will add comments in the future)
 ```
 .
 ├── LICENSE
