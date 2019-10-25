@@ -76,11 +76,11 @@ function loadComments(articleId) {
       if (isAdmin) {
         if (comment.state === ACTIVATE) {
           partB =
-            `<span class="badge badge-warning badge-hover" onclick="setCommentState(${comment.id}, DEACTIVATE)">Deactivate</span>` +
+            `<span class="badge badge-danger badge-hover" onclick="setCommentState(${comment.id}, DEACTIVATE)">Deactivate</span>` +
             partB;
         } else {
           partB =
-            `<span class="badge badge-warning badge-hover" onclick="setCommentState(${comment.id}, ACTIVATE)">Active</span>` +
+            `<span class="badge badge-primary badge-hover" onclick="setCommentState(${comment.id}, ACTIVATE)">Active</span>` +
             partB;
         }
       }
@@ -91,12 +91,19 @@ function loadComments(articleId) {
 }
 
 function postComment(articleId) {
+  let author = $('#commentAuthor')
+    .val()
+    .trim();
+  let content = $('#commentContent')
+    .val()
+    .trim();
+  if (!author || !content) return;
   $.ajax({
     url: '/api/comment/',
     type: 'POST',
     data: {
-      author: $('#commentAuthor').val(),
-      content: $('#commentContent').val(),
+      author: author,
+      content: content,
       articleId: articleId
     },
     success: function() {
