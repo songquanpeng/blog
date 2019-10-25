@@ -55,17 +55,52 @@ function deactivateMessage(id) {
   });
 }
 
-function postComment() {
-  // TODO
+function loadComments(articleId) {
+  $.get('/api/comment/' + articleId, function(data) {
+    const commentArea = $('#comment');
+    let result = '';
+    const isAdmin = data.isAdmin;
+    data.comments.forEach(function(comment) {
+      if (comment.state === DEACTIVATE) return;
+      if (!isAdmin && comment.state !== ACTIVATE) return;
+      comment.content = comment.content
+        .replace(/&/g, '&amp')
+        .replace(/</g, '&lt')
+        .replace(/>/g, '&gt');
+      let partA = `
+          <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
+            <div class="card-body">
+                <p class="card-text">${comment.content}</p>
+                <span class="badge badge-success badge-hover">${comment.author}</span> <span class="badge badge-secondary badge-hover">${comment.time}</span> `;
+      let partB = '</div></div>';
+      if (isAdmin) {
+        if (comment.state === ACTIVATE) {
+          partB =
+            `<span class="badge badge-warning badge-hover" onclick="setCommentState(${comment.id}, DEACTIVATE)">Deactivate</span>` +
+            partB;
+        } else {
+          partB =
+            `<span class="badge badge-warning badge-hover" onclick="setCommentState(${comment.id}, ACTIVATE)">Active</span>` +
+            partB;
+        }
+      }
+      result += partA + partB;
+    });
+    commentArea.append(result);
+  });
+}
+
+function postComment(articleId) {
   $.ajax({
     url: '/api/comment/',
     type: 'POST',
     data: {
-      author: undefined,
-      content: undefined
+      author: $('#commentAuthor').val(),
+      content: $('#commentContent').val(),
+      articleId: articleId
     },
-    success: function(result) {
-      // TODO
+    success: function() {
+      location.reload();
     }
   });
 }
@@ -78,10 +113,8 @@ function setCommentState(id, state) {
       id: id,
       state: state
     },
-    success: function(result) {
-      if (state === DEACTIVATE) {
-        $('#comment_' + id).remove();
-      }
+    success: function() {
+      location.reload();
     }
   });
 }

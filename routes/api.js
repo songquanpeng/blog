@@ -199,7 +199,7 @@ router.post('/edit/:link', checkLogin, function(req, res) {
 router.get('/comment/:articleId', function(req, res) {
   const articleId = req.params.articleId;
   let isAdmin = false;
-  if (req.session.user && req.session.user.username === 'root') {
+  if (req.session.user && req.session.user.name === 'root') {
     isAdmin = true;
   }
   Data.getCommentsByArticleId(articleId, comments => {
@@ -211,7 +211,7 @@ router.get('/comment/:articleId', function(req, res) {
 });
 
 router.post('/setCommentState', checkPermission, function(req, res) {
-  const commentId = req.body.commentId;
+  const commentId = req.body.id;
   const state = req.body.state;
   Data.updateCommentState(commentId, state, success => {
     if (success) {
@@ -226,9 +226,9 @@ router.post('/comment', function(req, res) {
   const currentTime = new Date();
   Data.createComment(
     {
-      articleId: req.params.articleId,
+      articleId: req.body.articleId,
       time: currentTime.toLocaleString(),
-      author: req.session.user.name,
+      author: req.body.author,
       content: req.body.content
     },
     error => {

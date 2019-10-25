@@ -31,7 +31,12 @@ class Data {
       state,
       commentId,
       error => {
-        callback(error === undefined);
+        if (error) {
+          console.error(error.message);
+          callback(false);
+        } else {
+          callback(true);
+        }
       }
     );
   }
