@@ -112,6 +112,12 @@ nav {
     line-height: 1.6;
 }
 
+@media screen and (max-width: 600px) {
+    .article-container {
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+}
 article {
     overflow-wrap: break-word;
     font-size: larger;
