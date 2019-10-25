@@ -4,18 +4,8 @@ const CDN = {
   cloudflare: 'cdnjs.cloudflare.com' // for other users
 };
 
-const externalStatisticsCode = `    
-    <script>
-      var _hmt = _hmt || [];
-      (function () {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?61fbf466b30ee950df155c38b719b1f3";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();
-    </script>
-`;
-const articleAd = `
+const AD = {
+  articleAd: `
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <ins class="adsbygoogle"
              style="display:block; text-align:center;"
@@ -27,7 +17,33 @@ const articleAd = `
           (adsbygoogle = window.adsbygoogle || []).push({
             overlays: {bottom:true}
           });
-        </script>`;
+        </script>`,
+  sidebarAd: `
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- sidebar-ad -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4932639067711253"
+             data-ad-slot="7215977983"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>`
+};
+
+const externalHeadCode = ` 
+    <script data-ad-client="ca-pub-4932639067711253" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>   
+    <script>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?61fbf466b30ee950df155c38b719b1f3";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+`;
 
 config = {
   domain: 'iamazing.cn',
@@ -38,8 +54,8 @@ config = {
   motto: '尽人事，听天命',
   link: 'https://github.com/songwonderful',
   enableComment: true,
-  externalStatisticsCode: externalStatisticsCode, // This code will be insert into <head>
-  articleAd: articleAd // This ad will show at the bottom of article
+  externalHeadCode: externalHeadCode, // This code will be insert into <head>
+  ad: AD
 };
 
 module.exports = {
