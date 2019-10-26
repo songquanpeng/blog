@@ -63,10 +63,6 @@ function loadComments(articleId) {
     data.comments.forEach(function(comment) {
       if (comment.state === DEACTIVATE) return;
       if (!isAdmin && comment.state !== ACTIVATE) return;
-      comment.content = comment.content
-        .replace(/&/g, '&amp')
-        .replace(/</g, '&lt')
-        .replace(/>/g, '&gt');
       let partA = `
           <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
             <div class="card-body">

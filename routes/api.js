@@ -9,6 +9,9 @@ const checkPermission = require('../middlewares/check').checkPermission;
 const checkLoginWithoutRedirect = require('../middlewares/check')
   .checkLoginWithoutRedirect;
 const titleToLink = require('../utils/util').titleToLink;
+const lexer = require('marked').lexer;
+const parser = require('marked').parser;
+const sanitizeHtml = require('sanitize-html');
 
 router.post('/login', function(req, res) {
   const username = req.body.username;
@@ -67,9 +70,6 @@ router.post('/post', checkLogin, function(req, res) {
     description = req.body.content.slice(0, 20) + ' ...';
   }
   const link = titleToLink(req.body.title);
-  let copyright =
-    '\n\n---\n**未经本人允许，禁止一切形式的转载！**\n**原文链接：**https://iamazing.cn/article/' +
-    link;
   Article.create(
     {
       title: title,
@@ -228,8 +228,8 @@ router.post('/comment', function(req, res) {
     {
       articleId: req.body.articleId,
       time: currentTime.toLocaleString(),
-      author: req.body.author,
-      content: req.body.content
+      author: sanitizeHtml(req.body.author),
+      content: sanitizeHtml(parser(lexer(req.body.content)))
     },
     error => {
       if (error != null) {
