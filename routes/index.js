@@ -55,7 +55,7 @@ router.get('/article/:link', function(req, res, next) {
     } else {
       let copyright = `\n\n---\n**All right reserved.**\n**Original link:** ${req.app.locals.config.siteUrl}/article/${req.params.link}`;
       article.content += copyright;
-      article.content = sanitizeHtml(parser(lexer(article.content)));
+      article.content = parser(lexer(article.content));
       res.render('article', {
         article: article,
         title: article.title,
