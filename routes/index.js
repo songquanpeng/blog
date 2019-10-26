@@ -52,9 +52,7 @@ router.get('/article/:link', function(req, res, next) {
     if (error != null || article === undefined) {
       next();
     } else {
-      let copyright =
-        '\n\n---\n**未经本人允许，禁止一切形式的转载！**\n**原文链接：**https://iamazing.cn/article/' +
-        req.params.link;
+      let copyright = `\n\n---\n**All right reserved.**\n**Original link:** ${req.app.locals.config.siteUrl}/article/${req.params.link}`;
       article.content += copyright;
       article.content = parser(lexer(article.content));
       res.render('article', {

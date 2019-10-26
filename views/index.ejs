@@ -59,32 +59,34 @@
                 <div class="container" style="padding-top: 8px">
                     <canvas id="statisticsChart" height="300px"></canvas>
                     <script>
-                        $.get("/api/statistics", function (statistics) {
-                          let labels = [];
-                          let pv = [];
-                          statistics.forEach((item)=>{
-                            labels.push('');
-                            pv.push(item.pv);
-                          });
-                          const ctx = document.getElementById('statisticsChart').getContext('2d');
-                          const chart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                              labels: labels,
-                              datasets:
-                                  [{
-                                    label: 'PV',
-                                    borderColor: 'rgb(255, 99, 132)',
-                                    data: pv
-                                  }]
-                            },
-                            options: {}
-                          });
+                      $.get("/api/statistics", function (statistics) {
+                        let labels = [];
+                        let pv = [];
+                        statistics.forEach((item) => {
+                          labels.push('');
+                          pv.push(item.pv);
                         });
+                        const ctx = document.getElementById('statisticsChart').getContext('2d');
+                        const chart = new Chart(ctx, {
+                          type: 'line',
+                          data: {
+                            labels: labels,
+                            datasets:
+                                [{
+                                  label: 'PV',
+                                  borderColor: 'rgb(255, 99, 132)',
+                                  data: pv
+                                }]
+                          },
+                          options: {}
+                        });
+                      });
                     </script>
                 </div>
             </div>
-            <%- config.ad.sidebarAd %>
+            <% if(config.enableAd){ %>
+                <%- config.ad.sidebarAd %>
+            <% } %>
         </div>
     </div>
 </div>

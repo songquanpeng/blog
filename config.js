@@ -3,8 +3,7 @@ const CDN = {
   jsdelivr: 'cdn.jsdelivr.net', // for other users
   cloudflare: 'cdnjs.cloudflare.com' // for other users
 };
-
-const AD = {
+const ad = {
   articleAd: `
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <ins class="adsbygoogle"
@@ -31,7 +30,6 @@ const AD = {
              (adsbygoogle = window.adsbygoogle || []).push({});
         </script>`
 };
-
 const externalHeadCode = ` 
     <script data-ad-client="ca-pub-4932639067711253" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>   
     <script>
@@ -46,16 +44,18 @@ const externalHeadCode = `
 `;
 
 config = {
-  domain: 'iamazing.cn',
   owner: 'JustSong',
   siteName: 'JustSong 的博客小站',
+  siteUrl: 'https://iamazing.cn',
   siteDescription: '记录有价值的个人思考与总结',
   cdn: CDN.staticfile,
   motto: '尽人事，听天命',
   link: 'https://github.com/songwonderful',
+  port: 3000,
   enableComment: true,
-  externalHeadCode: externalHeadCode, // This code will be insert into <head>
-  ad: AD
+  enableAd: true,
+  ad: ad,
+  externalHeadCode: externalHeadCode // These codes will be insert into <head>
 };
 
 module.exports = {

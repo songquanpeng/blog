@@ -4,7 +4,9 @@
 <div class="container article-container">
     <article class="shadow-box" style="padding: 16px">
         <%- article.content %>
-        <%- config.ad.articleAd %>
+        <% if(config.enableAd){ %>
+            <%- config.ad.articleAd %>
+        <% } %>
     </article>
 </div>
 <% if(config.enableComment){ %>
@@ -16,7 +18,9 @@
                         <h4>Comment</h4>
                     </div>
                     <div class="card-body" style="padding: 0">
-                        <textarea class="form-control" rows="5" id="commentContent" placeholder="Your comment will not show until reviewed by the administrator." required></textarea>
+                        <textarea class="form-control" rows="5" id="commentContent"
+                                  placeholder="Your comment will not show until reviewed by the administrator."
+                                  required></textarea>
                     </div>
                     <div class="card-footer">
                         <div class="form-inline">
