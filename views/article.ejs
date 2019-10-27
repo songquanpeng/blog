@@ -23,10 +23,10 @@
                                   required></textarea>
                     </div>
                     <div class="card-footer">
-                        <div class="form-inline">
-                            <input type="text" class="form-control" id="commentAuthor" style="margin-right: 10px"
+                        <div style="width:100%;display: inline-flex;flex-wrap: nowrap;">
+                            <input type="text" id="commentAuthor" style="flex-grow: 1;margin-right: 5px"
                                    placeholder="Enter your name..." required>
-                            <button class="btn btn-success" onclick=postComment(<%- article.id %>)>Submit</button>
+                            <button class="btn btn-success" style="flex-grow: 0" onclick=postComment(<%- article.id %>)>Submit</button>
                         </div>
                     </div>
                 </div>

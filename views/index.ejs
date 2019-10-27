@@ -2,9 +2,9 @@
 <%- include('./partials/navigation') %>
 <%- include('./partials/message') %>
 <!--Content here-->
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12 col-md-9" id="articleList">
+        <div class="col-sm-12 col-md-7 offset-md-1" id="articleList">
             <% if (articles.length){ %>
                 <% articles.forEach((article)=>{ %>
                     <div class="card article-list shadow-box bg-transparent" id="article_<%= article.id %>">
@@ -40,20 +40,37 @@
         <div class="col-sm-12 col-md-3">
             <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
                 <div class="card-header font-weight-bold">Notice</div>
-                    <div class="container" style="padding-top: 8px">
-                        <article id="sidebarNotice">
-                        </article>
-                        <script>
-                          $.get("/api/page/notice", function (data) {
-                            const sidebarNotice = document.getElementById('sidebarNotice');
-                            let noticeContent = "No notice."
-                            if(data){
-                              noticeContent = data.content;
-                            }
-                            sidebarNotice.innerHTML = noticeContent;
-                          });
-                        </script>
-                    </div>
+                <div class="container" style="padding-top: 8px">
+                    <article id="sidebarNotice">
+                    </article>
+                    <script>
+                      $.get("/api/page/notice", function (data) {
+                        const sidebarNotice = document.getElementById('sidebarNotice');
+                        let noticeContent = "No notice."
+                        if(data){
+                          noticeContent = data.content;
+                        }
+                        sidebarNotice.innerHTML = noticeContent;
+                      });
+                    </script>
+                </div>
+            </div>
+            <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
+                <div class="card-header font-weight-bold">About</div>
+                <div class="container" style="padding-top: 8px">
+                    <article id="sidebarAbout" style="">
+                    </article>
+                    <script>
+                      $.get("/api/page/about", function (data) {
+                        const sidebarAbout = document.getElementById('sidebarAbout');
+                        let aboutContent = "No personal introduction."
+                        if(data){
+                          aboutContent = data.content;
+                        }
+                        sidebarAbout.innerHTML = aboutContent;
+                      });
+                    </script>
+                </div>
             </div>
             <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
                 <div class="card-header font-weight-bold">Statistics</div>

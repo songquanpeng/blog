@@ -33,7 +33,7 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/statistics', function(req, res) {
-  Data.getStatistics(7, (error, data) => {
+  Data.getStatistics(14, (error, data) => {
     if (error) {
       console.error(error.message);
     } else {
