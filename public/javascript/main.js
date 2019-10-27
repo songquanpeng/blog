@@ -104,7 +104,9 @@ function postComment(articleId) {
       articleId: articleId
     },
     success: function() {
-      location.reload();
+      $('#commentAuthor').val('');
+      $('#commentContent').val('');
+      showToast('System', '评论发表成功，将在管理员审核后显示');
     }
   });
 }
@@ -150,6 +152,10 @@ function loadMoreArticles() {
 
 function main() {
   $('[data-toggle="tooltip"]').tooltip();
+  if (isDesktop()) {
+    let loadTime = (Math.round(performance.now() * 100) / 100000).toFixed(2);
+    showToast('System', `Welcome, my friend! Page loaded in ${loadTime} s.`);
+  }
   if ($('#articleList').length === 1) {
     $(window).scroll(function() {
       if (articleListLoading) return;
