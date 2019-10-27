@@ -10,3 +10,10 @@ function showToast(title, message) {
   $('#toastContent').text(message);
   $('#toast').toast('show');
 }
+
+function showWelcome() {
+  if (isDesktop()) {
+    let loadTime = (Math.round(performance.now() * 100) / 100000).toFixed(2);
+    showToast('System', `Welcome, my friend! Page loaded in ${loadTime} s.`);
+  }
+}
