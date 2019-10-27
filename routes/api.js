@@ -45,6 +45,27 @@ router.get('/statistics', function(req, res) {
   });
 });
 
+router.get('/page/:pageName', function(req, res) {
+  Article.getSpecialPage(
+    req.params.pageName.toLowerCase(),
+    (error, article) => {
+      if (error != null || article === undefined) {
+        res.json(undefined);
+      } else {
+        article.content = parser(
+          lexer(
+            article.content
+              .split('\n')
+              .splice(3)
+              .join('\n')
+          )
+        );
+        res.json(article);
+      }
+    }
+  );
+});
+
 router.get('/article/:link', checkLogin, function(req, res) {
   Article.getArticleByLink(req.params.link, (error, article) => {
     if (error != null || article === undefined) {

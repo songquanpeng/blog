@@ -17,32 +17,19 @@ router.get('/', function(req, res) {
     if (error) {
       console.error(error.message);
     }
-    Article.getSpecialPage('notice', (error, article) => {
-      if (article !== undefined) {
-        article.content = parser(
-          lexer(
-            article.content
-              .split('\n')
-              .splice(3)
-              .join('\n')
-          )
-        );
-      }
-      articles.sort(function(a, b) {
-        return new Date(b.time) - new Date(a.time);
-      });
-      let articlesByTimes = articles.slice(0, 3);
-      let articlesByViews = articles.slice(3);
-      articlesByViews.sort(function(a, b) {
-        return b.views - a.views;
-      });
-      res.render('index', {
-        articles: articlesByTimes.concat(articlesByViews),
-        notice: article,
-        info: req.flash('info'),
-        error: req.flash('error'),
-        currentUser: req.session.user ? req.session.user.name : undefined
-      });
+    articles.sort(function(a, b) {
+      return new Date(b.time) - new Date(a.time);
+    });
+    let articlesByTimes = articles.slice(0, 3);
+    let articlesByViews = articles.slice(3);
+    articlesByViews.sort(function(a, b) {
+      return b.views - a.views;
+    });
+    res.render('index', {
+      articles: articlesByTimes.concat(articlesByViews),
+      info: req.flash('info'),
+      error: req.flash('error'),
+      currentUser: req.session.user ? req.session.user.name : undefined
     });
   });
 });

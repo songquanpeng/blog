@@ -1,6 +1,7 @@
 const UNCHECKED = 0;
 const ACTIVATE = 1;
 const DEACTIVATE = 2;
+let articleListLoading = false;
 
 function deleteArticle(id) {
   if (confirm('This article will be deleted soon')) {
@@ -138,8 +139,28 @@ function gotToTop() {
   return false;
 }
 
+function loadMoreArticles() {
+  articleListLoading = true;
+  console.log('Loading...');
+  setTimeout(() => {
+    console.log('Load done.');
+    articleListLoading = false;
+  }, 1000);
+}
+
 function main() {
   $('[data-toggle="tooltip"]').tooltip();
+  if ($('#articleList').length === 1) {
+    $(window).scroll(function() {
+      if (articleListLoading) return;
+      let windowHeight = $(window).height();
+      let documentHeight = $(document).height();
+      let scrollDistance = $(window).scrollTop();
+      if (scrollDistance >= documentHeight - windowHeight) {
+        loadMoreArticles();
+      }
+    });
+  }
 }
 
 $(document).ready(main);

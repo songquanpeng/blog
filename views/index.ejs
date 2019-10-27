@@ -4,7 +4,7 @@
 <!--Content here-->
 <div class="container">
     <div class="row">
-        <div class="col-sm-12 col-md-9">
+        <div class="col-sm-12 col-md-9" id="articleList">
             <% if (articles.length){ %>
                 <% articles.forEach((article)=>{ %>
                     <div class="card article-list shadow-box bg-transparent" id="article_<%= article.id %>">
@@ -40,19 +40,20 @@
         <div class="col-sm-12 col-md-3">
             <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
                 <div class="card-header font-weight-bold">Notice</div>
-                <% if(notice) { %>
                     <div class="container" style="padding-top: 8px">
-                        <article>
-                            <%- notice.content %>
+                        <article id="sidebarNotice">
                         </article>
+                        <script>
+                          $.get("/api/page/notice", function (data) {
+                            const sidebarNotice = document.getElementById('sidebarNotice');
+                            let noticeContent = "No notice."
+                            if(data){
+                              noticeContent = data.content;
+                            }
+                            sidebarNotice.innerHTML = noticeContent;
+                          });
+                        </script>
                     </div>
-                <% }else{ %>
-                    <div class="card-body">
-                        <p>Publish an article called "notice" as the root user, which you will see here.😃</p>
-                        <p>Similarly, publish articles called "about" and "links" that you will be able to access in the
-                            navigation bar.😉</p>
-                    </div>
-                <% } %>
             </div>
             <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
                 <div class="card-header font-weight-bold">Statistics</div>
