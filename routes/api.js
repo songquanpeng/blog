@@ -76,6 +76,13 @@ router.get('/article/:link', checkLogin, function(req, res) {
   });
 });
 
+router.get('/article/:start/:number', function(req, res) {
+  const start = req.params.start;
+  const end = req.params.number;
+  const articles = Article.getArticlesByRange(start, end);
+  res.json(articles);
+});
+
 router.post('/post', checkLogin, function(req, res) {
   const currentTime = new Date();
   let title = req.body.title.trim();
