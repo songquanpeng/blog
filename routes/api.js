@@ -80,7 +80,10 @@ router.get('/article/:start/:number', function(req, res) {
   const start = req.params.start;
   const end = req.params.number;
   const articles = Article.getArticlesByRange(start, end);
-  res.json(articles);
+  res.json({
+    currentUser: req.session.user ? req.session.user.name : undefined,
+    articles: articles
+  });
 });
 
 router.post('/post', checkLogin, function(req, res) {

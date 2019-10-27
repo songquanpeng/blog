@@ -1,6 +1,8 @@
 const UNCHECKED = 0;
 const ACTIVATE = 1;
 const DEACTIVATE = 2;
+const ARTICLE_NUMBER = 5;
+let currentArticleIndex = 10;
 let articleListLoading = false;
 
 function deleteArticle(id) {
@@ -143,11 +145,39 @@ function gotToTop() {
 
 function loadMoreArticles() {
   articleListLoading = true;
-  console.log('Loading...');
-  setTimeout(() => {
-    console.log('Load done.');
+  $.get(`/api/article/${currentArticleIndex}/${ARTICLE_NUMBER}`, function(
+    data
+  ) {
+    const articleList = $('#articleList');
+    let newArticles = '';
+    if (data.articles.length !== 0) {
+      data.articles.forEach(function(article) {
+        let isAuthor = article.author === data.currentUser;
+        let partOne = `
+      <div class="card article-list shadow-box bg-transparent" id="article_${article.id}">
+    <div class="card-body">
+        <h4 class="card-title font-weight-bold"
+            onclick="location.href='/article/${article.link}'"
+            style="cursor: pointer">${article.title}</h4>
+        <div>`;
+        let partTwo = '';
+        article.tag.split(' ').forEach(function(tag) {
+          partTwo += `<span class="badge badge-primary badge-hover" onclick="location.href='/tag/${tag}'">${tag}</span> `;
+        });
+        let partThree = `<span class="badge badge-success badge-hover" onclick="location.href='/user/${article.author}'">${article.author}</span> <span class="badge badge-secondary badge-hover" onclick='onTimeTagClicked("${article.time}")'>${article.time}</span> `;
+        let partFour = isAuthor
+          ? `<span class="badge badge-danger badge-hover" onclick="deleteArticle(${article.id})">Delete</span> <span class="badge badge-dark badge-hover" onclick="location.href='/edit/${article.link}'">Edit</span>`
+          : '';
+        let partFive = ` <span class="badge badge-info badge-hover" onclick="location.href='/article/${article.link}'">Views: ${article.views}</span></div><p class="card-text">${article.description}</p></div></div>`;
+        newArticles += partOne + partTwo + partThree + partFour + partFive;
+        articleList.append(newArticles);
+      });
+      currentArticleIndex += data.articles.length;
+      console.log(data.articles.length);
+      console.log(currentArticleIndex);
+    }
     articleListLoading = false;
-  }, 1000);
+  });
 }
 
 function main() {

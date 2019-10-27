@@ -78,7 +78,9 @@ class Article {
         // Update statistics pv
         const time = new Date().toLocaleString();
         const date = time.split(',')[0];
-        db.run('UPDATE statistics set pv = pv + 1 WHERE date = ?', date);
+        db.run('UPDATE statistics set pv = pv + 1 WHERE date = ?', date, () => {
+          this.loadArticles();
+        });
       }
       callback(error, article);
     });
