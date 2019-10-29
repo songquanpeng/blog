@@ -18,17 +18,18 @@ const ad = {
           });
         </script>`,
   sidebarAd: `
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- sidebar-ad -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-4932639067711253"
-             data-ad-slot="7215977983"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>`
+<!--        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+<!--        &lt;!&ndash; sidebar-ad &ndash;&gt;-->
+<!--        <ins class="adsbygoogle"-->
+<!--             style="display:block"-->
+<!--             data-ad-client="ca-pub-4932639067711253"-->
+<!--             data-ad-slot="7215977983"-->
+<!--             data-ad-format="auto"-->
+<!--             data-full-width-responsive="true"></ins>-->
+<!--        <script>-->
+<!--             (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--        </script>-->
+`
 };
 const externalHeadCode = ` 
     <script data-ad-client="ca-pub-4932639067711253" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>   
