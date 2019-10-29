@@ -154,10 +154,10 @@ nav:hover {
     text-decoration: none;
 }
 
-body {
-    background-image: url("/image/background.png");
-    background-color: #ffffff;
-}
+/*body {*/
+/*    background-image: url("/image/background.png");*/
+/*    background-color: #ffffff;*/
+/*}*/
 
 #search:focus {
     border-color: rgba(242, 236, 222, 0.8);
