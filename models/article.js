@@ -1,11 +1,7 @@
 const db = require('../utils/util').db;
 
 class Article {
-  constructor() {
-    this.loadArticles();
-  }
-
-  loadArticles() {
+  loadArticles(callback) {
     db.all(
       'SELECT id, title, author, tag, time, description, link, views FROM articles',
       (error, articles) => {
@@ -21,6 +17,9 @@ class Article {
           return b.views - a.views;
         });
         this.articles = newArticles.concat(sortedArticles);
+        if (callback) {
+          callback();
+        }
       }
     );
   }
@@ -63,8 +62,14 @@ class Article {
     this.loadArticles();
   }
 
-  getArticlesByRange(start, number) {
-    return this.articles.slice(start, start + number);
+  getArticlesByRange(start, number, callback) {
+    if (this.articles) {
+      callback(this.articles.slice(start, start + number));
+    } else {
+      this.loadArticles(() => {
+        callback(this.articles.slice(start, start + number));
+      });
+    }
   }
 
   getArticleByLink(link, callback) {

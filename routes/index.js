@@ -13,12 +13,13 @@ const sitemap = require('sitemap');
 const titleToLink = require('../utils/util').titleToLink;
 
 router.get('/', function(req, res) {
-  let articles = Article.getArticlesByRange(0, 10);
-  res.render('index', {
-    articles: articles,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    currentUser: req.session.user ? req.session.user.name : undefined
+  Article.getArticlesByRange(0, 10, articles => {
+    res.render('index', {
+      articles: articles,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      currentUser: req.session.user ? req.session.user.name : undefined
+    });
   });
 });
 
@@ -91,13 +92,14 @@ router.get('/user', function(req, res) {
   if (req.session.user === undefined) {
     res.render('login', { error: req.flash('error'), info: req.flash('info') });
   } else {
-    let articles = Article.getArticlesByRange(0, 10);
-    User.all((error, users) => {
-      res.render('user', {
-        info: req.flash('info'),
-        error: req.flash('error'),
-        articles: articles.reverse(),
-        users: users
+    Article.getArticlesByRange(0, 10, articles => {
+      User.all((error, users) => {
+        res.render('user', {
+          info: req.flash('info'),
+          error: req.flash('error'),
+          articles: articles.reverse(),
+          users: users
+        });
       });
     });
   }
@@ -133,14 +135,15 @@ router.get('/page/:pageName', function(req, res) {
 });
 
 router.get('/archive', function(req, res) {
-  let articles = Article.getArticlesByRange(0, 1000);
-  res.render('archive', {
-    articles: articles.reverse(),
-    title: 'Archive',
-    keywords: 'archive site map',
-    description: 'archive for this website',
-    info: req.flash('info'),
-    error: req.flash('error')
+  Article.getArticlesByRange(0, 1000, articles => {
+    res.render('archive', {
+      articles: articles.reverse(),
+      title: 'Archive',
+      keywords: 'archive site map',
+      description: 'archive for this website',
+      info: req.flash('info'),
+      error: req.flash('error')
+    });
   });
 });
 
@@ -151,17 +154,18 @@ router.get('/sitemap.xml', function(req, res) {
     cacheTime: 600000,
     urls: [host]
   };
-  let articles = Article.getArticlesByRange(0, 1000);
-  articles.forEach(item => {
-    sitemapOption.urls.push({
-      url: `/article/` + item.link,
-      changefreq: 'daily',
-      lastmod: new Date(item.time)
+  Article.getArticlesByRange(0, 1000, articles => {
+    articles.forEach(item => {
+      sitemapOption.urls.push({
+        url: `/article/` + item.link,
+        changefreq: 'daily',
+        lastmod: new Date(item.time)
+      });
     });
+    let xml = sitemap.createSitemap(sitemapOption).toString();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
   });
-  let xml = sitemap.createSitemap(sitemapOption).toString();
-  res.header('Content-Type', 'application/xml');
-  res.send(xml);
 });
 
 router.get('/post', checkLogin, function(req, res) {
