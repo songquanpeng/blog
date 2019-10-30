@@ -5,6 +5,26 @@ const ARTICLE_NUMBER = 5;
 let currentArticleIndex = 10;
 let articleListLoading = false;
 
+function isDesktop() {
+  const screenWidth = document.body.clientWidth;
+  return screenWidth >= 1000;
+}
+
+function showToast(title, message) {
+  let date = new Date();
+  $('#toastTitle').text(title);
+  $('#toastTime').text(date.toLocaleTimeString());
+  $('#toastContent').text(message);
+  $('#toast').toast('show');
+}
+
+function showWelcome() {
+  if (isDesktop()) {
+    let loadTime = (Math.round(performance.now() * 100) / 100000).toFixed(2);
+    showToast('System', `Welcome, my friend! Page loaded in ${loadTime} s.`);
+  }
+}
+
 function deleteArticle(id) {
   if (confirm('This article will be deleted soon')) {
     $.ajax({
@@ -170,11 +190,12 @@ function loadMoreArticles() {
           : '';
         let partFive = ` <span class="badge badge-info badge-hover" onclick="location.href='/article/${article.link}'">Views: ${article.views}</span></div><p class="card-text">${article.description}</p></div></div>`;
         newArticles += partOne + partTwo + partThree + partFour + partFive;
-        articleList.append(newArticles);
       });
+      articleList.append(newArticles);
       currentArticleIndex += data.articles.length;
       console.log(data.articles.length);
       console.log(currentArticleIndex);
+      console.log(data);
     }
     articleListLoading = false;
   });

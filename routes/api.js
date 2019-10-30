@@ -77,12 +77,13 @@ router.get('/article/:link', checkLogin, function(req, res) {
 });
 
 router.get('/article/:start/:number', function(req, res) {
-  const start = req.params.start;
-  const end = req.params.number;
-  const articles = Article.getArticlesByRange(start, end);
-  res.json({
-    currentUser: req.session.user ? req.session.user.name : undefined,
-    articles: articles
+  const start = parseInt(req.params.start);
+  const number = parseInt(req.params.number);
+  Article.getArticlesByRange(start, number, articles => {
+    res.json({
+      currentUser: req.session.user ? req.session.user.name : undefined,
+      articles: articles
+    });
   });
 });
 

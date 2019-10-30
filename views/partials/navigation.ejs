@@ -59,7 +59,7 @@
             </li>
         </ul>
         <!--        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=4010213&auto=0&height=32"></iframe>-->
-        <div class="form-inline my-2 my-lg-0" action="https://www.google.com/search?q=site%3Aiamazing.cn&oq=site">
+        <div class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2 plain-white-silk-color" id="search" type="search"
                    placeholder="Search this site..."
                    aria-label="Search">
@@ -69,7 +69,7 @@
                 let keyword = document.getElementById("search").value.replace(/\s+/g, "+");
                 let googleUrl = "https://www.google.com/search?q=" + keyword + "+site%3Aiamazing.cn";
                 let dogedogeUrl = "https://www.dogedoge.com/results?q=" + keyword + "+site%3Aiamazing.cn";
-                window.open(dogedogeUrl);
+                window.open(googleUrl);
               }
 
               $(document).ready(function () {

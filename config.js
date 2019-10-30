@@ -32,7 +32,17 @@ const ad = {
 `
 };
 const externalHeadCode = ` 
-    <script data-ad-client="ca-pub-4932639067711253" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>   
+    <script data-ad-client="ca-pub-4932639067711253" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141101198-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-141101198-2');
+    </script>
+   
     <script>
       var _hmt = _hmt || [];
       (function () {

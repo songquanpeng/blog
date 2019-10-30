@@ -92,7 +92,7 @@ router.get('/user', function(req, res) {
   if (req.session.user === undefined) {
     res.render('login', { error: req.flash('error'), info: req.flash('info') });
   } else {
-    Article.getArticlesByRange(0, 10, articles => {
+    Article.getArticlesByRange(0, 1000, articles => {
       User.all((error, users) => {
         res.render('user', {
           info: req.flash('info'),
