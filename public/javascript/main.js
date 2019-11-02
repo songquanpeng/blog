@@ -193,9 +193,6 @@ function loadMoreArticles() {
       });
       articleList.append(newArticles);
       currentArticleIndex += data.articles.length;
-      console.log(data.articles.length);
-      console.log(currentArticleIndex);
-      console.log(data);
     }
     articleListLoading = false;
   });
