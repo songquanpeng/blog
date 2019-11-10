@@ -15,6 +15,8 @@ app.locals.config = config;
 app.locals.title = config.motto + ' | ' + config.siteName;
 app.locals.keywords = config.siteName;
 app.locals.description = config.siteDescription;
+app.locals.info = '';
+app.locals.error = '';
 
 util.initializeDatabase();
 app.set('views', path.join(__dirname, 'views'));

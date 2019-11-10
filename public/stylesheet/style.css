@@ -222,7 +222,7 @@ body {
     }
 }
 
-@media screen and (max-width: 1350px){
+@media screen and (max-width: 1350px) and (min-width: 995px){
     .nav-text {
         display: none;
     }

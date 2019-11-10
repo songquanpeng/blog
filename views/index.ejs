@@ -1,10 +1,10 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
-<%- include('./partials/message') %>
 <!--Content here-->
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-md-7 offset-md-1" id="articleList">
+            <%- include('./partials/message') %>
             <% if (articles.length){ %>
                 <% articles.forEach((article)=>{ %>
                     <div class="card article-list shadow-box bg-transparent" id="article_<%= article.id %>">
