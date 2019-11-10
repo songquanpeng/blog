@@ -213,4 +213,10 @@ function main() {
   }
 }
 
+function loadPoetry() {
+  $.get('https://v1.jinrishici.com/all.json', function(poetry) {
+    $('#poetry').text(poetry.content);
+  });
+}
+
 $(document).ready(main);
