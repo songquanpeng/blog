@@ -11,48 +11,35 @@
             <li class="nav-item">
                 <a class="nav-link" href="/archive"><i class="fa fa-archive" aria-hidden="true"></i> Archive</a>
             </li>
-            <% if(loggedIn) { %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/user"><i class="fa fa-user" aria-hidden="true"></i> Mine</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/post"><i class="fa fa-edit" aria-hidden="true"></i> Post</a>
-                </li>
-            <% } %>
             <li class="nav-item">
                 <a class="nav-link" href="/page/links"><i class="fa fa-link" aria-hidden="true"></i> Links</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/page/about"><i class="fa fa-address-card" aria-hidden="true"></i> About</a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false"><i class="fa fa-fire" aria-hidden="true"></i>
-                    More
-                </a>
-                <div class="dropdown-menu plain-white-silk-color" aria-labelledby="navbarDropdown">
-                    <!--                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#myModal">Message board</a>-->
-                    <% if(!loggedIn) { %>
-                        <a class="dropdown-item" href="/user">Sign In</a>
-                    <% } else {%>
-                        <a class="dropdown-item" href="/logout">Sign Out</a>
-                    <%}%>
-                    <button type="button" class="dropdown-item" data-toggle="modal"
-                            data-target="#leaveMessageDialog">
-                        Leave Message
-                    </button>
-                    <a class="dropdown-item" href="/sitemap.xml">View Sitemap</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="https://github.com/songwonderful/lightx-cms">Powered by LIGHTX-CMS</a>
-                </div>
+            <% if(loggedIn) { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/user"><i class="fa fa-user" aria-hidden="true"></i> Mine</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/post"><i class="fa fa-edit" aria-hidden="true"></i> Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+            </li>
+            <% } else { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/user"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+            </li>
+            <% } %>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="modal" data-target="#leaveMessageDialog" style="cursor: pointer"><i class="fa fa-envelope" aria-hidden="true"></i> Feedback</a>
             </li>
         </ul>
-        <!--        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=4010213&auto=0&height=32"></iframe>-->
         <div class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2 plain-white-silk-color" id="search" type="search"
-                   placeholder="Search this site..."
-                   aria-label="Search">
-            <button class="btn btn-outline-dark my-2 my-sm-0" onclick="search()">Search</button>
+            <input class="form-control mr-sm-2 " id="search" type="search"
+                   placeholder='SEARCH THIS SITE'
+                   aria-label="Search" autofocus style="border: none">
             <script>
               function search() {
                 let keyword = document.getElementById("search").value.replace(/\s+/g, "+");
