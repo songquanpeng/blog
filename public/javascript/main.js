@@ -15,7 +15,9 @@ function showToast(title, message) {
   $('#toastTitle').text(title);
   $('#toastTime').text(date.toLocaleTimeString());
   $('#toastContent').text(message);
-  $('#toast').toast('show');
+  const toast = $('#toast');
+  toast.toast('show');
+  toast.delay(3000).hide(300);
 }
 
 function showWelcome() {

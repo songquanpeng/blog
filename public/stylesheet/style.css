@@ -221,3 +221,9 @@ body {
         right: 0;
     }
 }
+
+@media screen and (max-width: 1350px){
+    .nav-text {
+        display: none;
+    }
+}

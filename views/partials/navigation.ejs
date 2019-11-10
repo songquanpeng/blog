@@ -1,6 +1,6 @@
 <!-- Navigation bar -->
 <nav class="navbar navbar-expand-lg navbar-light font-weight-bold">
-    <a class="navbar-brand" href="/"><i class="fa fa-home"></i> JustSong</a>
+    <a class="navbar-brand" href="/">JustSong</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -8,32 +8,32 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/archive"><i class="fa fa-archive" aria-hidden="true"></i> Archive</a>
+                <a class="nav-link" href="/archive"><i class="fa fa-archive" aria-hidden="true" data-toggle="tooltip" title="archive of articles"></i> <span class="nav-text">Archive</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/page/links"><i class="fa fa-link" aria-hidden="true"></i> Links</a>
+                <a class="nav-link" href="/page/links"><i class="fa fa-link" aria-hidden="true" data-toggle="tooltip" title="friend links"></i> <span class="nav-text">Links</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/page/about"><i class="fa fa-address-card" aria-hidden="true"></i> About</a>
+                <a class="nav-link" href="/page/about"><i class="fa fa-address-card" aria-hidden="true" data-toggle="tooltip" title="about me"></i> <span class="nav-text">About</span></a>
             </li>
             <% if(loggedIn) { %>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user"><i class="fa fa-user" aria-hidden="true"></i> Mine</a>
+                    <a class="nav-link" href="/user"><i class="fa fa-user" aria-hidden="true" data-toggle="tooltip" title="administrative system"></i> <span class="nav-text">Mine</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/post"><i class="fa fa-edit" aria-hidden="true"></i> Post</a>
+                    <a class="nav-link" href="/post"><i class="fa fa-edit" aria-hidden="true" data-toggle="tooltip" title="post new articles"></i> <span class="nav-text">Post</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+                    <a class="nav-link" href="/logout"><i class="fa fa-sign-out" aria-hidden="true" data-toggle="tooltip" title="sign out"></i> <span class="nav-text">Logout</span></a>
                 </li>
             <% } else { %>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                    <a class="nav-link" href="/user"><i class="fa fa-sign-in" aria-hidden="true" data-toggle="tooltip" title="sign in"></i> <span class="nav-text">Login</span></a>
                 </li>
             <% } %>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="modal" data-target="#leaveMessageDialog" style="cursor: pointer"><i
-                            class="fa fa-envelope" aria-hidden="true"></i> Feedback</a>
+                            class="fa fa-envelope" aria-hidden="true" data-toggle="tooltip" title="leave message to me"></i> <span class="nav-text">Feedback</span></a>
             </li>
             <li class="nav-item">
                 <span class="nav-link" id="poetry"></span>
