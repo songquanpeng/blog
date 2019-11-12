@@ -1,4 +1,10 @@
 <%- include('./partials/header') %>
+<div class="home-banner" id="banner">
+    <div class="banner-center">
+        <h2><%- config.owner%></h2>
+        <h3><%- config.motto%></h3>
+    </div>
+</div>
 <%- include('./partials/navigation') %>
 <!--Content here-->
 <div class="container-fluid">
@@ -109,6 +115,19 @@
     </div>
 </div>
 <script>
-  $(document).ready(showWelcome());
+  let isBannerDeleted = false;
+  $(document).ready(()=>{
+    $('#go-to-top').hide();
+    $(window).scroll(function() {
+      if (isBannerDeleted) return;
+      let windowHeight = $(window).height();
+      let scrollDistance = $(window).scrollTop();
+      if (scrollDistance >= windowHeight) {
+        $('#banner').hide();
+        showWelcome()
+        $('#go-to-top').show();
+      }
+    });
+  });
 </script>
 <%- include('./partials/footer') %>
