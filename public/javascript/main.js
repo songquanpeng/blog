@@ -20,13 +20,6 @@ function showToast(title, message) {
   toast.delay(3000).hide(300);
 }
 
-function showWelcome() {
-  if (isDesktop()) {
-    let loadTime = (Math.round(performance.now() * 100) / 100000).toFixed(2);
-    showToast('System', `Welcome, my friend! Page loaded in ${loadTime} s.`);
-  }
-}
-
 function deleteArticle(id) {
   if (confirm('This article will be deleted soon')) {
     $.ajax({

@@ -1,4 +1,9 @@
 <%- include('./partials/header') %>
+<style>
+    #go-to-top {
+        display: none;
+    }
+</style>
 <div class="home-banner" id="banner">
     <div class="banner-center">
         <h2><%- config.owner%></h2>
@@ -116,6 +121,7 @@
 </div>
 <script>
   let isBannerDeleted = false;
+  let loadTime = (Math.round(performance.now() * 100) / 100000).toFixed(2);
   $(document).ready(()=>{
     $('#go-to-top').hide();
     $(window).scroll(function() {
@@ -124,7 +130,10 @@
       let scrollDistance = $(window).scrollTop();
       if (scrollDistance >= windowHeight) {
         $('#banner').hide();
-        showWelcome()
+        isBannerDeleted = true;
+        if (isDesktop()) {
+          showToast('System', `Welcome, my friend! Page loaded in ${loadTime} s.`);
+        }
         $('#go-to-top').show();
       }
     });
