@@ -1,7 +1,7 @@
 # LIGHTX-CMS
 ![stars](https://img.shields.io/github/stars/songwonderful/lightx-cms) ![forks](https://img.shields.io/github/forks/songwonderful/lightx-cms) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/lightx-cms) ![license](https://img.shields.io/github/license/songwonderful/lightx-cms) ![release](https://img.shields.io/github/v/release/songwonderful/lightx-cms)
 
-[中文](https://iamazing.cn/article/LAN-SHARE-使用教程)
+[中文](https://iamazing.cn/article/LIGHTX-CMS-——-基于-Node.js，Express.js-以及-SQLite-3-搭建个人博客)
 ## Description
 + This is a blog system that based on Node.js, Express.js, SQLite 3 and Bootstrap 4.
 + You can use this system to **deploy your own website** with ease.
@@ -31,7 +31,7 @@
 ```
 .
 ├── LICENSE  # MIT LICENSE
-├── README.md 
+├── README.md
 ├── app.js
 ├── bin
 │   └── www
@@ -41,7 +41,7 @@
 ├── middlewares
 │   └── check.js  # Permission check
 ├── models
-│   ├── article.js 
+│   ├── article.js
 │   ├── data.js
 │   └── user.js
 ├── package-lock.json
