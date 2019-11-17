@@ -1,19 +1,16 @@
 # LIGHTX-CMS
 ![stars](https://img.shields.io/github/stars/songwonderful/lightx-cms) ![forks](https://img.shields.io/github/forks/songwonderful/lightx-cms) ![repo-size](https://img.shields.io/github/repo-size/songwonderful/lightx-cms) ![license](https://img.shields.io/github/license/songwonderful/lightx-cms) ![release](https://img.shields.io/github/v/release/songwonderful/lightx-cms)
 
+[中文](https://iamazing.cn/article/LAN-SHARE-使用教程)
 ## Description
-+ This is a blog system that based on Node.js, Express.js, SQLite3 and Bootstrap 4.
++ This is a blog system that based on Node.js, Express.js, SQLite 3 and Bootstrap 4.
 + You can use this system to **deploy your own website** with ease.
 + [**Click here to see the online demo.**](https://iamazing.cn/)
 + For more detailed information, please see this [wiki](https://github.com/songwonderful/lightx-cms/wiki).
 
-## Why should I try [this one](https://iamazing.cn/)?
-+ **Simple:** I make sure that you can understand the source code and then **develop your own blog website based on this one** with ease.
-+ **Easy to deploy:** There is no need to configure the database and Nginx / Apache.
-+ **Full SEO support:** Semantic link, server-side rendering and more.
-+ **Dynamic:** Write articles directly in the browser.
-+ **Mobile support:** This website uses responsive layout.
-+ **Development is still in progress:** Fork it and join me!
+## Features
++ **Easy to expand**: The code is easy to understand, I used the standard project strcuture for Express.js.
++ **Easy to deploy**: It's easy to deploy, because there is no need to configure the database and what you only nedd to do is `git clone` & `npm install` & `npm start`.
 
 ## Deploy it now
 1. Install Node.js with version `v10.14.2` or any compatible version. [Download Node.js here](https://nodejs.org/en/download/)
