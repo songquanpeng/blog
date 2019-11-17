@@ -66,7 +66,7 @@ config = {
   enableComment: true,
   enableAd: true,
   ad: ad,
-  externalHeadCode: externalHeadCode // These codes will be insert into <head>
+  externalHeadCode: externalHeadCode // These code will be insert into <head>
 };
 
 module.exports = {

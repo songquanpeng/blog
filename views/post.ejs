@@ -68,7 +68,9 @@
                           },
                           {
                             name: "image",
-                            action: SimpleMDE.drawImage,
+                            action: () => {
+                              importImage();
+                            },
                             className: "fa fa-picture-o",
                             title: "Insert Image"
                           },
@@ -131,7 +133,45 @@
     </div>
 </div>
 <input type="file" id="upload" accept=".md" style="visibility: hidden;"/>
+<input type="file" id="uploadImage" name="file" accept="image/*" style="visibility: hidden;"/>
 <script>
+  const uploadImage = $('#uploadImage');
+
+  function importImage() {
+    uploadImage.click();
+  }
+
+  function insertText(text) {
+    let pos = simplemde.codemirror.getCursor();
+    simplemde.codemirror.setSelection(pos, pos);
+    simplemde.codemirror.replaceSelection(text);
+  }
+
+  uploadImage.change(() => {
+    let imageForm = new FormData();
+    imageForm.append('smfile', $('#uploadImage')[0].files[0]);
+    $.ajax({
+      url: 'https://sm.ms/api/upload',
+      type: 'POST',
+      data: imageForm,
+      mimeType: 'multipart/form-data',
+      contentType: false,
+      cache: false,
+      processData: false,
+      dataType: 'json',
+      success: function (data) {
+        if (data.success) {
+          const imageUrl = data.data.url;
+          insertText(`![image](${imageUrl})`);
+          document.getElementById("uploadImage").value = "";
+        }
+      },
+      error: function (reason) {
+        alert(reason.responseText)
+      }
+    });
+  })
+
   //const defaultValue = "# \n**Tags:** \n**Description:** \n";
   let postPath = "/api/post";
   <% if(article !== undefined){ %>
