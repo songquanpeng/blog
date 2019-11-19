@@ -17,6 +17,8 @@ app.locals.keywords = config.siteName;
 app.locals.description = config.siteDescription;
 app.locals.info = '';
 app.locals.error = '';
+app.locals.loggedIn = false;
+app.locals.isRootUser = false;
 
 util.initializeDatabase();
 app.set('views', path.join(__dirname, 'views'));
@@ -40,8 +42,6 @@ app.use(
   })
 );
 app.use('*', (req, res, next) => {
-  res.locals.loggedIn = false;
-  res.locals.isRootUser = false;
   if (req.session.user !== undefined) {
     res.locals.loggedIn = true;
     res.locals.isRootUser = req.session.user.name === 'root';
@@ -62,12 +62,9 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('message', {
-    error: err.message,
-    info: ''
-  });
-  next();
+  if (!res.headersSent) {
+    res.render('message');
+  }
 });
 
 module.exports = app;

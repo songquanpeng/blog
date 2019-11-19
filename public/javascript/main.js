@@ -169,7 +169,7 @@ function loadMoreArticles() {
       data.articles.forEach(function(article) {
         let isAuthor = article.author === data.currentUser;
         let partOne = `
-      <div class="card article-list shadow-box bg-transparent" id="article_${article.id}">
+      <div class="card article-list shadow-box bg-transparent" id="article_${article.id}" onclick="location.href='/article/${article.link}'">
     <div class="card-body">
         <h4 class="card-title font-weight-bold"
             onclick="location.href='/article/${article.link}'"
@@ -177,11 +177,11 @@ function loadMoreArticles() {
         <div>`;
         let partTwo = '';
         article.tag.split(' ').forEach(function(tag) {
-          partTwo += `<span class="badge badge-primary badge-hover" onclick="location.href='/tag/${tag}'">${tag}</span> `;
+          partTwo += `<span class="badge badge-primary badge-hover" onclick="event.stopPropagation();location.href='/tag/${tag}'">${tag}</span> `;
         });
-        let partThree = `<span class="badge badge-success badge-hover" onclick="location.href='/user/${article.author}'">${article.author}</span> <span class="badge badge-secondary badge-hover" onclick='onTimeTagClicked("${article.time}")'>${article.time}</span> `;
+        let partThree = `<span class="badge badge-success badge-hover" onclick="event.stopPropagation();location.href='/user/${article.author}'">${article.author}</span> <span class="badge badge-secondary badge-hover" onclick='event.stopPropagation();onTimeTagClicked("${article.time}")'>${article.time}</span> `;
         let partFour = isAuthor
-          ? `<span class="badge badge-danger badge-hover" onclick="deleteArticle(${article.id})">Delete</span> <span class="badge badge-dark badge-hover" onclick="location.href='/edit/${article.link}'">Edit</span>`
+          ? `<span class="badge badge-danger badge-hover" onclick="event.stopPropagation();deleteArticle(${article.id})">Delete</span> <span class="badge badge-dark badge-hover" onclick="event.stopPropagation();location.href='/edit/${article.link}'">Edit</span>`
           : '';
         let partFive = ` <span class="badge badge-info badge-hover" onclick="location.href='/article/${article.link}'">Views: ${article.views}</span></div><p class="card-text">${article.description}</p></div></div>`;
         newArticles += partOne + partTwo + partThree + partFour + partFive;
@@ -201,7 +201,7 @@ function main() {
       let windowHeight = $(window).height();
       let documentHeight = $(document).height();
       let scrollDistance = $(window).scrollTop();
-      if (scrollDistance >= documentHeight - windowHeight) {
+      if (scrollDistance >= documentHeight - windowHeight - 20) {
         loadMoreArticles();
       }
     });
