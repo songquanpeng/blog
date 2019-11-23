@@ -10,6 +10,11 @@
         <h3><%- config.motto%></h3>
     </div>
 </div>
+<script>
+    if(document.referrer.includes(location.host)){
+      document.getElementById('banner').style.display = "none";
+    }
+</script>
 <%- include('./partials/navigation') %>
 <!--Content here-->
 <div class="container-fluid">
