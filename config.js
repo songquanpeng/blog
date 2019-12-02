@@ -63,9 +63,10 @@ config = {
   motto: '尽人事，听天命',
   link: 'https://github.com/songwonderful',
   port: 3000,
-  enableComment: true,
+  enableComment: false,
   enableAd: true,
   ad: ad,
+  extraBottomInfo: '粤ICP备19052586号 ©2019 JustSong',
   externalHeadCode: externalHeadCode // These code will be insert into <head>
 };
 

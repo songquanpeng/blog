@@ -4,6 +4,9 @@
         <p>Make with <a id="sitemap" href="/sitemap.xml" class="emoji-link">❤️</a> by <a href="<%- config.link%>"
                                                                             style="text-decoration: none"><%- config.owner%></a>.
         </p>
+        <% if (config.extraBottomInfo){ %>
+            <p><%- config.extraBottomInfo %></p>
+        <% }%>
     </div>
 </footer>
 <%- include('end')%>
