@@ -1,4 +1,4 @@
-const db = require('../utils/util').db;
+const db = require('../utils/database').db;
 
 class User {
   static all(callback) {
@@ -69,7 +69,7 @@ class User {
           if (data[0]) {
             callback(true, '', data[0]);
           } else {
-            callback(false, '', undefined);
+            callback(false, 'Invalid credentials.', undefined);
           }
         }
       });

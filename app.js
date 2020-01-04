@@ -6,8 +6,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const serveStatic = require('serve-static');
 const indexRouter = require('./routes/index');
-const apiRouter = require('./routes/api');
-const util = require('./utils/util');
+const commentRouter = require('./routes/comment');
+const pageRouter = require('./routes/page');
+const userRouter = require('./routes/user');
 const config = require('./config').config;
 const app = express();
 
@@ -20,7 +21,6 @@ app.locals.error = '';
 app.locals.loggedIn = false;
 app.locals.isRootUser = false;
 
-util.initializeDatabase();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));
@@ -49,7 +49,10 @@ app.use('*', (req, res, next) => {
   next();
 });
 app.use('/', indexRouter);
-app.use('/api', apiRouter);
+app.use('/api/page', pageRouter);
+app.use('/api/comment', commentRouter);
+app.use('/api/user', userRouter);
+
 app.use(function(req, res, next) {
   if (!res.headersSent) {
     res.status(404).render('message', {
@@ -62,6 +65,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.error(err.message);
   if (!res.headersSent) {
     res.render('message');
   }

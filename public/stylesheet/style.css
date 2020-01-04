@@ -69,8 +69,7 @@ nav {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
-/* Go top top button*/
-#go-to-top {
+#back-top {
     display: block;
     width: 40px;
     height: 40px;
@@ -78,35 +77,28 @@ nav {
     bottom: 50px;
     right: 40px;
     border-radius: 50%;
-    background-color: #b409e9;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     overflow: hidden;
     transition: 0.6s;
     z-index: 2;
+    background-color: #999;
+    color: #ffffff;
+    text-align: center;
+    border-width: 0;
+    outline: none;
+    cursor: pointer;
+}
+
+#back-top:hover{
+    background-color: #666;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 @media screen and (max-width: 600px) {
-    #go-to-top {
+    #back-top {
         bottom: 20px;
         right: 15px;
+        background: rgba(117,117,117, 0.5);
     }
-}
-
-#go-to-top a {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: #757575;
-    color: #ffffff;
-    font-size: 40px;
-    font-weight: normal;
-    text-align: center;
-    text-decoration: none;
-}
-
-#go-to-top:hover {
-    border-width: 0;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .article-container {

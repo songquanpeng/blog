@@ -7,6 +7,9 @@
 + This is a blog system that based on Node.js, Express.js, SQLite 3 and Bootstrap 4.
 + [Demo here.](https://iamazing.cn/)
 
+## Notice
+**Project is being refactored, please use release version!**
+
 ## Deploy
 1. `git clone https://github.com/songquanpeng/lightx-cms.git`
 2. `npm i`
