@@ -2,58 +2,92 @@ const db = require('../utils/util').db;
 
 class User {
   static all(callback) {
-    db.all('SELECT * FROM users', callback);
-  }
-
-  static find(name, callback) {
-    db.get('SELECT * FROM users WHERE name = ?', name, callback);
-  }
-
-  static getUserPermission(name, callback) {
-    db.get('SELECT level FROM users WHERE name = ?', name, callback);
-  }
-
-  static addUser(data, callback) {
-    db.run(
-      'INSERT INTO users(name, password, level) VALUES (?, ?, ?)',
-      data.username,
-      data.password,
-      data.level,
-      callback
-    );
-  }
-
-  static update(data, callback) {
-    db.run(
-      'UPDATE users SET name = ?, password = ? WHERE name = ?',
-      data.newName,
-      data.newPassword,
-      data.oldName,
-      callback
-    );
-  }
-
-  static delete(name, callback) {
-    if (name) {
-      db.run('DELETE FROM users WHERE name = ?', name, callback);
-    }
-  }
-
-  static checkCredential(name, password, callback) {
-    this.find(name, (error, user) => {
-      //console.log("database" + JSON.stringify(user));
-      if (error) {
-        callback(false);
-      } else {
-        if (user === undefined) {
-          callback(false);
+    db('users')
+      .select()
+      .asCallback((error, users) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, users);
         } else {
-          callback(user.password === password);
+          callback(true, '', users);
         }
-      }
-    });
+      });
+  }
+
+  static getById(id, callback) {
+    db('users')
+      .where('id', id)
+      .asCallback((error, data) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, data[0]);
+        } else {
+          callback(true, '', undefined);
+        }
+      });
+  }
+
+  static updateById(id, user, callback) {
+    db('users')
+      .where('id', id)
+      .update(user)
+      .asCallback(error => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message);
+        } else {
+          callback(true, '');
+        }
+      });
+  }
+
+  static register(user, callback) {
+    db('users')
+      .insert(user)
+      .asCallback(error => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message);
+        } else {
+          callback(true, '');
+        }
+      });
+  }
+
+  static check(username, password, callback) {
+    db('users')
+      .select()
+      .where({
+        username: username,
+        password: password
+      })
+      .asCallback((error, data) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, undefined);
+        } else {
+          if (data[0]) {
+            callback(true, '', data[0]);
+          } else {
+            callback(false, '', undefined);
+          }
+        }
+      });
+  }
+
+  static delete(id, callback) {
+    db('users')
+      .where('id', id)
+      .del()
+      .asCallback(error => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message);
+        } else {
+          callback(true, '');
+        }
+      });
   }
 }
 
-module.exports = db;
 module.exports.User = User;
