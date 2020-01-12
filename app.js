@@ -54,17 +54,14 @@ app.use('/api/comment', commentRouter);
 app.use('/api/user', userRouter);
 
 app.use(function(req, res, next) {
+  res.locals.message = ':{404 Not Found}';
   if (!res.headersSent) {
-    res.status(404).render('message', {
-      error: ':{404 Not Found}',
-      info: ''
-    });
+    res.render('error');
   }
-  next();
 });
+
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
   console.error(err.message);
   if (!res.headersSent) {
     res.render('error');

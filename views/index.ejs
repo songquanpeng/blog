@@ -11,6 +11,7 @@
                             <h4 class="card-title font-weight-bold"
                                 onclick="location.href='/page/<%= page.link %>'"
                                 style="cursor: pointer"><%= page.title %></h4>
+
                             <div>
                                 <% page.tag.split(" ").forEach(function (tag) { %>
                                     <span class="badge badge-primary badge-hover"
@@ -32,24 +33,4 @@
         </div>
     </div>
 </div>
-<script>
-  let isBannerDeleted = false;
-  let loadTime = (Math.round(performance.now() * 100) / 100000).toFixed(2);
-  $(document).ready(()=>{
-    $('#go-to-top').hide();
-    $(window).scroll(function() {
-      if (isBannerDeleted) return;
-      let windowHeight = $(window).height();
-      let scrollDistance = $(window).scrollTop();
-      if (scrollDistance >= windowHeight) {
-        $('#banner').hide();
-        isBannerDeleted = true;
-        if (isDesktop()) {
-          showToast('System', `Welcome, my friend! Page loaded in ${loadTime} s.`);
-        }
-        $('#go-to-top').show();
-      }
-    });
-  });
-</script>
 <%- include('./partials/footer') %>
