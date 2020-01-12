@@ -67,7 +67,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   console.error(err.message);
   if (!res.headersSent) {
-    res.render('message');
+    res.render('error');
   }
 });
 

@@ -1,43 +1,13 @@
 <%- include('./partials/header') %>
 <%- include('./partials/navigation') %>
-<div class="container">
-    <%- include('./partials/message') %>
-</div>
+
 <!--Content here-->
 <div class="container article-container">
     <article class="shadow-box" style="padding: 16px">
-        <%- article.content %>
-        <% if(config.enableAd){ %>
-            <%- config.ad.articleAd %>
-        <% } %>
+        <h1><%-page.title%></h1>
+        <%- page.content %>
     </article>
 </div>
-<% if(config.enableComment){ %>
-    <comment>
-        <div class="container article-container" id="comment" style="margin-top: 16px;margin-bottom: 16px">
-            <div id="comment">
-                <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
-                    <div class="card-header bg-light">
-                        <h4>Comment</h4>
-                    </div>
-                    <div class="card-body" style="padding: 0">
-                        <textarea class="form-control" rows="5" id="commentContent"
-                                  placeholder="Your comment will not show until reviewed by the administrator."
-                                  required onfocusin="showToast('JustSong','Welcome comment 😊')"></textarea>
-                    </div>
-                    <div class="card-footer bg-light" style="padding: 2px">
-                        <div style="width:100%;display: inline-flex;flex-wrap: nowrap;">
-                            <input type="text" class="bg-light" id="commentAuthor" style="flex-grow: 1;margin-right: 5px;border-width: 1px"
-                                   placeholder="Enter your name..." required>
-                            <button class="btn btn-success" style="flex-grow: 0" onclick=postComment(<%- article.id %>)>Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>loadComments(<%- article.id %>);</script>
-    </comment>
-<% } %>
 
 <script>hljs.initHighlightingOnLoad();</script>
 <%- include('./partials/end') %>

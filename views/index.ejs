@@ -1,126 +1,34 @@
 <%- include('./partials/header') %>
-<style>
-    #go-to-top {
-        display: none;
-    }
-</style>
-<div class="home-banner" id="banner">
-    <div class="banner-center">
-        <h2><%- config.owner%></h2>
-        <h3><%- config.motto%></h3>
-    </div>
-</div>
-<script>
-    if(document.referrer.includes(location.host)){
-      document.getElementById('banner').style.display = "none";
-    }
-</script>
 <%- include('./partials/navigation') %>
 <!--Content here-->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12 col-md-7 offset-md-1" id="articleList">
-            <%- include('./partials/message') %>
-            <% if (articles.length){ %>
-                <% articles.forEach((article)=>{ %>
-                    <div class="card article-list shadow-box bg-transparent" id="article_<%= article.id %>" onclick="location.href='/article/<%= article.link %>'">
+        <div class="col-sm-12 col-md-8 offset-md-2" id="pageList">
+            <% if (pages.length){ %>
+                <% pages.forEach((page)=>{ %>
+                    <div class="card page-list shadow-box bg-transparent" id="page_<%= page.id %>" onclick="location.href='/page/<%= page.link %>'">
                         <div class="card-body">
                             <h4 class="card-title font-weight-bold"
-                                onclick="location.href='/article/<%= article.link %>'"
-                                style="cursor: pointer"><%= article.title %></h4>
+                                onclick="location.href='/page/<%= page.link %>'"
+                                style="cursor: pointer"><%= page.title %></h4>
                             <div>
-                                <% article.tag.split(" ").forEach(function (tag) { %>
+                                <% page.tag.split(" ").forEach(function (tag) { %>
                                     <span class="badge badge-primary badge-hover"
                                           onclick="event.stopPropagation();location.href='/tag/<%= tag %>'"><%= tag %></span>
                                 <% }); %>
                                 <span class="badge badge-success badge-hover"
-                                      onclick="event.stopPropagation();location.href='/user/<%= article.author %>'"><%= article.author %></span>
+                                      onclick="event.stopPropagation();location.href='/user/<%= page.user_id %>'"><%= page.user_id %></span>
                                 <span class="badge badge-secondary badge-hover"
-                                      onclick='event.stopPropagation();onTimeTagClicked("<%= article.time %>")'><%= article.time %></span>
-                                <% if(currentUser === article.author) { %>
-                                    <span class="badge badge-danger badge-hover"
-                                          onclick="event.stopPropagation();deleteArticle(<%= article.id %>)">Delete</span>
-                                    <span class="badge badge-dark badge-hover"
-                                          onclick="event.stopPropagation();location.href='/edit/<%= article.link %>'">Edit</span>
-                                <% } %>
+                                      onclick='event.stopPropagation();onTimeTagClicked("<%= page.post_time %>")'><%= page.post_time %></span>
                                 <span class="badge badge-info badge-hover"
-                                      onclick="location.href='/article/<%= article.link %>'">Views: <%= article.views %></span>
+                                      onclick="location.href='/page/<%= page.link %>'">Views: <%= page.view %></span>
                             </div>
                             <p class="card-text">
-                                <%= article.description %>
+                                <%= page.title %>
                             </p>
                         </div>
                     </div>
             <% })} %>
-        </div>
-        <div class="col-sm-12 col-md-3">
-            <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
-                <div class="card-header font-weight-bold">Notice</div>
-                <div class="container" style="padding-top: 8px">
-                    <article id="sidebarNotice">
-                    </article>
-                    <script>
-                      $.get("/api/page/notice", function (data) {
-                        const sidebarNotice = document.getElementById('sidebarNotice');
-                        let noticeContent = "No notice."
-                        if(data){
-                          noticeContent = data.content;
-                        }
-                        sidebarNotice.innerHTML = noticeContent;
-                      });
-                    </script>
-                </div>
-            </div>
-            <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
-                <div class="card-header font-weight-bold">About</div>
-                <div class="container" style="padding-top: 8px">
-                    <article id="sidebarAbout" style="">
-                    </article>
-                    <script>
-                      $.get("/api/page/about", function (data) {
-                        const sidebarAbout = document.getElementById('sidebarAbout');
-                        let aboutContent = "No personal introduction."
-                        if(data){
-                          aboutContent = data.content;
-                        }
-                        sidebarAbout.innerHTML = aboutContent;
-                      });
-                    </script>
-                </div>
-            </div>
-            <div class="card shadow-box bg-transparent" style="margin-bottom: 16px">
-                <div class="card-header font-weight-bold">Statistics</div>
-                <div class="container" style="padding-top: 8px">
-                    <canvas id="statisticsChart" height="300px"></canvas>
-                    <script>
-                      $.get("/api/statistics", function (statistics) {
-                        let labels = [];
-                        let pv = [];
-                        statistics.forEach((item) => {
-                          labels.push('');
-                          pv.push(item.pv);
-                        });
-                        const ctx = document.getElementById('statisticsChart').getContext('2d');
-                        const chart = new Chart(ctx, {
-                          type: 'line',
-                          data: {
-                            labels: labels,
-                            datasets:
-                                [{
-                                  label: 'PV',
-                                  borderColor: 'rgb(255, 99, 132)',
-                                  data: pv
-                                }]
-                          },
-                          options: {}
-                        });
-                      });
-                    </script>
-                </div>
-            </div>
-            <% if(config.enableAd){ %>
-                <%- config.ad.sidebarAd %>
-            <% } %>
         </div>
     </div>
 </div>
