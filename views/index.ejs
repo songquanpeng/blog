@@ -1,36 +1,27 @@
 <%- include('./partials/header') %>
-<%- include('./partials/navigation') %>
-<!--Content here-->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12 col-md-8 offset-md-2" id="pageList">
-            <% if (pages.length){ %>
-                <% pages.forEach((page)=>{ %>
-                    <div class="card page-list shadow-box bg-transparent" id="page_<%= page.id %>" onclick="location.href='/page/<%= page.link %>'">
-                        <div class="card-body">
-                            <h4 class="card-title font-weight-bold"
-                                onclick="location.href='/page/<%= page.link %>'"
-                                style="cursor: pointer"><%= page.title %></h4>
-
-                            <div>
-                                <% page.tag.split(" ").forEach(function (tag) { %>
-                                    <span class="badge badge-primary badge-hover"
-                                          onclick="event.stopPropagation();location.href='/tag/<%= tag %>'"><%= tag %></span>
-                                <% }); %>
-                                <span class="badge badge-success badge-hover"
-                                      onclick="event.stopPropagation();location.href='/user/<%= page.user_id %>'"><%= page.user_id %></span>
-                                <span class="badge badge-secondary badge-hover"
-                                      onclick='event.stopPropagation();onTimeTagClicked("<%= page.post_time %>")'><%= page.post_time %></span>
-                                <span class="badge badge-info badge-hover"
-                                      onclick="location.href='/page/<%= page.link %>'">Views: <%= page.view %></span>
-                            </div>
-                            <p class="card-text">
-                                <%= page.title %>
-                            </p>
-                        </div>
-                    </div>
-            <% })} %>
+<%- include('./partials/nav') %>
+<% if (pages.length){ %>
+    <% pages.forEach((page)=>{ %>
+        <div class="card" onclick="location.href='/page/<%= page.link %>'">
+            <div class="card-title">
+                <%= page.title %>
+            </div>
+            <div class="card-tag">
+                <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
+                    <span class="badge" onclick="event.stopPropagation();location.href='/tags/<%= tag %>'"><%= tag %></span>
+                <% }}); %>
+                <span class="badge badge-success badge-hover"
+                      onclick="event.stopPropagation();location.href='/user/<%= page.username %>'"><%= page.author %></span>
+                <span class="badge badge-secondary badge-hover"
+                      onclick="event.stopPropagation();location.href='/archives/'+timeToPath('<%= page.post_time %>')"><%= page.post_time %></span>
+                <span class="badge badge-info badge-hover"
+                      onclick="location.href='/page/<%= page.link %>'">Views: <%= page.view %></span>
+            </div>
+            <div class="card-text">
+                <%= page.title %>
+            </div>
         </div>
-    </div>
-</div>
+<% })} %>
+
+<%- include('./partials/paginator') %>
 <%- include('./partials/footer') %>

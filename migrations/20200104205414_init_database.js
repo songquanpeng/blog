@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
     .createTable('pages', function(table) {
       table.increments();
       table
-        .string('user_id')
+        .integer('user_id')
         .references('id')
         .inTable('users')
         .notNullable()

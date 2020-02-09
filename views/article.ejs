@@ -1,13 +1,10 @@
 <%- include('./partials/header') %>
-<%- include('./partials/navigation') %>
+<%- include('./partials/nav') %>
 
-<!--Content here-->
-<div class="container article-container">
-    <article class="shadow-box" style="padding: 16px">
-        <h1><%-page.title%></h1>
-        <%- page.content %>
-    </article>
-</div>
+<article>
+    <h1><%-page.title%></h1>
+    <%-page.content%>
+    <p class="copyright"><strong>Links: <a href="<%-page.link%>"><%-page.link%></a></strong></p>
+</article>
 
-<script>hljs.initHighlightingOnLoad();</script>
 <%- include('./partials/footer') %>

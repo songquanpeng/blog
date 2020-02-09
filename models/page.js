@@ -16,7 +16,21 @@ class Page {
 
   loadPages(callback) {
     db('pages')
-      .select()
+      .select([
+        'pages.id as page_id',
+        'pages.user_id as author_id',
+        'type',
+        'link',
+        'page_status',
+        'post_time',
+        'title',
+        'content',
+        'tag',
+        'view',
+        'users.username as username',
+        'users.display_name as author'
+      ])
+      .innerJoin('users', 'users.id', 'author_id')
       .asCallback((error, pages) => {
         if (error) {
           console.error(error.message);
