@@ -50,6 +50,7 @@ class Page {
         'users.display_name as author'
       ])
       .innerJoin('users', 'users.id', 'author_id')
+      .where('page_status', 1)
       .asCallback((error, pages) => {
         if (error) {
           console.error(error.message);

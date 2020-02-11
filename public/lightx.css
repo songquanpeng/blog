@@ -323,3 +323,35 @@ article code {
 article .copyright{
     display: none;
 }
+
+/* Code Page Style*/
+.code-page {
+    margin-top: 16px;
+}
+
+.code-page code{
+    font-size: 18px;
+}
+
+.code-page pre{
+    margin-top: 2px;
+}
+
+.code-page .control-panel{
+    width: 100%;
+}
+
+.code-page button {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #4d4d4d;
+    background-color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.code-page .copy-button{
+    float: right;
+}

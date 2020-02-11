@@ -1,0 +1,40 @@
+<%- include('./partials/header') %>
+<%- include('./partials/nav') %>
+
+<div class="code-page">
+    <div class="control-panel">
+        <button onclick="changeBackground()">Dark</button>
+    </div>
+    <pre>
+        <code id="code-display"><button class="copy-button" onclick="copyCode()">Copy</button><%-page.content%></code>
+    </pre>
+    <label>
+        <textarea id="hiddenTextArea" style="position: absolute;left: -100%;"></textarea>
+    </label>
+</div>
+
+<script>
+    const body = document.getElementsByTagName("body")[0];
+    let dark = false;
+
+    function copyCode() {
+      const copyText = document.getElementById("code-display").textContent;
+      const textArea = document.getElementById('hiddenTextArea');
+      textArea.textContent = copyText.substring(4);
+      document.body.append(textArea);
+      textArea.select();
+      document.execCommand("copy");
+    }
+
+    function changeBackground() {
+      if(dark){
+        body.setAttribute('class', '');
+      }else{
+        body.setAttribute('class', 'hljs');
+      }
+      dark = !dark;
+    }
+</script>
+
+
+<%- include('./partials/footer') %>
