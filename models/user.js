@@ -1,4 +1,5 @@
 const db = require('../utils/database').db;
+const uuid = require('uuid/v1');
 
 class User {
   static all(callback) {
@@ -20,9 +21,9 @@ class User {
       .asCallback((error, data) => {
         if (error) {
           console.error(error.message);
-          callback(false, error.message, data[0]);
+          callback(false, error.message, undefined);
         } else {
-          callback(true, '', undefined);
+          callback(true, '', data[0]);
         }
       });
   }
@@ -42,6 +43,7 @@ class User {
   }
 
   static register(user, callback) {
+    user.id = uuid();
     db('users')
       .insert(user)
       .asCallback(error => {

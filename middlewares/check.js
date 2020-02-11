@@ -4,7 +4,7 @@ module.exports = {
   checkLogin: function checkLogin(req, res, next) {
     if (req.session.user === undefined) {
       res.json({
-        status: 2,
+        status: false,
         message: 'This operation requires login.'
       });
     } else {
@@ -15,7 +15,7 @@ module.exports = {
   checkPermission: function(req, res, next) {
     if (req.session.user === undefined) {
       res.json({
-        status: 2,
+        status: false,
         message: 'This operation requires login.'
       });
     } else {
@@ -23,7 +23,7 @@ module.exports = {
         next();
       } else {
         res.json({
-          status: 2,
+          status: false,
           message: 'Permission denied.'
         });
       }

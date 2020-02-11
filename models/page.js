@@ -1,4 +1,5 @@
 const db = require('../utils/database').db;
+const uuid = require('uuid/v1');
 
 class Page {
   all(callback) {
@@ -63,9 +64,11 @@ class Page {
       .asCallback((error, data) => {
         if (error) {
           console.error(error.message);
-          callback(false, error.message, data[0]);
+          callback(false, error.message, undefined);
+        } else if (data.length === 0) {
+          callback(false, `No page has id ${id}.`, undefined);
         } else {
-          callback(true, '', undefined);
+          callback(true, '', data[0]);
         }
       });
   }
@@ -77,6 +80,8 @@ class Page {
         if (error) {
           console.error(error.message);
           callback(false, error.message, undefined);
+        } else if (data.length === 0) {
+          callback(false, `No page has link ${link}.`, undefined);
         } else {
           callback(true, '', data[0]);
         }
@@ -93,19 +98,22 @@ class Page {
           callback(false, error.message);
         } else {
           callback(true, '');
+          this.loadPages();
         }
       });
   }
 
   add(page, callback) {
+    page.id = uuid();
     db('pages')
       .insert(page)
       .asCallback(error => {
         if (error) {
           console.error(error.message);
-          callback(false, error.message);
+          callback(false, error.message, undefined);
         } else {
-          callback(true, '');
+          callback(true, '', page.id);
+          this.loadPages();
         }
       });
   }
@@ -120,6 +128,7 @@ class Page {
           callback(false, error.message);
         } else {
           callback(true, '');
+          this.loadPages();
         }
       });
   }

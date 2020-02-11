@@ -13,4 +13,5 @@
 ## Deploy
 1. `git clone https://github.com/songquanpeng/lightx-cms.git`
 2. `npm i`
-3. [http://localhost:3000/](http://localhost:3000/)
+3. `knex migrate:latest`
+4. [http://localhost:3000/](http://localhost:3000/)

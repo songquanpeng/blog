@@ -9,17 +9,19 @@ const indexRouter = require('./routes/index');
 const commentRouter = require('./routes/comment');
 const pageRouter = require('./routes/page');
 const userRouter = require('./routes/user');
-const config = require('./config').config;
 const app = express();
 
-app.locals.config = config;
-app.locals.title = config.motto + ' | ' + config.siteName;
-app.locals.keywords = config.siteName;
-app.locals.description = config.siteDescription;
-app.locals.info = '';
-app.locals.error = '';
-app.locals.loggedIn = false;
-app.locals.isRootUser = false;
+app.locals.config = {
+  domain: 'www.example.com',
+  author: 'My name',
+  motto: 'My motto.',
+  siteName: 'Site name',
+  description: 'Site description.'
+};
+
+app.locals.title = app.locals.config.motto + ' | ' + app.locals.config.siteName;
+app.locals.loggedin = false;
+app.locals.isAdmin = false;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -41,22 +43,26 @@ app.use(
     maxAge: '600000'
   })
 );
+
 app.use('*', (req, res, next) => {
   if (req.session.user !== undefined) {
-    res.locals.loggedIn = true;
-    res.locals.isRootUser = req.session.user.name === 'root';
+    res.locals.loggedin = true;
+    res.locals.isAdmin = req.session.user.status >= 10;
   }
   next();
 });
+
 app.use('/', indexRouter);
 app.use('/api/page', pageRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/user', userRouter);
 
 app.use(function(req, res, next) {
-  res.locals.message = ':{404 Not Found}';
   if (!res.headersSent) {
-    res.render('error');
+    res.render('message', {
+      title: ':{404 Not Found}',
+      message: 'The page you requested does not exist, I am sorry for that.'
+    });
   }
 });
 
@@ -64,7 +70,7 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   console.error(err.message);
   if (!res.headersSent) {
-    res.render('error');
+    res.json({ status: false, message: err.message });
   }
 });
 

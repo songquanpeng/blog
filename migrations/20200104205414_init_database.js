@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema
     .createTable('users', function(table) {
-      table.increments();
+      table.uuid('id').primary();
       table
         .string('username')
         .unique()
@@ -13,9 +13,9 @@ exports.up = function(knex, Promise) {
       table.string('url');
     })
     .createTable('pages', function(table) {
-      table.increments();
+      table.uuid('id').primary();
       table
-        .integer('user_id')
+        .uuid('user_id')
         .references('id')
         .inTable('users')
         .notNullable()
@@ -35,11 +35,11 @@ exports.up = function(knex, Promise) {
       table.integer('down_vote').defaultTo(0);
     })
     .createTable('comments', function(table) {
-      table.increments();
+      table.uuid('id').primary();
       table.string('author').notNullable();
       table.integer('status');
       table
-        .integer('page_id')
+        .uuid('page_id')
         .references('id')
         .inTable('pages')
         .notNullable();
@@ -54,7 +54,7 @@ exports.up = function(knex, Promise) {
       table.string('email');
     })
     .createTable('options', function(table) {
-      table.increments();
+      table.uuid('id').primary();
       table
         .string('name')
         .unique()
