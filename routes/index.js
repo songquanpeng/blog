@@ -18,7 +18,18 @@ router.get('/page/:link', function(req, res, next) {
     if (success) {
       switch (page.type) {
         case PAGE_TYPE.ARTICLE:
-          page.content = page.content.replace(/^-(.*\s)*(-)+\s/, '');
+          let content = page.content;
+          let lines = content.split('\n');
+          let deleteCount = 0;
+          for (let i = 1; i < lines.length; ++i) {
+            let line = lines[i];
+            if (line.startsWith('---')) {
+              deleteCount = i + 1;
+              break;
+            }
+          }
+          lines.splice(0, deleteCount);
+          page.content = lines.join('\n');
           page.content = md2html(page.content);
           res.render('article', { page }); // TODO: other page types support
           break;

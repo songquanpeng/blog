@@ -37,7 +37,7 @@ function getDate(format) {
 }
 
 function md2html(markdown) {
-  return sanitizeHtml(parser(lexer(markdown)));
+  return parser(lexer(markdown));
 }
 
 module.exports = {
