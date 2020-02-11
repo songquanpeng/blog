@@ -43,6 +43,12 @@ router.put('/', checkLogin, (req, res, next) => {
   });
 });
 
+router.get('/', checkLogin, (req, res, next) => {
+  Page.all((status, message, pages) => {
+    res.json({ status, message, pages });
+  });
+});
+
 router.get('/:id', checkLogin, (req, res, next) => {
   const id = req.params.id;
   Page.getById(id, (status, message, page) => {
@@ -60,7 +66,7 @@ router.post('/', checkLogin, (req, res, next) => {
   let content = req.body.content;
   let tag = req.body.tag;
   let password = req.body.password;
-  let edit_time = getDate(true);
+  let edit_time = getDate();
 
   let page = {
     type,

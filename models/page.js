@@ -4,7 +4,25 @@ const uuid = require('uuid/v1');
 class Page {
   all(callback) {
     db('pages')
-      .select()
+      .select([
+        'pages.id as page_id',
+        'pages.user_id as author_id',
+        'type',
+        'link',
+        'page_status',
+        'comment_status',
+        'post_time',
+        'edit_time',
+        'title',
+        'content',
+        'tag',
+        'view',
+        'up_vote',
+        'down_vote',
+        'users.username as username',
+        'users.display_name as author'
+      ])
+      .innerJoin('users', 'users.id', 'author_id')
       .asCallback((error, pages) => {
         if (error) {
           console.error(error.message);
