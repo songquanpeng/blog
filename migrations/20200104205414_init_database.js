@@ -11,6 +11,7 @@ exports.up = function(knex, Promise) {
       table.integer('status').notNullable();
       table.string('email');
       table.string('url');
+      table.string('avatar');
     })
     .createTable('pages', function(table) {
       table.uuid('id').primary();
