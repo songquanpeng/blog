@@ -3,7 +3,9 @@ const PAGE_TYPE = {
   CODE: 1,
   BULLETIN: 2,
   DISCUSS: 3,
-  LINKS: 4
+  LINKS: 4,
+  CUSTOMIZE: 5,
+  MEDIA: 6
 };
 
 module.exports = { PAGE_TYPE };

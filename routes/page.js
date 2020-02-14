@@ -7,6 +7,19 @@ const checkPermission = require('../middlewares/check').checkPermission;
 const getDate = require('../utils/util').getDate;
 const md2html = require('../utils/util').md2html;
 
+router.post('/search', checkPermission, function(req, res, next) {
+  const type = Number(req.body.type);
+  let keyword = req.body.keyword;
+  keyword = keyword ? keyword.trim() : '';
+  Page.search(keyword, type, (status, message, pages) => {
+    res.json({
+      status,
+      message,
+      pages
+    });
+  });
+});
+
 router.put('/', checkLogin, (req, res, next) => {
   let type = req.body.type;
   let link = req.body.link;

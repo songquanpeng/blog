@@ -36,8 +36,8 @@ router.get('/page/:link', function(req, res, next) {
         case PAGE_TYPE.CODE:
           res.render('code', { page });
           break;
-        case PAGE_TYPE.BULLETIN:
-          res.text('NOT IMPLEMENTED');
+        case PAGE_TYPE.CUSTOMIZE:
+          res.render('customize', { page });
           break;
         default:
           res.render('message', {

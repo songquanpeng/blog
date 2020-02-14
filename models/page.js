@@ -33,6 +33,56 @@ class Page {
       });
   }
 
+  search(keyword, type, callback) {
+    let types = [];
+    if (type === undefined || type === -1 || type === '') {
+      types = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    } else {
+      types.push(type);
+    }
+
+    db('pages')
+      .select([
+        'pages.id as page_id',
+        'pages.user_id as author_id',
+        'type',
+        'link',
+        'page_status',
+        'comment_status',
+        'post_time',
+        'edit_time',
+        'title',
+        'content',
+        'tag',
+        'view',
+        'up_vote',
+        'down_vote',
+        'users.username as username',
+        'users.display_name as author'
+      ])
+      .innerJoin('users', 'users.id', 'author_id')
+      .whereIn('type', types)
+      .andWhere(builder => {
+        builder
+          .whereRaw('LOWER(link) LIKE ?', `%${keyword.toLowerCase()}%`)
+          .orWhereRaw('LOWER(title) LIKE ?', `%${keyword.toLowerCase()}%`)
+          .orWhereRaw('LOWER(tag) LIKE ?', `%${keyword.toLowerCase()}%`)
+          .orWhereRaw('LOWER(username) LIKE ?', `%${keyword.toLowerCase()}%`)
+          .orWhereRaw('LOWER(author) LIKE ?', `%${keyword.toLowerCase()}%`)
+          .orWhereRaw('LOWER(post_time) LIKE ?', `%${keyword.toLowerCase()}%`)
+          .orWhereRaw('LOWER(edit_time) LIKE ?', `%${keyword.toLowerCase()}%`);
+        // .orWhereRaw('LOWER(content) LIKE ?', `%${keyword.toLowerCase()}%`);
+      })
+      .asCallback((error, pages) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, undefined);
+        } else {
+          callback(true, '', pages);
+        }
+      });
+  }
+
   loadPages(callback) {
     db('pages')
       .select([
@@ -95,6 +145,7 @@ class Page {
   getByLink(link, callback) {
     db('pages')
       .where('link', link)
+      .where('page_status', 1)
       .asCallback((error, data) => {
         if (error) {
           console.error(error.message);
