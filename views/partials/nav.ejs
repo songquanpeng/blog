@@ -1,8 +1,16 @@
 <nav>
     <ul>
-        <li><a href="/"><%= config.siteName %></a></li>
+        <li><a href="/"><%= config.site_name %></a></li>
         <li><a href="/archives">Archives</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/admin">Admin</a></li>
+<%      if(config.nav !== undefined && config.nav !== ''){
+          try{
+            let links = JSON.parse(config.nav_links)
+            links.forEach((link)=>{%>
+                <li><a href="<%- link.link %>" target="_blank"><%- link.text %></a></li>
+            <%})
+          }
+        catch (e) {console.error(e.message)}}                           %>
     </ul>
 </nav>

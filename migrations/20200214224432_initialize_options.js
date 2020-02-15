@@ -3,11 +3,11 @@ exports.up = function(knex) {
     { name: 'domain', value: 'www.example.com' },
     { name: 'author', value: 'My name' },
     { name: 'motto', value: 'My motto.' },
-    { name: 'siteName', value: 'Site name' },
-    { name: 'extraHeaderCode', value: '' },
-    { name: 'extraFooterCode', value: '' },
-    { name: 'siteName', value: 'Site name' },
-    { name: 'description', value: 'Site description.' }
+    { name: 'site_name', value: 'Site name' },
+    { name: 'extra_header_code', value: '' },
+    { name: 'extra_footer_code', value: '' },
+    { name: 'description', value: 'Site description.' },
+    { name: 'nav_links', value: '' }
   ]);
 };
 
