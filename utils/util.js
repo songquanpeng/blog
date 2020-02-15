@@ -1,6 +1,7 @@
 const lexer = require('marked').lexer;
 const parser = require('marked').parser;
 const sanitizeHtml = require('sanitize-html');
+const Option = require('../models/option').Option;
 
 function titleToLink(title) {
   return title.trim().replace(/\s/g, '-');
@@ -40,8 +41,21 @@ function md2html(markdown) {
   return parser(lexer(markdown));
 }
 
+function updateConfig(config) {
+  Option.all((status, message, options) => {
+    if (status) {
+      options.forEach(option => {
+        config[option.name] = option.value;
+      });
+    } else {
+      console.error('Unable load config from database: ', message);
+    }
+  });
+}
+
 module.exports = {
   titleToLink,
   getDate,
-  md2html
+  md2html,
+  updateConfig
 };

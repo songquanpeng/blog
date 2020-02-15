@@ -9,17 +9,14 @@ const indexRouter = require('./routes/index');
 const commentRouter = require('./routes/comment');
 const pageRouter = require('./routes/page');
 const userRouter = require('./routes/user');
+const optionRouter = require('./routes/option');
+const updateConfig = require('./utils/util').updateConfig;
 const app = express();
 
-app.locals.config = {
-  domain: 'www.example.com',
-  author: 'My name',
-  motto: 'My motto.',
-  siteName: 'Site name',
-  description: 'Site description.'
-};
+app.locals.config = {};
+app.locals.page = undefined;
+updateConfig(app.locals.config);
 
-app.locals.title = app.locals.config.motto + ' | ' + app.locals.config.siteName;
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 
@@ -56,6 +53,7 @@ app.use('/', indexRouter);
 app.use('/api/page', pageRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/user', userRouter);
+app.use('/api/option', optionRouter);
 
 app.use(function(req, res, next) {
   if (!res.headersSent) {

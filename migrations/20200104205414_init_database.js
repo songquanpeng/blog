@@ -55,11 +55,7 @@ exports.up = function(knex, Promise) {
       table.string('email');
     })
     .createTable('options', function(table) {
-      table.uuid('id').primary();
-      table
-        .string('name')
-        .unique()
-        .notNullable();
+      table.string('name').primary();
       table.text('value').notNullable();
     });
 };

@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><%=config.title%></title>
+    <%if(page !== undefined){%>
+    <title><%= page.title %></title>
+    <%} else{%>
+    <title><%= config.title %></title>
+    <%}%>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.17.1/styles/railscasts.css">
     <link rel="stylesheet" href="/lightx.css"/>
+    <%- config.extraHeaderCode %>
 </head>
 <body>
 <script>
