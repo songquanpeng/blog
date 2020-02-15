@@ -1,17 +1,22 @@
 # LIGHTX-CMS
 ![stars](https://img.shields.io/github/stars/songquanpeng/lightx-cms) ![forks](https://img.shields.io/github/forks/songquanpeng/lightx-cms) ![repo-size](https://img.shields.io/github/repo-size/songquanpeng/lightx-cms) ![license](https://img.shields.io/github/license/songquanpeng/lightx-cms) ![release](https://img.shields.io/github/v/release/songquanpeng/lightx-cms)
 
-[中文](https://www.iometa.cn/2019/12/25/LIGHTX-CMS%20——%20基于%20Node.js，Express.js%20以及%20SQLite%203%20搭建的个人博客系统/)
-
 ## Description
-+ This is a blog system that based on Node.js, Express.js, SQLite 3 and Bootstrap 4.
-+ [Demo here.](https://iamazing.cn/)
++ A personal content management system, powered by Express.js and React.
++ [Demo here.(May not be the latest version)](https://iamazing.cn/)
+
+## Features
++ Support multiple page types, such as article, code, links, original page, notice, media and many others.
++ Very lightweight, basically dependency free.
++ Powerful online editor powered by react-ace.
++ Directly configure your cms system in your browser. For example you can directly insert the google analytics code in admin interface.
 
 ## Notice
-**Project is being refactored, please use release version!**
++ You should always use the [latest release version](https://github.com/songquanpeng/lightx-cms/releases/latest).
++ Some features are still in development.
 
 ## Deploy
-1. `git clone https://github.com/songquanpeng/lightx-cms.git`
-2. `npm i`
-3. `knex migrate:latest`
-4. [http://localhost:3000/](http://localhost:3000/)
+1. Download the [latest release version](https://github.com/songquanpeng/lightx-cms/releases/latest).
+2. Unzip: `unzip lightx-cms-0.0.0.zip` (Remember replace "0.0.0" to the actual version).
+3. `cd lightx-cms-0.0.0` and then install the dependency `npm i`.
+4. Now run it: `node ./bin/www` or 'pm2 start ./bin/www --name lightx-cms' (By default the server listen to port 3000).
