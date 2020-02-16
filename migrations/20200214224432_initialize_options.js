@@ -1,14 +1,48 @@
 exports.up = function(knex) {
   return knex('options').insert([
-    { name: 'domain', value: 'www.example.com' },
-    { name: 'author', value: 'My name' },
-    { name: 'motto', value: 'My motto.' },
-    { name: 'site_name', value: 'Site name' },
-    { name: 'extra_header_code', value: '' },
-    { name: 'extra_footer_code', value: '' },
-    { name: 'description', value: 'Site description.' },
-    { name: 'nav_links', value: '' },
-    { name: 'port', value: '3000' }
+    {
+      name: 'domain',
+      value: 'www.example.com',
+      description: 'Notice domain only.'
+    },
+    { name: 'author', value: 'My name', description: 'Your name.' },
+    { name: 'motto', value: 'My motto.', description: 'Your motto.' },
+    {
+      name: 'site_name',
+      value: 'Site name',
+      description: 'Name your CMS site.'
+    },
+    {
+      name: 'extra_header_code',
+      value: '',
+      description: 'For example you can insert google analytics code here.'
+    },
+    {
+      name: 'extra_footer_code',
+      value: '',
+      description: 'This code will be inserted into the body tag.'
+    },
+    {
+      name: 'description',
+      value: 'Site description.',
+      description: 'Describe your site.'
+    },
+    {
+      name: 'nav_links',
+      value: '[{"link":"https://github.com/songquanpeng","text":"Github"}]',
+      description: 'Add links on the navigation bar. Must be a valid json.'
+    },
+    {
+      name: 'port',
+      value: '3000',
+      description: 'Set the port on which the server listens.'
+    },
+    {
+      name: 'code_theme',
+      value:
+        'https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/railscasts.css',
+      description: 'Input a highlight.js style css link here.'
+    }
   ]);
 };
 

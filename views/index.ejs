@@ -4,7 +4,7 @@
     <% pages.forEach((page)=>{ %>
         <div class="card" onclick="location.href='/page/<%= page.link %>'">
             <div class="card-title">
-                <%= page.title %>
+                <%= page.title !== '' ? page.title : 'No title' %>
             </div>
             <div class="card-tag">
                 <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
@@ -12,8 +12,6 @@
                 <% }}); %>
                 <span class="badge badge-secondary badge-hover"
                       onclick="event.stopPropagation();location.href='/archive/'+timeToPath('<%= page.post_time %>')"><%= page.post_time.substring(0, 10) %></span>
-                <span class="badge badge-info badge-hover"
-                      onclick="location.href='/page/<%= page.link %>'">Views: <%= page.view %></span>
             </div>
             <div class="card-text">
                 <%= page.title %>

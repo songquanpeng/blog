@@ -57,6 +57,7 @@ exports.up = function(knex, Promise) {
     .createTable('options', function(table) {
       table.string('name').primary();
       table.text('value').notNullable();
+      table.text('description');
     });
 };
 
