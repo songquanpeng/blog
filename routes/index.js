@@ -7,9 +7,13 @@ const sitemap = require('sitemap');
 const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
 
 router.get('/', function(req, res, next) {
-  Page.getByRange(0, 10, pages => {
+  let start = 0;
+  let end = 9;
+  Page.getByRange(start, end, pages => {
     res.render('index', {
-      pages: pages
+      pages: pages,
+      prev: ``,
+      next: `10-19`
     });
   });
 });
@@ -99,6 +103,32 @@ router.get('/page/:link', function(req, res, next) {
       }
       res.render('message', { title: 'Error!', message });
     }
+  });
+});
+
+router.get('/pagination/:pagination', function(req, res, next) {
+  let pagination = req.params.pagination;
+  let start = 0;
+  let end = 9;
+  if (pagination !== undefined) {
+    let temp = pagination.split('-');
+    start = parseInt(temp[0]);
+    end = parseInt(temp[1]);
+    start = Math.max(0, start);
+    end = Math.max(0, end);
+  }
+  if (start === 0) {
+    res.redirect('/');
+  }
+  let number = Math.max(1, end - start + 1);
+  let lastIndex = Math.max(0, start - number);
+  let nextIndex = start + number;
+  Page.getByRange(start, number, pages => {
+    res.render('index', {
+      pages: pages,
+      prev: `${lastIndex}-${lastIndex + number}`,
+      next: `${nextIndex}-${nextIndex + number}`
+    });
   });
 });
 
