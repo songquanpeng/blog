@@ -7,7 +7,8 @@ exports.up = function(knex) {
     { name: 'extra_header_code', value: '' },
     { name: 'extra_footer_code', value: '' },
     { name: 'description', value: 'Site description.' },
-    { name: 'nav_links', value: '' }
+    { name: 'nav_links', value: '' },
+    { name: 'port', value: '3000' }
   ]);
 };
 

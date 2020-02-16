@@ -24,6 +24,14 @@ router.post('/search', checkPermission, function(req, res, next) {
   });
 });
 
+router.get('/shutdown', checkPermission, (req, res, next) => {
+  res.json({
+    status: true,
+    message: 'Goodbye!'
+  });
+  process.exit();
+});
+
 router.get('/:name', checkPermission, (req, res, next) => {
   const name = req.params.name;
   Option.get(name, (status, message, option) => {

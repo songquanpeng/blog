@@ -48,7 +48,7 @@ function updateConfig(config) {
         config[option.name] = option.value;
       });
     } else {
-      console.error('Unable load config from database: ', message);
+      console.error('Unable to load config from database: ', message);
     }
   });
 }
