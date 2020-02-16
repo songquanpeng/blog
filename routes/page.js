@@ -6,6 +6,7 @@ const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 const getDate = require('../utils/util').getDate;
 const md2html = require('../utils/util').md2html;
+const Stream = require('stream');
 
 router.post('/search', checkPermission, function(req, res, next) {
   const type = Number(req.body.type);
@@ -59,6 +60,30 @@ router.put('/', checkLogin, (req, res, next) => {
 router.get('/', checkLogin, (req, res, next) => {
   Page.all((status, message, pages) => {
     res.json({ status, message, pages });
+  });
+});
+
+router.get('/export/:id', checkLogin, function(req, res, next) {
+  const id = req.params.id;
+  Page.getById(id, (status, message, page) => {
+    if (status) {
+      const filename = page.link + '.md';
+      res.setHeader(
+        'Content-disposition',
+        "attachment; filename*=UTF-8''" + encodeURIComponent(filename)
+      );
+      res.setHeader('Content-type', 'text/md');
+      const fileStream = new Stream.Readable({
+        read(size) {
+          return true;
+        }
+      });
+      fileStream.pipe(res);
+      fileStream.push(page.content);
+      res.end();
+    } else {
+      next();
+    }
   });
 });
 

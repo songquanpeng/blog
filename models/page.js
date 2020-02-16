@@ -135,7 +135,7 @@ class Page {
           console.error(error.message);
           callback(false, error.message, undefined);
         } else if (data.length === 0) {
-          callback(false, `No page has id ${id}.`, undefined);
+          callback(false, `No page has id "${id}".`, undefined);
         } else {
           callback(true, '', data[0]);
         }
@@ -151,9 +151,37 @@ class Page {
           console.error(error.message);
           callback(false, error.message, undefined);
         } else if (data.length === 0) {
-          callback(false, `No page has link ${link}.`, undefined);
+          callback(false, `No page has link "${link}".`, undefined);
         } else {
           callback(true, '', data[0]);
+        }
+      });
+  }
+
+  getByTag(tag, callback) {
+    db('pages')
+      .whereRaw('LOWER(tag) LIKE ?', `%${tag.toLowerCase()}%`)
+      .where('page_status', 1)
+      .asCallback((error, data) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, undefined);
+        } else {
+          callback(true, '', data);
+        }
+      });
+  }
+
+  getByTime(time, callback) {
+    db('pages')
+      .whereRaw('LOWER(post_time) LIKE ?', `%${time.toLowerCase()}%`)
+      .where('page_status', 1)
+      .asCallback((error, data) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, undefined);
+        } else {
+          callback(true, '', data);
         }
       });
   }

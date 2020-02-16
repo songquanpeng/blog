@@ -350,8 +350,5 @@ article .copyright{
     padding: 2px 8px;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.code-page .copy-button{
-    float: right;
+    margin-right: 4px;
 }

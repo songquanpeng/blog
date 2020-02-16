@@ -1,0 +1,18 @@
+<%- include('./partials/header') %>
+<%- include('./partials/nav') %>
+
+<article id="archive">
+    <h1>Archive</h1>
+    <% pages.forEach(page => { %>
+        <div class="archive-item">
+            <a href="/page/<%= page.link %>">
+                <%= page.title %>
+            </a>
+            <time>
+                <%= page.post_time.substring(0, 10) %>
+            </time>
+        </div>
+    <% }) %>
+</article>
+
+<%- include('./partials/footer') %>
