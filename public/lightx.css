@@ -252,7 +252,7 @@ article h4,
 article h5,
 article h6 {
     font-family: "Roboto Slab", "Droid Serif", AvenirNext-Bold, "Avenir Bold", "Times New Roman", Times, Georgia, STKaiti, KaiTi, serif;
-    font-weight: normal;
+    font-weight: bold;
 }
 
 article h2,
@@ -260,7 +260,6 @@ article h3,
 article h4,
 article h5,
 article h6 {
-    border-bottom: 2px solid #ddd;
     margin-block-start: 1em;
     margin-block-end: 0.5em;
 }
@@ -268,10 +267,10 @@ article h6 {
 article h1 {
     font-size: 1.7em;
     margin: 0.67em 0;
-    font-weight: 200;
 }
 
 article h2 {
+    border-bottom: 2px solid #ddd;
     font-size: 1.5em;
 }
 
@@ -280,14 +279,23 @@ article h3 {
 }
 
 article h4 {
-    border-bottom: none;
     font-size: 1.2em;
 }
 
 article h5,
 article h6 {
-    border-bottom: none;
     font-size: 1em;
+}
+
+article p {
+    text-align: justify;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+}
+
+article *::selection {
+    background: #000;
+    color: #fff;
 }
 
 article table {
@@ -295,20 +303,14 @@ article table {
     border-collapse: collapse;
     border-spacing: 0;
     vertical-align: middle;
+    text-align: left;
+    min-width: 50%;
 }
 
 article table td,
 article table th {
     padding: 5px 8px;
     border: 1px solid #bbb;
-}
-
-article table th {
-    background-color: #ddd;
-}
-
-article table tr:nth-child(2n) {
-    background-color: #eee;
 }
 
 article a {
@@ -353,6 +355,10 @@ article .copyright{
     width: 100%;
 }
 
+.comment {
+    border-top: 2px solid #000;
+}
+
 .comment form {
     text-align: left;
     border: 1px solid #000;
@@ -386,7 +392,6 @@ article .copyright{
 .comment-card {
     border: 1px solid #000;
     color: #000;
-    background-color: #ffffff;
     position: relative;
     margin-top: 6px;
 }

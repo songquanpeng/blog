@@ -30,11 +30,14 @@
     let e = document.querySelector('#code-display');
 
     function changeBackground() {
+      const comment = document.getElementsByClassName("comment")[0];
       let backgroundColor = getComputedStyle(e).backgroundColor;
       if(dark){
         body.setAttribute('style', '');
+        comment.style.cssText = "";
       }else{
         body.setAttribute('style', 'background:'+backgroundColor);
+        comment.style.cssText = "visibility:hidden";
       }
       dark = !dark;
     }
