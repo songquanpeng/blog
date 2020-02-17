@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Page = require('../models/page').Page;
 const md2html = require('../utils/util').md2html;
+const Comment = require('../models/comment').Comment;
 const sitemap = require('sitemap');
 const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
 
@@ -66,36 +67,39 @@ router.get('/tag/:tag', function(req, res) {
 router.get('/page/:link', function(req, res, next) {
   const link = req.params.link;
   Page.getByLink(link, (success, message, page) => {
-    if (success) {
-      switch (page.type) {
-        case PAGE_TYPE.ARTICLE:
-          let content = page.content;
-          let lines = content.split('\n');
-          let deleteCount = 0;
-          for (let i = 1; i < lines.length; ++i) {
-            let line = lines[i];
-            if (line.startsWith('---')) {
-              deleteCount = i + 1;
-              break;
+    if (success && page !== undefined) {
+      Comment.getByPageId(page.id, (status, message, comments) => {
+        res.locals.comments = comments;
+        switch (page.type) {
+          case PAGE_TYPE.ARTICLE:
+            let content = page.content;
+            let lines = content.split('\n');
+            let deleteCount = 0;
+            for (let i = 1; i < lines.length; ++i) {
+              let line = lines[i];
+              if (line.startsWith('---')) {
+                deleteCount = i + 1;
+                break;
+              }
             }
-          }
-          lines.splice(0, deleteCount);
-          page.content = lines.join('\n');
-          page.content = md2html(page.content);
-          res.render('article', { page }); // TODO: other page types support
-          break;
-        case PAGE_TYPE.CODE:
-          res.render('code', { page });
-          break;
-        case PAGE_TYPE.CUSTOMIZE:
-          res.render('customize', { page });
-          break;
-        default:
-          res.render('message', {
-            title: 'Error!',
-            message: `Unexpected page type: ${page.type}`
-          });
-      }
+            lines.splice(0, deleteCount);
+            page.content = lines.join('\n');
+            page.content = md2html(page.content);
+            res.render('article', { page }); // TODO: other page types support
+            break;
+          case PAGE_TYPE.CODE:
+            res.render('code', { page });
+            break;
+          case PAGE_TYPE.CUSTOMIZE:
+            res.render('customize', { page });
+            break;
+          default:
+            res.render('message', {
+              title: 'Error!',
+              message: `Unexpected page type: ${page.type}`
+            });
+        }
+      });
     } else {
       if (link === 'about') {
         message =
@@ -124,11 +128,15 @@ router.get('/pagination/:pagination', function(req, res, next) {
   let lastIndex = Math.max(0, start - number);
   let nextIndex = start + number;
   Page.getByRange(start, number, pages => {
-    res.render('index', {
-      pages: pages,
-      prev: `${lastIndex}-${lastIndex + number}`,
-      next: `${nextIndex}-${nextIndex + number}`
-    });
+    if (pages === undefined || pages.length === 0) {
+      res.redirect('/');
+    } else {
+      res.render('index', {
+        pages: pages,
+        prev: `${lastIndex}-${lastIndex + number}`,
+        next: `${nextIndex}-${nextIndex + number}`
+      });
+    }
   });
 });
 

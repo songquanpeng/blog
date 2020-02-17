@@ -4,15 +4,15 @@ const router = express.Router();
 const Comment = require('../models/comment').Comment;
 const getDate = require('../utils/util').getDate;
 const md2html = require('../utils/util').md2html;
+const sanitizeHtml = require('sanitize-html');
 const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 
-router.put('/', (req, res, next) => {
-  let id = req.body.id;
+router.post('/', (req, res, next) => {
   let author = req.body.author;
   let page_id = req.body.page_id;
   let title = req.body.title;
-  let content = req.body.content;
+  let content = sanitizeHtml(md2html(req.body.content));
   let post_time = getDate();
   let up_vote = 0;
   let down_vote = 0;
@@ -21,7 +21,7 @@ router.put('/', (req, res, next) => {
   let url = req.body.url;
   let email = req.body.email;
   let page = {
-    id,
+    page_id,
     author,
     title,
     content,
@@ -34,7 +34,8 @@ router.put('/', (req, res, next) => {
     email
   };
   Comment.add(page, (status, message) => {
-    res.json({ status, message });
+    //res.json({ status, message });
+    res.redirect(req.get('referer'));
   });
 });
 

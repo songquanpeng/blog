@@ -223,6 +223,18 @@ img {
     cursor: pointer;
 }
 
+button, .button {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #4d4d4d;
+    background-color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
 article {
     overflow-wrap: break-word;
     font-size: larger;
@@ -341,14 +353,62 @@ article .copyright{
     width: 100%;
 }
 
-.code-page button {
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    color: #4d4d4d;
-    background-color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 4px;
+.comment form {
+    text-align: left;
+    border: 1px solid #000;
+}
+
+.comment table {
+    width: 100%;
+}
+
+.comment th {
+    font-weight: normal;
+}
+
+.comment form {
+    padding: 16px 8px 8px 8px;
+}
+
+.comment label {
+    margin-left: 8px;
+}
+
+.comment input, .comment textarea {
+    font-family: monospace;
+    font-size: large;
+    border: 1px solid #000;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.comment-card {
+    border: 1px solid #000;
+    color: #000;
+    background-color: #ffffff;
+    position: relative;
+    margin-top: 6px;
+}
+
+.comment-card-title {
+    padding: 6px 6px 2px 12px;
+    font-size: x-large;
+    font-family: Georgia, 'Times New Roman', Times, STKaiti, KaiTi, serif;
+    font-weight: 500;
+}
+
+.comment-card-tag {
+    padding: 0 12px;
+    font-size: small;
+}
+
+.comment-card-tag a{
+    color: #368CCB;
+    text-decoration: none;
+}
+
+.comment-card-text {
+    overflow-wrap: break-word;
+    padding: 6px 12px;
 }

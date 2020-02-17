@@ -1,0 +1,51 @@
+<% if(config.allow_comments === 'true' && page.comment_status === 1){ %>
+<div class="comment">
+    <form action="/api/comment" method="post">
+        <table>
+            <tr>
+                <th><label for="author">Your name*: </label></th>
+                <th><input type="text" id="author" name="author" required></th>
+                <th><label for="url">Website link: </label></th>
+                <th><input type="url" id="url" name="url"></th>
+            </tr>
+            <tr>
+                <th><label for="title">Title*: </label></th>
+                <th><input type="text" id="title" name="title" required></th>
+                <th><label for="email">Your email: </label></th>
+                <th><input type="email" id="email" name="email"></th>
+            </tr>
+            <tr>
+                <th><label for="content">Content*: </label></th>
+                <th><textarea id="content" name="content" rows="4"  required></textarea></th>
+                <th>
+                    <label>Control: </label>
+                </th>
+                <th>
+                    <input class="button" type="reset" value="reset" style="width: 45%">
+                    <input class="button" type="submit" value="submit" style="width: 45%">
+                </th>
+            </tr>
+        </table>
+        <div style="display: none">
+            <label for="page_id"></label>
+            <input type="text" id="page_id" name="page_id" value="<%-page.id%>">
+        </div>
+    </form>
+    <div>
+        <% comments.forEach(comment => { %>
+            <div class="comment-card">
+                <div class="comment-card-title">
+                    <%= comment.title %>
+                </div>
+                <div class="comment-card-tag">
+                    <span><a href="<%= comment.url %>"><%= comment.author %></a></span>
+                    <span><%= comment.post_time %></span>
+                </div>
+                <div class="comment-card-text">
+                    <%- comment.content %>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+<%}%>

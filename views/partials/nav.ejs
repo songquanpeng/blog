@@ -8,7 +8,7 @@
           try{
             let links = JSON.parse(config.nav_links)
             links.forEach((link)=>{%>
-                <li><a href="<%- link.link %>" target="_blank"><%- link.text %></a></li>
+                <li><a href="<%- link.link %>" target="_blank" rel="noreferrer"><%- link.text %></a></li>
             <%})
           }
         catch (e) {console.error(e.message)}}                           %>

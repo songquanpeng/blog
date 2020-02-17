@@ -42,6 +42,16 @@ exports.up = function(knex) {
       value:
         'https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/railscasts.css',
       description: 'Input a highlight.js style css link here.'
+    },
+    {
+      name: 'allow_comments',
+      value: 'true',
+      description: 'All comments true or false.'
+    },
+    {
+      name: 'language',
+      value: 'zh',
+      description: 'Input a valid language codes here, such as "zh", "en".'
     }
   ]);
 };
