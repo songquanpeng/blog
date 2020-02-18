@@ -55,13 +55,15 @@ nav ul {
     list-style-type: none;
     margin: auto;
     padding: 0;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     display: flex;
     justify-content: left;
+    white-space: nowrap;
 }
 
 nav li {
-    display: inline-block;
+    display: inline;
     box-sizing: border-box;
     height: 50px;
     text-align: center;
@@ -288,7 +290,6 @@ article h6 {
 }
 
 article p {
-    text-align: justify;
     margin-top: 0;
     margin-bottom: 1.25rem;
 }

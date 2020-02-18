@@ -14,7 +14,7 @@ class Page {
         'post_time',
         'edit_time',
         'title',
-        'content',
+        // 'content',
         'tag',
         'view',
         'up_vote',

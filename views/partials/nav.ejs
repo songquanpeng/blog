@@ -1,9 +1,6 @@
 <nav>
     <ul>
         <li><a href="/"><%= config.site_name %></a></li>
-        <li><a href="/archive">Archive</a></li>
-        <li><a href="/page/about">About</a></li>
-        <li><a href="/admin">Admin</a></li>
 <%      if(config.nav_links !== undefined && config.nav_links !== ''){
           try{
             let links = JSON.parse(config.nav_links)

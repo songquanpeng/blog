@@ -29,7 +29,8 @@ exports.up = function(knex) {
     },
     {
       name: 'nav_links',
-      value: '[{"link":"https://github.com/songquanpeng","text":"Github"}]',
+      value:
+        '[{"link":"/archive","text":"Archive"},{"link":"/page/about","text":"About"},{"link":"/admin","text":"Admin"}]',
       description: 'Add links on the navigation bar. Must be a valid json.'
     },
     {
@@ -52,6 +53,11 @@ exports.up = function(knex) {
       name: 'language',
       value: 'zh',
       description: 'Input a valid language codes here, such as "zh", "en".'
+    },
+    {
+      name: 'extra_footer_text',
+      value: '',
+      description: 'Text here will display on the footer.'
     }
   ]);
 };
