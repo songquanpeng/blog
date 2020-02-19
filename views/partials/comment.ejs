@@ -39,7 +39,7 @@
                     <%= comment.title %>
                 </div>
                 <div class="comment-card-tag">
-                    <span><a href="<%= comment.url %>"><%= comment.author %></a></span>
+                    <span><a href="<%=  comment.url.startsWith('http') ? comment.url : ''%>"><%= comment.author %></a></span>
                     <span><%= comment.post_time %></span>
                 </div>
                 <div class="comment-card-text">

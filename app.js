@@ -11,7 +11,21 @@ const pageRouter = require('./routes/page');
 const userRouter = require('./routes/user');
 const optionRouter = require('./routes/option');
 const updateConfig = require('./utils/util').updateConfig;
+const rateLimit = require('express-rate-limit');
 const app = express();
+
+const pageLimiter = rateLimit({
+  windowMs: 30 * 1000,
+  max: 15
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5
+});
+
+app.use(pageLimiter);
+app.use('/api', apiLimiter);
 
 app.locals.config = {};
 app.locals.page = undefined;
