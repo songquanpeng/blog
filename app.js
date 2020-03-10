@@ -12,6 +12,7 @@ const userRouter = require('./routes/user');
 const optionRouter = require('./routes/option');
 const updateConfig = require('./utils/util').updateConfig;
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 const app = express();
 
 const pageLimiter = rateLimit({
@@ -26,7 +27,7 @@ const commentLimiter = rateLimit({
 
 app.use(pageLimiter);
 app.use('/api/comment', commentLimiter);
-
+app.use(compression());
 app.locals.config = {};
 app.locals.page = undefined;
 updateConfig(app.locals.config);
