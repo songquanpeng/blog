@@ -16,16 +16,16 @@ const app = express();
 
 const pageLimiter = rateLimit({
   windowMs: 30 * 1000,
-  max: 15
+  max: 30
 });
 
-const apiLimiter = rateLimit({
+const commentLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 5
 });
 
 app.use(pageLimiter);
-app.use('/api', apiLimiter);
+app.use('/api/comment', commentLimiter);
 
 app.locals.config = {};
 app.locals.page = undefined;
