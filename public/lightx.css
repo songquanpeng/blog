@@ -79,7 +79,7 @@ nav a:hover{
     font-weight: 500;
 }
 
-pre code {
+code {
     font-family: Consolas, 'Courier New', monospace;
 }
 
@@ -154,7 +154,7 @@ pre code {
 }
 
 .toc-level-2 {
-    list-style-type: decimal;
+    list-style-type: none;
 }
 
 .toc-level-3 {

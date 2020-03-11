@@ -84,6 +84,7 @@ router.get('/page/:link', function(req, res, next) {
             }
             lines.splice(0, deleteCount);
             page.content = lines.join('\n');
+            page.description = page.content.substr(0, 155);
             page.content = md2html(page.content);
             res.render('article', { page }); // TODO: other page types support
             break;

@@ -1,0 +1,13 @@
+{
+  "name": "LIGHTX-CMS",
+  "short_name": "LIGHTX-CMS",
+  "display": "standalone",
+  "start_url": "/",
+  "icon": [
+    {
+      "src": "icon.jpg",
+      "type": "image/jpg",
+      "sizes": "48x48"
+    }
+  ]
+}

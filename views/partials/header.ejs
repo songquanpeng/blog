@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <%if(page !== undefined){%>
     <title><%= page.title %></title>
+    <meta name="description" content="<%= page.description %>"/>
     <%} else{%>
     <title><%= config.title %></title>
+    <meta name="description" content="<%= config.description %>"/>
     <%}%>
     <link rel="stylesheet" href="/lightx.css"/>
     <link rel="stylesheet" href="<%= config.code_theme %>">
+    <link rel="manifest" href="/manifest.json" />
     <%- config.extra_header_code %>
 </head>
 <body>
@@ -17,6 +20,17 @@
   function timeToPath(time) {
     const date = time.split('-');
     return date[0] + '/' + date[1];
+  }
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js', {scope: '/'})
+        .then(function (registration) {
+          // console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(function (err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+    });
   }
 </script>
 <div id="page-container">

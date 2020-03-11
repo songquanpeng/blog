@@ -47,6 +47,7 @@ function updateConfig(config) {
       options.forEach(option => {
         config[option.name] = option.value;
       });
+      config.title = config.motto + " | " + config.site_name;
     } else {
       console.error('Unable to load config from database: ', message);
     }
