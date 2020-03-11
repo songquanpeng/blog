@@ -22,9 +22,11 @@ this.addEventListener('fetch', function (event) {
           return httpRes;
         }
         let responseClone = httpRes.clone();
-        caches.open('cache-v1').then(function (cache) {
-          cache.put(event.request, responseClone);
-        });
+        if (event.request.method !== 'POST' && event.request.method !== 'DELETE' && event.request.method !== 'PUT') {
+          caches.open('cache-v1').then(function (cache) {
+            cache.put(event.request, responseClone);
+          });
+        }
         return httpRes;
       });
     })
