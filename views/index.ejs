@@ -2,7 +2,7 @@
 <%- include('./partials/nav') %>
 <% if (pages.length){ %>
     <% pages.forEach((page)=>{ %>
-        <div class="card" onclick="location.href='/page/<%= page.link %>'">
+        <div class="card" onclick="location.href=`/page/<%= page.link %>`">
             <div class="card-title">
                 <%= page.title !== '' ? page.title : 'No title' %>
             </div>
