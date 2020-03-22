@@ -19,7 +19,7 @@
 ## Notice
 + If you want to try it, you should always use the [latest release version](https://github.com/songquanpeng/lightx-cms/releases/latest).
 + Some features are still in development.
-+ **If you want to join the development, there are something steps you should to do.**
++ **If you want to join the development, there are some steps you should to do.**
     1. Run `git clone https://github.com/songquanpeng/lightx-cms.git` to clone this project.
     2. Run `git submodule update` to clone the submodule.
     3. Run `rm ./package-lock.json`, because I use the [taobao](https://registry.npm.taobao.org/) npm mirror and it maybe not suitable for you. (Don't forget the package-lock.json in ./lightx-cms-admin. You should delete it too.)
