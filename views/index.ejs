@@ -2,16 +2,15 @@
 <%- include('./partials/nav') %>
 <% if (pages.length){ %>
     <% pages.forEach((page)=>{ %>
-        <div class="card" onclick="location.href=`/page/<%= page.link %>`">
+        <div class="card">
             <div class="card-title">
-                <%= page.title !== '' ? page.title : 'No title' %>
+                <a href="/page/<%= page.link %>"><%= page.title !== '' ? page.title : 'No title' %></a>
             </div>
             <div class="card-tag">
                 <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
-                    <span class="badge" onclick="event.stopPropagation();location.href='/tag/<%= tag %>'"><%= tag %></span>
+                    <a class="badge" href='/tag/<%= tag %>'><%= tag %></a>
                 <% }}); %>
-                <span class="badge badge-secondary badge-hover"
-                      onclick="event.stopPropagation();location.href='/archive/'+timeToPath('<%= page.post_time %>')"><%= page.post_time.substring(0, 10) %></span>
+                <a class="badge badge-secondary badge-hover" href="/archive/<%= page.post_time.split('-')[0]+'/'+page.post_time.split('-')[1] %>"><%= page.post_time.substring(0, 10) %></a>
             </div>
             <div class="card-text">
                 <%= page.title %>

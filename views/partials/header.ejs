@@ -19,11 +19,7 @@
 </head>
 <body>
 <script>
-  function timeToPath(time) {
-    const date = time.split('-');
-    return date[0] + '/' + date[1];
-  }
-  if ('serviceWorker' in navigator) {
+  if (false && 'serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('/sw.js', {scope: '/'})
         .then(function (registration) {

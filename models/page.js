@@ -2,6 +2,11 @@ const db = require('../utils/database').db;
 const uuid = require('uuid/v1');
 
 class Page {
+  constructor() {
+    this.pages = [];
+    this.loadPages();
+  }
+
   all(callback) {
     db('pages')
       .select([
@@ -86,12 +91,14 @@ class Page {
   loadPages(callback) {
     db('pages')
       .select([
-        'pages.id as page_id',
+        'pages.id as id',
         'pages.user_id as author_id',
         'type',
         'link',
         'page_status',
         'post_time',
+        'edit_time',
+        'comment_status',
         'title',
         'content',
         'tag',
@@ -106,11 +113,9 @@ class Page {
           console.error(error.message);
         }
         pages.sort((a, b) => {
-          return new Date(b.post_time) - new Date(a.post_time);
+          return new Date(b.edit_time) - new Date(a.edit_time);
         });
-        let newPages = pages.slice(0, 3);
-        let sortedPages = pages.slice(3);
-        this.pages = newPages.concat(sortedPages);
+        this.pages = pages;
         if (callback) {
           callback();
         }
@@ -143,19 +148,28 @@ class Page {
   }
 
   getByLink(link, callback) {
-    db('pages')
-      .where('link', link)
-      .where('page_status', 1)
-      .asCallback((error, data) => {
-        if (error) {
-          console.error(error.message);
-          callback(false, error.message, undefined);
-        } else if (data.length === 0) {
-          callback(false, `No page has link "${link}".`, undefined);
-        } else {
-          callback(true, '', data[0]);
-        }
-      });
+    let currentIndex = 0;
+    let result = this.pages.find((page, index) => {
+      currentIndex = index;
+      return page.link === link;
+    });
+    let prevIndex = currentIndex === 0 ? (this.pages.length - 1) : currentIndex - 1;
+    let nextIndex = currentIndex === this.pages.length - 1 ? 0 : currentIndex + 1;
+    let links = {
+      'prev': {
+        title: this.pages[prevIndex].title,
+        link: this.pages[prevIndex].link
+      },
+      'next': {
+        title: this.pages[nextIndex].title,
+        link: this.pages[nextIndex].link
+      }
+    };
+    if (result === undefined) {
+      callback(false, `No page has link "${link}".`, undefined, undefined);
+    } else {
+      callback(true, '', result, links);
+    }
   }
 
   getByTag(tag, callback) {
@@ -231,5 +245,6 @@ class Page {
       });
   }
 }
+
 const page = new Page();
 module.exports.Page = page;

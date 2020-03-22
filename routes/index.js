@@ -66,10 +66,11 @@ router.get('/tag/:tag', function(req, res) {
 
 router.get('/page/:link', function(req, res, next) {
   const link = req.params.link;
-  Page.getByLink(link, (success, message, page) => {
+  Page.getByLink(link, (success, message, page, links) => {
     if (success && page !== undefined) {
       Comment.getByPageId(page.id, (status, message, comments) => {
         res.locals.comments = comments;
+        res.locals.links = links;
         switch (page.type) {
           case PAGE_TYPE.ARTICLE:
             let content = page.content;

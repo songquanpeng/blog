@@ -85,12 +85,10 @@ code {
 
 .card {
     border: 1px solid #000;
-    /* box-shadow: 0 0 2px #000; */
     color: #000;
     background-color: #ffffff;
     position: relative;
     margin-bottom: 16px;
-    cursor: pointer;
     padding: 1% 2%;
     font-size: larger;
     line-height: 1.6;
@@ -105,6 +103,11 @@ code {
 
 .card-tag {
     padding: 0 12px;
+}
+
+.card-tag a, .card-title a {
+    color: #000000;
+    text-decoration: none;
 }
 
 .card-text {
@@ -421,4 +424,30 @@ article .copyright{
 .comment-card-text {
     overflow-wrap: break-word;
     padding: 6px 12px;
+}
+
+.prevNext a {
+    color: #000000;
+    text-decoration: none;
+    display: block;
+}
+
+.prevNext a:hover {
+    color: #368CCB;
+}
+
+.prevNext {
+    width: 100%;
+    min-height: 3em;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.prevNext div {
+    cursor: pointer;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+    padding: 10px;
 }
