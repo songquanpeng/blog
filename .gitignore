@@ -4,3 +4,4 @@ data.db
 .vs
 data.db-journal
 /public/admin
+package-lock.json

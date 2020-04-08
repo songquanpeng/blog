@@ -10,7 +10,7 @@
 ![editor](https://user-images.githubusercontent.com/39998050/76419533-75966680-63db-11ea-9f2b-1ba7ce1aed31.PNG)
 
 ## Features
-+ PWA supported.
++ ~~PWA supported (need repair).~~
 + Support multiple page types, such as article, code, links, original page, notice, media and many others.
 + Very lightweight, basically dependency free.
 + Powerful online editor powered by react-ace.
