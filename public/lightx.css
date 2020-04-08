@@ -84,12 +84,13 @@ code {
 }
 
 .card {
-    border: 1px solid #000;
+    box-sizing: border-box;
+    border: 2px solid #000;
     color: #000;
     background-color: #ffffff;
     position: relative;
     margin-bottom: 16px;
-    padding: 1% 2%;
+    padding: 1% 2% 3.5% 2%;
     font-size: larger;
     line-height: 1.6;
 }
@@ -99,6 +100,10 @@ code {
     font-size: xx-large;
     font-family: Georgia, 'Times New Roman', Times, STKaiti, KaiTi, serif;
     font-weight: 500;
+}
+
+.card-title:hover a {
+    color: #368CCB;
 }
 
 .card-tag {
@@ -232,6 +237,10 @@ img {
     cursor: pointer;
 }
 
+.badge:hover {
+    color: #368CCB;
+}
+
 button, .button {
     text-align: center;
     font-size: 12px;
@@ -260,7 +269,7 @@ article h3,
 article h4,
 article h5,
 article h6 {
-    font-family: "Roboto Slab", "Droid Serif", AvenirNext-Bold, "Avenir Bold", "Times New Roman", Times, Georgia, STKaiti, KaiTi, serif;
+    font-family: Georgia, 'Times New Roman', Times, STKaiti, KaiTi, serif;
     font-weight: bold;
 }
 
