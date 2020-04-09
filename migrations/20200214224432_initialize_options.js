@@ -58,6 +58,11 @@ exports.up = function(knex) {
       name: 'extra_footer_text',
       value: '',
       description: 'Text here will display on the footer.'
+    },
+    {
+      name: 'disqus',
+      value: '',
+      description: 'Input your disqus short name to enable disqus and disable origin comment system.'
     }
   ]);
 };

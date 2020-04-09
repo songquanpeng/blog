@@ -101,6 +101,7 @@ class Page {
         'comment_status',
         'title',
         'content',
+        'converted_content',
         'tag',
         'view',
         'users.username as username',

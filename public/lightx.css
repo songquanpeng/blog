@@ -460,3 +460,22 @@ article .copyright{
     text-align: center;
     padding: 10px;
 }
+
+.discuss h1 {
+    font-size: 24px;
+    line-height: 36px;
+    text-align: left;
+}
+
+.discuss .time {
+    font-size: 12px;
+    line-height: 18px;
+    text-align: left;
+    color: #738292;
+}
+
+.discuss .content {
+    font-size: 16px;
+    line-height: 24px;
+    text-align: left;
+}

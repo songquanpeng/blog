@@ -29,6 +29,8 @@ exports.up = function(knex, Promise) {
       table.integer('comment_status');
       table.string('title').notNullable();
       table.text('content').notNullable();
+      table.text('converted_content');
+      table.string('description');
       table.string('tag');
       table.string('password');
       table.integer('view').defaultTo(0);

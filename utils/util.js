@@ -1,6 +1,7 @@
 const lexer = require('marked').lexer;
 const parser = require('marked').parser;
 const sanitizeHtml = require('sanitize-html');
+const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
 const Option = require('../models/option').Option;
 
 function titleToLink(title) {
@@ -47,16 +48,34 @@ function updateConfig(config) {
       options.forEach(option => {
         config[option.name] = option.value;
       });
-      config.title = config.motto + " | " + config.site_name;
+      config.title = config.motto + ' | ' + config.site_name;
     } else {
       console.error('Unable to load config from database: ', message);
     }
   });
 }
 
+function convertContent(pageType, content) {
+  if (pageType === PAGE_TYPE.ARTICLE || pageType === PAGE_TYPE.DISCUSS) {
+    let lines = content.split('\n');
+    let deleteCount = 0;
+    for (let i = 1; i < lines.length; ++i) {
+      let line = lines[i];
+      if (line.startsWith('---')) {
+        deleteCount = i + 1;
+        break;
+      }
+    }
+    lines.splice(0, deleteCount);
+    return md2html(lines.join('\n'));
+  }
+  return '';
+}
+
 module.exports = {
   titleToLink,
   getDate,
   md2html,
-  updateConfig
+  updateConfig,
+  convertContent
 };

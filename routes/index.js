@@ -73,27 +73,16 @@ router.get('/page/:link', function(req, res, next) {
         res.locals.links = links;
         switch (page.type) {
           case PAGE_TYPE.ARTICLE:
-            let content = page.content;
-            let lines = content.split('\n');
-            let deleteCount = 0;
-            for (let i = 1; i < lines.length; ++i) {
-              let line = lines[i];
-              if (line.startsWith('---')) {
-                deleteCount = i + 1;
-                break;
-              }
-            }
-            lines.splice(0, deleteCount);
-            page.content = lines.join('\n');
-            page.description = page.content.substr(0, 155);
-            page.convertedContent = md2html(page.content);
-            res.render('article', { page }); // TODO: other page types support
+            res.render('article', { page });
             break;
           case PAGE_TYPE.CODE:
             res.render('code', { page });
             break;
           case PAGE_TYPE.CUSTOMIZE:
             res.render('customize', { page });
+            break;
+          case PAGE_TYPE.DISCUSS:
+            res.render('discuss', {page});
             break;
           default:
             res.render('message', {
