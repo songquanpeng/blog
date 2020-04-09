@@ -8,6 +8,7 @@
 ## Notice
 + If you want to try it, you should always use the [latest release version](https://github.com/songquanpeng/lightx-cms/releases/latest).
 + Some features are still in development.
++ If you are Windows user, please run `npm run init`
 + **If you want to join the development, there are some steps you should to do.**
     1. Run `git clone https://github.com/songquanpeng/lightx-cms.git` to clone this project.
     2. Run `git submodule update` to clone the submodule.
