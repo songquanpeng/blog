@@ -3,7 +3,7 @@ exports.up = function(knex) {
     {
       name: 'domain',
       value: 'www.example.com',
-      description: 'Notice domain only.'
+      description: 'Notice domain only and this is required if you want to enable disqus.'
     },
     { name: 'author', value: 'My name', description: 'Your name.' },
     { name: 'motto', value: 'My motto.', description: 'Your motto.' },
