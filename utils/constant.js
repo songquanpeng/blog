@@ -4,7 +4,7 @@ const PAGE_TYPE = {
   BULLETIN: 2,
   DISCUSS: 3,
   LINKS: 4,
-  CUSTOMIZE: 5,
+  RAW: 5,
   MEDIA: 6
 };
 

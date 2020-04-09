@@ -279,7 +279,7 @@ article h4,
 article h5,
 article h6 {
     margin-block-start: 1em;
-    margin-block-end: 0.5em;
+    margin-block-end: 0.2em;
 }
 
 article h1 {
@@ -353,6 +353,19 @@ article code {
 
 article .copyright{
     display: none;
+}
+
+article .info {
+    font-size: 14px;
+    line-height: 18px;
+    text-align: left;
+    color: #738292;
+    margin-block-end: 0.5em
+}
+
+article .info a {
+    text-decoration: none;
+    color: inherit;
 }
 
 /* Code Page Style*/
@@ -478,4 +491,22 @@ article .copyright{
     font-size: 16px;
     line-height: 24px;
     text-align: left;
+}
+
+.raw .title {
+    font-size: 1.7em;
+    margin: 0.67em 0;
+}
+
+.raw .info {
+    font-size: 14px;
+    line-height: 18px;
+    text-align: left;
+    color: #738292;
+    margin-block-end: 0.5em
+}
+
+.raw .info a {
+    text-decoration: none;
+    color: inherit;
 }

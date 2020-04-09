@@ -34,10 +34,10 @@
       let backgroundColor = getComputedStyle(e).backgroundColor;
       if(dark){
         body.setAttribute('style', '');
-        comment.style.cssText = "";
+        if(comment) comment.style.cssText = "";
       }else{
         body.setAttribute('style', 'background:'+backgroundColor);
-        comment.style.cssText = "visibility:hidden";
+        if(comment) comment.style.cssText = "visibility:hidden";
       }
       dark = !dark;
     }
