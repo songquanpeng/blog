@@ -3,7 +3,7 @@ exports.up = function(knex) {
     {
       name: 'disqus',
       value: '',
-      description: 'Please input your disqus website name to enable disqus comment system. Notice this will disable origin comment system.'
+      description: 'Input your disqus short name to enable disqus and disable origin comment system.'
     }]
   );
 };
