@@ -5,7 +5,8 @@ const PAGE_TYPE = {
   DISCUSS: 3,
   LINKS: 4,
   RAW: 5,
-  MEDIA: 6
+  MEDIA: 6,
+  TIMELINE: 7
 };
 
 module.exports = { PAGE_TYPE };

@@ -92,10 +92,6 @@ router.get('/page/:link', function(req, res, next) {
         }
       });
     } else {
-      if (link === 'about') {
-        message =
-          'If you are the administrator, you should create a page with link "about".';
-      }
       res.render('message', { title: 'Error!', message });
     }
   });

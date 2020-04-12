@@ -12,9 +12,11 @@
                 <% }}); %>
                 <a class="badge badge-secondary badge-hover" href="/archive/<%= page.post_time.split('-')[0]+'/'+page.post_time.split('-')[1] %>"><%= page.post_time.substring(0, 10) %></a>
             </div>
-<!--            <div class="card-text">-->
-<!--                <%= page.title %>-->
-<!--            </div>-->
+            <% if(page.description != undefined && page.description.trim() !== "") {%>
+                <div class="card-text">
+                    <%= page.description %>
+                </div>
+            <%}%>
         </div>
 <% })} %>
 

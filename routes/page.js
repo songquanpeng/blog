@@ -21,7 +21,8 @@ router.post('/search', checkPermission, function(req, res, next) {
   });
 });
 
-router.put('/', checkLogin, (req, res, next) => {
+// Add page
+router.post('/', checkLogin, (req, res, next) => {
   let type = req.body.type;
   let link = req.body.link;
   let page_status = req.body.page_status;
@@ -29,6 +30,7 @@ router.put('/', checkLogin, (req, res, next) => {
   let title = req.body.title;
   let content = req.body.content;
   let tag = req.body.tag;
+  let description = req.body.description;
   let password = req.body.password;
   let user_id = req.session.user.id;
   let post_time = getDate();
@@ -47,6 +49,7 @@ router.put('/', checkLogin, (req, res, next) => {
     title,
     content,
     tag,
+    description,
     password,
     view,
     up_vote,
@@ -95,7 +98,8 @@ router.get('/:id', checkLogin, (req, res, next) => {
   });
 });
 
-router.post('/', checkLogin, (req, res, next) => {
+// Update page
+router.put('/', checkLogin, (req, res, next) => {
   const id = req.body.id;
   let type = req.body.type;
   let link = req.body.link;
@@ -104,6 +108,7 @@ router.post('/', checkLogin, (req, res, next) => {
   let title = req.body.title;
   let content = req.body.content;
   let tag = req.body.tag;
+  let description = req.body.description;
   let password = req.body.password;
   let edit_time = getDate();
 
@@ -116,7 +121,8 @@ router.post('/', checkLogin, (req, res, next) => {
     title,
     content,
     tag,
-    password
+    password,
+    description
   };
   page.converted_content = convertContent(page.type, page.content);
 

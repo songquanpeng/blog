@@ -103,6 +103,7 @@ class Page {
         'content',
         'converted_content',
         'tag',
+        'description',
         'view',
         'users.username as username',
         'users.display_name as author'
