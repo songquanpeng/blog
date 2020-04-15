@@ -21,7 +21,7 @@
                 link.image  = link.link + "/favicon.ico";
             }
         }%>
-        <a href="<%= link.link %>"><img loading="lazy" class="image" src="<%= link.image %>" alt="<%= link.title %>"/></a>
+        <a href="<%= link.link %>"><img loading="lazy" class="image" src="<%= link.image %>"  alt="⚠️"/></a>
         <div class="info">
             <div class="title"><%= link.title %></div>
             <div class="description"><%= link.description %></div>
@@ -34,16 +34,24 @@
         padding: 1em 0;
         border: 2px solid transparent;
         display: flex;
+        align-items: center;
         border-bottom: 1px dashed #999;
         margin-left: 20px;
         margin-right: 20px;
+    }
+
+    .link-card a {
+        flex-shrink: 0;
     }
 
     .link-card img {
         width: 4em;
         height: 4em;
         margin: 0 1em 0 0;
-        z-index: 0;
+    }
+
+    .link-card .info {
+        flex-shrink: 1;
     }
 
     .link-card .title {
@@ -54,9 +62,6 @@
 
     .link-card .description {
         font-size: 0.875em;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
     }
 </style>
 <%- include('./partials/prev-next') %>
