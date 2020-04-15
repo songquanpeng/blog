@@ -1,0 +1,57 @@
+<%- include('./partials/header') %>
+<%- include('./partials/nav') %>
+<article>
+    <h1><%- page.title %></h1>
+    <div class="info">
+        Tag:
+        <% page.tag.trim().split(" ").forEach(function (tag) { if(tag !== ""){ %>
+            <a href='/tag/<%= tag %>'><%= tag %></a>
+        <% }}); %>
+        &ensp;Posted on <%- page.post_time %>&ensp;Edited on <%- page.edit_time %>
+    </div>
+</article>
+
+<% if (linkList.length){ %>
+    <% linkList.forEach((link)=>{ %>
+    <div class="link-card">
+        <a href="<%= link.link %>"><img class="image" src="<%= link.image %>" alt="<%= link.title %>"/></a>
+        <div class="info">
+            <div class="title"><%= link.title %></div>
+            <div class="description"><%= link.description %></div>
+        </div>
+    </div>
+<% })} %>
+<div style="margin-bottom: 100px"></div>
+<style>
+    .link-card {
+        padding: 1em 0;
+        border: 2px solid transparent;
+        display: flex;
+        border-bottom: 1px dashed #999;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .link-card img {
+        width: 4em;
+        height: 4em;
+        margin: 0 1em 0 0;
+        z-index: 0;
+    }
+
+    .link-card .title {
+        font-size: 1.1em;
+        font-weight: bold;
+        margin: 0.375em 0;
+    }
+
+    .link-card .description {
+        font-size: 0.875em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+</style>
+<%- include('./partials/prev-next') %>
+<%- include('./partials/comment') %>
+<%- include('./partials/footer') %>

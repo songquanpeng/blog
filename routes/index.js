@@ -82,7 +82,35 @@ router.get('/page/:link', function(req, res, next) {
             res.render('raw', { page });
             break;
           case PAGE_TYPE.DISCUSS:
-            res.render('discuss', {page});
+            res.render('discuss', { page });
+            break;
+          case PAGE_TYPE.LINKS:
+            let lines = page.content.split('\n');
+            let deleteCount = 0;
+            for (let i = 1; i < lines.length; ++i) {
+              let line = lines[i];
+              if (line.startsWith('---')) {
+                deleteCount = i + 1;
+                break;
+              }
+            }
+            lines.splice(0, deleteCount);
+            let linkList = [];
+            let linkCount = -1;
+            for (let i = 0; i < lines.length; ++i) {
+              let line = lines[i].split(':');
+              let key = line[0].trim();
+              if (!['title', 'link', 'image', 'description'].includes(key)) continue;
+              let value = line.splice(1).join(':').trim();
+              if (key === 'title') {
+                linkList.push({ title: 'No title', image: '/favicon.ico', link: '/', description: 'No description' });
+                linkCount++;
+              } else {
+                if (linkCount < 0) continue;
+              }
+              linkList[linkCount][key] = value;
+            }
+            res.render('links', { page, linkList });
             break;
           default:
             res.render('message', {
