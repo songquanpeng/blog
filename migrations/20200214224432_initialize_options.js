@@ -47,7 +47,7 @@ exports.up = function(knex) {
     {
       name: 'allow_comments',
       value: 'true',
-      description: 'All comments true or false.'
+      description: 'Whether to open comments.'
     },
     {
       name: 'language',

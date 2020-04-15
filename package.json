@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "init": "powershell -c \"git submodule update;npm i;npx knex migrate:latest;cd ./lightx-cms-admin;npm i;cd ..\"",
-    "build": "powershell -c \"rm ./public/admin -r;cd lightx-cms-admin;npm run build;npm run analyze;mv ./build ../public/admin;cd ..;npm restart\""
+    "build": "powershell -c \"rm ./public/admin -r;cd lightx-cms-admin;npm run build;npm run analyze;mv ./build ../public/admin;cd ..\""
   },
   "dependencies": {
     "compression": "^1.7.4",
