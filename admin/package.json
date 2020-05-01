@@ -1,16 +1,16 @@
 {
-  "name": "lightx-cms-admin",
+  "name": "react-blog-admin",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "ace-builds": "^1.4.8",
+    "ace-builds": "^1.4.11",
     "axios": "^0.19.2",
     "g": "^2.0.1",
     "history": "latest",
     "lodash": "^4.17.15",
-    "react": "^16.13.0",
-    "react-ace": "^8.0.0",
-    "react-dom": "^16.13.0",
+    "react": "^16.13.1",
+    "react-ace": "^8.1.0",
+    "react-dom": "^16.13.1",
     "react-redux": "^6.0.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
@@ -44,8 +44,8 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
-    "prettier": "^1.18.2",
-    "source-map-explorer": "^2.3.1"
+    "prettier": "^1.19.1",
+    "source-map-explorer": "^2.4.2"
   },
   "prettier": {
     "singleQuote": true
