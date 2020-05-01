@@ -3,7 +3,7 @@
   "version": "0.3.3",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node ./app.js",
     "init": "powershell -c \\\"npm i;npx knex migrate:latest;cd admin;npm i;cd ..\\\"",
     "build": "powershell -c \\\"rm ./public/admin -r;cd admin;npm run build;npm run analyze;mv ./build ../public/admin;cd ..\\\"",
     "migrate": "npx knex migrate:latest"

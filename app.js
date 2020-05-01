@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const session = require('express-session');
 const flash = require('connect-flash');
 const path = require('path');
@@ -11,9 +12,11 @@ const pageRouter = require('./routes/page');
 const userRouter = require('./routes/user');
 const optionRouter = require('./routes/option');
 const updateConfig = require('./utils/util').updateConfig;
+const normalizePort = require('./utils/util').normalizePort;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const app = express();
+const server = http.createServer(app);
 
 const pageLimiter = rateLimit({
   windowMs: 30 * 1000,
@@ -35,6 +38,8 @@ updateConfig(app.locals.config);
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 
+let port = normalizePort(process.env.PORT || 3000);
+app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));
@@ -85,6 +90,16 @@ app.use(function(err, req, res, next) {
   if (!res.headersSent) {
     res.json({ status: false, message: err.message });
   }
+});
+
+server.listen(port);
+server.on('error', err => {
+  console.error(`an error occurred on the server, please check if port ${port} is occupied.`);
+  console.error(err.toString());
+});
+
+server.on('listening', () => {
+  console.log(`server listen on port: ${port}`);
 });
 
 module.exports = app;
