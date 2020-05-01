@@ -1,14 +1,13 @@
-# LIGHTX-CMS
+# Express React Blog
 ![stars](https://img.shields.io/github/stars/songquanpeng/lightx-cms) ![forks](https://img.shields.io/github/forks/songquanpeng/lightx-cms) ![repo-size](https://img.shields.io/github/repo-size/songquanpeng/lightx-cms) ![license](https://img.shields.io/github/license/songquanpeng/lightx-cms) ![release](https://img.shields.io/github/v/release/songquanpeng/lightx-cms)
 
 [中文](https://iamazing.cn/page/LIGHTX-CMS-使用记录以及-TODO-事项)
 ## Description
 + This is a blog system powered by Express.js and React.
 + Disqus is integrated, but there is also a built in comment system.
-+ I use SQLite database here, but its easy to move to other database, just modify the `knexfile.js`.
++ I use the SQLite database here, but its easy to move to other database, just by modifying the `knexfile.js`.
 + [Demo](https://iamazing.cn/) (may not be the latest version).
 + Please use the release version if you want to have a try, which I have initialize the SQLite database and build the react application.
-+ There is a submodule in this repo, use `git submodult update` to clone it.
 + Use `npx knex migrate:latest` to initialize the database before you run it.
 
 ## Supported Page Type
