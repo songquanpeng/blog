@@ -9,6 +9,7 @@
 + [Demo](https://iamazing.cn/) (may not be the latest version).
 + Please use the release version if you want to have a try, which I have initialize the SQLite database and build the react application.
 + Use `npx knex migrate:latest` to initialize the database before you run it.
++ Recommend use `pm2 start ./app.js --name blog` when you deploy it. 
 
 ## Supported Page Type
 |Page Type|Description|
@@ -18,3 +19,22 @@
 |Links Page| You can put some useful links here. [Demo.](https://iamazing.cn/page/links)|
 |Code Page| Just like Github Gist. [Demo.](https://iamazing.cn/page/使用-Pygame-生成大量小球)|
 |Discuss Page| Add a dedicated discussion page in your site.|
+
+## Project Structure
+```
+.
+├── LICENSE         MIT License.
+├── README.md       Project Readme.
+├── admin           The admin part for this blog system.
+├── app.js          Use node run this script.
+├── data.db         Your SQLite databse.
+├── knexfile.js     Configure your database configuration here.
+├── middlewares     As name.
+├── migrations      Database migrations.
+├── models          Here I defined some models to operation the database.
+├── package.json    Needless to say.
+├── public          The website visitor can access files under this folder.
+├── routes          Some api routes.
+├── utils           As name.
+└── views           The ejs templates are stored here.
+```

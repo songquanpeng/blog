@@ -99,7 +99,8 @@ server.on('error', err => {
 });
 
 server.on('listening', () => {
-  console.log(`server listen on port: ${port}`);
+  console.log(`server listen on port: ${port}.`);
+  console.log("please make sure you have run `npm run migrate` to initialize the database.")
 });
 
 module.exports = app;
