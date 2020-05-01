@@ -1,11 +1,12 @@
 {
-  "name": "learn-nodejs",
-  "version": "0.0.0",
+  "name": "lightx-cms",
+  "version": "0.3.3",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
     "init": "powershell -c \"git submodule update;npm i;npx knex migrate:latest;cd ./lightx-cms-admin;npm i;cd ..\"",
-    "build": "powershell -c \"rm ./public/admin -r;cd lightx-cms-admin;npm run build;npm run analyze;mv ./build ../public/admin;cd ..\""
+    "build": "powershell -c \"rm ./public/admin -r;cd lightx-cms-admin;npm run build;npm run analyze;mv ./build ../public/admin;cd ..\"",
+    "migrate": "npx knex migrate:latest"
   },
   "dependencies": {
     "compression": "^1.7.4",
@@ -20,6 +21,7 @@
     "knex": "^0.20.13",
     "marked": "^0.8.2",
     "morgan": "~1.9.0",
+    "mysql": "^2.18.1",
     "sanitize-html": "^1.20.1",
     "serve-static": "^1.14.1",
     "sitemap": "^6.1.0",

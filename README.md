@@ -3,7 +3,7 @@
 
 ## Description
 + A personal content management system, powered by Express.js and React.
-+ [Demo here.(May not be the latest version)](https://iamazing.cn/).
++ [Demo here (may not be the latest version)](https://iamazing.cn/).
 
 ## Notice
 + If you want to try it, you should always use the [latest release version](https://github.com/songquanpeng/lightx-cms/releases/latest).

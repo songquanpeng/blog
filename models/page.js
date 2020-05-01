@@ -114,7 +114,7 @@ class Page {
         if (error) {
           console.error(error.message);
         }
-        pages.sort((a, b) => {
+        if(pages) pages.sort((a, b) => {
           return new Date(b.edit_time) - new Date(a.edit_time);
         });
         this.pages = pages;
@@ -155,21 +155,21 @@ class Page {
       currentIndex = index;
       return page.link === link;
     });
-    let prevIndex = currentIndex === 0 ? (this.pages.length - 1) : currentIndex - 1;
-    let nextIndex = currentIndex === this.pages.length - 1 ? 0 : currentIndex + 1;
-    let links = {
-      'prev': {
-        title: this.pages[prevIndex].title,
-        link: this.pages[prevIndex].link
-      },
-      'next': {
-        title: this.pages[nextIndex].title,
-        link: this.pages[nextIndex].link
-      }
-    };
     if (result === undefined) {
       callback(false, `No page has link "${link}".`, undefined, undefined);
     } else {
+      let prevIndex = currentIndex === 0 ? (this.pages.length - 1) : currentIndex - 1;
+      let nextIndex = currentIndex === this.pages.length - 1 ? 0 : currentIndex + 1;
+      let links = {
+        'prev': {
+          title: this.pages[prevIndex].title,
+          link: this.pages[prevIndex].link
+        },
+        'next': {
+          title: this.pages[nextIndex].title,
+          link: this.pages[nextIndex].link
+        }
+      };
       callback(true, '', result, links);
     }
   }

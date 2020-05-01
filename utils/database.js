@@ -1,15 +1,8 @@
 const knex = require('knex');
-const sqlite3 = require('sqlite3').verbose();
-const sqlite3Db = new sqlite3.Database('data.db');
-const fs = require('fs');
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('../knexfile')[environment];
 
-const db = knex({
-  client: 'sqlite3',
-  connection: {
-    filename: 'data.db'
-  },
-  useNullAsDefault: true
-});
+const db = knex(configuration);
 
 module.exports = {
   db: db
