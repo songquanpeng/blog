@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./app.js",
-    "init": "powershell -c \\\"npm i;npx knex migrate:latest;cd admin;npm i;cd ..\\\"",
-    "build": "powershell -c \\\"rm ./public/admin -r;cd admin;npm run build;npm run analyze;mv ./build ../public/admin;cd ..\\\"",
+    "init": "npm i && npm run migrate && cd admin && npm i && cd ..",
+    "build": "rm ./public/admin -r && cd admin && npm run build && mv ./build ../public/admin && cd ..",
     "migrate": "npx knex migrate:latest"
   },
   "dependencies": {
