@@ -99,8 +99,8 @@ server.on('error', err => {
 });
 
 server.on('listening', () => {
-  console.log(`Server listen on port: ${port}.`);
-  console.log("Please make sure you have run `npm run migrate` to initialize the database.")
+  console.log('\x1b[36m%s\x1b[0m', `Server listen on port: ${port}.`);
+  console.log('\x1b[32m%s\x1b[0m', "Please make sure you have run `npm run migrate` to initialize the database.")
 });
 
 module.exports = app;

@@ -5,8 +5,9 @@
   "scripts": {
     "start": "node ./app.js",
     "init": "npm i && npm run migrate && cd admin && npm i && cd ..",
-    "build": "rm ./public/admin -r && cd admin && npm run build && mv ./build ../public/admin && cd ..",
-    "migrate": "npx knex migrate:latest"
+    "build": "cd admin && npm run build && mv ./build ../public/admin && cd ..",
+    "migrate": "npx knex migrate:latest",
+    "clear": "rm ./public/admin -r "
   },
   "dependencies": {
     "compression": "^1.7.4",

@@ -15,7 +15,7 @@
 |Page Type|Description|
 |---|---|
 |Article Page | Needless to say.|
-|Raw HTML Page | Use it to deploy your single page application, such as a little tool written in JavaScript or a online game. [Demo.](https://iamazing.cn/page/字符雨)|
+|Raw HTML Page | Use it to deploy your single page application, such as a little tool written in JavaScript or a online game. [Demo.](https://iamazing.cn/page/online-battle-city)|
 |Links Page| You can put some useful links here. [Demo.](https://iamazing.cn/page/links)|
 |Code Page| Just like Github Gist. [Demo.](https://iamazing.cn/page/使用-Pygame-生成大量小球)|
 |Discuss Page| Add a dedicated discussion page in your site.|
