@@ -94,13 +94,13 @@ app.use(function(err, req, res, next) {
 
 server.listen(port);
 server.on('error', err => {
-  console.error(`an error occurred on the server, please check if port ${port} is occupied.`);
+  console.error(`An error occurred on the server, please check if port ${port} is occupied.`);
   console.error(err.toString());
 });
 
 server.on('listening', () => {
-  console.log(`server listen on port: ${port}.`);
-  console.log("please make sure you have run `npm run migrate` to initialize the database.")
+  console.log(`Server listen on port: ${port}.`);
+  console.log("Please make sure you have run `npm run migrate` to initialize the database.")
 });
 
 module.exports = app;
