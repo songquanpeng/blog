@@ -176,6 +176,24 @@ article h6 {
     font-weight: bold
 }
 
+@media screen and (max-width: 960px) {
+    article h1 {
+        font-size: 1.5em
+    }
+
+    article h2 {
+        font-size: 1.35em
+    }
+
+    article h3 {
+        font-size: 1.3em
+    }
+
+    article h4 {
+        font-size: 1.2em;
+    }
+}
+
 article p {
     margin-top: 0;
     margin-bottom: 1.25rem;
@@ -250,6 +268,9 @@ article .info a {
 
 .code-page pre{
     margin-top: 2px;
+    overflow-x: auto;
+    padding: 0;
+    font-size: 16px;
 }
 
 .code-page .control-panel{
