@@ -3,7 +3,8 @@ exports.up = function(knex) {
     {
       name: 'domain',
       value: 'www.example.com',
-      description: 'Notice domain only and this is required if you want to enable disqus.'
+      description:
+        'Notice domain only and this is required if you want to enable disqus.'
     },
     { name: 'author', value: 'My name', description: 'Your name.' },
     { name: 'motto', value: 'My motto.', description: 'Your motto.' },
@@ -30,7 +31,7 @@ exports.up = function(knex) {
     {
       name: 'nav_links',
       value:
-        '[{"link":"/archive","text":"Archive"},{"link":"/page/about","text":"About"},{"link":"/admin","text":"Admin"}]',
+        '[{"key": "Example Dropdown","value": [{"link":"./","text":"Example 1"}, {"link":"./","text":"Example 2"}]}]',
       description: 'Add links on the navigation bar. Must be a valid json.'
     },
     {
@@ -62,7 +63,8 @@ exports.up = function(knex) {
     {
       name: 'disqus',
       value: '',
-      description: 'Input your disqus short name to enable disqus and disable origin comment system.'
+      description:
+        'Input your disqus short name to enable disqus and disable origin comment system.'
     }
   ]);
 };

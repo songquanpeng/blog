@@ -18,21 +18,22 @@
                 <a class="navbar-item" href="/archive"> Archive </a>
                 <a class="navbar-item" href="/page/links"> Links </a>
                 <a class="navbar-item" href="/page/about"> About </a>
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        More
-                    </a>
-                    <div class="navbar-dropdown">
-                        <%      if(config.nav_links !== undefined && config.nav_links !== ''){
-                                try{
-                            let links = JSON.parse(config.nav_links)
-                        links.forEach((link)=>{%>
-                            <a class="navbar-item" href="<%- link.link %>" rel="noreferrer"><%- link.text %></a>
+                <% if(config.nav_links !== undefined && config.nav_links !== ''){
+                    try {
+                        let dropdowns = JSON.parse(config.nav_links);
+                        dropdowns.forEach((dropdown)=>{ %>
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link">
+                                    <%- dropdown.key %>
+                                </a>
+                                <div class="navbar-dropdown">
+                                    <% if (dropdown.value) dropdown.value.forEach((link)=>{ %>
+                                        <a class="navbar-item" href="<%- link.link %>" rel="noreferrer"><%- link.text %></a>
+                                    <% }) %>
+                                </div>
+                            </div>
                         <%})
-                        }
-                        catch (e) {console.error(e.message)}}          %>
-                    </div>
-                </div>
+                    } catch (e) {console.error(e.message)}} %>
             </div>
             <div class="navbar-end">
                 <div class="navbar-item">
