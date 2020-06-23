@@ -1,17 +1,33 @@
 <%- include('./partials/header') %>
+<%
 
-<article id="tag">
-    <h1><%= title %></h1>
-    <% pages.forEach(page => { %>
-        <div class="archive-item">
-            <a href="/page/<%= page.link %>">
-                <%= page.title %>
-            </a>
-            <time>
-                <%= page.post_time.substring(0, 10) %>
-            </time>
-        </div>
-    <% }) %>
-</article>
+%>
+<div class="container">
+    <p class="title is-3"><%= title %></p>
+    <table class="table is-fullwidth is-hoverable is-bordered is-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Post Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% pages.sort((a,b) => (a.post_time > b.post_time) ? 1 : ((b.post_time > a.post_time) ? -1 : 0)).forEach(page => { %>
+            <tr>
+                <td>
+                    <a href="/page/<%= page.link %>">
+                        <%= page.title %>
+                    </a>
+                </td>
+                <td>
+                    <time>
+                        <%= page.post_time.substring(0, 10) %>
+                    </time>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
 
 <%- include('./partials/footer') %>

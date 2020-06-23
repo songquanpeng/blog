@@ -1,18 +1,20 @@
 <%- include('./partials/header') %>
 
-<article>
-    <h1><%-page.title%></h1>
-    <div class="info">
-        Tag:
-        <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
-            <a href='/tag/<%= tag %>'><%= tag %></a>
-        <% }}); %>
-        &ensp;Posted on <%-page.post_time%>&ensp;Edited on <%-page.edit_time%>
-    </div>
-    <%-page.converted_content%>
-    <p class="copyright"><strong>Links: <a href="<%-page.link%>"><%-page.link%></a></strong></p>
-</article>
+<div class="article-container">
+    <h1 class="title is-3 is-4-mobile"><%-page.title%></h1>
+    <article>
+        <div class="info">
+            Tag:
+            <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
+                <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
+            <% }}); %>
+            &ensp;Posted on <span class="tag is-light"><%-page.post_time%></span>&ensp;Edited on <span class="tag is-light"><%-page.edit_time%></span>
+        </div>
+        <%-page.converted_content%>
+        <p class="copyright"><strong>Links: <a href="<%-page.link%>"><%-page.link%></a></strong></p>
+    </article>
+    <%- include('./partials/prev-next') %>
+    <%- include('./partials/comment') %>
+</div>
 
-<%- include('./partials/prev-next') %>
-<%- include('./partials/comment') %>
 <%- include('./partials/footer') %>

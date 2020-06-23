@@ -27,11 +27,11 @@ a {
 }
 
 #footer {
-    position: absolute;
-    bottom: 0;
     height: 4rem;
-    left: 0;
-    right: 0;
+}
+
+#footer a {
+    color: black;
 }
 
 code {
@@ -53,20 +53,21 @@ code {
     margin-top: 8px;
 }
 
-footer a {
-    color: black;
-}
-
 .pagination {
     margin: 16px 4px;
 }
 
 .pagination a {
     border: none;
+    overflow: hidden;
 }
 
 .shadow {
     box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.02);
+}
+
+.nav-shadow {
+    box-shadow: 0 2px 3px rgba(26,26,26,.1);
 }
 
 .paginator div {
@@ -77,6 +78,16 @@ footer a {
     text-align: center;
     font-weight: bold;
     padding: 10px;
+}
+
+.box article {
+    overflow-wrap: break-word;
+    font-size: larger;
+    word-break: break-word;
+    line-height: 1.6;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #ffffff;
 }
 
 .toc-level-1{
@@ -103,35 +114,29 @@ footer a {
     list-style-type: square;
 }
 
-.archive-item time, .tag-item time , .category-item time{
-    float: right;
-}
-
 img {
     max-width: 100%;
     max-height: 100%;
 }
 
-button, .button {
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    color: #4d4d4d;
-    background-color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 4px;
-}
-
-article {
+.article-container {
+    margin: auto;
+    max-width: 960px;
+    padding: 16px 16px;
     overflow-wrap: break-word;
-    font-size: larger;
     word-break: break-word;
     line-height: 1.6;
-    padding: 16px;
-    margin-bottom: 16px;
-    background-color: #ffffff;
+    font-size: larger;
+}
+
+article a {
+    color: #368CCB;
+    text-decoration: none;
+}
+
+article a:hover {
+    color: #368CCB;
+    text-decoration: none;
 }
 
 article h1,
@@ -140,60 +145,40 @@ article h3,
 article h4,
 article h5,
 article h6 {
-    font-family: Georgia, 'Times New Roman', Times, STKaiti, KaiTi, serif;
-    font-weight: bold;
-}
-
-article h2,
-article h3,
-article h4,
-article h5,
-article h6 {
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 20px 0 15px;
     margin-block-start: 1em;
     margin-block-end: 0.2em;
 }
 
 article h1 {
-    font-size: 1.7em;
-    margin: 0.67em 0;
+    font-size: 2.5em
 }
 
 article h2 {
-    border-bottom: 2px solid #ddd;
-    font-size: 1.5em;
+    font-size: 1.75em
 }
 
 article h3 {
-    font-size: 1.3em;
+    font-size: 1.45em
 }
 
 article h4 {
-    font-size: 1.2em;
+    font-size: 1.25em;
 }
 
-article h5,
+article h5 {
+    font-size: 1.1em;
+}
 article h6 {
     font-size: 1em;
+    font-weight: bold
 }
 
 article p {
     margin-top: 0;
     margin-bottom: 1.25rem;
-}
-
-@media (max-width: 960px) {
-    article h1 {
-        font-size: 1.5em;
-    }
-
-    article h2 {
-        font-size: 1.4em;
-    }
-}
-
-article *::selection {
-    background: #000;
-    color: #fff;
 }
 
 article table {
@@ -202,18 +187,13 @@ article table {
     border-spacing: 0;
     vertical-align: middle;
     text-align: left;
-    min-width: 50%;
+    min-width: 66%;
 }
 
 article table td,
 article table th {
     padding: 5px 8px;
     border: 1px solid #bbb;
-}
-
-article a {
-    color: #368CCB;
-    text-decoration: none;
 }
 
 article blockquote {
@@ -225,6 +205,16 @@ article blockquote {
 
 article pre {
     overflow-x: auto;
+    padding: 0;
+    font-size: 16px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+article ol {
+    text-decoration: none;
+    padding-inline-start: 40px;
+    margin-bottom: 1.25rem;
 }
 
 article code {
@@ -327,32 +317,6 @@ article .info a {
 .comment-card-text {
     overflow-wrap: break-word;
     padding: 6px 12px;
-}
-
-.prevNext a {
-    color: #000000;
-    text-decoration: none;
-    display: block;
-}
-
-.prevNext a:hover {
-    color: #368CCB;
-}
-
-.prevNext {
-    width: 100%;
-    min-height: 3em;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-}
-
-.prevNext div {
-    cursor: pointer;
-    display: inline-block;
-    min-width: 100px;
-    text-align: center;
-    padding: 10px;
 }
 
 .discuss h1 {
