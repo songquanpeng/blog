@@ -1,18 +1,37 @@
 <%- include('./partials/header') %>
-<%- include('./partials/nav') %>
 
-<article id="archive">
-    <h1>Archive</h1>
-    <% pages.forEach(page => { %>
-        <div class="archive-item">
-            <a href="/page/<%= page.link %>">
-                <%= page.title %>
-            </a>
-            <time>
-                <%= page.post_time.substring(0, 10) %>
-            </time>
-        </div>
-    <% }) %>
-</article>
+<div class="container">
+    <p class="title is-3">Archive</p>
+    <table class="table is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Post Time</th>
+            <th>Edit Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% pages.forEach(page => { %>
+            <tr>
+                <td>
+                    <a href="/page/<%= page.link %>">
+                        <%= page.title %>
+                    </a>
+                </td>
+                <td>
+                    <time>
+                        <%= page.post_time.substring(0, 10) %>
+                    </time>
+                </td>
+                <td>
+                    <time>
+                        <%= page.post_time.substring(0, 10) %>
+                    </time>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
 
 <%- include('./partials/footer') %>

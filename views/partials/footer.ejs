@@ -1,20 +1,15 @@
 </div>
 </div>
 <div id="footer">
-    <div class="wrapper">
-        <div class="container">
+    <footer class="footer">
+        <div class="content has-text-centered">
             <% let date = new Date(); const year = date.getFullYear();%>
-            <button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">TOP</button>
-            <footer>
-                <div>
-                    <p>
-                        © <%= year%> <a href="//<%= config.domain %>"><%=config.author%></a>.<%- config.extra_footer_text %>
-                        Powered by <a href="https://github.com/songquanpeng/lightx-cms">Lightx-CMS</a>.
-                    </p>
-                </div>
-            </footer>
+            <p>
+                © <%= year%> <a href="//<%= config.domain %>"><%=config.author%></a>.<%- config.extra_footer_text %>
+                Powered by <a href="https://github.com/songquanpeng/lightx-cms">Lightx-CMS</a>.
+            </p>
         </div>
-    </div>
+    </footer>
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>

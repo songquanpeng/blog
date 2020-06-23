@@ -1,13 +1,4 @@
-<div class="paginator">
-    <% if (prev){ %>
-        <div class="prev" onclick="location.href='/pagination/<%- prev %>'">PREV</div>
-    <% } else{%>
-        <div class="prev" style="visibility: hidden;">PREV</div>
-    <%}%>
-
-    <% if (next){ %>
-        <div class="next" onclick="location.href='/pagination/<%- next %>'">NEXT</div>
-    <% } else{%>
-        <div class="next" style="visibility: hidden;">NEXT</div>
-    <%}%>
-</div>
+<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    <a class="pagination-previous shadow" href="<%= prev ? "/pagination/"+prev : "."%>">Previous</a>
+    <a class="pagination-next shadow" href="<%= next ? "/pagination/"+next : "."%>">Next Page</a>
+</nav>
