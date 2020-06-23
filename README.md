@@ -7,10 +7,7 @@
 + Disqus is integrated, but there is also a built in comment system.
 + I use the SQLite database here, but its easy to move to other database, just by modifying the `knexfile.js`.
 + [Demo](https://iamazing.cn/) (may not be the latest version).
-+ Please use the release version if you want to have a try, which I have initialize the SQLite database and build the react application.
-+ Use `npx knex migrate:latest` to initialize the database before you run it.
-+ Recommend use `pm2 start ./app.js --name blog` when you deploy it. 
-+ Visit [/admin](http://localhost:3000/admin) with default username `admin` and password `123456` to manage your blog.
++ **[Deployment is very simple (I am not kidding), please check this out.](https://github.com/songquanpeng/express-react-blog/tree/release)**
 
 ## Supported Page Type
 |Page Type|Description|
