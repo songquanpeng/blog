@@ -1,13 +1,64 @@
-<nav>
-    <ul>
-        <li><a href="/"><%= config.site_name %></a></li>
-<%      if(config.nav_links !== undefined && config.nav_links !== ''){
-          try{
-            let links = JSON.parse(config.nav_links)
-            links.forEach((link)=>{%>
-                <li><a href="<%- link.link %>" rel="noreferrer"><%- link.text %></a></li>
-            <%})
-          }
-        catch (e) {console.error(e.message)}}                           %>
-    </ul>
+<nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/icon192.png" height="50">
+            </a>
+
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+               data-target="mainNavbar">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="mainNavbar" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="/"> Home </a>
+                <a class="navbar-item" href="/archive"> Archive </a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        More
+                    </a>
+                    <div class="navbar-dropdown">
+                        <%      if(config.nav_links !== undefined && config.nav_links !== ''){
+                                try{
+                            let links = JSON.parse(config.nav_links)
+                        links.forEach((link)=>{%>
+                            <a class="navbar-item" href="<%- link.link %>" rel="noreferrer"><%- link.text %></a>
+                        <%})
+                        }
+                        catch (e) {console.error(e.message)}}          %>
+                    </div>
+                </div>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <!--                    <a class="button is-primary">-->
+                        <!--                        <strong>Sign up</strong>-->
+                        <!--                    </a>-->
+                        <!--                    <a class="button is-light">-->
+                        <!--                        Log in-->
+                        <!--                    </a>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>

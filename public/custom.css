@@ -4,13 +4,13 @@ body {
     margin: 0;
 }
 
+nav {
+    margin-bottom: 16px;
+}
+
 .wrapper {
     max-width: 960px;
     margin: 0 auto;
-}
-
-.container {
-    margin: 8px;
 }
 
 #page-container {
@@ -43,40 +43,6 @@ footer {
 footer a {
     color: #000;
     text-decoration: none;
-}
-
-nav {
-    font-size: larger;
-    border-bottom: 2px solid #000;
-    margin-bottom: 8px;
-}
-
-nav ul {
-    list-style-type: none;
-    margin: auto;
-    padding: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    display: flex;
-    justify-content: left;
-    white-space: nowrap;
-}
-
-nav li {
-    display: inline;
-    box-sizing: border-box;
-    height: 50px;
-    text-align: center;
-    padding: 8px 16px 4px 2px;
-}
-
-nav a:link, nav a:visited, nav a:active {
-    color: #000;
-    text-decoration: none;
-}
-
-nav a:hover{
-    font-weight: 500;
 }
 
 code {
