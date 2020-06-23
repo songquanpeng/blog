@@ -10,6 +10,7 @@
 + Please use the release version if you want to have a try, which I have initialize the SQLite database and build the react application.
 + Use `npx knex migrate:latest` to initialize the database before you run it.
 + Recommend use `pm2 start ./app.js --name blog` when you deploy it. 
++ Visit [/admin](http://localhost:3000/admin) with default username `admin` and password `123456` to manage your blog.
 
 ## Supported Page Type
 |Page Type|Description|
