@@ -11,6 +11,7 @@ const commentRouter = require('./routes/comment');
 const pageRouter = require('./routes/page');
 const userRouter = require('./routes/user');
 const optionRouter = require('./routes/option');
+const fileRouter = require('./routes/file');
 const updateConfig = require('./utils/util').updateConfig;
 const normalizePort = require('./utils/util').normalizePort;
 const rateLimit = require('express-rate-limit');
@@ -74,6 +75,7 @@ app.use('/api/page', pageRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/user', userRouter);
 app.use('/api/option', optionRouter);
+app.use('/api/file', fileRouter);
 
 app.use(function(req, res, next) {
   if (!res.headersSent) {
@@ -94,13 +96,18 @@ app.use(function(err, req, res, next) {
 
 server.listen(port);
 server.on('error', err => {
-  console.error(`An error occurred on the server, please check if port ${port} is occupied.`);
+  console.error(
+    `An error occurred on the server, please check if port ${port} is occupied.`
+  );
   console.error(err.toString());
 });
 
 server.on('listening', () => {
   console.log('\x1b[36m%s\x1b[0m', `Server listen on port: ${port}.`);
-  console.log('\x1b[32m%s\x1b[0m', "Please make sure you have run `npm run migrate` to initialize the database.")
+  console.log(
+    '\x1b[32m%s\x1b[0m',
+    'Please make sure you have run `npm run migrate` to initialize the database.'
+  );
 });
 
 module.exports = app;
