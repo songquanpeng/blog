@@ -65,6 +65,21 @@ class File {
         }
       });
   }
+
+  search(keyword, callback) {
+    db('files')
+      .select()
+      .whereRaw('LOWER(filename) LIKE ?', `%${keyword.toLowerCase()}%`)
+      .orWhereRaw('LOWER(description) LIKE ?', `%${keyword.toLowerCase()}%`)
+      .asCallback((error, files) => {
+        if (error) {
+          console.error(error.message);
+          callback(false, error.message, undefined);
+        } else {
+          callback(true, '', files);
+        }
+      });
+  }
 }
 
 let file = new File();

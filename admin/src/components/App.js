@@ -10,6 +10,7 @@ import ScrollToTop from './ScrollToTop';
 import Editor from './editor';
 import User from './user';
 import System from './system';
+import File from './file';
 import EditUser from './user/EditUser';
 import DashBoard from './dashboard';
 import Login from './login';
@@ -31,6 +32,7 @@ class App extends React.Component {
               <Route path="/editor" exact component={Editor} />
               <Route path="/editor/:id" exact component={Editor} />
               <Route path="/system" exact component={System} />
+              <Route path="/file" exact component={File} />
               <Route path="/user" exact component={User} />
               <Route path="/user/new" exact component={EditUser} />
               <Route path="/user/:id" exact component={EditUser} />
@@ -43,7 +45,4 @@ class App extends React.Component {
   }
 }
 
-export default connect(
-  null,
-  { getStatus }
-)(App);
+export default connect(null, { getStatus })(App);

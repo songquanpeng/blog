@@ -29,7 +29,7 @@ const upload = multer({
 router.post('/', checkPermission, upload.single('file'), (req, res, next) => {
   const { file } = req;
   const newFile = {
-    description: req.body.description,
+    description: req.body.description ? req.body.description : 'No description',
     filename: file.originalname,
     path: '/upload/' + file.filename,
     id: file.id
@@ -50,6 +50,18 @@ router.delete('/:id', checkPermission, (req, res, next) => {
   const id = req.params.id;
   File.deleteById(id, (status, message) => {
     res.json({ status, message });
+  });
+});
+
+router.post('/search', checkPermission, function(req, res, next) {
+  let keyword = req.body.keyword;
+  keyword = keyword ? keyword.trim() : '';
+  File.search(keyword, (status, message, files) => {
+    res.json({
+      status,
+      message,
+      files
+    });
   });
 });
 
