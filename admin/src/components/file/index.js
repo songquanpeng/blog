@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setGlobalPortal } from '../../actions';
-import fileDownload from 'js-file-download';
 import axios from 'axios';
 
 import {
@@ -133,15 +132,23 @@ class File extends Component {
       });
   };
 
-  downloadFile = (id, filename) => {
-    axios
-      .get(`/upload/${id}`)
-      .then(res => {
-        fileDownload(res.data, filename);
+  downloadFile = id => {
+    window.location = `//${window.location.href.split('/')[2]}/upload/${id}`;
+  };
+
+  copyFilePath = path => {
+    let fullPath =
+      window.location.href
+        .split('/')
+        .slice(0, 3)
+        .join('/') + path;
+    navigator.clipboard
+      .writeText(fullPath)
+      .then(r => {
+        this.showMessage('green', 'Copied', fullPath);
       })
-      .catch(err => {
-        console.log(err);
-        this.showMessage('red', 'Failed to download EML file', err.toString());
+      .catch(e => {
+        this.showMessage('red', 'Failed to copy', e.toString());
       });
   };
 
@@ -209,13 +216,20 @@ class File extends Component {
                 <Card.Description content={file.description} />
               </Card.Content>
               <Card.Content extra>
-                <div className="ui two buttons">
+                <div className="ui three buttons">
                   <Button
                     basic
                     color="green"
-                    onClick={() => this.downloadFile(file.id, file.filename)}
+                    onClick={() => this.downloadFile(file.id)}
                   >
                     Download
+                  </Button>
+                  <Button
+                    basic
+                    color="blue"
+                    onClick={() => this.copyFilePath(file.path)}
+                  >
+                    Copy
                   </Button>
                   <Button
                     basic
