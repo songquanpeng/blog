@@ -3,11 +3,8 @@
   "version": "0.3.3",
   "private": true,
   "scripts": {
-    "start": "node ./app.js",
-    "init": "npm i && npm run migrate && cd admin && npm i && cd ..",
-    "build": "cd admin && npm run build && cd ..",
-    "migrate": "npx knex migrate:latest",
-    "clear": "rm ./public/admin -r "
+    "start": "npm run migrate && node ./app.js",
+    "migrate": "npx knex migrate:latest"
   },
   "dependencies": {
     "compression": "^1.7.4",
