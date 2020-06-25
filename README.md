@@ -4,19 +4,14 @@
 [中文](https://iamazing.cn/page/LIGHTX-CMS-使用记录以及-TODO-事项)
 ## Description
 + This is a blog system powered by Express.js and React.
-+ Disqus is integrated, but there is also a built in comment system.
-+ I use the SQLite database here, but its easy to move to other database, just by modifying the `knexfile.js`.
 + [Demo](https://iamazing.cn/) (may not be the latest version).
-+ **[Deployment is very simple (I am not kidding), please check this out.](https://github.com/songquanpeng/express-react-blog/tree/release)**
 
-## Supported Page Type
-|Page Type|Description|
-|---|---|
-|Article Page | Needless to say.|
-|Raw HTML Page | Use it to deploy your single page application, such as a little tool written in JavaScript or a online game. [Demo.](https://iamazing.cn/page/online-battle-city)|
-|Links Page| You can put some useful links here. [Demo.](https://iamazing.cn/page/links)|
-|Code Page| Just like Github Gist. [Demo.](https://iamazing.cn/page/使用-Pygame-生成大量小球)|
-|Discuss Page| Add a dedicated discussion page in your site.|
+## Highlights
+1. You can use a **code editor** to edit your content (built-in ACE code editor with multiple themes), f**k WYSIWYG editor.
+2. Easy to configure and integrate with disqus and statistics system.
+3. You can copy from OneNote or any other programs and **paste your content with formatting** (with the `paste with formatting` feature, don't forget to set the page type to `raw`).
+4. You can use this to deploy your single page web application (such as a [game](https://iamazing.cn/page/online-battle-city)), just paste the code and set the page type to `raw`.
+5. [System deploy is extremely simple](https://github.com/songquanpeng/express-react-blog/tree/release), no need to configure the database (but it's easy to move to other database, just by modifying the `knexfile.js`).
 
 ## Project Structure
 ```

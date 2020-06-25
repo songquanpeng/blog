@@ -29,13 +29,13 @@ import 'ace-builds/src-noconflict/snippets/csharp';
 
 import axios from 'axios';
 import {
-  Grid,
   Button,
-  Form,
   Checkbox,
-  Icon,
+  Confirm,
   Divider,
-  Confirm
+  Form,
+  Grid,
+  Icon
 } from 'semantic-ui-react';
 
 const modes = [
@@ -98,7 +98,7 @@ const PAGE_TYPE = {
   BULLETIN: 2,
   DISCUSS: 3,
   LINKS: 4,
-  CUSTOMIZE: 5,
+  RAW: 5,
   MEDIA: 6
 };
 
@@ -109,6 +109,7 @@ class Editor extends Component {
       loading: false,
       theme: 'tomorrow',
       language: 'markdown',
+      pasteWithFormatting: false,
       fontSize: 18,
       isNewPage: this.props.match.path === '/editor',
       originPage: undefined,
@@ -228,6 +229,13 @@ class Editor extends Component {
     this.setState({ page, noUserInputContent });
   }
 
+  onPaste = e => {
+    const clipboard = e.event.clipboardData;
+    e.text = this.state.pasteWithFormatting
+      ? clipboard.getData('text/html')
+      : clipboard.getData('text/plain');
+  };
+
   onEditorBlur = () => {
     let page = { ...this.state.page };
     let content = page.content;
@@ -298,8 +306,9 @@ class Editor extends Component {
   onTypeChange = (e, { value }) => {
     let page = { ...this.state.page };
     page.type = value;
-    this.adjustEditorLanguage(value);
-    this.setState({ page });
+    this.setState({ page }, () => {
+      this.adjustEditorLanguage(value);
+    });
   };
 
   adjustEditorLanguage(pageType) {
@@ -308,16 +317,20 @@ class Editor extends Component {
       case PAGE_TYPE.ARTICLE:
         language = 'markdown';
         break;
-      case PAGE_TYPE.CUSTOMIZE:
+      case PAGE_TYPE.RAW:
         language = 'html';
         break;
       default:
         break;
     }
-    this.setState({ language });
+    this.languageChangeHelper(language);
   }
 
   onLanguageChange = (e, { value }) => {
+    this.languageChangeHelper(value);
+  };
+
+  languageChangeHelper = value => {
     this.setState({ language: value });
     if (this.state.noUserInputContent) {
       let page = { ...this.state.page };
@@ -336,7 +349,7 @@ class Editor extends Component {
       ) {
         content = '/*\ntitle: \ndescription: \ntags: \n- Others\n*/\n';
       } else if (['html', 'ejs'].includes(value)) {
-        content = '<!--\ntitle: \ndescription: \ntags: \n- Others\n-->\n';
+        content = '<!--\ntitle: \ndescription: \ntags: \n- Others\n\n-->\n';
       } else if (['python'].includes(value)) {
         content = '"""\ntitle: \ndescription: \ntags: \n- Others\n"""\n';
       } else if (['ruby'].includes(value)) {
@@ -357,6 +370,18 @@ class Editor extends Component {
     let page = { ...this.state.page };
     page.page_status = checked ? 1 : 0;
     this.setState({ page });
+  };
+
+  onPasteWithFormattingChange = (e, { checked }) => {
+    let pasteWithFormatting = checked;
+    this.setState({ pasteWithFormatting });
+    if (this.state.noUserInputContent) {
+      let page = { ...this.state.page };
+      page.type = PAGE_TYPE.RAW;
+      this.setState({ page }, () => {
+        this.adjustEditorLanguage(page.type);
+      });
+    }
   };
 
   onSubmit = e => {
@@ -497,6 +522,7 @@ class Editor extends Component {
           theme={this.state.theme}
           name={'editor'}
           onChange={this.onChange}
+          onPaste={this.onPaste}
           value={this.state.page.content}
           fontSize={this.state.fontSize}
           onBlur={this.onEditorBlur}
@@ -555,6 +581,15 @@ class Editor extends Component {
               label="Publish page"
               checked={this.state.page.page_status === 1}
               onChange={this.onPageStatusChange}
+            />
+          </Form.Field>
+          <Form.Field>
+            <Checkbox
+              slider
+              name="paste_with_formatting"
+              label="Paste with formatting"
+              checked={this.state.pasteWithFormatting}
+              onChange={this.onPasteWithFormattingChange}
             />
           </Form.Field>
           <Button
@@ -667,7 +702,4 @@ const mapStateToProps = state => {
   return state;
 };
 
-export default connect(
-  mapStateToProps,
-  { setGlobalPortal }
-)(Editor);
+export default connect(mapStateToProps, { setGlobalPortal })(Editor);
