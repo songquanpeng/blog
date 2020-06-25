@@ -42,7 +42,7 @@ exports.up = function(knex) {
     {
       name: 'code_theme',
       value:
-        'https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/railscasts.css',
+        'https://cdn.jsdelivr.net/npm/highlight.js@10.1.1/styles/solarized-light.css',
       description: 'Input a highlight.js style css link here.'
     },
     {
@@ -62,7 +62,7 @@ exports.up = function(knex) {
     },
     {
       name: 'disqus',
-      value: '',
+      value: 'iamazing',
       description:
         'Input your disqus short name to enable disqus and disable origin comment system.'
     }
