@@ -332,7 +332,7 @@ class Editor extends Component {
 
   languageChangeHelper = value => {
     this.setState({ language: value });
-    if (this.state.noUserInputContent) {
+    if (this.state.noUserInputContent && this.state.isNewPage) {
       let page = { ...this.state.page };
       let content = '---\ntitle: \ndescription: \ntags: \n- Others\n---\n';
       if (

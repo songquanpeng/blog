@@ -117,7 +117,9 @@ class DashBoard extends React.Component {
   };
 
   onExportButtonClicked = id => {
-    window.location = `//${window.location.href.split('/')[2]}/api/page/export/${id}`;
+    window.location = `//${
+      window.location.href.split('/')[2]
+    }/api/page/export/${id}`;
   };
 
   deletePage = id => {
@@ -254,12 +256,14 @@ class DashBoard extends React.Component {
                   </Button>
                   <Button
                     basic
-                    color="pink"F
+                    color="pink"
                     onClick={() =>
                       this.setPageState(page.page_id, 'comment_status')
                     }
                   >
-                    {page.comment_status === 1 ? 'Disable Comment' : 'Enable Comment'}
+                    {page.comment_status === 1
+                      ? 'Disable Comment'
+                      : 'Enable Comment'}
                   </Button>
                 </div>
               </Card.Content>
@@ -331,7 +335,4 @@ const mapStateToProps = state => {
   return state;
 };
 
-export default connect(
-  mapStateToProps,
-  { setGlobalPortal }
-)(DashBoard);
+export default connect(mapStateToProps, { setGlobalPortal })(DashBoard);
