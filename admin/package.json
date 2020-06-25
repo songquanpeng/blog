@@ -25,7 +25,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "analyze": "source-map-explorer build/static/js/*"
+    "analyze": "source-map-explorer build/static/js/*",
+    "update": "npm install && (npm run build; rm -rf ../public/admin); mv ./build ../public && mv ../public/build ../public/admin"
   },
   "eslintConfig": {
     "extends": "react-app"

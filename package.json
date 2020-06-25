@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm run migrate && node ./app.js",
+    "build": "cd admin && npm run update",
     "migrate": "npx knex migrate:latest"
   },
   "dependencies": {
