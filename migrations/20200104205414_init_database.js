@@ -24,8 +24,8 @@ exports.up = function(knex, Promise) {
       table.integer('type').notNullable();
       table.string('link').notNullable();
       table.integer('page_status').notNullable();
-      table.dateTime('post_time').notNullable();
-      table.dateTime('edit_time');
+      table.text('post_time').notNullable();
+      table.text('edit_time');
       table.integer('comment_status');
       table.string('title').notNullable();
       table.text('content').notNullable();
@@ -46,7 +46,7 @@ exports.up = function(knex, Promise) {
         .references('id')
         .inTable('pages')
         .notNullable();
-      table.dateTime('post_time').notNullable();
+      table.text('post_time').notNullable();
       table.string('title').notNullable();
       table.text('content').notNullable();
       table.integer('up_vote').defaultTo(0);

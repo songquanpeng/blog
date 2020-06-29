@@ -27,7 +27,7 @@ class Page {
         'users.username as username',
         'users.display_name as author'
       ])
-      .innerJoin('users', 'users.id', 'author_id')
+      .innerJoin('users', 'users.id', 'pages.user_id')
       .asCallback((error, pages) => {
         if (error) {
           console.error(error.message);
@@ -65,7 +65,7 @@ class Page {
         'users.username as username',
         'users.display_name as author'
       ])
-      .innerJoin('users', 'users.id', 'author_id')
+      .innerJoin('users', 'users.id', 'pages.user_id')
       .whereIn('type', types)
       .andWhere(builder => {
         builder
@@ -108,15 +108,16 @@ class Page {
         'users.username as username',
         'users.display_name as author'
       ])
-      .innerJoin('users', 'users.id', 'author_id')
+      .innerJoin('users', 'users.id', 'pages.user_id')
       .where('page_status', 1)
       .asCallback((error, pages) => {
         if (error) {
           console.error(error.message);
         }
-        if(pages) pages.sort((a, b) => {
-          return new Date(b.edit_time) - new Date(a.edit_time);
-        });
+        if (pages)
+          pages.sort((a, b) => {
+            return new Date(b.edit_time) - new Date(a.edit_time);
+          });
         this.pages = pages;
         if (callback) {
           callback();
@@ -158,14 +159,16 @@ class Page {
     if (result === undefined) {
       callback(false, `No page has link "${link}".`, undefined, undefined);
     } else {
-      let prevIndex = currentIndex === 0 ? (this.pages.length - 1) : currentIndex - 1;
-      let nextIndex = currentIndex === this.pages.length - 1 ? 0 : currentIndex + 1;
+      let prevIndex =
+        currentIndex === 0 ? this.pages.length - 1 : currentIndex - 1;
+      let nextIndex =
+        currentIndex === this.pages.length - 1 ? 0 : currentIndex + 1;
       let links = {
-        'prev': {
+        prev: {
           title: this.pages[prevIndex].title,
           link: this.pages[prevIndex].link
         },
-        'next': {
+        next: {
           title: this.pages[nextIndex].title,
           link: this.pages[nextIndex].link
         }
