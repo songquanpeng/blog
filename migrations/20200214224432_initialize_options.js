@@ -31,7 +31,7 @@ exports.up = function(knex) {
     {
       name: 'nav_links',
       value:
-        '[{"key": "Example Dropdown","value": [{"link":"./","text":"Example 1"}, {"link":"./","text":"Example 2"}]}]',
+        '[{"key": "Example Dropdown","value": [{"link":"/admin","text":"Admin"}, {"link":"https://github.com/songquanpeng/express-react-blog","text":"Star"}]}]',
       description: 'Add links on the navigation bar. Must be a valid json.'
     },
     {
@@ -62,7 +62,7 @@ exports.up = function(knex) {
     },
     {
       name: 'disqus',
-      value: 'iamazing',
+      value: '',
       description:
         'Input your disqus short name to enable disqus and disable origin comment system.'
     }
