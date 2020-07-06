@@ -38,6 +38,7 @@ updateConfig(app.locals.config);
 
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
+app.locals.sitemap = undefined;
 
 let port = normalizePort(process.env.PORT || 3000);
 app.set('port', port);

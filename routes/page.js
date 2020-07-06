@@ -23,6 +23,7 @@ router.post('/search', checkPermission, function(req, res, next) {
 
 // Add page
 router.post('/', checkLogin, (req, res, next) => {
+  req.app.locals.sitemap = undefined;
   let type = req.body.type;
   let link = req.body.link;
   let page_status = req.body.page_status;
@@ -100,6 +101,7 @@ router.get('/:id', checkLogin, (req, res, next) => {
 
 // Update page
 router.put('/', checkLogin, (req, res, next) => {
+  req.app.locals.sitemap = undefined;
   const id = req.body.id;
   let type = req.body.type;
   let link = req.body.link;
@@ -132,6 +134,7 @@ router.put('/', checkLogin, (req, res, next) => {
 });
 
 router.delete('/:id', checkLogin, (req, res, next) => {
+  req.app.locals.sitemap = undefined;
   const id = req.params.id;
   Page.delete(id, (status, message) => {
     res.json({ status, message });

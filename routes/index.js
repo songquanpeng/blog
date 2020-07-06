@@ -4,7 +4,8 @@ const router = express.Router();
 const Page = require('../models/page').Page;
 const md2html = require('../utils/util').md2html;
 const Comment = require('../models/comment').Comment;
-const sitemap = require('sitemap');
+const { SitemapStream, streamToPromise } = require('sitemap');
+const { createGzip } = require('zlib');
 const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
 
 router.get('/', function(req, res, next) {
@@ -28,24 +29,31 @@ router.get('/archive', function(req, res) {
 });
 
 router.get('/sitemap.xml', function(req, res) {
-  const host = 'https://' + req.app.locals.config.domain;
-  let sitemapOption = {
-    hostname: host,
-    cacheTime: 600000,
-    urls: [host]
-  };
-  Page.getByRange(0, 1000, pages => {
-    pages.forEach(page => {
-      sitemapOption.urls.push({
-        url: `/page/` + page.link,
-        changefreq: 'daily',
-        lastmod: page.edit_time
+  res.header('Content-Type', 'application/xml');
+  res.header('Content-Encoding', 'gzip');
+
+  if (req.app.locals.sitemap) {
+    res.send(req.app.locals.sitemap);
+    return;
+  }
+  try {
+    const hostname = 'https://' + req.app.locals.config.domain;
+    const smStream = new SitemapStream({ hostname });
+    const pipeline = smStream.pipe(createGzip());
+    Page.getByRange(0, 1000, pages => {
+      pages.forEach(page => {
+        smStream.write({ url: `/page/` + page.link });
+      });
+      streamToPromise(pipeline).then(sm => (req.app.locals.sitemap = sm));
+      smStream.end();
+      pipeline.pipe(res).on('error', e => {
+        throw e;
       });
     });
-    let xml = sitemap.createSitemap(sitemapOption).toString();
-    res.header('Content-Type', 'application/xml');
-    res.send(xml);
-  });
+  } catch (e) {
+    console.error(e);
+    res.status(500).end();
+  }
 });
 
 router.get('/archive/:year/:month', function(req, res) {
