@@ -1,11 +1,10 @@
 <% if(config.allow_comments === 'true' && page.comment_status === 1){ %>
-    <% if(config.disqus !== undefined && config.disqus !== "") {%>
+    <% if(config.disqus !== undefined && config.disqus !== "") { %>
     <div id="disqus_thread"></div>
     <script>
-
-      var disqus_config = function () {
-      this.page.url = "https://<%-config.domain%>/page/<%-page.link%>";  // Replace PAGE_URL with your page's canonical URL variable
-      this.page.identifier = "<%-page.link%>"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      var disqus_config = function() {
+        this.page.url = "https://<%- config.domain %>/page/<%- page.link %>";  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = "<%- page.link %>"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
       };
 
       (function() { // DON'T EDIT BELOW THIS LINE
@@ -15,56 +14,120 @@
         (d.head || d.body).appendChild(s);
       })();
     </script>
-    <%} else {%>
-        <div class="comment">
+    <% } else { %>
+    <div class="comment">
         <br>
         <form action="/api/comment" method="post">
-            <table>
-                <tr>
-                    <th><label for="author">Your name*: </label></th>
-                    <th><input type="text" id="author" name="author" required></th>
-                    <th><label for="url">Website link: </label></th>
-                    <th><input type="url" id="url" name="url"></th>
-                </tr>
-                <tr>
-                    <th><label for="title">Title*: </label></th>
-                    <th><input type="text" id="title" name="title" required></th>
-                    <th><label for="email">Your email: </label></th>
-                    <th><input type="email" id="email" name="email"></th>
-                </tr>
-                <tr>
-                    <th><label for="content">Content*: </label></th>
-                    <th><textarea id="content" name="content" rows="4"  required></textarea></th>
-                    <th>
-                        <label>Control: </label>
-                    </th>
-                    <th>
-                        <input class="button" type="reset" value="reset" style="margin-bottom: 4px">
-                        <input class="button" type="submit" value="submit">
-                    </th>
-                </tr>
-            </table>
+            <div class="field">
+                <label class="label">Title</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="Comment title" id="title" name="title" value="">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Content</label>
+                <div class="control">
+                    <textarea class="textarea" placeholder="Comment content" id="content" name="content" required></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="field-body">
+                    <div class="field">
+                        <p class="control is-expanded has-icons-left">
+                            <input class="input" type="text" id="author" name="author" placeholder="Your name"  required onblur="saveCommentInfo()">
+                            <span class="icon is-small is-left">
+                              <i class="fas fa-user"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="control is-expanded has-icons-left">
+                            <input class="input" type="email" id="email" name="email" placeholder="Your email" onblur="saveCommentInfo()">
+                            <span class="icon is-small is-left">
+                              <i class="fas fa-envelope"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <p class="control is-expanded has-icons-left">
+                            <input class="input" type="url" id="url" name="url" placeholder="Your website" onblur="saveCommentInfo()">
+                            <span class="icon is-small is-left">
+                              <i class="fas fa-link"></i>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-grouped is-grouped-right">
+                <div class="control">
+                    <input class="button is-success" type="submit" value="submit">
+                </div>
+                <div class="control">
+                    <input class="button is-danger" type="reset" value="reset">
+                </div>
+            </div>
             <div style="display: none">
                 <label for="page_id"></label>
-                <input type="text" id="page_id" name="page_id" value="<%-page.id%>">
+                <input type="text" id="page_id" name="page_id" value="<%- page.id %>">
             </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                  let author = localStorage.getItem("comment-author");
+                  if (!author) author = "";
+                  let email = localStorage.getItem("comment-email");
+                  if (!email) email = "";
+                  let url = localStorage.getItem("comment-url");
+                  if (!url) url = "";
+                  document.getElementById("author").setAttribute("value", author);
+                  document.getElementById("email").setAttribute("value", email);
+                  document.getElementById("url").setAttribute("value", url);
+                });
+
+                function saveCommentInfo() {
+                  console.log("called");
+                  localStorage.setItem("comment-author", document.getElementById("author").value);
+                  localStorage.setItem("comment-email", document.getElementById("email").value);
+                  localStorage.setItem("comment-url", document.getElementById("url").value);
+                }
+            </script>
         </form>
         <div>
-            <% comments.forEach(comment => { %>
-                <div class="comment-card">
-                    <div class="comment-card-title">
-                        <%= comment.title %>
-                    </div>
-                    <div class="comment-card-tag">
-                        <span><a href="<%=  comment.url.startsWith('http') ? comment.url : ''%>"><%= comment.author %></a></span>
-                        <span><%= comment.post_time %></span>
-                    </div>
-                    <div class="comment-card-text">
-                        <%- comment.content %>
+            <!-- Limit comments number to 20 -->
+            <% comments.slice(0, 20).forEach(comment => { %>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-48x48">
+                                    <%
+                                        let avatar = comment.url;
+                                        if(avatar.endsWith("/")) {
+                                            avatar += "favicon.ico";
+                                        } else {
+                                            avatar += "/favicon.ico";
+                                        }
+                                    %>
+                                    <img loading="lazy" src="<%= avatar %>" alt="⚠️">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4"><%= comment.title ? comment.title.substr(0, 100) : "No title" %></p>
+                                <p class="subtitle is-6">
+                                    <a href="<%= comment.url.startsWith('http') ? comment.url : '' %>">
+                                        @<%= comment.author ? comment.author : "Anonymous" %>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <%- comment.content ? comment.content : "No content" %>
+                            <time datetime="2016-1-1"><%= comment.post_time %></time>
+                        </div>
                     </div>
                 </div>
             <% }) %>
         </div>
     </div>
-    <%}%>
-<%}%>
+    <% } %>
+<% } %>
