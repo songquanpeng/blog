@@ -147,7 +147,7 @@ class DashBoard extends React.Component {
     page[key] = (page[key] + 1) % 2;
     page.id = id;
     axios
-      .post('/api/page/', page)
+      .put('/api/page/', page)
       .then(async function(res) {
         if (res.data.status) {
           await that.loadPagesFromServer();

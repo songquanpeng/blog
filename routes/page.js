@@ -126,7 +126,11 @@ router.put('/', checkLogin, (req, res, next) => {
     password,
     description
   };
-  page.converted_content = convertContent(page.type, page.content);
+  if (page.content) {
+    page.converted_content = convertContent(page.type, page.content);
+  } else {
+    delete page.content;
+  }
 
   Page.updateById(id, page, (status, message) => {
     res.json({ status, message });
