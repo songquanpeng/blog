@@ -6,6 +6,8 @@
         <%- include('./partials/page-info') %>
         <%-page.converted_content%>
         <p class="copyright"><strong>Links: <a href="<%-page.link%>"><%-page.link%></a></strong></p>
+        <%- config.copyright %>
+        <%- config.ad %>
     </article>
     <%- include('./partials/prev-next') %>
     <%- include('./partials/comment') %>
