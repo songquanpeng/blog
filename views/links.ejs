@@ -1,33 +1,30 @@
 <%- include('./partials/header') %>
-<article>
-    <h1><%- page.title %></h1>
-    <div class="info">
-        Tag:
-        <% page.tag.trim().split(" ").forEach(function (tag) { if(tag !== ""){ %>
-            <a href='/tag/<%= tag %>'><%= tag %></a>
-        <% }}); %>
-        &ensp;Posted on <%- page.post_time %>&ensp;Edited on <%- page.edit_time %>
-    </div>
-</article>
+<div class="links">
+    <article>
+        <h1><%- page.title %></h1>
+        <%- include('./partials/page-info') %>
+    </article>
 
-<% if (linkList && linkList.length){ %>
-    <% linkList.forEach((link)=>{ %>
-    <div class="link-card">
-        <%if(link && link.image ===""){
-            if(link.link.endsWith("/")) {
-              link.image  = link.link + "favicon.ico";
-            }else {
-                link.image  = link.link + "/favicon.ico";
-            }
-        }%>
-        <a href="<%= link.link %>"><img loading="lazy" class="image" src="<%= link.image %>"  alt="⚠️"/></a>
-        <div class="info">
-            <div class="title"><%= link.title %></div>
-            <div class="description"><%= link.description %></div>
+    <% if (linkList && linkList.length){ %>
+        <% linkList.forEach((link)=>{ %>
+        <div class="link-card">
+            <%if(link && link.image ===""){
+                if(link.link.endsWith("/")) {
+                  link.image  = link.link + "favicon.ico";
+                }else {
+                    link.image  = link.link + "/favicon.ico";
+                }
+            }%>
+            <a href="<%= link.link %>"><img loading="lazy" class="image" src="<%= link.image %>"  alt="⚠️"/></a>
+            <div class="info">
+                <div class="title"><%= link.title %></div>
+                <div class="description"><%= link.description %></div>
+            </div>
         </div>
-    </div>
-<% })} %>
-<div style="margin-bottom: 100px"></div>
+    <% })} %>
+    <%- include('./partials/prev-next') %>
+    <%- include('./partials/comment') %>
+</div>
 <style>
     .link-card {
         padding: 1em 0;
@@ -63,6 +60,5 @@
         font-size: 0.875em;
     }
 </style>
-<%- include('./partials/prev-next') %>
-<%- include('./partials/comment') %>
+
 <%- include('./partials/footer') %>

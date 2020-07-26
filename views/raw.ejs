@@ -1,16 +1,13 @@
 <%- include('./partials/header') %>
 <div class="raw">
     <h1 class="title"><%-page.title%></h1>
-    <div class="info">
-        Tag:
-        <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
-            <a href='/tag/<%= tag %>'><%= tag %></a>
-        <% }}); %>
-        &ensp;Posted on <%-page.post_time%>&ensp;Edited on <%-page.edit_time%>
+    <%- include('./partials/page-info') %>
+    <div class="raw-content">
+        <%-page.content%>
     </div>
-    <%-page.content%>
+    <%- include('./partials/prev-next') %>
+    <%- include('./partials/comment') %>
 </div>
 
-<%- include('./partials/prev-next') %>
-<%- include('./partials/comment') %>
+
 <%- include('./partials/footer') %>

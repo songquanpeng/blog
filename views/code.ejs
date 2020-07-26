@@ -1,9 +1,10 @@
 <%- include('./partials/header') %>
 
 <div class="code-page">
+    <%- include('./partials/page-info') %>
     <div class="control-panel">
-        <span>Control panel: </span>
-        <button id="darkBtn" onclick="changeBackground()">Focus</button><button onclick="copyCode()">Copy</button>
+        <button class="button is-light" id="darkBtn" onclick="changeBackground()">Focus</button>
+        <button class="button is-light" onclick="copyCode()">Copy</button>
     </div>
     <pre>
         <code id="code-display"><%=page.content%></code>
@@ -11,6 +12,8 @@
     <label>
         <textarea id="hiddenTextArea" style="position: absolute;left: -100%;"></textarea>
     </label>
+    <%- include('./partials/prev-next') %>
+    <%- include('./partials/comment') %>
 </div>
 
 <script>
@@ -43,6 +46,5 @@
 
 </script>
 
-<%- include('./partials/prev-next') %>
-<%- include('./partials/comment') %>
+
 <%- include('./partials/footer') %>

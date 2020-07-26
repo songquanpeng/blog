@@ -1,14 +1,12 @@
 <%- include('./partials/header') %>
 <div class="discuss">
     <h1><%-page.title%></h1>
-    <div class="time">
-        Posted on <%-page.post_time%> Edited on <%-page.edit_time%>
-    </div>
+    <%- include('./partials/page-info') %>
     <div class="content">
         <%-page.converted_content%>
     </div>
+    <%- include('./partials/comment') %>
+    <%- include('./partials/prev-next') %>
 </div>
 
-<%- include('./partials/comment') %>
-<%- include('./partials/prev-next') %>
 <%- include('./partials/footer') %>
