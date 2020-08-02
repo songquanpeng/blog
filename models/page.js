@@ -220,6 +220,15 @@ class Page {
       });
   }
 
+  updateViewCounter(id) {
+    db('pages')
+      .where('id', id)
+      .update({
+        view: db.raw('view + 1')
+      })
+      .then();
+  }
+
   add(page, callback) {
     page.id = uuid();
     db('pages')

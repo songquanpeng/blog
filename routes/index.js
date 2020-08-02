@@ -76,6 +76,7 @@ router.get('/page/:link', function(req, res, next) {
   const link = req.params.link;
   Page.getByLink(link, (success, message, page, links) => {
     if (success && page !== undefined) {
+      page.view++;
       Comment.getByPageId(page.id, (status, message, comments) => {
         res.locals.comments = comments;
         res.locals.links = links;
@@ -108,6 +109,7 @@ router.get('/page/:link', function(req, res, next) {
             });
         }
       });
+      Page.updateViewCounter(page.id);
     } else {
       res.render('message', { title: 'Error!', message });
     }

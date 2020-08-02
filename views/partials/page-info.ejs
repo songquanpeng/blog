@@ -3,5 +3,5 @@
     <% page.tag.trim().split(" ").forEach(function (tag) { if(tag!==""){%>
         <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
     <% }}); %>
-    &ensp;Posted on <span class="tag is-light"><%-page.post_time%></span>&ensp;Edited on <span class="tag is-light"><%-page.edit_time%></span>
+    &ensp;Posted on <span class="tag is-light"><%-page.post_time%></span>&ensp;Edited on <span class="tag is-light"><%-page.edit_time%></span>&ensp;Views: <span class="tag is-light"><%-page.view%></span>
 </div>
