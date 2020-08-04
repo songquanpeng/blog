@@ -313,3 +313,7 @@ article .copyright{
 .links {
     margin: 16px;
 }
+
+span.line {
+    display: inline-block;
+}
