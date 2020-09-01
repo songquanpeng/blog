@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user').User;
+const axios = require('axios');
+
 const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 
@@ -22,6 +24,10 @@ router.post('/login', function(req, res) {
         message: message,
         user: user
       });
+      if (req.app.locals.config.message_push_api) {
+        let url = `${req.app.locals.config.message_push_api}A user with ip address ${req.ip} just logged in to your blog site.`;
+        axios.get(url).then(() => {});
+      }
     } else {
       res.json({
         status,
