@@ -6,6 +6,8 @@ const checkLogin = require('../middlewares/check').checkLogin;
 const checkPermission = require('../middlewares/check').checkPermission;
 const getDate = require('../utils/util').getDate;
 const convertContent = require('../utils/util').convertContent;
+const loadAboutContent = require('../utils/util').loadAboutContent;
+
 const Stream = require('stream');
 
 router.post('/search', checkPermission, function(req, res, next) {
@@ -135,6 +137,8 @@ router.put('/', checkLogin, (req, res, next) => {
   Page.updateById(id, page, (status, message) => {
     res.json({ status, message });
   });
+
+  loadAboutContent(req.app);
 });
 
 router.delete('/:id', checkLogin, (req, res, next) => {

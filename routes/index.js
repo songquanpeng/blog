@@ -12,13 +12,10 @@ router.get('/', function(req, res, next) {
   let start = 0;
   let end = 9;
   Page.getByRange(start, end, pages => {
-    Page.getByLink('about', (status, message, page) => {
-      res.render('index', {
-        pages: pages,
-        prev: ``,
-        next: `10-19`,
-        about: status ? page.converted_content : message
-      });
+    res.render('index', {
+      pages: pages,
+      prev: ``,
+      next: `10-19`
     });
   });
 });

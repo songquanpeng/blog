@@ -14,6 +14,7 @@ const optionRouter = require('./routes/option');
 const fileRouter = require('./routes/file');
 const updateConfig = require('./utils/util').updateConfig;
 const normalizePort = require('./utils/util').normalizePort;
+const loadAboutContent = require('./utils/util').loadAboutContent;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const app = express();
@@ -35,6 +36,10 @@ app.use(compression());
 app.locals.config = {};
 app.locals.config.theme = 'bulma';
 app.locals.page = undefined;
+app.locals.about =
+  'Create a page with link "about" and you will see the content here.';
+
+loadAboutContent(app);
 
 app.locals.loggedin = false;
 app.locals.isAdmin = false;

@@ -3,6 +3,7 @@ const parser = require('marked').parser;
 const sanitizeHtml = require('sanitize-html');
 const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
 const Option = require('../models/option').Option;
+const Page = require('../models/page').Page;
 
 function titleToLink(title) {
   return title.trim().replace(/\s/g, '-');
@@ -110,11 +111,20 @@ function normalizePort(val) {
   return false;
 }
 
+function loadAboutContent(app) {
+  Page.getByLink('about', (status, message, page) => {
+    if (status) {
+      app.locals.about = page.converted_content;
+    }
+  });
+}
+
 module.exports = {
   titleToLink,
   getDate,
   md2html,
   updateConfig,
   convertContent,
-  normalizePort
+  normalizePort,
+  loadAboutContent
 };
