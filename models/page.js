@@ -150,6 +150,17 @@ class Page {
       });
   }
 
+  directlyLoadPage(link, callback) {
+    db('pages')
+      .where('link', link)
+      .then(value => {
+        if (value.length !== 0) callback(value[0].converted_content);
+      })
+      .catch(reason => {
+        console.error(reason);
+      });
+  }
+
   getByLink(link, callback) {
     let currentIndex = 0;
     let result = this.pages.find((page, index) => {

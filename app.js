@@ -39,8 +39,6 @@ app.locals.page = undefined;
 app.locals.about =
   'Create a page with link "about" and you will see the content here.';
 
-loadAboutContent(app);
-
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 app.locals.sitemap = undefined;
@@ -116,6 +114,7 @@ function afterLoadingOptions() {
 }
 
 updateConfig(app.locals.config, afterLoadingOptions);
+loadAboutContent(app);
 
 server.listen(port);
 server.on('error', err => {

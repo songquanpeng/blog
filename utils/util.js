@@ -112,10 +112,8 @@ function normalizePort(val) {
 }
 
 function loadAboutContent(app) {
-  Page.getByLink('about', (status, message, page) => {
-    if (status) {
-      app.locals.about = page.converted_content;
-    }
+  Page.directlyLoadPage('about', about => {
+    app.locals.about = about;
   });
 }
 
