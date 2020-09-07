@@ -9,11 +9,14 @@
     + [Heroku App](https://express-react-blog.herokuapp.com/) (visit the [management system](https://express-react-blog.herokuapp.com/admin/) with default username `admin` and password `123456`)
 
 ## Highlights
-1. You can use a **code editor** to edit your content (built-in ACE code editor with multiple themes), f**k WYSIWYG editor.
+1. You can use a **code editor** to edit your content (built-in ACE code editor with multiple themes).
 2. Easy to configure and integrate with disqus and statistics system.
 3. You can copy from OneNote or any other programs and **paste your content with formatting** (with the `paste with formatting` feature, don't forget to set the page type to `raw`).
 4. You can use this to deploy your single page web application (such as a [game](https://iamazing.cn/page/online-battle-city)), just paste the code and set the page type to `raw`.
 5. System deploy is extremely simple, no need to configure the database (here I use SQLite as the default database, but it's easy to move to other database, just by modifying the `knexfile.js`).
+6. Multiple themes available:
+    1. Bulma: default theme.
+    2. Bootstrap: [blog-theme-bootstrap](https://github.com/songquanpeng/blog-theme-bootstrap)
 
 ## Deployment
 ```shell script
