@@ -1,5 +1,20 @@
 <%- include('./partials/header') %>
 
+<div class="container article-container">
+    <article class="shadow-box" style="padding: 16px">
+        <%- include('./partials/page-info') %>
+        <div class="control-panel">
+            <button class="button is-light" id="darkBtn" onclick="changeBackground()">Focus</button>
+            <button class="button is-light" onclick="copyCode()">Copy</button>
+        </div>
+        <pre>
+            <code id="code-display"><%=page.content%></code>
+        </pre>
+    </article>
+    <%- include('./partials/prev-next') %>
+    <%- include('./partials/comment') %>
+</div>
+
 <div class="code-page">
     <%- include('./partials/page-info') %>
     <div class="control-panel">

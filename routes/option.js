@@ -48,7 +48,7 @@ router.post('/', checkPermission, (req, res, next) => {
   };
   Option.update(name, option, (status, message) => {
     if (status) {
-      updateConfig(req.app.locals.config);
+      updateConfig(req.app.locals.config, () => {});
     }
     res.json({ status, message });
   });
