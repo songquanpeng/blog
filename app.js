@@ -108,7 +108,7 @@ function afterLoadingOptions() {
     res.locals.message = err.message;
     console.error(err.stack);
     if (!res.headersSent) {
-      res.json({ status: false, message: err.message });
+      res.send(err.message);
     }
   });
 }
