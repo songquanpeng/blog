@@ -1,7 +1,7 @@
 this.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open('cache-v1').then(function(cache) {
-      return cache.addAll(['/', '/custom.css', '/favicon.ico']);
+      return cache.addAll(['/', '/theme/main.css', '/favicon.ico']);
     })
   );
 });

@@ -39,10 +39,11 @@ updateConfig(app.locals.config);
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 app.locals.sitemap = undefined;
+app.locals.theme = 'bulma';
 
 let port = normalizePort(process.env.PORT || 3000);
 app.set('port', port);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, `theme/${app.locals.theme}`));
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 app.use(logger('dev'));
@@ -60,6 +61,12 @@ app.use(
 app.use(flash());
 app.use(
   serveStatic(path.join(__dirname, 'public'), {
+    maxAge: '600000'
+  })
+);
+app.use(
+  '/theme/',
+  serveStatic(path.join(__dirname, `theme/${app.locals.theme}/static`), {
     maxAge: '600000'
   })
 );
@@ -90,7 +97,7 @@ app.use(function(req, res, next) {
 
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
-  console.error(err.message);
+  console.error(err.stack);
   if (!res.headersSent) {
     res.json({ status: false, message: err.message });
   }
