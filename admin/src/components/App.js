@@ -11,7 +11,7 @@ import {
   Upload,
   Popconfirm,
   Divider,
-  message
+  message,
 } from 'antd';
 
 import {
@@ -24,7 +24,8 @@ import {
   CommentOutlined,
   CloudUploadOutlined,
   SettingOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 
 import { Link, Switch, Route } from 'react-router-dom';
@@ -37,6 +38,7 @@ import Users from './Users';
 import Files from './Files';
 import Comments from './Comments';
 import Posts from './Posts';
+import Login from './Login';
 
 import './App.css';
 
@@ -45,12 +47,12 @@ const { SubMenu } = Menu;
 
 class App extends React.Component {
   state = {
-    collapsed: false
+    collapsed: false,
   };
 
   toggle = () => {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
     });
   };
 
@@ -65,7 +67,10 @@ class App extends React.Component {
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="3" icon={<LogoutOutlined />}>
-          Logout
+          <Link to={'/logout'}>Logout</Link>
+        </Menu.Item>
+        <Menu.Item key="4" icon={<LoginOutlined />}>
+          <Link to={'/login'}>Login</Link>
         </Menu.Item>
       </Menu>
     );
@@ -111,7 +116,7 @@ class App extends React.Component {
               this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
               {
                 className: 'trigger',
-                onClick: this.toggle
+                onClick: this.toggle,
               }
             )}
             <Space style={{ float: 'right', marginRight: '16px' }}>
@@ -127,7 +132,7 @@ class App extends React.Component {
             style={{
               margin: '24px 16px',
               padding: 24,
-              minHeight: 280
+              minHeight: 280,
             }}
           >
             <Switch>
@@ -137,12 +142,14 @@ class App extends React.Component {
                 exact
                 component={RichTextEditor}
               />
+              <Route path="/" exact component={Dashboard} />
               <Route path="/dashboard" exact component={Dashboard} />
               <Route path="/users" exact component={Users} />
               <Route path="/settings" exact component={Settings} />
               <Route path="/files" exact component={Files} />
               <Route path="/comments" exact component={Comments} />
               <Route path="/posts" exact component={Posts} />
+              <Route path="/login" exact component={Login} />
             </Switch>
           </Content>
         </Layout>
