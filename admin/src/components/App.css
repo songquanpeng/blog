@@ -31,3 +31,17 @@
 .site-layout .site-layout-background {
     background: #fff;
 }
+
+.content-area {
+    background: #fff;
+    margin: 24px 16px;
+    padding: 24px;
+    min-height: 280px;
+}
+
+.bottom-right {
+    position: absolute !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 1000;
+}

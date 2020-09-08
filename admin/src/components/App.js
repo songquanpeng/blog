@@ -127,14 +127,7 @@ class App extends React.Component {
               </Dropdown>
             </Space>
           </Header>
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              minHeight: 280,
-            }}
-          >
+          <Content>
             <Switch>
               <Route path="/code-editor" exact component={CodeEditor} />
               <Route
