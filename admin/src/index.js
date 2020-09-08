@@ -1,18 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
-import reduxThunk from 'redux-thunk';
-import { Provider } from 'react-redux';
+import './index.css';
 import App from './components/App';
-import GlobalMessagePortal from './components/GlobalMessageModal';
-import reducers from './reducers';
-
-const store = createStore(reducers, applyMiddleware(reduxThunk));
+import { HashRouter } from 'react-router-dom';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <GlobalMessagePortal />
-    <App />
-  </Provider>,
+  <HashRouter>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </HashRouter>,
   document.getElementById('root')
 );
