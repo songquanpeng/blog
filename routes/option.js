@@ -39,6 +39,7 @@ router.get('/:name', checkPermission, (req, res, next) => {
   });
 });
 
+// TODO: change the method to put
 router.post('/', checkPermission, (req, res, next) => {
   const name = req.body.name;
   const value = req.body.value;
@@ -48,9 +49,20 @@ router.post('/', checkPermission, (req, res, next) => {
   };
   Option.update(name, option, (status, message) => {
     if (status) {
-      updateConfig(req.app.locals.config, () => {});
+      updateConfig(req.app.locals.config, () => {
+        if (['theme'].includes(name)) {
+          res.json({
+            status,
+            message: 'The server will shutdown in 1 seconds.'
+          });
+          setTimeout(() => {
+            process.exit();
+          }, 1000);
+        } else {
+          res.json({ status, message });
+        }
+      });
     }
-    res.json({ status, message });
   });
 });
 

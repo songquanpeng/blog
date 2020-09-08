@@ -6,38 +6,41 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const updateConfig = require('./utils/util').updateConfig;
 const configureApp = require('./utils/config').configureApp;
-const normalizePort = require('./utils/util').normalizePort;
 const loadAboutContent = require('./utils/util').loadAboutContent;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
+// const events = require('events');
 const app = express();
 const server = http.createServer(app);
 
-const pageLimiter = rateLimit({
-  windowMs: 30 * 1000,
-  max: 30
-});
-
-const commentLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5
-});
-
-app.use(pageLimiter);
-app.use('/api/comment', commentLimiter);
+app.use(
+  rateLimit({
+    windowMs: 30 * 1000,
+    max: 30
+  })
+);
+app.use(
+  '/api/comment',
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 5
+  })
+);
 app.use(compression());
+
 app.locals.config = {};
 app.locals.config.theme = 'bulma';
 app.locals.page = undefined;
-app.locals.about =
-  'Create a page with link "about" and you will see the content here.';
-
+app.locals.about = 'No page has link "about"!';
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 app.locals.sitemap = undefined;
+// app.locals.eventEmitter = new events.EventEmitter();
+// app.locals.eventEmitter.on('reload_config', () => {
+//   console.log('Processing event: reload_config.');
+//   configureApp(app);
+// });
 
-let port = normalizePort(process.env.PORT || 3000);
-app.set('port', port);
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 app.use(logger('dev'));
@@ -59,6 +62,7 @@ updateConfig(app.locals.config, () => {
 });
 loadAboutContent(app);
 
+let port = process.env.PORT || 3000;
 server.listen(port);
 
 server.on('error', err => {

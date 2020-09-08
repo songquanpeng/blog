@@ -100,17 +100,6 @@ function convertContent(pageType, content) {
   return '';
 }
 
-function normalizePort(val) {
-  let port = parseInt(val, 10);
-  if (isNaN(port)) {
-    return val;
-  }
-  if (port >= 0) {
-    return port;
-  }
-  return false;
-}
-
 function loadAboutContent(app) {
   Page.directlyLoadPage('about', about => {
     app.locals.about = about;
@@ -123,6 +112,5 @@ module.exports = {
   md2html,
   updateConfig,
   convertContent,
-  normalizePort,
   loadAboutContent
 };
