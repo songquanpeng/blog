@@ -62,12 +62,12 @@ app.use(
 app.use(flash());
 
 function afterLoadingOptions() {
-  app.set('views', path.join(__dirname, `theme/${app.locals.config.theme}`));
+  app.set('views', path.join(__dirname, `themes/${app.locals.config.theme}`));
 
   app.use(
-    '/theme',
+    '/static',
     serveStatic(
-      path.join(__dirname, `theme/${app.locals.config.theme}/static`),
+      path.join(__dirname, `themes/${app.locals.config.theme}/static`),
       {
         maxAge: '600000'
       }
