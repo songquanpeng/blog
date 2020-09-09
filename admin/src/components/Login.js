@@ -53,51 +53,54 @@ class Login extends Component {
       wrapperCol: { offset: 8, span: 16 },
     };
     return (
-      <Form
-        {...layout}
-        name="basic"
-        initialValues={this.state}
-        onValuesChange={this.onValuesChange}
-      >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your username!',
-            },
-          ]}
+      <div className={'content-area'}>
+        {' '}
+        <Form
+          {...layout}
+          name="basic"
+          initialValues={this.state}
+          onValuesChange={this.onValuesChange}
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your username!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your password!',
-            },
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-        <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
+          <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+            <Checkbox>Remember me</Checkbox>
+          </Form.Item>
 
-        <Form.Item {...tailLayout}>
-          <Space>
-            <Button type="primary" htmlType="submit" onClick={this.onSubmit}>
-              Submit
-            </Button>
-            <Button>Reset</Button>
-          </Space>
-        </Form.Item>
-      </Form>
+          <Form.Item {...tailLayout}>
+            <Space>
+              <Button type="primary" htmlType="submit" onClick={this.onSubmit}>
+                Submit
+              </Button>
+              <Button>Reset</Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </div>
     );
   }
 }

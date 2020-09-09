@@ -114,7 +114,7 @@ class CodeEditor extends Component {
       language: 'markdown',
       pasteWithFormatting: false,
       fontSize: 18,
-      isNewPage: this.props.match.path === '/editor',
+      isNewPage: this.props.match.path === '/code-editor',
       originPage: undefined,
       page: {
         id: this.props.match.params.id,

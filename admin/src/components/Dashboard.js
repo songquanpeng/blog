@@ -207,7 +207,7 @@ class Dashboard extends Component {
       let { status, message, pages } = res.data;
       if (status) {
         this.setState({ pages });
-        Message.success('Loading done.');
+        Message.success('Done.');
         console.log(pages[0]);
       } else {
         Message.error(message);
