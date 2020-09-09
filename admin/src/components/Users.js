@@ -128,7 +128,6 @@ class Users extends Component {
       const { status, message, users } = res.data;
       if (status) {
         this.setState({ users });
-        console.log(users[0]);
       } else {
         Message.error(message);
       }
