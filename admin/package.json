@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "latest",
+    "@ckeditor/ckeditor5-build-classic": "^22.0.0",
+    "@ckeditor/ckeditor5-react": "^2.1.0",
     "ace-builds": "^1.4.12",
     "antd": "^4.6.2",
     "axios": "^0.20.0",

@@ -26,12 +26,10 @@ class Login extends Component {
 
   onSubmit = async () => {
     try {
-      console.log(this.state);
       let { status, message } = await this.props.login(
         this.state.username,
         this.state.password
       );
-      console.log(status, message);
       if (status) {
         this.props.getStatus();
         Message.success('Login successfully!');

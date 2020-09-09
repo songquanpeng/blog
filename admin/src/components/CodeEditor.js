@@ -8,6 +8,7 @@ import {
   Switch,
   Input,
   InputNumber,
+  Popconfirm,
 } from 'antd';
 
 import { SettingOutlined } from '@ant-design/icons';
@@ -128,9 +129,6 @@ class CodeEditor extends Component {
         password: '',
         description: '',
       },
-      showRestoreConfirm: false,
-      noUserInputContent: true,
-      deleteConfirm: false,
       showDrawer: false,
     };
     this.onChange = this.onChange.bind(this);
@@ -449,7 +447,7 @@ class CodeEditor extends Component {
         const { status, message } = res.data;
         if (status) {
           Message.success('Your page has been deleted.');
-          that.props.history.push('/editor');
+          that.props.history.push('/code-editor');
         } else {
           Message.error(message);
         }
@@ -578,15 +576,24 @@ class CodeEditor extends Component {
           </Space>
           <br />
           <Space>
-            <Button
-              type="primary"
-              danger
-              size={'small'}
-              onClick={this.onDeleteButtonClicked}
-              disabled={this.state.isNewPage}
+            <Popconfirm
+              title={'Are your sure?'}
+              onConfirm={() => {
+                this.deletePage();
+              }}
+              okText="Yes"
+              cancelText="No"
             >
-              Delete
-            </Button>
+              <Button
+                type="primary"
+                danger
+                size={'small'}
+                disabled={this.state.isNewPage}
+              >
+                Delete
+              </Button>
+            </Popconfirm>
+
             <Button size={'small'} onClick={this.reset}>
               Reset
             </Button>

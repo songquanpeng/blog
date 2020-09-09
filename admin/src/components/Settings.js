@@ -128,7 +128,6 @@ class Settings extends Component {
         text: 'Option name',
         option_value: 'Error, try to reload this page.',
       };
-      console.log(this.state);
     }
     return (
       <div className={'content-area'}>

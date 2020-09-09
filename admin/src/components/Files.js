@@ -172,9 +172,6 @@ class Files extends Component {
       action: '/api/file/',
       onChange(info) {
         const { status } = info.file;
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
         if (status === 'done') {
           Message.success(`${info.file.name} file uploaded successfully.`);
           that.fetchData().then((r) => {});
@@ -199,7 +196,6 @@ class Files extends Component {
         <Divider />
         <Search
           placeholder="Search files..."
-          onSearch={(value) => console.log(value)}
           size={'large'}
           onChange={this.onInputChange}
           enterButton

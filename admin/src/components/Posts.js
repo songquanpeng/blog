@@ -288,7 +288,6 @@ class Posts extends Component {
           <Col span={8}>
             <Search
               placeholder='Press "Enter" to search...'
-              onSearch={(value) => console.log(value)}
               size={'large'}
               value={this.state.keyword}
               onChange={this.searchPages}
