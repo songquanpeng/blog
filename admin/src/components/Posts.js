@@ -214,7 +214,6 @@ class Posts extends Component {
       if (status) {
         this.setState({ pages });
         Message.success('Done.');
-        console.log(pages[0]);
       } else {
         Message.error(message);
         this.props.history.push('/login');

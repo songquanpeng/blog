@@ -89,7 +89,6 @@ class Files extends Component {
       const { status, message, files } = res.data;
       if (status) {
         this.setState({ files });
-        console.log(files[0]);
       } else {
         Message.error(message);
       }

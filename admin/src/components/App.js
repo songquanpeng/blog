@@ -26,6 +26,7 @@ import Files from './Files';
 import Comments from './Comments';
 import Dashboard from './Dashboard';
 import Login from './Login';
+import EditUser from './EditUser';
 
 import './App.css';
 
@@ -126,6 +127,8 @@ class App extends React.Component {
               <Route path="/" exact component={Dashboard} />
               <Route path="/dashboard" exact component={Dashboard} />
               <Route path="/users" exact component={Users} />
+              <Route path="/users/new" exact component={EditUser} />
+              <Route path="/users/:id" exact component={EditUser} />
               <Route path="/settings" exact component={Settings} />
               <Route path="/files" exact component={Files} />
               <Route path="/comments" exact component={Comments} />
