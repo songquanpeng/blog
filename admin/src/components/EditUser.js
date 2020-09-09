@@ -2,20 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 import { connect } from 'react-redux';
-import {
-  Table,
-  Tag,
-  Button,
-  message as Message,
-  Tooltip,
-  Space,
-  Popconfirm,
-  Input,
-  Select,
-  Row,
-  Col,
-  Form,
-} from 'antd';
+import { Button, message as Message, Input, Select, Form } from 'antd';
 
 const OPTIONS = [
   { key: 0, label: 'Banned User', value: 0 },
@@ -24,7 +11,7 @@ const OPTIONS = [
   { key: 100, label: 'Super User', value: 100 },
 ];
 
-class EditUser extends React.Component {
+class EditUser extends Component {
   constructor(props) {
     super(props);
     const createNew = this.props.match.path === '/users/new';
@@ -42,6 +29,8 @@ class EditUser extends React.Component {
         password: '',
       },
     };
+
+    this.formRef = React.createRef();
   }
 
   componentDidMount() {
@@ -56,7 +45,7 @@ class EditUser extends React.Component {
                 user: res.data.user,
               },
               () => {
-                console.log(that.state.user);
+                that.formRef.current.resetFields();
               }
             );
           } else {
@@ -82,12 +71,6 @@ class EditUser extends React.Component {
     this.setState({ user });
   };
 
-  onSelectChange = (e, { value }) => {
-    let user = { ...this.state.user };
-    user.status = value;
-    this.setState({ user });
-  };
-
   submitData = async () => {
     const user = this.state.user;
     const res = this.state.isCreatingNewUser
@@ -110,25 +93,26 @@ class EditUser extends React.Component {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 8 }}
           layout="horizontal"
-          initialValues={this.state.user}
           onValuesChange={this.onValuesChange}
+          ref={this.formRef}
+          initialValues={this.state.user}
         >
-          <Form.Item label="Username" name="username">
+          <Form.Item label="Username" name="username" required>
             <Input />
           </Form.Item>
-          <Form.Item label="Password" name="password">
+          <Form.Item label="Password" name="password" required>
             <Input />
           </Form.Item>
           <Form.Item label="Display Name" name="display_name">
             <Input />
           </Form.Item>
-          <Form.Item label="Email" name="email">
+          <Form.Item label="Email" name="email" type="email">
             <Input />
           </Form.Item>
-          <Form.Item label="Avatar" name="avatar">
+          <Form.Item label="Avatar" name="avatar" type="link">
             <Input />
           </Form.Item>
-          <Form.Item label="Url" name="url">
+          <Form.Item label="Url" name="url" type="url">
             <Input />
           </Form.Item>
           <Form.Item label="Status" name="status">

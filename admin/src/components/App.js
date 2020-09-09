@@ -1,5 +1,13 @@
 import React from 'react';
-import { Layout, Menu, Dropdown, Space, Button } from 'antd';
+import {
+  Layout,
+  Menu,
+  Dropdown,
+  Space,
+  Button,
+  message as Message,
+} from 'antd';
+import axios from 'axios';
 
 import {
   MenuUnfoldOutlined,
@@ -16,6 +24,9 @@ import {
 } from '@ant-design/icons';
 
 import { Link, Switch, Route } from 'react-router-dom';
+
+import { connect } from 'react-redux';
+import { getStatus } from '../actions';
 
 import CodeEditor from './CodeEditor';
 import RichTextEditor from './RichTextEditor';
@@ -38,10 +49,29 @@ class App extends React.Component {
     collapsed: false,
   };
 
+  componentDidMount = () => {
+    this.props.getStatus();
+  };
+
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
     });
+  };
+
+  static getDerivedStateFromProps({ status }) {
+    return { status };
+  }
+
+  logout = async () => {
+    const res = await axios.get(`/api/user/logout`);
+    const { status, message } = res.data;
+    if (status) {
+      Message.success(message);
+      this.setState({ status: 0 });
+    } else {
+      Message.error(message);
+    }
   };
 
   render() {
@@ -54,12 +84,22 @@ class App extends React.Component {
           My Setting
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="3" icon={<LogoutOutlined />}>
-          <Link to={'/logout'}>Logout</Link>
-        </Menu.Item>
-        <Menu.Item key="4" icon={<LoginOutlined />}>
-          <Link to={'/login'}>Login</Link>
-        </Menu.Item>
+        {this.state.status === 1 ? (
+          <Menu.Item key="3" icon={<LogoutOutlined />}>
+            <Link
+              to={'/login'}
+              onClick={() => {
+                this.logout().then((r) => {});
+              }}
+            >
+              Logout
+            </Link>
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="4" icon={<LoginOutlined />}>
+            <Link to={'/login'}>Login</Link>
+          </Menu.Item>
+        )}
       </Menu>
     );
 
@@ -141,4 +181,9 @@ class App extends React.Component {
     );
   }
 }
-export default App;
+
+const mapStateToProps = (state) => {
+  return state;
+};
+
+export default connect(mapStateToProps, { getStatus })(App);

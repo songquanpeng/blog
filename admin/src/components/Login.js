@@ -46,11 +46,11 @@ class Login extends Component {
 
   render() {
     const layout = {
-      labelCol: { span: 8 },
-      wrapperCol: { span: 6 },
+      labelCol: { span: 10 },
+      wrapperCol: { span: 4 },
     };
     const tailLayout = {
-      wrapperCol: { offset: 8, span: 16 },
+      wrapperCol: { offset: 10, span: 16 },
     };
     return (
       <div className={'content-area'}>

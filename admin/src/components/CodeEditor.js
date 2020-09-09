@@ -152,7 +152,7 @@ class CodeEditor extends Component {
       }
     }
     if (this.state.status === 0) {
-      Message.error('Access denied');
+      Message.error('Access denied.');
       this.props.history.push('/login');
       return;
     }

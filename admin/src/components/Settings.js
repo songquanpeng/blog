@@ -38,7 +38,7 @@ class Settings extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Please provide valid credentials.');
+      Message.error('Access denied.');
       this.props.history.push('/login');
       return;
     }

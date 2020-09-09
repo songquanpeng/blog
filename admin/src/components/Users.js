@@ -98,7 +98,7 @@ class Users extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Please provide valid credentials.');
+      Message.error('Access denied.');
       this.props.history.push('/login');
       return;
     }
@@ -137,6 +137,10 @@ class Users extends Component {
     }
   };
 
+  addUser = () => {
+    this.props.history.push('/users/new');
+  };
+
   deleteUser = (id) => {
     const that = this;
     axios.delete(`/api/user/${id}`).then(async function (res) {
@@ -158,6 +162,13 @@ class Users extends Component {
     return (
       <div className={'content-area'}>
         <h1>Users</h1>
+        <Button
+          onClick={() => {
+            this.addUser();
+          }}
+        >
+          Create New Account
+        </Button>
         <Table
           columns={this.columns}
           dataSource={this.state.users}

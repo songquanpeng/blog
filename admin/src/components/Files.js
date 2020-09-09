@@ -38,7 +38,9 @@ class Files extends Component {
       {
         title: 'File name',
         dataIndex: 'filename',
-        render: (value, record) => <a href={'/' + record.path}>{value}</a>,
+        render: (value, record) => (
+          <a href={this.filePrefix + record.path}>{value}</a>
+        ),
       },
       {
         title: 'Description',
@@ -67,6 +69,7 @@ class Files extends Component {
         ),
       },
     ];
+    this.filePrefix = window.location.href.split('/')[2];
   }
 
   static getDerivedStateFromProps({ status }) {
