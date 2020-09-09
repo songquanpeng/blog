@@ -6,22 +6,10 @@ import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/snippets/html';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/snippets/javascript';
-import 'ace-builds/src-noconflict/theme-solarized_light';
 
 import axios from 'axios';
-import {
-  message as Message,
-  Drawer,
-  Button,
-  Space,
-  Select,
-  Switch,
-  Input,
-  InputNumber,
-  Row,
-  Col,
-  Divider,
-} from 'antd';
+import { message as Message, Button, Select, Divider } from 'antd';
+
 import { PoweroffOutlined } from '@ant-design/icons';
 
 class Settings extends Component {
@@ -127,7 +115,7 @@ class Settings extends Component {
 
   shutdown = async (e) => {
     const res = await axios.get('/api/option/shutdown');
-    const { status, message } = res.data;
+    const { message } = res.data;
     Message.error(message);
   };
 
@@ -182,7 +170,7 @@ class Settings extends Component {
             name={option.name}
             value={option.option_value}
             rows={20}
-            theme={'solarized_light'}
+            theme={'tomorrow'}
             onChange={this.onInputChange}
           />
           <Button
