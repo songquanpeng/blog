@@ -8,7 +8,7 @@ class Files extends Component {
 
   render() {
     return (
-      <div>
+      <div className={'content-area'}>
         <h1>Files</h1>
       </div>
     );

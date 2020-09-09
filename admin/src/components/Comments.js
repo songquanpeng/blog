@@ -8,7 +8,7 @@ class Comments extends Component {
 
   render() {
     return (
-      <div>
+      <div className={'content-area'}>
         <h1>Comments</h1>
       </div>
     );

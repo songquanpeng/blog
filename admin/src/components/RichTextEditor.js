@@ -8,7 +8,7 @@ class RichTextEditor extends Component {
 
   render() {
     return (
-      <div>
+      <div className={'content-area'}>
         <h1>Rich Text Editor</h1>
       </div>
     );

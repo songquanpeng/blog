@@ -8,7 +8,7 @@ class Settings extends Component {
 
   render() {
     return (
-      <div>
+      <div className={'content-area'}>
         <h1>Settings</h1>
       </div>
     );

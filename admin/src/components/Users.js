@@ -8,7 +8,7 @@ class Users extends Component {
 
   render() {
     return (
-      <div>
+      <div className={'content-area'}>
         <h1>Users</h1>
       </div>
     );

@@ -1,18 +1,5 @@
 import React from 'react';
-import {
-  Layout,
-  Menu,
-  Avatar,
-  Dropdown,
-  Space,
-  Row,
-  Col,
-  Button,
-  Upload,
-  Popconfirm,
-  Divider,
-  message,
-} from 'antd';
+import { Layout, Menu, Dropdown, Space, Button } from 'antd';
 
 import {
   MenuUnfoldOutlined,
@@ -32,12 +19,12 @@ import { Link, Switch, Route } from 'react-router-dom';
 
 import CodeEditor from './CodeEditor';
 import RichTextEditor from './RichTextEditor';
-import Dashboard from './Dashboard';
+import Posts from './Posts';
 import Settings from './Settings';
 import Users from './Users';
 import Files from './Files';
 import Comments from './Comments';
-import Posts from './Posts';
+import Dashboard from './Dashboard';
 import Login from './Login';
 
 import './App.css';
@@ -130,6 +117,7 @@ class App extends React.Component {
           <Content>
             <Switch>
               <Route path="/code-editor" exact component={CodeEditor} />
+              <Route path="/code-editor/:id" exact component={CodeEditor} />
               <Route
                 path="/rich-text-editor"
                 exact

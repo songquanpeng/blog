@@ -84,15 +84,15 @@ editorThemes.forEach((theme) => {
 });
 
 export const PAGE_OPTIONS = [
-  { key: 'grey', text: 'ALL', value: -1 },
-  { key: 'black', text: 'Article', value: 0 },
-  { key: 'blue', text: 'Code', value: 1 },
-  { key: 'orange', text: 'Bulletin', value: 2 },
-  { key: 'olive', text: 'Discuss', value: 3 },
-  { key: 'green', text: 'Links', value: 4 },
-  { key: 'pink', text: 'Raw', value: 5 },
-  { key: 'purple', text: 'Media', value: 6 },
-  { key: 'violet', text: 'Timeline', value: 7 },
+  { key: 'grey', label: 'ALL Types', value: -1 },
+  { key: 'volcano', label: 'Article', value: 0 },
+  { key: 'geekblue', label: 'Code', value: 1 },
+  { key: 'orange', label: 'Bulletin', value: 2 },
+  { key: 'olive', label: 'Discuss', value: 3 },
+  { key: 'green', label: 'Links', value: 4 },
+  { key: 'pink', label: 'Raw', value: 5 },
+  { key: 'gold', label: 'Media', value: 6 },
+  { key: 'violet', label: 'Timeline', value: 7 },
 ];
 
 const PAGE_TYPE = {
