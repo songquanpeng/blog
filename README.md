@@ -18,6 +18,7 @@
     1. Bulma: default theme.
     2. Bootstrap: [blog-theme-bootstrap](https://github.com/songquanpeng/blog-theme-bootstrap).
     3. W3: [blog-theme-w3](https://github.com/songquanpeng/blog-theme-w3).
+    4. V2ex: [blog-theme-v2ex](https://github.com/songquanpeng/blog-theme-v2ex).
 
 ## Deployment
 ```shell script
