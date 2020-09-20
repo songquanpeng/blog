@@ -21,6 +21,8 @@ import {
   SettingOutlined,
   LogoutOutlined,
   LoginOutlined,
+  CodeOutlined,
+  CodeSandboxOutlined,
 } from '@ant-design/icons';
 
 import { Link, Switch, Route } from 'react-router-dom';
@@ -112,8 +114,11 @@ class App extends React.Component {
             <Menu.Item key="0" icon={<DashboardOutlined />}>
               <Link to={'/dashboard'}>Dashboard</Link>
             </Menu.Item>
-            <Menu.Item key="2" icon={<EditOutlined />}>
+            <Menu.Item key="1" icon={<CodeOutlined />}>
               <Link to={'/code-editor'}>Code Editor</Link>
+            </Menu.Item>
+            <Menu.Item key="2" icon={<EditOutlined />}>
+              <Link to={'/rich-text-editor'}>Rich Text Editor</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<FileTextOutlined />}>
               <Link to={'/posts'}>Posts</Link>

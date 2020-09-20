@@ -44,3 +44,7 @@
     right: 30px !important;
     z-index: 1000;
 }
+
+textarea {
+    font-family: 'Cascadia Code', Consolas, monospace, 微软雅黑;
+}
