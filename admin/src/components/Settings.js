@@ -140,7 +140,7 @@ class Settings extends Component {
           Shutdown the server
         </Button>
         <Divider />
-        <div style={{ maxWidth: '900px' }}>
+        <div style={{ maxWidth: '1100px' }}>
           <Select
             style={{ width: '100%' }}
             search

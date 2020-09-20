@@ -113,14 +113,9 @@ class App extends React.Component {
             <Menu.Item key="0" icon={<DashboardOutlined />}>
               <Link to={'/dashboard'}>Dashboard</Link>
             </Menu.Item>
-            <SubMenu key="sub0" icon={<EditOutlined />} title="Editor">
-              <Menu.Item key="1">
-                <Link to={'/rich-text-editor'}>Rich Text Editor</Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link to={'/code-editor'}>Code Editor</Link>
-              </Menu.Item>
-            </SubMenu>
+            <Menu.Item key="2" icon={<EditOutlined />}>
+              <Link to={'/code-editor'}>Code Editor</Link>
+            </Menu.Item>
             <Menu.Item key="3" icon={<FileTextOutlined />}>
               <Link to={'/posts'}>Posts</Link>
             </Menu.Item>

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   message as Message,
-  Drawer,
+  Row,
+  Col,
   Button,
   Space,
   Select,
@@ -9,9 +10,8 @@ import {
   Input,
   InputNumber,
   Popconfirm,
+  Layout,
 } from 'antd';
-
-import { SettingOutlined } from '@ant-design/icons';
 
 import AceEditor from 'react-ace';
 import { connect } from 'react-redux';
@@ -56,6 +56,8 @@ const modes = [
   'golang',
   'csharp',
 ];
+
+const { Header, Footer, Sider, Content } = Layout;
 
 let languages = [];
 modes.forEach((lang) => {
@@ -204,18 +206,6 @@ class CodeEditor extends Component {
     localStorage.setItem('theme', this.state.theme);
     localStorage.setItem('fontSize', this.state.fontSize);
   }
-
-  handleCancel = () => {
-    this.setState({ showRestoreConfirm: false });
-    localStorage.setItem('editorContent', '');
-  };
-
-  handleConfirm = () => {
-    this.setState({ showRestoreConfirm: false });
-    let page = { ...this.state.page };
-    page.content = localStorage.getItem('editorContent');
-    this.setState({ page });
-  };
 
   onChange(newValue) {
     let page = { ...this.state.page };
@@ -512,16 +502,8 @@ class CodeEditor extends Component {
 
   renderPanel() {
     return (
-      <Drawer
-        loading={this.state.loading}
-        title="Control Panel"
-        closable={true}
-        onClose={this.switchDrawerState}
-        visible={this.state.showDrawer}
-        placement={'left'}
-        style={{ marginRight: '8px' }}
-      >
-        <Space direction="vertical" style={{ width: '100%!important' }}>
+      <div>
+        <Space direction="vertical">
           Link
           <Input
             placeholder="Article link"
@@ -633,25 +615,32 @@ class CodeEditor extends Component {
             onChange={this.onFontSizeChange}
           />
         </Space>
-      </Drawer>
+      </div>
     );
   }
 
   render() {
     return (
-      <>
-        {this.renderPanel()}
-        <Button
-          className={'bottom-right'}
-          shape="circle"
-          type="primary"
-          size="large"
-          onClick={this.switchDrawerState}
-          icon={<SettingOutlined />}
-        />
-
-        {this.renderEditor()}
-      </>
+      <Layout
+        style={{
+          height: '100%',
+          borderTop: 'solid 1px #bfbfbf',
+          backgroundColor: '#fff',
+        }}
+      >
+        <Sider
+          style={{
+            backgroundColor: '#fff',
+            padding: '16px',
+            marginRight: '10px',
+          }}
+        >
+          {this.renderPanel()}
+        </Sider>
+        <Layout>
+          <Content>{this.renderEditor()}</Content>
+        </Layout>
+      </Layout>
     );
   }
 }
