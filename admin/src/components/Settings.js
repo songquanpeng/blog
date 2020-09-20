@@ -143,7 +143,6 @@ class Settings extends Component {
         <div style={{ maxWidth: '1100px' }}>
           <Select
             style={{ width: '100%' }}
-            search
             label="Option Name"
             name={'name'}
             loading={this.state.loading}

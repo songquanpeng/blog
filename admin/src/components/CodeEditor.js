@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {
   message as Message,
-  Row,
-  Col,
   Button,
   Space,
   Select,
@@ -57,7 +55,7 @@ const modes = [
   'csharp',
 ];
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 let languages = [];
 modes.forEach((lang) => {
@@ -164,10 +162,6 @@ class CodeEditor extends Component {
     }
   }
 
-  switchDrawerState = () => {
-    this.setState({ showDrawer: !this.state.showDrawer });
-  };
-
   fetchData = async () => {
     try {
       this.setState({ loading: true });
@@ -216,10 +210,12 @@ class CodeEditor extends Component {
   }
 
   onPaste = (e) => {
-    const clipboard = e.event.clipboardData;
+    const clipboard = e.clipboardData;
     e.text = this.state.pasteWithFormatting
       ? clipboard.getData('text/html')
       : clipboard.getData('text/plain');
+    console.log(e.text);
+    e.preventDefault();
   };
 
   onEditorBlur = () => {
@@ -343,20 +339,20 @@ class CodeEditor extends Component {
     }
   };
 
-  onCommentStatusChange = (e, { checked }) => {
+  onCommentStatusChange = () => {
     let page = { ...this.state.page };
-    page.comment_status = checked ? 1 : 0;
+    page.comment_status = page.comment_status === 0 ? 1 : 0;
     this.setState({ page });
   };
 
-  onPageStatusChange = (e, { checked }) => {
+  onPageStatusChange = () => {
     let page = { ...this.state.page };
-    page.page_status = checked ? 1 : 0;
+    page.page_status = page.page_status === 0 ? 1 : 0;
     this.setState({ page });
   };
 
-  onPasteWithFormattingChange = (e, { checked }) => {
-    let pasteWithFormatting = checked;
+  onPasteWithFormattingChange = () => {
+    let pasteWithFormatting = !this.state.pasteWithFormatting;
     this.setState({ pasteWithFormatting });
     if (this.state.noUserInputContent) {
       let page = { ...this.state.page };
@@ -424,10 +420,6 @@ class CodeEditor extends Component {
     this.setState({ page });
   };
 
-  onDeleteButtonClicked = () => {
-    this.setState({ deleteConfirm: true });
-  };
-
   deletePage = () => {
     this.setState({ deleteConfirm: false });
     const that = this;
@@ -490,7 +482,6 @@ class CodeEditor extends Component {
           theme={this.state.theme}
           name={'editor'}
           onChange={this.onChange}
-          onPaste={this.onPaste}
           value={this.state.page.content}
           fontSize={this.state.fontSize}
           onBlur={this.onEditorBlur}
@@ -547,15 +538,15 @@ class CodeEditor extends Component {
             />{' '}
             Publish page
           </Space>
-          <Space>
-            <Switch
-              name="paste_with_formatting"
-              label="Paste with formatting"
-              checked={this.state.pasteWithFormatting}
-              onChange={this.onPasteWithFormattingChange}
-            />{' '}
-            Paste with formatting
-          </Space>
+          {/*<Space>*/}
+          {/*  <Switch*/}
+          {/*    name="paste_with_formatting"*/}
+          {/*    label="Paste with formatting"*/}
+          {/*    checked={this.state.pasteWithFormatting}*/}
+          {/*    onChange={this.onPasteWithFormattingChange}*/}
+          {/*  />{' '}*/}
+          {/*  Paste with formatting*/}
+          {/*</Space>*/}
           <br />
           <Space>
             <Popconfirm

@@ -42,11 +42,10 @@ import EditUser from './EditUser';
 import './App.css';
 
 const { Header, Sider, Content } = Layout;
-const { SubMenu } = Menu;
 
 class App extends React.Component {
   state = {
-    collapsed: false,
+    collapsed: true,
   };
 
   componentDidMount = () => {
