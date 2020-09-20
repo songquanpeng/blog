@@ -206,6 +206,7 @@ class Files extends Component {
           dataSource={this.state.files}
           rowKey={'id'}
           style={{ marginTop: '16px' }}
+          loading={this.state.loading}
         />
       </div>
     );

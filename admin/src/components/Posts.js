@@ -301,6 +301,7 @@ class Posts extends Component {
           dataSource={this.state.pages}
           rowKey={'page_id'}
           style={{ marginTop: '16px' }}
+          loading={this.state.loading}
         />
       </div>
     );

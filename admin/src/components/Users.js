@@ -174,6 +174,7 @@ class Users extends Component {
           dataSource={this.state.users}
           rowKey={'id'}
           style={{ marginTop: '16px' }}
+          loading={this.state.loading}
         />
       </div>
     );
