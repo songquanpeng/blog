@@ -26,7 +26,7 @@ class RichTextEditor extends Component {
 
   onPaste = (e) => {
     let content = e.clipboardData.getData('text/html');
-    this.setState({ content: content });
+    this.setState({ content: content }); // TODO: it take too long to run.
   };
 
   clear = () => {
@@ -52,8 +52,9 @@ class RichTextEditor extends Component {
         'h2',
         'img',
       ]),
+      allowedSchemes: ['http', 'https', 'ftp', 'mailto', 'data'],
     });
-    // content = content.replace(/^\s*\n/gm, '\n');
+    content = content.replace(/^\s*\n/gm, '\n');
     this.setState({ content });
   };
 
@@ -73,8 +74,7 @@ class RichTextEditor extends Component {
               value={this.state.content}
               onPaste={this.onPaste}
               onChange={this.onChange}
-              style={{}}
-              rows={20}
+              autoSize={{ minRows: 20 }}
             />
           </Col>
           <Col span={12} style={{ padding: '8px' }}>

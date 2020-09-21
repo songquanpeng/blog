@@ -22,7 +22,6 @@ import {
   LogoutOutlined,
   LoginOutlined,
   CodeOutlined,
-  CodeSandboxOutlined,
 } from '@ant-design/icons';
 
 import { Link, Switch, Route } from 'react-router-dom';
