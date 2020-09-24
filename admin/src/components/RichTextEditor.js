@@ -9,7 +9,7 @@ import {
   Divider,
   message as Message,
 } from 'antd';
-
+import { UpOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
 
 class RichTextEditor extends Component {
@@ -18,6 +18,7 @@ class RichTextEditor extends Component {
     this.state = {
       content: '',
     };
+    this.titleRef = React.createRef();
   }
 
   onChange = (e) => {
@@ -58,14 +59,27 @@ class RichTextEditor extends Component {
     this.setState({ content });
   };
 
+  // TODO: Scroll to top not working.
+  scrollTop = () => {
+    this.titleRef.current.scrollTop = 0;
+  };
+
   render() {
     return (
-      <div className={'content-area'} style={{ minHeight: '80%' }}>
+      <div ref={this.titleRef} className={'content-area'}>
         <h1>Rich Text Editor</h1>
+        <Button
+          className={'bottom-right'}
+          shape="circle"
+          type="primary"
+          size="large"
+          onClick={this.scrollTop}
+          icon={<UpOutlined />}
+        />
         <Space>
           <Button onClick={() => this.removeStyle()}>Remove Style</Button>
           <Button onClick={() => this.copy()}>Copy Content</Button>
-          <Button onClick={() => this.clear()}>Clear</Button>
+          <Button onClick={() => this.clear()}>Clear Content</Button>
         </Space>
         <Divider />
         <Row style={{ minHeight: '100%' }}>
@@ -74,7 +88,7 @@ class RichTextEditor extends Component {
               value={this.state.content}
               onPaste={this.onPaste}
               onChange={this.onChange}
-              autoSize={{ minRows: 20 }}
+              autoSize={{ minRows: 22 }}
             />
           </Col>
           <Col span={12} style={{ padding: '8px' }}>

@@ -34,6 +34,9 @@ class Files extends Component {
       },
       searchTypingTimeout: 0,
     };
+    const protocol = window.location.href.split('/')[0];
+    const domain = window.location.href.split('/')[2];
+    this.filePrefix = `${protocol}//${domain}`;
     this.columns = [
       {
         title: 'File name',
@@ -69,7 +72,6 @@ class Files extends Component {
         ),
       },
     ];
-    this.filePrefix = window.location.href.split('/')[2];
   }
 
   static getDerivedStateFromProps({ status }) {
