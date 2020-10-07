@@ -42,7 +42,7 @@ class Posts extends Component {
             title={`Posted on ${record.post_time}\nEdited on ${record.edit_time}`}
           >
             <span>
-              <a href={'/' + record.link}>{value}</a>
+              <a href={'/page/' + record.link}>{value}</a>
             </span>
           </Tooltip>
         ),

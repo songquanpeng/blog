@@ -92,7 +92,7 @@ class RichTextEditor extends Component {
             />
           </Col>
           <Col span={12} style={{ padding: '8px' }}>
-            <div dangerouslySetInnerHTML={{ __html: this.state.content }} />
+            {/*<div dangerouslySetInnerHTML={{ __html: this.state.content }} />*/}
           </Col>
         </Row>
       </div>
