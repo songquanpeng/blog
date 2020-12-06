@@ -9,6 +9,7 @@ const configureApp = require('./utils/config').configureApp;
 const loadAboutContent = require('./utils/util').loadAboutContent;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
+const crypto = require('crypto');
 // const events = require('events');
 const app = express();
 const server = http.createServer(app);
@@ -46,12 +47,12 @@ app.set('trust proxy', true);
 app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
-app.use(cookieParser('better'));
+app.use(cookieParser(crypto.randomBytes(64).toString('hex')));
 app.use(
   session({
     resave: true,
     saveUninitialized: true,
-    secret: 'better'
+    secret: crypto.randomBytes(64).toString('hex')
   })
 );
 
