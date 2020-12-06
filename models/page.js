@@ -110,13 +110,22 @@ class Page {
       ])
       .innerJoin('users', 'users.id', 'pages.user_id')
       .where('page_status', 1)
+      .orWhere('page_status', 2)
       .asCallback((error, pages) => {
         if (error) {
           console.error(error.message);
         }
         if (pages)
           pages.sort((a, b) => {
-            return new Date(b.edit_time) - new Date(a.edit_time);
+            if (a.page_status !== b.page_status) {
+              if (a.page_status < b.page_status) {
+                return 1;
+              } else {
+                return -1;
+              }
+            } else {
+              return new Date(b.edit_time) - new Date(a.edit_time);
+            }
           });
         this.pages = pages;
         if (callback) {

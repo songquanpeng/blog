@@ -79,24 +79,39 @@ class Posts extends Component {
       {
         title: 'Page status',
         dataIndex: 'page_status',
-        render: (value, record) =>
-          value === 1 ? (
-            <Tag
-              icon={<CheckCircleOutlined />}
-              color="success"
-              onClick={() => this.switchStatus(record.page_id, 'page_status')}
-            >
-              published
-            </Tag>
-          ) : (
-            <Tag
-              icon={<MinusCircleOutlined />}
-              color="default"
-              onClick={() => this.switchStatus(record.page_id, 'page_status')}
-            >
-              recalled
-            </Tag>
-          ),
+        render: (value, record) => {
+          if (value === 0) {
+            return (
+              <Tag
+                icon={<MinusCircleOutlined />}
+                color="default"
+                onClick={() => this.switchStatus(record.page_id, 'page_status')}
+              >
+                recalled
+              </Tag>
+            );
+          } else if (value === 1) {
+            return (
+              <Tag
+                icon={<CheckCircleOutlined />}
+                color="success"
+                onClick={() => this.switchStatus(record.page_id, 'page_status')}
+              >
+                published
+              </Tag>
+            );
+          } else {
+            return (
+              <Tag
+                icon={<CheckCircleOutlined />}
+                color="orange"
+                onClick={() => this.switchStatus(record.page_id, 'page_status')}
+              >
+                stay on top
+              </Tag>
+            );
+          }
+        },
       },
       {
         title: 'Comment status',
@@ -255,7 +270,11 @@ class Posts extends Component {
     const that = this;
     let pages = this.state.pages;
     let page = pages.find((x) => x.page_id === id);
-    page[key] = (page[key] + 1) % 2;
+    let base = 2;
+    if (key === 'page_status') {
+      base = 3;
+    }
+    page[key] = (page[key] + 1) % base;
     page.id = id;
     axios
       .put('/api/page/', page)
