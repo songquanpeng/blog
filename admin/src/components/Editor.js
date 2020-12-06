@@ -106,7 +106,7 @@ const PAGE_TYPE = {
   MEDIA: 6,
 };
 
-class CodeEditor extends Component {
+class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -115,7 +115,7 @@ class CodeEditor extends Component {
       language: 'markdown',
       pasteWithFormatting: false,
       fontSize: 18,
-      isNewPage: this.props.match.path === '/code-editor',
+      isNewPage: this.props.match.path === '/editor',
       originPage: undefined,
       page: {
         id: this.props.match.params.id,
@@ -429,7 +429,7 @@ class CodeEditor extends Component {
         const { status, message } = res.data;
         if (status) {
           Message.success('Your page has been deleted.');
-          that.props.history.push('/code-editor');
+          that.props.history.push('/editor');
         } else {
           Message.error(message);
         }
@@ -640,4 +640,4 @@ const mapStateToProps = (state) => {
   return state;
 };
 
-export default connect(mapStateToProps)(CodeEditor);
+export default connect(mapStateToProps)(Editor);

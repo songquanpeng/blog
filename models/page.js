@@ -33,6 +33,10 @@ class Page {
           console.error(error.message);
           callback(false, error.message, pages);
         } else {
+          if (pages)
+            pages.sort((a, b) => {
+              return new Date(b.edit_time) - new Date(a.edit_time);
+            });
           callback(true, '', pages);
         }
       });

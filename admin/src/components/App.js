@@ -29,14 +29,12 @@ import { Link, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getStatus } from '../actions';
 
-import CodeEditor from './CodeEditor';
-import RichTextEditor from './RichTextEditor';
+import Editor from './Editor';
 import Posts from './Posts';
 import Settings from './Settings';
 import Users from './Users';
 import Files from './Files';
 import Comments from './Comments';
-import Dashboard from './Dashboard';
 import Login from './Login';
 import EditUser from './EditUser';
 
@@ -110,17 +108,11 @@ class App extends React.Component {
             <h1>System Admin</h1>
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['0']}>
-            <Menu.Item key="0" icon={<DashboardOutlined />}>
-              <Link to={'/dashboard'}>Dashboard</Link>
-            </Menu.Item>
-            <Menu.Item key="1" icon={<CodeOutlined />}>
-              <Link to={'/code-editor'}>Code Editor</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<EditOutlined />}>
-              <Link to={'/rich-text-editor'}>Rich Text Editor</Link>
-            </Menu.Item>
             <Menu.Item key="3" icon={<FileTextOutlined />}>
               <Link to={'/posts'}>Posts</Link>
+            </Menu.Item>
+            <Menu.Item key="1" icon={<CodeOutlined />}>
+              <Link to={'/editor'}>Editor</Link>
             </Menu.Item>
             <Menu.Item key="4" icon={<CommentOutlined />}>
               <Link to={'/comments'}>Comments</Link>
@@ -155,15 +147,9 @@ class App extends React.Component {
           </Header>
           <Content>
             <Switch>
-              <Route path="/code-editor" exact component={CodeEditor} />
-              <Route path="/code-editor/:id" exact component={CodeEditor} />
-              <Route
-                path="/rich-text-editor"
-                exact
-                component={RichTextEditor}
-              />
-              <Route path="/" exact component={Dashboard} />
-              <Route path="/dashboard" exact component={Dashboard} />
+              <Route path="/editor" exact component={Editor} />
+              <Route path="/editor/:id" exact component={Editor} />
+              <Route path="/" exact component={Posts} />
               <Route path="/users" exact component={Users} />
               <Route path="/users/new" exact component={EditUser} />
               <Route path="/users/:id" exact component={EditUser} />

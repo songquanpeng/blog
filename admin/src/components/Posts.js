@@ -16,7 +16,7 @@ import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { PAGE_OPTIONS } from './CodeEditor';
+import { PAGE_OPTIONS } from './Editor';
 
 const { Search } = Input;
 
@@ -228,7 +228,7 @@ class Posts extends Component {
       let { status, message, pages } = res.data;
       if (status) {
         this.setState({ pages });
-        Message.success('Done.');
+        Message.success('Loading done.');
       } else {
         Message.error(message);
         this.props.history.push('/login');
@@ -240,7 +240,7 @@ class Posts extends Component {
   }
 
   editPage = (id) => {
-    this.props.history.push(`/code-editor/${id}`);
+    this.props.history.push(`/editor/${id}`);
   };
 
   viewPage = (link) => {
