@@ -1,4 +1,4 @@
-# Express React Blog
+# Blog
 [![Code Size](https://img.shields.io/github/languages/code-size/songquanpeng/blog)](https://github.com/songquanpeng/blog) 
 [![license](https://img.shields.io/github/license/songquanpeng/blog)](https://github.com/songquanpeng/blog) 
 [![release](https://img.shields.io/github/v/release/songquanpeng/blog)](https://github.com/songquanpeng/blog/releases)
