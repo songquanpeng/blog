@@ -204,7 +204,7 @@ class Page {
   getByTag(tag, callback) {
     db('pages')
       .whereRaw('LOWER(tag) LIKE ?', `%${tag.toLowerCase()}%`)
-      .where('page_status', 1)
+      .whereNot('page_status', 0)
       .asCallback((error, data) => {
         if (error) {
           console.error(error.message);
@@ -218,7 +218,7 @@ class Page {
   getByTime(time, callback) {
     db('pages')
       .whereRaw('LOWER(post_time) LIKE ?', `%${time.toLowerCase()}%`)
-      .where('page_status', 1)
+      .whereNot('page_status', 0)
       .asCallback((error, data) => {
         if (error) {
           console.error(error.message);
