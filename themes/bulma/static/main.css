@@ -317,3 +317,8 @@ article .copyright{
 span.line {
     display: inline-block;
 }
+
+.toc {
+    position: sticky;
+    top: 24px;
+}
