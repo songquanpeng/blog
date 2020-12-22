@@ -1,0 +1,12 @@
+[submodule "themes/bootstrap"]
+	path = themes/bootstrap
+	url = https://github.com/songquanpeng/blog-theme-bootstrap
+[submodule "themes/w3"]
+	path = themes/w3
+	url = https://github.com/songquanpeng/blog-theme-w3
+[submodule "themes/next"]
+	path = themes/next
+	url = https://github.com/songquanpeng/blog-theme-next
+[submodule "themes/v2ex"]
+	path = themes/v2ex
+	url = https://github.com/songquanpeng/blog-theme-v2ex

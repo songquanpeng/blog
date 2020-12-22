@@ -30,7 +30,7 @@
 
 ## 部署
 ```shell script
-git clone https://github.com/songquanpeng/blog.git
+git clone --recurse-submodules https://github.com/songquanpeng/blog.git
 cd blog
 npm install
 npm run build  # Windows 用户运行 `npm run build2`
@@ -67,7 +67,7 @@ npm run migrate
 
 ## Deployment
 ```shell script
-git clone https://github.com/songquanpeng/blog.git
+git clone --recurse-submodules https://github.com/songquanpeng/blog.git
 cd blog
 npm install
 npm run build  # For Windows user, please run `npm run build2` instead
