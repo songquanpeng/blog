@@ -20,7 +20,7 @@
 3. 你可以从 OneNote 等软件中复制内容其带有格式（需要打开 `paste with formatting` 功能并设置页面类型为 `raw`），这意味着你可以将 OneNote 中的笔记发布到你的博客上！
 4. 你可以使用本博客系统部署你的单页面 Web 应用（例如一个[游戏](https://iamazing.cn/page/online-battle-city)），只需要把代码粘贴进来并设置页面类型为 `raw`。
 5. 本系统部署起来非常简单，无需配置数据库（此处用的是 SQLite，但是迁移到其他数据库也很简单，修改 `knexfile.js` 配置文件即可）。
-6. 多种主题可供选择：
+6. 多种主题可供选择（在后台管理系统中的 setting 页面，下拉框中找到 theme，修改后点击 submit，之后博客系统会主动关闭，这时依赖 pm2 将其重启，重启后用的就是新的主题了）：
     1. Bulma：Bulma CSS 风格主题，也是内置的默认主题。
     2. Bootstrap：[Bootstrap 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap)。
     3. W3：[W3.css 风格主题](https://github.com/songquanpeng/blog-theme-w3)。
