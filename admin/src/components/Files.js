@@ -42,7 +42,9 @@ class Files extends Component {
         title: 'File name',
         dataIndex: 'filename',
         render: (value, record) => (
-          <a href={this.filePrefix + record.path}>{value}</a>
+          <a href={this.filePrefix + record.path} download={value}>
+            {value}
+          </a>
         ),
       },
       {
@@ -209,6 +211,7 @@ class Files extends Component {
           rowKey={'id'}
           style={{ marginTop: '16px' }}
           loading={this.state.loading}
+          size={'small'}
         />
       </div>
     );

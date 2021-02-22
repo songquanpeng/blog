@@ -74,10 +74,10 @@ class App extends React.Component {
     const menu = (
       <Menu>
         <Menu.Item key="1" icon={<UserOutlined />}>
-          My Account
+          <Link to={'/users'}>Account</Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<SettingOutlined />}>
-          My Setting
+          <Link to={'/settings'}>Settings</Link>
         </Menu.Item>
         <Menu.Divider />
         {this.state.status === 1 ? (
