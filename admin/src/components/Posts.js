@@ -253,13 +253,38 @@ class Posts extends Component {
     }/api/page/export/${id}`;
   };
 
+  getPageById = (id) => {
+    for (let i = 0; i < this.state.pages.length; i++) {
+      if (this.state.pages[i].page_id === id) {
+        return [i, this.state.pages[i]];
+      }
+    }
+    return [-1, undefined];
+  };
+
+  updateTargetPage = (index, page) => {
+    if (index === -1) {
+      return;
+    }
+    let pages = { ...this.state.pages };
+    pages[index] = page;
+    this.setState({ page });
+  };
+
   deletePage = (id) => {
     const that = this;
     axios.delete(`/api/page/${id}`).then(async function (res) {
       const { status, message } = res.data;
       if (status) {
-        Message.success('Your page has been deleted.');
-        await that.loadPagesFromServer();
+        let [i, page] = that.getPageById(id);
+        if (i !== -1) {
+          page.deleted = true;
+          that.updateTargetPage(i, page);
+          Message.success('Your page has been deleted.');
+        } else {
+          Message.error('Something went wrong.');
+          console.error(id, i, page, that.state.pages);
+        }
       } else {
         Message.error(message);
       }
@@ -280,7 +305,9 @@ class Posts extends Component {
       .put('/api/page/', page)
       .then(async function (res) {
         if (res.data.status) {
-          await that.loadPagesFromServer();
+          let i = that.getPageById(id)[0];
+          that.updateTargetPage(i, page);
+          Message.success('Your page has been updated.');
         } else {
           Message.error(res.data.message);
         }
@@ -321,6 +348,7 @@ class Posts extends Component {
           rowKey={'page_id'}
           style={{ marginTop: '16px' }}
           loading={this.state.loading}
+          rowClassName={(record) => record.deleted && 'disabled-row'}
         />
       </div>
     );

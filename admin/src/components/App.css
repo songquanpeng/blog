@@ -48,3 +48,7 @@
 textarea {
     font-family: 'Cascadia Code', Consolas, monospace, 微软雅黑;
 }
+
+.disabled-row {
+    display: none;
+}
