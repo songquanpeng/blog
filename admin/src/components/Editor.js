@@ -345,9 +345,15 @@ class Editor extends Component {
     this.setState({ page });
   };
 
-  onPageStatusChange = () => {
+  onPublishStatusChange = () => {
     let page = { ...this.state.page };
     page.page_status = page.page_status === 0 ? 1 : 0;
+    this.setState({ page });
+  };
+
+  onStayOnTopStatusChange = () => {
+    let page = { ...this.state.page };
+    page.page_status = page.page_status === 2 ? 1 : 2;
     this.setState({ page });
   };
 
@@ -533,10 +539,19 @@ class Editor extends Component {
             <Switch
               name="page_status"
               label="Publish page"
-              checked={this.state.page.page_status === 1}
-              onChange={this.onPageStatusChange}
+              checked={this.state.page.page_status !== 0}
+              onChange={this.onPublishStatusChange}
             />{' '}
             Publish page
+          </Space>
+          <Space>
+            <Switch
+              name="page_status"
+              label="Stay on top"
+              checked={this.state.page.page_status === 2}
+              onChange={this.onStayOnTopStatusChange}
+            />{' '}
+            Stay on top
           </Space>
           {/*<Space>*/}
           {/*  <Switch*/}

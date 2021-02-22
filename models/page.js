@@ -61,7 +61,6 @@ class Page {
         'post_time',
         'edit_time',
         'title',
-        'content',
         'tag',
         'view',
         'up_vote',

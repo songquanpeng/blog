@@ -6,3 +6,4 @@ data.db-journal
 /public/admin
 /public/ads.txt
 package-lock.json
+yarn.lock
