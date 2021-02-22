@@ -7,9 +7,10 @@ function getTitles() {
   const article = document.getElementById('article');
   const nodes = ['H1', 'H2', 'H3'];
   let titles = [];
+  let count = 0;
   article.childNodes.forEach(function(e, i) {
     if (nodes.includes(e.nodeName)) {
-      const id = 'header-' + i;
+      const id = 'h' + count++;
       e.setAttribute('id', id);
       titles.push({
         id: id,
