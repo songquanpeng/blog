@@ -7,7 +7,6 @@ import {
   Button,
   message as Message,
 } from 'antd';
-import axios from 'axios';
 
 import {
   MenuUnfoldOutlined,
@@ -27,7 +26,7 @@ import {
 import { Link, Switch, Route } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import { getStatus } from '../actions';
+import { logout, getStatus } from '../actions';
 
 import Editor from './Editor';
 import Posts from './Posts';
@@ -62,8 +61,7 @@ class App extends React.Component {
   }
 
   logout = async () => {
-    const res = await axios.get(`/api/user/logout`);
-    const { status, message } = res.data;
+    let { status, message } = await this.props.logout();
     if (status) {
       Message.success(message);
       this.setState({ status: 0 });
@@ -170,4 +168,4 @@ const mapStateToProps = (state) => {
   return state;
 };
 
-export default connect(mapStateToProps, { getStatus })(App);
+export default connect(mapStateToProps, { logout, getStatus })(App);

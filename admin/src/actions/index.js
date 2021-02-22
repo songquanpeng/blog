@@ -63,5 +63,5 @@ export const logout = () => async (dispatch) => {
     });
   }
 
-  return message;
+  return { status, message };
 };

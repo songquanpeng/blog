@@ -231,7 +231,6 @@ class Posts extends Component {
         Message.success('Loading done.');
       } else {
         Message.error(message);
-        this.props.history.push('/login');
       }
       this.setState({ loading: false });
     } catch (e) {
