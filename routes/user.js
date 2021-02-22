@@ -4,8 +4,8 @@ const router = express.Router();
 const User = require('../models/user').User;
 const axios = require('axios');
 
-const checkLogin = require('../middlewares/check').checkLogin;
-const checkPermission = require('../middlewares/check').checkPermission;
+const checkLogin = require('../middlewares/auth').loginRequired;
+const checkPermission = require('../middlewares/auth').adminRequired;
 
 router.post('/login', function(req, res) {
   let username = req.body.username;

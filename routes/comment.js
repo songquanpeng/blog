@@ -5,8 +5,8 @@ const Comment = require('../models/comment').Comment;
 const getDate = require('../utils/util').getDate;
 const md2html = require('../utils/util').md2html;
 const sanitizeHtml = require('sanitize-html');
-const checkLogin = require('../middlewares/check').checkLogin;
-const checkPermission = require('../middlewares/check').checkPermission;
+const checkLogin = require('../middlewares/auth').loginRequired;
+const checkPermission = require('../middlewares/auth').adminRequired;
 
 router.post('/', (req, res, next) => {
   let author = req.body.author;

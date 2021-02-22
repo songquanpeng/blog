@@ -4,7 +4,7 @@ const router = express.Router();
 const File = require('../models/file').File;
 const multer = require('multer');
 const uuid = require('uuid/v1');
-const checkPermission = require('../middlewares/check').checkPermission;
+const checkPermission = require('../middlewares/auth').adminRequired;
 const upload_path = require('../models/file').upload_path;
 
 router.get('/', checkPermission, (req, res, next) => {

@@ -1,7 +1,5 @@
-const User = require('../models/user').User;
-
 module.exports = {
-  checkLogin: function checkLogin(req, res, next) {
+  loginRequired: function checkLogin(req, res, next) {
     if (req.session.user === undefined) {
       res.json({
         status: false,
@@ -12,7 +10,7 @@ module.exports = {
     }
   },
 
-  checkPermission: function(req, res, next) {
+  adminRequired: function(req, res, next) {
     if (req.session.user === undefined) {
       res.json({
         status: false,

@@ -2,8 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const Option = require('../models/option').Option;
-const checkLogin = require('../middlewares/check').checkLogin;
-const checkPermission = require('../middlewares/check').checkPermission;
+const checkLogin = require('../middlewares/auth').loginRequired;
+const checkPermission = require('../middlewares/auth').adminRequired;
 const updateConfig = require('../utils/util').updateConfig;
 
 router.get('/', checkLogin, (req, res, next) => {
