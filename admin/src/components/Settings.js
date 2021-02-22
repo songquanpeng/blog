@@ -1,16 +1,110 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/snippets/html';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/snippets/javascript';
 
 import axios from 'axios';
-import { message as Message, Button, Select, Divider } from 'antd';
+import { message as Message, Button, Tabs, Form, Input } from 'antd';
 
 import { PoweroffOutlined } from '@ant-design/icons';
+
+const { TabPane } = Tabs;
+
+const tabs = [
+  {
+    label: 'System',
+    settings: [
+      {
+        key: 'domain',
+        description: '',
+      },
+      {
+        key: 'author',
+        description: '',
+      },
+      {
+        key: 'motto',
+        description: '',
+      },
+      {
+        key: 'port',
+        description: '',
+      },
+      {
+        key: 'language',
+        description: '',
+      },
+      {
+        key: 'favicon',
+        description: '',
+      },
+      {
+        key: 'copyright',
+        description: '',
+      },
+    ],
+  },
+  {
+    label: 'Third Party',
+    settings: [
+      {
+        key: 'ad',
+        description: '',
+        isBlock: true,
+      },
+      {
+        key: 'extra_header_code',
+        description: 'For example you can insert google analytics code here.',
+        isBlock: true,
+      },
+      {
+        key: 'extra_footer_code',
+        description: 'This code will be inserted into the body tag.',
+      },
+      {
+        key: 'disqus',
+        description: '',
+      },
+      {
+        key: 'extra_footer_text',
+        description: '',
+      },
+      {
+        key: 'message_push_api',
+        description: '',
+      },
+    ],
+  },
+  {
+    label: 'Customize',
+    settings: [
+      {
+        key: 'theme',
+        description: '',
+      },
+      {
+        key: 'code_theme',
+        description: '',
+      },
+      {
+        key: 'site_name',
+        description: '',
+      },
+      {
+        key: 'description',
+        description: '',
+      },
+      {
+        key: 'nav_links',
+        description: '',
+        isBlock: true,
+      },
+    ],
+  },
+];
 
 class Settings extends Component {
   constructor(props) {
@@ -19,15 +113,7 @@ class Settings extends Component {
       loading: true,
       submitLoading: false,
       language: 'javascript',
-      options: [
-        {
-          key: 'optionName',
-          value: 0,
-          text: 'Option name',
-          option_value: 'option_value',
-          description: 'Option description will be displayed here.',
-        },
-      ],
+      options: {},
       optionIndex: 0,
     };
   }
@@ -49,23 +135,14 @@ class Settings extends Component {
     try {
       this.setState({ loading: true });
       const res = await axios.get(`/api/option/`);
-      const { status, message, options } = res.data;
+      let { status, message, options } = res.data;
+      let temp = {};
       if (status) {
-        options.sort((a, b) => {
-          if (a.name < b.name) {
-            return -1;
-          }
-          if (a.name > b.name) {
-            return 1;
-          }
-          return 0;
+        options.forEach((option) => {
+          temp[option.name] = option.value;
         });
-        options.forEach((option, index) => {
-          option.key = option.name;
-          option.option_value = option.value;
-          option.value = index;
-          option.label = option.name.toUpperCase() + ': ' + option.description;
-        });
+        options = temp;
+        console.log(options);
         this.setState({ options });
       } else {
         Message.error(message);
@@ -76,30 +153,16 @@ class Settings extends Component {
     }
   };
 
-  onInputChange = (value) => {
+  updateOption = (key, value) => {
     let options = this.state.options;
-    options[this.state.optionIndex].option_value = value;
+    options[key] = value;
     this.setState({ options });
   };
 
-  onTypeChange = (e, { value }) => {
-    let language = 'html';
-    if (
-      ['nav_links', 'allow_comments', 'port'].includes(
-        this.state.options[value].name
-      )
-    ) {
-      language = 'javascript';
-    }
-    this.setState({ optionIndex: value, language });
-  };
-
-  onSubmit = async (e) => {
-    this.setState({ submitLoading: true });
-    let option = this.state.options[this.state.optionIndex];
-    option.value = option.option_value;
+  submit = async () => {
+    let options = this.state.options;
     try {
-      const res = await axios.post(`/api/option/`, option);
+      const res = await axios.post(`/api/option/`, options);
       const { status, message } = res.data;
       if (status) {
       } else {
@@ -120,15 +183,6 @@ class Settings extends Component {
   };
 
   render() {
-    let option = this.state.options[this.state.optionIndex];
-    if (option === undefined) {
-      option = {
-        key: 'optionName',
-        value: 0,
-        text: 'Option name',
-        option_value: 'Error, try to reload this page.',
-      };
-    }
     return (
       <div className={'content-area'}>
         <h1>Settings</h1>{' '}
@@ -139,46 +193,58 @@ class Settings extends Component {
         >
           Shutdown the server
         </Button>
-        <Divider />
-        <div style={{ maxWidth: '1100px' }}>
-          <Select
-            style={{ width: '100%' }}
-            label="Option Name"
-            name={'name'}
-            loading={this.state.loading}
-            options={this.state.options}
-            value={this.state.optionIndex}
-            placeholder="Name"
-            onChange={this.onTypeChange}
-          />
-          <AceEditor
-            style={{
-              width: '100%',
-              height: '100%',
-              minHeight: '400px',
-              marginTop: '10px',
-              marginBottom: '10px',
-              border: '1px solid rgba(34,36,38,.15)',
-            }}
-            mode={this.state.language}
-            fontSize={18}
-            setOptions={{ useWorker: false }}
-            label="Value"
-            placeholder={option.description}
-            name={option.name}
-            value={option.option_value}
-            rows={20}
-            theme={'tomorrow'}
-            onChange={this.onInputChange}
-          />
-          <Button
-            block
-            type="primary"
-            onClick={this.onSubmit}
-            loading={this.state.submitLoading}
-          >
-            Submit
-          </Button>
+        <div style={{ background: '#fff', padding: 16 }}>
+          <Tabs tabPosition={'left'}>
+            {tabs.map((tab) => {
+              tab.settings.sort((a, b) => {
+                if (a.key < b.key) {
+                  return -1;
+                }
+                if (a.key > b.key) {
+                  return 1;
+                }
+                return 0;
+              });
+              return (
+                <TabPane tab={tab.label} key={tab.label}>
+                  <Form layout={'vertical'}>
+                    {tab.settings.map((setting) => {
+                      setting.label = setting.key
+                        .replaceAll('_', ' ')
+                        .toUpperCase();
+                      return (
+                        <Form.Item
+                          label={setting.label ? setting.label : setting.key}
+                        >
+                          {setting.isBlock ? (
+                            <Input.TextArea
+                              placeholder={setting.description}
+                              value={this.state.options[setting.key]}
+                              onChange={(e) => {
+                                this.updateOption(setting.key, e.target.value);
+                              }}
+                              rows={10}
+                            />
+                          ) : (
+                            <Input
+                              placeholder={setting.description}
+                              value={this.state.options[setting.key]}
+                              onChange={(e) => {
+                                this.updateOption(setting.key, e.target.value);
+                              }}
+                            />
+                          )}
+                        </Form.Item>
+                      );
+                    })}
+                    <Button type="primary" onClick={() => this.submit()}>
+                      Save
+                    </Button>
+                  </Form>
+                </TabPane>
+              );
+            })}
+          </Tabs>
         </div>
       </div>
     );
