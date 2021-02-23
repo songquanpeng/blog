@@ -162,6 +162,7 @@ class Settings extends Component {
       const res = await axios.post(`/api/option/`, options);
       const { status, message } = res.data;
       if (status) {
+        Message.success('Setting updated.');
       } else {
         Message.error(message);
       }

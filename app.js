@@ -28,7 +28,8 @@ app.use(
   })
 );
 app.use(compression());
-
+app.locals.systemName = 'Blog';
+app.locals.systemVersion = 'v0.4.3';
 app.locals.config = {};
 app.locals.config.theme = 'bulma';
 app.locals.page = undefined;
