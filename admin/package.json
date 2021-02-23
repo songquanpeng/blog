@@ -26,7 +26,10 @@
     "update2": "npm install && npm run build && rmdir /Q /S ..\\public\\admin & mkdir ..\\public\\admin && Xcopy /E /I /Q .\\build ..\\public\\admin"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "no-undef": "off"
+    }
   },
   "browserslist": {
     "production": [
