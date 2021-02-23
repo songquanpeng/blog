@@ -31,7 +31,7 @@ exports.up = function(knex) {
     {
       name: 'nav_links',
       value:
-        '[{"key": "Meta","value": [{"link":"/archive","text":"Archive"},{"link":"/page/links","text":"Links"},{"link":"/page/about","text":"About"}]},{"key": "Example Dropdown","value": [{"link":"/admin","text":"Admin"}, {"link":"https://github.com/songquanpeng/express-react-blog","text":"Star"}]}]',
+        '[{"key": "Meta","value": [{"link":"/","text":"Home"},{"link":"/archive","text":"Archive"},{"link":"/page/links","text":"Links"},{"link":"/page/about","text":"About"}]},{"key": "Example Dropdown","value": [{"link":"/admin","text":"Admin"}, {"link":"https://github.com/songquanpeng/express-react-blog","text":"Star"}]}]',
       description: 'Add links on the navigation bar. Must be a valid json.'
     },
     {

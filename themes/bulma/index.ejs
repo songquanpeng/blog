@@ -35,7 +35,7 @@
                     <%= config.site_name %>
                 </p>
             </header>
-            <div class="card-content">
+            <div class="card-content" style="padding: 16px">
                 <div class="content">
                     <%= config.description %>
                     <% if(config.brand_image) { %>
@@ -50,17 +50,8 @@
                 <a href="https://github.com/songquanpeng/blog" class="card-footer-item">Theme: Bulma</a>
             </footer>
         </div>
-        <div class="card" style="margin-top: 32px">
-            <header class="card-header">
-                <p class="card-header-title">
-                    About
-                </p>
-            </header>
-            <div class="card-content">
-                <div class="content">
-                    <%- about %>
-                </div>
-            </div>
+        <div class="box" style="margin-top: 32px">
+            <%- about %>
         </div>
     </div>
 </div>
