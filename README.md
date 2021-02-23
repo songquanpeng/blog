@@ -80,6 +80,13 @@ npm install
 npm run build  # Windows 用户请运行 `npm run build2`
 npm start
 ```
+
+如果安装了 docker，则：
+```shell script
+docker pull justsong/blog
+docker run justsong/blog -p 80:3000 --name blog
+```
+
 ### 更新
 ```shell script
 git pull
