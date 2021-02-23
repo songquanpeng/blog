@@ -20,10 +20,6 @@ const tabs = [
         description: 'Something like : en, zh.',
       },
       {
-        key: 'favicon',
-        description: 'An image link.',
-      },
-      {
         key: 'copyright',
         description: 'HTML text, attached to the end of the article.',
       },
@@ -66,6 +62,14 @@ const tabs = [
       {
         key: 'motto',
         description: 'Your motto.',
+      },
+      {
+        key: 'favicon',
+        description: 'An image link.',
+      },
+      {
+        key: 'brand_image',
+        description: 'An image link.',
       },
     ],
   },
