@@ -37,6 +37,8 @@ class Posts extends Component {
       {
         title: 'Title',
         dataIndex: 'title',
+        sorter: (a, b) => a.title > b.title,
+        sortDirections: ['descend', 'ascend'],
         render: (value, record) => (
           <Tooltip
             title={`Posted on ${record.post_time}\nEdited on ${record.edit_time}`}
@@ -59,6 +61,8 @@ class Posts extends Component {
       {
         title: 'Views',
         dataIndex: 'view',
+        sorter: (a, b) => parseInt(a.view) > parseInt(b.view),
+        sortDirections: ['descend', 'ascend'],
         render: (value) => <Tag color={'blue'}>{value}</Tag>,
       },
       {
@@ -79,6 +83,8 @@ class Posts extends Component {
       {
         title: 'Page status',
         dataIndex: 'page_status',
+        sorter: (a, b) => parseInt(a.page_status) > parseInt(b.page_status),
+        sortDirections: ['descend', 'ascend'],
         render: (value, record) => {
           if (value === 0) {
             return (
@@ -116,6 +122,9 @@ class Posts extends Component {
       {
         title: 'Comment status',
         dataIndex: 'comment_status',
+        sorter: (a, b) =>
+          parseInt(a.comment_status) > parseInt(b.comment_status),
+        sortDirections: ['descend', 'ascend'],
         render: (value, record) =>
           value === 1 ? (
             <Tag
@@ -228,6 +237,7 @@ class Posts extends Component {
       let { status, message, pages } = res.data;
       if (status) {
         this.setState({ pages });
+        console.log(pages);
         Message.success('Loading done.');
       } else {
         Message.error(message);

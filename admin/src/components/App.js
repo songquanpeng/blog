@@ -12,8 +12,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  EditOutlined,
-  DashboardOutlined,
+  PoweroffOutlined,
   FileTextOutlined,
   CommentOutlined,
   CloudUploadOutlined,
@@ -38,6 +37,7 @@ import Login from './Login';
 import EditUser from './EditUser';
 
 import './App.css';
+import axios from 'axios';
 
 const { Header, Sider, Content } = Layout;
 
@@ -70,6 +70,12 @@ class App extends React.Component {
     }
   };
 
+  shutdownServer = async () => {
+    const res = await axios.get('/api/option/shutdown');
+    const { message } = res.data;
+    Message.error(message);
+  };
+
   render() {
     const menu = (
       <Menu>
@@ -96,6 +102,11 @@ class App extends React.Component {
             <Link to={'/login'}>Login</Link>
           </Menu.Item>
         )}
+        <Menu.Item key="5" icon={<PoweroffOutlined />}>
+          <Link to={'/login'} onClick={() => this.shutdownServer()}>
+            Shutdown
+          </Link>
+        </Menu.Item>
       </Menu>
     );
 

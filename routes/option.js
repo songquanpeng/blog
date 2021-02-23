@@ -42,17 +42,19 @@ router.get('/:name', checkPermission, (req, res, next) => {
 router.post('/', checkPermission, (req, res, next) => {
   const options = req.body;
   for (const [key, value] of Object.entries(options)) {
-    let option = {
-      name: key,
-      value
-    };
-    Option.update(key, option, (status, message) => {
-      if (!status) {
-        console.error(message);
-      }
-    });
+    if (req.app.locals.config[key] !== value) {
+      let option = {
+        name: key,
+        value
+      };
+      Option.update(key, option, (status, message) => {
+        if (!status) {
+          console.error(message);
+        }
+      });
+    }
   }
-  // TODO
+  // TODO: here we actually didn't check the status.
   let status = true;
   let message = 'ok';
   updateConfig(req.app.locals.config, () => {

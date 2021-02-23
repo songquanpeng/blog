@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import 'ace-builds/src-noconflict/mode-html';
-import 'ace-builds/src-noconflict/snippets/html';
-import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/snippets/javascript';
 
 import axios from 'axios';
 import { message as Message, Button, Tabs, Form, Input } from 'antd';
-
-import { PoweroffOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 
@@ -19,31 +13,59 @@ const tabs = [
     settings: [
       {
         key: 'domain',
-        description: '',
-      },
-      {
-        key: 'author',
-        description: '',
-      },
-      {
-        key: 'motto',
-        description: '',
-      },
-      {
-        key: 'port',
-        description: '',
+        description: 'Notice domain only.',
       },
       {
         key: 'language',
-        description: '',
+        description: 'Something like : en, zh.',
       },
       {
         key: 'favicon',
-        description: '',
+        description: 'An image link.',
       },
       {
         key: 'copyright',
-        description: '',
+        description: 'HTML text, attached to the end of the article.',
+      },
+      {
+        key: 'allow_comments',
+        description: 'true or false',
+      },
+    ],
+  },
+  {
+    label: 'Customize',
+    settings: [
+      {
+        key: 'theme',
+        description:
+          "The theme folder's name, you should download and put it in the themes folder. Restart required.",
+      },
+      {
+        key: 'code_theme',
+        description:
+          'Choose one from here: https://www.jsdelivr.com/package/npm/highlight.js?path=styles',
+      },
+      {
+        key: 'site_name',
+        description: "Your website's name.",
+      },
+      {
+        key: 'description',
+        description: 'Description for this website.',
+      },
+      {
+        key: 'nav_links',
+        description: 'Should be a valid json, the format must be correct.',
+        isBlock: true,
+      },
+      {
+        key: 'author',
+        description: 'Your name.',
+      },
+      {
+        key: 'motto',
+        description: 'Your motto.',
       },
     ],
   },
@@ -52,7 +74,7 @@ const tabs = [
     settings: [
       {
         key: 'ad',
-        description: '',
+        description: 'Ad code',
         isBlock: true,
       },
       {
@@ -66,41 +88,16 @@ const tabs = [
       },
       {
         key: 'disqus',
-        description: '',
+        description: 'Your disqus identifier.',
       },
       {
         key: 'extra_footer_text',
-        description: '',
+        description: 'Add some text in the footer.',
       },
       {
         key: 'message_push_api',
-        description: '',
-      },
-    ],
-  },
-  {
-    label: 'Customize',
-    settings: [
-      {
-        key: 'theme',
-        description: '',
-      },
-      {
-        key: 'code_theme',
-        description: '',
-      },
-      {
-        key: 'site_name',
-        description: '',
-      },
-      {
-        key: 'description',
-        description: '',
-      },
-      {
-        key: 'nav_links',
-        description: '',
-        isBlock: true,
+        description:
+          'Check this out: https://github.com/songquanpeng/message-pusher.',
       },
     ],
   },
@@ -176,23 +173,10 @@ class Settings extends Component {
     }
   };
 
-  shutdown = async (e) => {
-    const res = await axios.get('/api/option/shutdown');
-    const { message } = res.data;
-    Message.error(message);
-  };
-
   render() {
     return (
       <div className={'content-area'}>
-        <h1>Settings</h1>{' '}
-        <Button
-          type="danger"
-          icon={<PoweroffOutlined />}
-          onClick={() => this.shutdown()}
-        >
-          Shutdown the server
-        </Button>
+        <h1>Settings</h1>
         <div style={{ background: '#fff', padding: 16 }}>
           <Tabs tabPosition={'left'}>
             {tabs.map((tab) => {

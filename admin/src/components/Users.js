@@ -167,7 +167,7 @@ class Users extends Component {
             this.addUser();
           }}
         >
-          Create New Account
+          New account
         </Button>
         <Table
           columns={this.columns}
