@@ -7,6 +7,7 @@ const logger = require('morgan');
 const updateConfig = require('./utils/util').updateConfig;
 const configureApp = require('./utils/config').configureApp;
 const loadAboutContent = require('./utils/util').loadAboutContent;
+const enableRSS = require('./utils/rss').enableRSS;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const crypto = require('crypto');
@@ -63,6 +64,7 @@ updateConfig(app.locals.config, () => {
   configureApp(app);
 });
 loadAboutContent(app);
+enableRSS(app.locals.config);
 
 let port = process.env.PORT || 3000;
 server.listen(port);

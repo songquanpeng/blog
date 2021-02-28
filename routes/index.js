@@ -121,34 +121,4 @@ router.get('/page/:link', function(req, res, next) {
   });
 });
 
-router.get('/pagination/:pagination', function(req, res, next) {
-  let pagination = req.params.pagination;
-  let start = 0;
-  let end = 9;
-  if (pagination !== undefined) {
-    let temp = pagination.split('-');
-    start = parseInt(temp[0]);
-    end = parseInt(temp[1]);
-    start = Math.max(0, start);
-    end = Math.max(0, end);
-  }
-  if (start === 0) {
-    res.redirect('/');
-  }
-  let number = Math.max(1, end - start + 1);
-  let lastIndex = Math.max(0, start - number);
-  let nextIndex = start + number;
-  Page.getByRange(start, number, pages => {
-    if (pages === undefined || pages.length === 0) {
-      res.redirect('/');
-    } else {
-      res.render('index', {
-        pages: pages,
-        prev: `${lastIndex}-${lastIndex + number}`,
-        next: `${nextIndex}-${nextIndex + number}`
-      });
-    }
-  });
-});
-
 module.exports = router;
