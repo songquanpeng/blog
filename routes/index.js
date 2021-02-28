@@ -9,13 +9,18 @@ const { createGzip } = require('zlib');
 const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
 
 router.get('/', function(req, res, next) {
-  let start = 0;
-  let end = 9;
+  let page = parseInt(req.query.p);
+  if (!page || page <= 0) {
+    page = 0;
+  }
+  let pageSize = 10;
+  let start = page * pageSize;
+  let end = start + pageSize;
   Page.getByRange(start, end, pages => {
     res.render('index', {
       pages: pages,
-      prev: ``,
-      next: `10-19`
+      prev: `?p=${page - 1}`,
+      next: `?p=${page + 1}`
     });
   });
 });
