@@ -15,8 +15,8 @@ function enableRSS(config) {
 function generateRSS() {
   console.log('Start generating Feed.');
   const feed = new Feed({
-    title: 'Feed Title',
-    description: 'This is my personal feed!',
+    title: `${Config.site_name}`,
+    description: `${Config.description}`,
     id: Config.domain,
     link: `https://${Config.domain}/`,
     language: `${Config.language}`,
