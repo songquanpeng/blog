@@ -2,7 +2,8 @@ const { getPagesByRange } = require('../cache/page');
 const { Page } = require('../models');
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
-const PAGE_STATUS = require('../common/constant').PAGE_STATUS;
+const { PAGE_STATUS, PAGE_TYPES } = require('../common/constant');
+const { convertContent } = require('../common/util');
 
 async function getIndex(req, res, next) {
   let page = parseInt(req.query.p);
@@ -86,7 +87,65 @@ async function getTag(req, res, next) {
   res.render('list', { pages, title: tag });
 }
 
-async function getPage(req, res, next) {}
+async function getPage(req, res, next) {
+  const link = req.params.link;
+  let page = await Page.findOne({
+    where: {
+      status: {
+        $not: PAGE_STATUS.RECALLED
+      },
+      link
+    }
+  });
+  if (page === null) {
+    return res.render('message', {
+      title: 'Error!',
+      message: `No page has link "${link}".`
+    });
+  }
+  // TODO: get prev link and next link.
+  let links = {
+    prev: {
+      title: 'Prev One',
+      link: 'prev-one'
+    },
+    next: {
+      title: 'Next One',
+      link: 'next-one'
+    }
+  };
+  page.view++;
+  page.converted_content = convertContent(page, false);
+  res.locals.links = links;
+  switch (page.type) {
+    case PAGE_TYPES.ARTICLE:
+      res.render('article', { page });
+      break;
+    case PAGE_TYPES.CODE:
+      res.render('code', { page });
+      break;
+    case PAGE_TYPES.RAW:
+      res.render('raw', { page });
+      break;
+    case PAGE_TYPES.DISCUSS:
+      res.render('discuss', { page });
+      break;
+    case PAGE_TYPES.LINKS:
+      let linkList;
+      try {
+        linkList = JSON.parse(page.converted_content);
+      } catch (e) {
+        console.error(e.message);
+      }
+      res.render('links', { page, linkList });
+      break;
+    default:
+      res.render('message', {
+        title: 'Error!',
+        message: `Unexpected page type: ${page.type}`
+      });
+  }
+}
 
 module.exports = {
   getIndex,
