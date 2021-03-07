@@ -15,8 +15,7 @@ router.get('/', function(req, res, next) {
   }
   let pageSize = 10;
   let start = page * pageSize;
-  let end = start + pageSize;
-  Page.getByRange(start, end, pages => {
+  Page.getByRange(start, pageSize, pages => {
     res.render('index', {
       pages: pages,
       prev: `?p=${page - 1}`,
