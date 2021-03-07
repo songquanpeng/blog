@@ -1,5 +1,5 @@
 const Feed = require('feed').Feed;
-const Page = require('../models/page').Page;
+// const Page = require('../models2/page').Page;
 const fs = require('fs');
 
 let Config;

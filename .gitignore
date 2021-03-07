@@ -1,6 +1,6 @@
 .idea
 node_modules
-data.db
+*.db
 .vs
 data.db-journal
 /public/admin

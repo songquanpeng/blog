@@ -4,14 +4,16 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const updateConfig = require('./utils/util').updateConfig;
-const configureApp = require('./utils/config').configureApp;
-const loadAboutContent = require('./utils/util').loadAboutContent;
-const enableRSS = require('./utils/rss').enableRSS;
+const updateConfig = require('./common/util').updateConfig;
+const config = require('./config');
+const loadAboutContent = require('./common/util').loadAboutContent;
+const enableRSS = require('./common/rss').enableRSS;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const crypto = require('crypto');
-// const events = require('events');
+const cors = require('cors');
+const webRouter = require('./routes/web-router');
+const apiRouterV1 = require('./routes/api-router.v1');
 const app = express();
 const server = http.createServer(app);
 
@@ -38,12 +40,6 @@ app.locals.about = 'No page has link "about"!';
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 app.locals.sitemap = undefined;
-// app.locals.eventEmitter = new events.EventEmitter();
-// app.locals.eventEmitter.on('reload_config', () => {
-//   console.log('Processing event: reload_config.');
-//   configureApp(app);
-// });
-
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 app.use(logger('dev'));
@@ -60,24 +56,30 @@ app.use(
 
 app.use(flash());
 
-updateConfig(app.locals.config, () => {
-  configureApp(app);
-});
-loadAboutContent(app);
-enableRSS(app.locals.config);
+app.use('/', webRouter);
+app.use('/api/v1', cors(), apiRouterV1);
 
-let port = process.env.PORT || 3000;
-server.listen(port);
+// TODO: updateConfig()
+// updateConfig(app.locals.config, () => {
+//   configureApp(app);
+// });
+// TODO: loadAboutContent(app);
+// updateConfig(app.locals.config, () => {
+//   configureApp(app);
+// });
+// TODO: enableRSS(app.locals.config);
+
+server.listen(config.port);
 
 server.on('error', err => {
   console.error(
-    `An error occurred on the server, please check if port ${port} is occupied.`
+    `An error occurred on the server, please check if port ${config.port} is occupied.`
   );
   console.error(err.toString());
 });
 
 server.on('listening', () => {
-  console.log('\x1b[36m%s\x1b[0m', `Server listen on port: ${port}.`);
+  console.log('\x1b[36m%s\x1b[0m', `Server listen on port: ${config.port}.`);
 });
 
 module.exports = app;

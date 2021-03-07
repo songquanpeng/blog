@@ -1,9 +1,9 @@
 const lexer = require('marked').lexer;
 const parser = require('marked').parser;
 const sanitizeHtml = require('sanitize-html');
-const PAGE_TYPE = require('../utils/constant').PAGE_TYPE;
-const Option = require('../models/option').Option;
-const Page = require('../models/page').Page;
+const PAGE_TYPE = require('./constant').PAGE_TYPE;
+// const Option = require('../models2/option').Option;
+// const Page = require('../models2/page').Page;
 
 function titleToLink(title) {
   return title.trim().replace(/\s/g, '-');
@@ -100,17 +100,17 @@ function convertContent(pageType, content) {
   return '';
 }
 
-function loadAboutContent(app) {
-  Page.directlyLoadPage('about', about => {
-    app.locals.about = about;
-  });
-}
+// TODO: function loadAboutContent(app) {
+// function loadAboutContent(app) {
+//   Page.directlyLoadPage('about', about => {
+//     app.locals.about = about;
+//   });
+// }
 
 module.exports = {
   titleToLink,
   getDate,
   md2html,
   updateConfig,
-  convertContent,
-  loadAboutContent
+  convertContent
 };
