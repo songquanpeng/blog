@@ -23,7 +23,43 @@ User.hasMany(Page);
       isModerator: true
     });
   }
+  await initializeOptions();
 })();
+
+async function initializeOptions() {
+  let plainOptions = [
+    ['ad', ''],
+    ['allow_comments', 'true'],
+    ['author', 'My Name'],
+    ['brand_image', ''],
+    [
+      'code_theme',
+      'https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/solarized-light.css'
+    ],
+    ['copyright', ''],
+    ['description', 'My site description.'],
+    ['disqus', ''],
+    ['domain', 'www.your-domain.com'],
+    ['extra_footer_code', ''],
+    ['extra_footer_text', ''],
+    ['extra_header_code', ''],
+    ['favicon', ''],
+    ['language', 'zh'],
+    ['message_push_api', ''],
+    ['motto', 'My motto.'],
+    [
+      'nav_links',
+      '[{"key": "Meta","value": [{"link":"/","text":"Home"},{"link":"/archive","text":"Archive"},{"link":"/page/links","text":"Links"},{"link":"/page/about","text":"About"}]},{"key": "Example Dropdown","value": [{"link":"/admin","text":"Admin"}, {"link":"https://github.com/songquanpeng/express-react-blog","text":"Star"}, {"link":"/feed.xml","text":"Feed"}]}]'
+    ],
+    ['port', '3000'],
+    ['site_name', 'Site Name'],
+    ['theme', 'bulma']
+  ];
+  for (const option of plainOptions) {
+    let [key, value] = option;
+    await Option.findOrCreate({ where: { key }, defaults: { value } });
+  }
+}
 
 exports.User = User;
 exports.File = File;

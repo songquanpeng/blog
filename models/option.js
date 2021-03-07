@@ -5,14 +5,13 @@ class Option extends Model {}
 
 Option.init(
   {
-    name: {
+    key: {
       type: DataTypes.STRING,
       primaryKey: true
     },
-    value: DataTypes.TEXT,
-    description: DataTypes.TEXT
+    value: DataTypes.TEXT
   },
-  { sequelize }
+  { sequelize, timestamps: false }
 );
 
 module.exports = Option;

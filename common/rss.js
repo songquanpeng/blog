@@ -1,18 +1,19 @@
 const Feed = require('feed').Feed;
-// const Page = require('../models2/page').Page;
+const { getPagesByRange } = require('../cache/page');
 const fs = require('fs');
+const { md2html } = require('./util');
 
 let Config;
 
 function enableRSS(config) {
   Config = config;
-  setTimeout(() => {
-    generateRSS();
+  setTimeout(async () => {
+    await generateRSS();
     setInterval(generateRSS, 24 * 60 * 60);
   }, 5000);
 }
 
-function generateRSS() {
+async function generateRSS() {
   console.log('Start generating Feed.');
   const feed = new Feed({
     title: `${Config.site_name}`,
@@ -31,25 +32,24 @@ function generateRSS() {
     }
   });
 
-  Page.getByRange(0, 10, pages => {
-    pages.forEach(page => {
-      feed.addItem({
-        title: page.title,
-        id: page.link,
-        link: `https://${Config.domain}/page/${page.link}`,
-        description: page.description,
-        content: page.converted_content,
-        author: [
-          {
-            name: page.author
-          }
-        ],
-        date: new Date(page.edit_time)
-      });
+  let pages = await getPagesByRange(0, 10);
+  pages.forEach(page => {
+    feed.addItem({
+      title: page.title,
+      id: page.link,
+      link: `https://${Config.domain}/page/${page.link}`,
+      description: page.description,
+      content: md2html(page.converted_content),
+      author: [
+        {
+          name: page.author
+        }
+      ],
+      date: new Date(page.edit_time)
     });
-    fs.writeFile('./public/feed.xml', feed.atom1(), () => {
-      console.log('Feed generated.');
-    });
+  });
+  fs.writeFile('./public/feed.xml', feed.atom1(), () => {
+    console.log('Feed generated.');
   });
 }
 

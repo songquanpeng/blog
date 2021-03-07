@@ -6,7 +6,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const updateConfig = require('./common/util').updateConfig;
 const config = require('./config');
-const loadAboutContent = require('./common/util').loadAboutContent;
+const serveStatic = require('serve-static');
+const path = require('path');
+const loadNoticeContent = require('./common/util').loadNoticeContent;
 const enableRSS = require('./common/rss').enableRSS;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
@@ -36,7 +38,7 @@ app.locals.systemVersion = 'v0.4.3';
 app.locals.config = {};
 app.locals.config.theme = 'bulma';
 app.locals.page = undefined;
-app.locals.about = 'No page has link "about"!';
+app.locals.notice = 'No page has link "notice"!';
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 app.locals.sitemap = undefined;
@@ -56,18 +58,61 @@ app.use(
 
 app.use(flash());
 
-app.use('/', webRouter);
-app.use('/api/v1', cors(), apiRouterV1);
+(async () => {
+  // load configuration & update app.locals
+  await updateConfig(app.locals.config);
+  // TODO: check here
+  await loadNoticeContent();
+  enableRSS(app.locals.config);
 
-// TODO: updateConfig()
-// updateConfig(app.locals.config, () => {
-//   configureApp(app);
-// });
-// TODO: loadAboutContent(app);
-// updateConfig(app.locals.config, () => {
-//   configureApp(app);
-// });
-// TODO: enableRSS(app.locals.config);
+  // Then we setup the app.
+  app.set('views', path.join(__dirname, `./themes/${app.locals.config.theme}`));
+
+  app.use(
+    '/static',
+    serveStatic(
+      path.join(__dirname, `./themes/${app.locals.config.theme}/static`),
+      {
+        maxAge: '600000'
+      }
+    )
+  );
+
+  app.use(
+    serveStatic(path.join(__dirname, './public'), {
+      maxAge: '600000'
+    })
+  );
+
+  app.use('*', (req, res, next) => {
+    if (req.session.user !== undefined) {
+      res.locals.loggedin = true;
+      res.locals.isAdmin = req.session.user.isAdmin;
+    }
+    next();
+  });
+
+  app.use('/', webRouter);
+  app.use('/api/v1', cors(), apiRouterV1);
+
+  app.use(function(req, res, next) {
+    if (!res.headersSent) {
+      res.render('message', {
+        title: ':{404 Not Found}',
+        message: 'The page you requested does not exist, I am sorry for that.'
+      });
+    }
+  });
+
+  // TODO: what's wrong with here?
+  app.use(function(err, req, res, next) {
+    res.locals.message = err.message;
+    console.error(err.stack);
+    if (!res.headersSent) {
+      res.send(err.message);
+    }
+  });
+})();
 
 server.listen(config.port);
 
@@ -79,7 +124,7 @@ server.on('error', err => {
 });
 
 server.on('listening', () => {
-  console.log('\x1b[36m%s\x1b[0m', `Server listen on port: ${config.port}.`);
+  console.log(`Server listen on port: ${config.port}.`);
 });
 
 module.exports = app;
