@@ -1,9 +1,10 @@
-const { getPagesByRange } = require('../cache/page');
+const { getDate } = require('../common/util');
+const { getPagesByRange } = require('../common/cache');
 const { Page } = require('../models');
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
 const { PAGE_STATUS, PAGE_TYPES } = require('../common/constant');
-const { convertContent } = require('../common/util');
+const { convertContent } = require('../common/cache');
 const { Op } = require('sequelize');
 
 async function getIndex(req, res, next) {
@@ -57,46 +58,62 @@ async function getSitemap(req, res, next) {
 
 async function getMonthArchive(req, res, next) {
   const year = req.params.year;
-  const month = req.params.month;
+  let month = req.params.month;
   const time = year + '-' + month;
-  // TODO:
-  let pages = await Page.findAll({
-    where: {
-      pageStatus: {
-        $not: PAGE_STATUS.RECALLED
+  let startDate = new Date(year, parseInt(month) - 1, 1, 0, 0, 0, 0);
+  let endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+  try {
+    let pages = await Page.findAll({
+      where: {
+        pageStatus: {
+          [Op.not]: PAGE_STATUS.RECALLED
+        },
+        createdAt: {
+          [Op.between]: [startDate, endDate]
+        }
       },
-      tag: {
-        $like: `%${time}%`
-      }
-    }
-  });
-  res.render('list', { pages, title: time });
+      raw: true
+    });
+    res.render('list', { pages, title: time });
+  } catch (e) {
+    res.render('message', {
+      title: 'Error!',
+      message: e.message
+    });
+  }
 }
 
 async function getTag(req, res, next) {
   const tag = req.params.tag;
-  let pages = await Page.findAll({
-    where: {
-      pageStatus: {
-        $not: PAGE_STATUS.RECALLED
+  try {
+    let pages = await Page.findAll({
+      where: {
+        pageStatus: {
+          [Op.not]: PAGE_STATUS.RECALLED
+        },
+        tag: {
+          [Op.like]: `%${tag}%`
+        }
       },
-      tag: {
-        $like: `%${tag}%`
-      }
-    }
-  });
-  res.render('list', { pages, title: tag });
+      raw: true
+    });
+    res.render('list', { pages, title: tag });
+  } catch (e) {
+    res.render('message', {
+      title: 'Error!',
+      message: e.message
+    });
+  }
 }
 
 async function getPage(req, res, next) {
-  // TODO: update views
   const link = req.params.link;
   let page = await Page.findOne({
     where: {
       [Op.and]: [{ link }],
       [Op.not]: [{ pageStatus: PAGE_STATUS.RECALLED }]
-    },
-    raw: true
+    }
   });
   if (page === null) {
     return res.render('message', {
@@ -104,6 +121,13 @@ async function getPage(req, res, next) {
       message: `No page has link "${link}".`
     });
   }
+  // Update views
+  page.increment('view');
+  page = page.get({ plain: true });
+  // Change the data format.
+  page.createdAt = getDate('default', page.createdAt);
+  page.updatedAt = getDate('default', page.updatedAt);
+
   // TODO: get prev link and next link.
   let links = {
     prev: {

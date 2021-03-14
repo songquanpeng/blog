@@ -1,4 +1,4 @@
-const { convertContent, deleteCacheEntry } = require('../common/util');
+const { convertContent, deleteCacheEntry } = require('../common/cache');
 const sequelize = require('sequelize');
 const { Op } = require('sequelize');
 const { Page } = require('../models');

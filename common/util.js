@@ -1,7 +1,6 @@
 const lexer = require('marked').lexer;
 const parser = require('marked').parser;
 const sanitizeHtml = require('sanitize-html');
-const PAGE_TYPES = require('./constant').PAGE_TYPES;
 const Option = require('../models').Option;
 const Page = require('../models').Page;
 
@@ -9,8 +8,9 @@ function titleToLink(title) {
   return title.trim().replace(/\s/g, '-');
 }
 
-function getDate(format) {
-  if (format === undefined) format = 'yyyy-MM-dd hh:mm:ss';
+function getDate(format, dateStr) {
+  if (format === undefined || format === 'default')
+    format = 'yyyy-MM-dd hh:mm:ss';
   const date = new Date();
   const o = {
     'M+': date.getMonth() + 1,
@@ -51,61 +51,6 @@ async function updateConfig(config) {
   config.title = config.motto + ' | ' + config.site_name;
 }
 
-let convertedContentCache = new Map();
-
-function deleteCacheEntry(id) {
-  convertedContentCache.delete(id);
-}
-
-function convertContent(page, refresh) {
-  if (convertedContentCache.has(page.id) && !refresh) {
-    return convertedContentCache.get(page.id);
-  }
-  let convertedContent = '';
-
-  let lines = page.content.split('\n');
-  let deleteCount = 0;
-  for (let i = 1; i < lines.length; ++i) {
-    let line = lines[i];
-    if (line.startsWith('---')) {
-      deleteCount = i + 1;
-      break;
-    }
-  }
-  lines.splice(0, deleteCount);
-
-  if (page.type === PAGE_TYPES.ARTICLE || page.type === PAGE_TYPES.DISCUSS) {
-    convertedContent = md2html(lines.join('\n'));
-  } else if (page.type === PAGE_TYPES.LINKS) {
-    let linkList = [];
-    let linkCount = -1;
-    for (let i = 0; i < lines.length; ++i) {
-      let line = lines[i].split(':');
-      let key = line[0].trim();
-      if (!['title', 'link', 'image', 'description'].includes(key)) continue;
-      let value = line
-        .splice(1)
-        .join(':')
-        .trim();
-      if (key === 'title') {
-        linkList.push({
-          title: 'No title',
-          image: '',
-          link: '/',
-          description: 'No description'
-        });
-        linkCount++;
-      } else {
-        if (linkCount < 0) continue;
-      }
-      linkList[linkCount][key] = value;
-    }
-    convertedContent = JSON.stringify(linkList);
-  }
-  convertedContentCache.set(page.id, convertedContent);
-  return convertedContent;
-}
-
 async function loadNoticeContent(app) {
   let page = await Page.findOne({
     where: {
@@ -122,7 +67,5 @@ module.exports = {
   getDate,
   md2html,
   updateConfig,
-  convertContent,
-  deleteCacheEntry,
   loadNoticeContent
 };

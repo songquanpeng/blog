@@ -1,4 +1,3 @@
-const { Op } = require('sequelize');
 const { Option } = require('../models');
 
 async function getAll(req, res) {
