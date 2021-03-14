@@ -5,7 +5,56 @@ const { Op } = require('sequelize');
 const { md2html } = require('./util');
 
 let pages = undefined;
+let id2index = new Map();
 let convertedContentCache = new Map();
+
+function updateCache(page, isNew, updateConvertedContent) {
+  // update converted content cache
+  convertContent(page, updateConvertedContent);
+
+  if (isNew) {
+    // Add new page to the front of pages.
+    pages.unshift(page);
+    // Update the index.
+    updateId2Index();
+  } else {
+    // Update pages.
+    pages[id2index.get(page.id)] = page;
+  }
+}
+
+function deleteCacheEntry(id) {
+  // Clear converted content cache.
+  convertedContentCache.delete(id);
+  // Delete this page form pages array.
+  pages.splice(id2index.get(id), 1);
+  // Update the index.
+  updateId2Index();
+}
+
+function updateId2Index() {
+  id2index.clear();
+  for (let i = 0; i < pages.length; i++) {
+    id2index.set(pages[i].id, i);
+  }
+}
+
+function getLinks(id) {
+  let i = id2index.get(id);
+  let prevIndex = Math.max(i - 1, 0);
+  let nextIndex = Math.min(i + 1, pages.length - 1);
+
+  return {
+    prev: {
+      title: pages[prevIndex].title,
+      link: pages[prevIndex].link
+    },
+    next: {
+      title: pages[nextIndex].title,
+      link: pages[nextIndex].link
+    }
+  };
+}
 
 async function loadAllPages() {
   // The password & token of user shouldn't be load!
@@ -30,12 +79,9 @@ async function loadAllPages() {
 async function getPagesByRange(start, num) {
   if (pages === undefined) {
     await loadAllPages();
+    updateId2Index();
   }
   return pages.slice(start, start + num);
-}
-
-function deleteCacheEntry(id) {
-  convertedContentCache.delete(id);
 }
 
 function convertContent(page, refresh) {
@@ -90,5 +136,7 @@ function convertContent(page, refresh) {
 module.exports = {
   getPagesByRange,
   convertContent,
-  deleteCacheEntry
+  deleteCacheEntry,
+  getLinks,
+  updateCache
 };

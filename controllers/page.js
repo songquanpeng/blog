@@ -3,6 +3,8 @@ const sequelize = require('sequelize');
 const { Op } = require('sequelize');
 const { Page } = require('../models');
 const Stream = require('stream');
+const { updateCache } = require('../common/cache');
+const { getDate } = require('../common/util');
 
 async function search(req, res) {
   const type = Number(req.body.type);
@@ -88,9 +90,13 @@ async function create(req, res) {
       UserId: userId
     });
     if (page) {
+      page = page.get({ plain: true });
+      // WTF, the date attributes here are object.
+      page.createdAt = getDate('default', page.createdAt.toUTCString());
+      page.updatedAt = getDate('default', page.updatedAt.toUTCString());
       id = page.id;
       status = true;
-      convertContent(page, true);
+      updateCache(page, true, true);
     }
   } catch (e) {
     console.error(e);
@@ -188,16 +194,20 @@ async function update(req, res, next) {
 
   let message = 'ok';
   let status = false;
+  let updateConvertedContent = false;
   try {
     let page = await Page.findOne({
       where: { id }
     });
     if (page) {
+      let oldContent = page.get().content;
       await page.update(newPage);
-    }
-    if (page) {
+      page = page.get({ plain: true });
+      page.createdAt = getDate('default', page.createdAt.toUTCString());
+      page.updatedAt = getDate('default', page.updatedAt.toUTCString());
+      updateConvertedContent = oldContent !== newPage.content;
       status = true;
-      convertContent(page, true);
+      updateCache(page, false, updateConvertedContent);
     }
   } catch (e) {
     console.error(e);

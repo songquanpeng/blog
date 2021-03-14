@@ -1,3 +1,4 @@
+const { getLinks } = require('../common/cache');
 const { getDate } = require('../common/util');
 const { getPagesByRange } = require('../common/cache');
 const { Page } = require('../models');
@@ -128,20 +129,9 @@ async function getPage(req, res, next) {
   page.createdAt = getDate('default', page.createdAt);
   page.updatedAt = getDate('default', page.updatedAt);
 
-  // TODO: get prev link and next link.
-  let links = {
-    prev: {
-      title: 'Prev One',
-      link: 'prev-one'
-    },
-    next: {
-      title: 'Next One',
-      link: 'next-one'
-    }
-  };
   page.view++;
   page.converted_content = convertContent(page, false);
-  res.locals.links = links;
+  res.locals.links = getLinks(page.id);
   switch (page.type) {
     case PAGE_TYPES.ARTICLE:
       res.render('article', { page });
