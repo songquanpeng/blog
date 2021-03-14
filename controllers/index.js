@@ -89,6 +89,7 @@ async function getTag(req, res, next) {
 }
 
 async function getPage(req, res, next) {
+  // TODO: update views
   const link = req.params.link;
   let page = await Page.findOne({
     where: {

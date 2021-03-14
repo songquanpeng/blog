@@ -41,7 +41,7 @@ class Posts extends Component {
         sortDirections: ['descend', 'ascend'],
         render: (value, record) => (
           <Tooltip
-            title={`Posted on ${record.post_time}\nEdited on ${record.edit_time}`}
+            title={`Posted on ${record.createdAt}\nEdited on ${record.updatedAt}`}
           >
             <span>
               <a href={'/page/' + record.link}>{value}</a>
@@ -82,8 +82,8 @@ class Posts extends Component {
       },
       {
         title: 'Page status',
-        dataIndex: 'page_status',
-        sorter: (a, b) => parseInt(a.page_status) > parseInt(b.page_status),
+        dataIndex: 'pageStatus',
+        sorter: (a, b) => parseInt(a.pageStatus) > parseInt(b.pageStatus),
         sortDirections: ['descend', 'ascend'],
         render: (value, record) => {
           if (value === 0) {
@@ -91,7 +91,7 @@ class Posts extends Component {
               <Tag
                 icon={<MinusCircleOutlined />}
                 color="default"
-                onClick={() => this.switchStatus(record.page_id, 'page_status')}
+                onClick={() => this.switchStatus(record.id, 'pageStatus')}
               >
                 recalled
               </Tag>
@@ -101,7 +101,7 @@ class Posts extends Component {
               <Tag
                 icon={<CheckCircleOutlined />}
                 color="success"
-                onClick={() => this.switchStatus(record.page_id, 'page_status')}
+                onClick={() => this.switchStatus(record.id, 'pageStatus')}
               >
                 published
               </Tag>
@@ -111,7 +111,7 @@ class Posts extends Component {
               <Tag
                 icon={<CheckCircleOutlined />}
                 color="orange"
-                onClick={() => this.switchStatus(record.page_id, 'page_status')}
+                onClick={() => this.switchStatus(record.id, 'pageStatus')}
               >
                 stay on top
               </Tag>
@@ -121,18 +121,15 @@ class Posts extends Component {
       },
       {
         title: 'Comment status',
-        dataIndex: 'comment_status',
-        sorter: (a, b) =>
-          parseInt(a.comment_status) > parseInt(b.comment_status),
+        dataIndex: 'commentStatus',
+        sorter: (a, b) => parseInt(a.commentStatus) > parseInt(b.commentStatus),
         sortDirections: ['descend', 'ascend'],
         render: (value, record) =>
           value === 1 ? (
             <Tag
               icon={<CheckCircleOutlined />}
               color="success"
-              onClick={() =>
-                this.switchStatus(record.page_id, 'comment_status')
-              }
+              onClick={() => this.switchStatus(record.id, 'commentStatus')}
             >
               enabled
             </Tag>
@@ -140,9 +137,7 @@ class Posts extends Component {
             <Tag
               icon={<MinusCircleOutlined />}
               color="default"
-              onClick={() =>
-                this.switchStatus(record.page_id, 'comment_status')
-              }
+              onClick={() => this.switchStatus(record.id, 'commentStatus')}
             >
               disabled
             </Tag>
@@ -152,19 +147,14 @@ class Posts extends Component {
         title: 'Operation',
         render: (record) => (
           <Space>
-            <Button
-              type="primary"
-              onClick={() => this.editPage(record.page_id)}
-            >
+            <Button type="primary" onClick={() => this.editPage(record.id)}>
               Edit
             </Button>
-            <Button onClick={() => this.exportPage(record.page_id)}>
-              Export
-            </Button>
+            <Button onClick={() => this.exportPage(record.id)}>Export</Button>
             <Popconfirm
               placement="rightTop"
               title={'Are your sure to delete this page?'}
-              onConfirm={() => this.deletePage(record.page_id)}
+              onConfirm={() => this.deletePage(record.id)}
               okText="Yes"
               cancelText="No"
             >
@@ -264,7 +254,7 @@ class Posts extends Component {
 
   getPageById = (id) => {
     for (let i = 0; i < this.state.pages.length; i++) {
-      if (this.state.pages[i].page_id === id) {
+      if (this.state.pages[i].id === id) {
         return [i, this.state.pages[i]];
       }
     }
@@ -303,9 +293,9 @@ class Posts extends Component {
   switchStatus = (id, key) => {
     const that = this;
     let pages = this.state.pages;
-    let page = pages.find((x) => x.page_id === id);
+    let page = pages.find((x) => x.id === id);
     let base = 2;
-    if (key === 'page_status') {
+    if (key === 'pageStatus') {
       base = 3;
     }
     page[key] = (page[key] + 1) % base;
@@ -354,7 +344,7 @@ class Posts extends Component {
         <Table
           columns={this.columns}
           dataSource={this.state.pages}
-          rowKey={'page_id'}
+          rowKey={'id'}
           style={{ marginTop: '16px' }}
           loading={this.state.loading}
           rowClassName={(record) => record.deleted && 'disabled-row'}

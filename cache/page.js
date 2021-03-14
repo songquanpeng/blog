@@ -1,6 +1,6 @@
 const { Page, User } = require('../models');
 const { PAGE_STATUS } = require('../common/constant');
-const sequelize = require('../common/database');
+const sequelize = require('sequelize');
 const { Op } = require('sequelize');
 
 let pages = undefined;
@@ -16,7 +16,8 @@ async function loadAllPages() {
         ]
       },
       order: [sequelize.literal('"Page.updatedAt" DESC')],
-      raw: true
+      raw: true,
+      include: User
     });
   } catch (e) {
     console.log('Failed to load all pages!');

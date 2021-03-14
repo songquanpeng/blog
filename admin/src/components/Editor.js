@@ -121,8 +121,8 @@ class Editor extends Component {
         id: this.props.match.params.id,
         type: PAGE_TYPE.ARTICLE,
         link: '',
-        page_status: 1,
-        comment_status: 1,
+        pageStatus: 1,
+        commentStatus: 1,
         title: '',
         content: '---\ntitle: \ndescription: \ntags: \n- Others\n---\n',
         tag: '',
@@ -341,19 +341,19 @@ class Editor extends Component {
 
   onCommentStatusChange = () => {
     let page = { ...this.state.page };
-    page.comment_status = page.comment_status === 0 ? 1 : 0;
+    page.commentStatus = page.commentStatus === 0 ? 1 : 0;
     this.setState({ page });
   };
 
   onPublishStatusChange = () => {
     let page = { ...this.state.page };
-    page.page_status = page.page_status === 0 ? 1 : 0;
+    page.pageStatus = page.pageStatus === 0 ? 1 : 0;
     this.setState({ page });
   };
 
   onStayOnTopStatusChange = () => {
     let page = { ...this.state.page };
-    page.page_status = page.page_status === 2 ? 1 : 2;
+    page.pageStatus = page.pageStatus === 2 ? 1 : 2;
     this.setState({ page });
   };
 
@@ -528,27 +528,27 @@ class Editor extends Component {
           <br />
           <Space>
             <Switch
-              name="comment_status"
+              name="commentStatus"
               label="Allow comment"
-              checked={this.state.page.comment_status === 1}
+              checked={this.state.page.commentStatus === 1}
               onChange={this.onCommentStatusChange}
             />{' '}
             Allow comment
           </Space>
           <Space>
             <Switch
-              name="page_status"
+              name="pageStatus"
               label="Publish page"
-              checked={this.state.page.page_status !== 0}
+              checked={this.state.page.pageStatus !== 0}
               onChange={this.onPublishStatusChange}
             />{' '}
             Publish page
           </Space>
           <Space>
             <Switch
-              name="page_status"
+              name="pageStatus"
               label="Stay on top"
-              checked={this.state.page.page_status === 2}
+              checked={this.state.page.pageStatus === 2}
               onChange={this.onStayOnTopStatusChange}
             />{' '}
             Stay on top

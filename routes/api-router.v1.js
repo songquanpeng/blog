@@ -13,7 +13,7 @@ router.get('/page', userRequired, page.getAll);
 router.get('/page/export/:id', userRequired, page.export_);
 router.get('/page/:id', userRequired, page.get);
 router.put('/page', userRequired, page.update);
-router.delete('/page', userRequired, page.delete_);
+router.delete('/page/:id', userRequired, page.delete_);
 
 router.post('/user/login', user.login);
 router.get('/user/logout', user.logout);

@@ -123,5 +123,6 @@ module.exports = {
   md2html,
   updateConfig,
   convertContent,
+  deleteCacheEntry,
   loadNoticeContent
 };

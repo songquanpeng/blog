@@ -24,8 +24,8 @@ Page.init(
       defaultValue: PAGE_STATUS.PUBLISHED
     },
     commentStatus: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
+      type: DataTypes.INTEGER,
+      defaultValue: 1
     },
     title: {
       type: DataTypes.STRING,
