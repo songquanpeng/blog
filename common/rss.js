@@ -32,25 +32,29 @@ async function generateRSS() {
     }
   });
 
-  let pages = await getPagesByRange(0, 10);
-  pages.forEach(page => {
-    feed.addItem({
-      title: page.title,
-      id: page.link,
-      link: `https://${Config.domain}/page/${page.link}`,
-      description: page.description,
-      content: md2html(page.converted_content),
-      author: [
-        {
-          name: page.author
-        }
-      ],
-      date: new Date(page.edit_time)
+  try {
+    let pages = await getPagesByRange(0, 10);
+    pages.forEach(page => {
+      feed.addItem({
+        title: page.title,
+        id: page.link,
+        link: `https://${Config.domain}/page/${page.link}`,
+        description: page.description,
+        content: md2html(page.converted_content),
+        author: [
+          {
+            name: page.author
+          }
+        ],
+        date: new Date(page.edit_time)
+      });
     });
-  });
-  fs.writeFile('./public/feed.xml', feed.atom1(), () => {
-    console.log('Feed generated.');
-  });
+    fs.writeFile('./public/feed.xml', feed.atom1(), () => {
+      console.log('Feed generated.');
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 module.exports = {

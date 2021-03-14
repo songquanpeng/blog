@@ -61,7 +61,7 @@ async function getMonthArchive(req, res, next) {
   // TODO:
   let pages = await Page.findAll({
     where: {
-      status: {
+      pageStatus: {
         $not: PAGE_STATUS.RECALLED
       },
       tag: {
@@ -76,7 +76,7 @@ async function getTag(req, res, next) {
   const tag = req.params.tag;
   let pages = await Page.findAll({
     where: {
-      status: {
+      pageStatus: {
         $not: PAGE_STATUS.RECALLED
       },
       tag: {
@@ -91,7 +91,7 @@ async function getPage(req, res, next) {
   const link = req.params.link;
   let page = await Page.findOne({
     where: {
-      status: {
+      pageStatus: {
         $not: PAGE_STATUS.RECALLED
       },
       link
