@@ -13,29 +13,6 @@ import {
   Popconfirm,
 } from 'antd';
 
-const USER_STATUS = [
-  {
-    text: 'Banned user',
-    status: 0,
-    color: 'red',
-  },
-  {
-    text: 'Normal user',
-    status: 1,
-    color: 'green',
-  },
-  {
-    text: 'Administrator',
-    status: 10,
-    color: 'blue',
-  },
-  {
-    text: 'Super user',
-    status: 100,
-    color: 'gold',
-  },
-];
-
 class Users extends Component {
   constructor(props) {
     super(props);
@@ -59,14 +36,28 @@ class Users extends Component {
       {
         title: 'Email',
         dataIndex: 'email',
-        render: (value) => <p>{value}</p>,
+        render: (value) => <>{value ? value : 'no email'}</>,
+      },
+      {
+        title: 'Admin',
+        dataIndex: 'isAdmin',
+        render: (value) => (
+          <Tag color={value ? 'green' : ''}>{value ? 'Yes' : 'No'}</Tag>
+        ),
+      },
+      {
+        title: 'Moderator',
+        dataIndex: 'isModerator',
+        render: (value) => (
+          <Tag color={value ? 'green' : ''}>{value ? 'Yes' : 'No'}</Tag>
+        ),
       },
       {
         title: 'Status',
-        dataIndex: 'status',
+        dataIndex: 'isBlocked',
         render: (value) => (
-          <Tag color={USER_STATUS.find((e) => e.status === value).color}>
-            {USER_STATUS.find((e) => e.status === value).text}
+          <Tag color={value ? 'red' : 'green'}>
+            {value ? 'Blocked' : 'Normal'}
           </Tag>
         ),
       },

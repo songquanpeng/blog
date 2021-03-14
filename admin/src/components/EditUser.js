@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { Button, message as Message, Input, Select, Form } from 'antd';
-
-const OPTIONS = [
-  { key: 0, label: 'Banned User', value: 0 },
-  { key: 1, label: 'Normal User', value: 1 },
-  { key: 10, label: 'Administrator', value: 10 },
-  { key: 100, label: 'Super User', value: 100 },
-];
+import { Button, message as Message, Input, Switch, Form } from 'antd';
 
 class EditUser extends Component {
   constructor(props) {
@@ -22,7 +15,9 @@ class EditUser extends Component {
         id: this.props.match.params.id,
         username: '',
         display_name: '',
-        status: 1,
+        isAdmin: false,
+        isModerator: false,
+        isBlocked: false,
         email: '',
         url: '',
         avatar: '',
@@ -40,6 +35,10 @@ class EditUser extends Component {
         .get('/api/user/' + that.state.user.id)
         .then(function (res) {
           if (res.data.status) {
+            res.data.user.isAdmin = res.data.user.isAdmin === 1;
+            res.data.user.isModerator = res.data.user.isModerator === 1;
+            res.data.user.isBlocked = res.data.user.isBlocked === 1;
+            console.log(res.data.user);
             that.setState(
               {
                 user: res.data.user,
@@ -73,9 +72,10 @@ class EditUser extends Component {
 
   submitData = async () => {
     const user = this.state.user;
+    console.log(user);
     const res = this.state.isCreatingNewUser
-      ? await axios.put(`/api/user`, user)
-      : await axios.post(`/api/user`, user);
+      ? await axios.post(`/api/user`, user)
+      : await axios.put(`/api/user`, user);
     const { status, message } = res.data;
     if (status) {
       Message.success('Successfully processed.');
@@ -115,10 +115,15 @@ class EditUser extends Component {
           <Form.Item label="Url" name="url" type="url">
             <Input />
           </Form.Item>
-          <Form.Item label="Status" name="status">
-            <Select options={OPTIONS} />
+          <Form.Item label="Admin" name="isAdmin">
+            <Switch checked={this.state.user.isAdmin} />
           </Form.Item>
-
+          <Form.Item label="Moderator" name="isModerator">
+            <Switch checked={this.state.user.isModerator} />
+          </Form.Item>
+          <Form.Item label="Blocked" name="isBlocked">
+            <Switch checked={this.state.user.isBlocked} />
+          </Form.Item>
           <Form.Item label="Action">
             <Button onClick={this.submitData}>Submit</Button>
           </Form.Item>

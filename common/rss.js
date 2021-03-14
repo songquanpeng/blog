@@ -9,7 +9,7 @@ function enableRSS(config) {
   Config = config;
   setTimeout(async () => {
     await generateRSS();
-    setInterval(generateRSS, 24 * 60 * 60);
+    setInterval(generateRSS, 24 * 60 * 60 * 1000);
   }, 5000);
 }
 

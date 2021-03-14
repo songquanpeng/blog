@@ -93,7 +93,7 @@ app.use(flash());
   });
 
   app.use('/', webRouter);
-  app.use('/api/v1', cors(), apiRouterV1);
+  app.use('/api', cors(), apiRouterV1);
 
   app.use(function(req, res, next) {
     if (!res.headersSent) {
