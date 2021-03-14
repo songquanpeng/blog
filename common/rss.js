@@ -1,6 +1,7 @@
 const Feed = require('feed').Feed;
 const { getPagesByRange } = require('../cache/page');
 const fs = require('fs');
+const { convertContent } = require('./util');
 const { md2html } = require('./util');
 
 let Config;
@@ -40,13 +41,13 @@ async function generateRSS() {
         id: page.link,
         link: `https://${Config.domain}/page/${page.link}`,
         description: page.description,
-        content: md2html(page.converted_content),
+        converted_content: convertContent(page, false),
         author: [
           {
             name: page.author
           }
         ],
-        date: new Date(page.edit_time)
+        date: new Date(page.updatedAt)
       });
     });
     fs.writeFile('./public/feed.xml', feed.atom1(), () => {

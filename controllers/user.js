@@ -62,7 +62,7 @@ async function update(req, res) {
   const id = req.body.id;
   let username = req.body.username;
   let password = req.body.password;
-  let display_name = req.body.display_name;
+  let displayName = req.body.displayName;
   let isAdmin = req.body.isAdmin;
   let isModerator = req.body.isModerator;
   let isBlocked = req.body.isBlocked;
@@ -73,7 +73,7 @@ async function update(req, res) {
   let newUser = {
     username,
     password,
-    display_name,
+    displayName,
     isAdmin,
     isModerator,
     isBlocked,
@@ -83,7 +83,7 @@ async function update(req, res) {
   };
 
   let message = 'ok';
-  status = false;
+  let status = false;
   try {
     let user = await User.findOne({
       where: {
@@ -137,7 +137,10 @@ async function getAll(req, res) {
 async function create(req, res) {
   const username = req.body.username;
   const password = req.body.password;
-  const display_name = req.body.display_name;
+  let displayName = req.body.displayName;
+  if (!displayName) {
+    displayName = username;
+  }
   const email = req.body.email;
   const url = req.body.url;
   let isAdmin = req.body.isAdmin;
@@ -157,7 +160,7 @@ async function create(req, res) {
     user = await User.create({
       username,
       password,
-      display_name,
+      displayName,
       email,
       url,
       isAdmin,

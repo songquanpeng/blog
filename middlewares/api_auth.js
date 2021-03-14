@@ -26,7 +26,10 @@ exports.modRequired = (req, res, next) => {
   ) {
     return res.render('message', {
       status: true,
-      message: req.session.user.isBlocked ? bannedMessage : deniedMessage
+      message:
+        req.session.user && req.session.user.isBlocked
+          ? bannedMessage
+          : deniedMessage
     });
   }
   next();
@@ -40,7 +43,10 @@ exports.adminRequired = (req, res, next) => {
   ) {
     return res.render('message', {
       status: true,
-      message: req.session.user.isBlocked ? bannedMessage : deniedMessage
+      message:
+        req.session.user && req.session.user.isBlocked
+          ? bannedMessage
+          : deniedMessage
     });
   }
   next();

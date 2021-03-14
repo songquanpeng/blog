@@ -28,7 +28,7 @@ class Users extends Component {
         title: 'Username',
         dataIndex: 'username',
         render: (value, record) => (
-          <Tooltip title={record.display_name}>
+          <Tooltip title={record.displayName}>
             <a href={record.url}>{value}</a>
           </Tooltip>
         ),

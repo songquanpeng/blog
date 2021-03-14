@@ -9,7 +9,7 @@
         </tr>
         </thead>
         <tbody>
-        <% pages.sort((a,b) => (a.post_time > b.post_time) ? 1 : ((b.post_time > a.post_time) ? -1 : 0)).forEach(page => { %>
+        <% pages.sort((a,b) => (a.createdAt > b.createdAt) ? 1 : ((b.createdAt > a.createdAt) ? -1 : 0)).forEach(page => { %>
             <tr>
                 <td>
                     <a href="/page/<%= page.link %>">
@@ -18,7 +18,7 @@
                 </td>
                 <td>
                     <time>
-                        <%= page.post_time.substring(0, 10) %>
+                        <%= page.createdAt.substring(0, 10) %>
                     </time>
                 </td>
             </tr>

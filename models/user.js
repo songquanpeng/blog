@@ -14,6 +14,10 @@ User.init(
       type: DataTypes.STRING,
       unique: true
     },
+    displayName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false

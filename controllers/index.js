@@ -4,6 +4,7 @@ const { SitemapStream, streamToPromise } = require('sitemap');
 const { createGzip } = require('zlib');
 const { PAGE_STATUS, PAGE_TYPES } = require('../common/constant');
 const { convertContent } = require('../common/util');
+const { Op } = require('sequelize');
 
 async function getIndex(req, res, next) {
   let page = parseInt(req.query.p);
@@ -91,11 +92,10 @@ async function getPage(req, res, next) {
   const link = req.params.link;
   let page = await Page.findOne({
     where: {
-      pageStatus: {
-        $not: PAGE_STATUS.RECALLED
-      },
-      link
-    }
+      [Op.and]: [{ link }],
+      [Op.not]: [{ pageStatus: PAGE_STATUS.RECALLED }]
+    },
+    raw: true
   });
   if (page === null) {
     return res.render('message', {

@@ -14,7 +14,7 @@ class EditUser extends Component {
       user: {
         id: this.props.match.params.id,
         username: '',
-        display_name: '',
+        displayName: '',
         isAdmin: false,
         isModerator: false,
         isBlocked: false,
@@ -103,7 +103,7 @@ class EditUser extends Component {
           <Form.Item label="Password" name="password" required>
             <Input />
           </Form.Item>
-          <Form.Item label="Display Name" name="display_name">
+          <Form.Item label="Display Name" name="displayName">
             <Input />
           </Form.Item>
           <Form.Item label="Email" name="email" type="email">

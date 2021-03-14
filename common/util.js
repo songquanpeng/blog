@@ -51,8 +51,11 @@ async function updateConfig(config) {
   config.title = config.motto + ' | ' + config.site_name;
 }
 
-// TODO: when we delete an page, we should also clean its cache
 let convertedContentCache = new Map();
+
+function deleteCacheEntry(id) {
+  convertedContentCache.delete(id);
+}
 
 function convertContent(page, refresh) {
   if (convertedContentCache.has(page.id) && !refresh) {

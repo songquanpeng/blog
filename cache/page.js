@@ -16,7 +16,7 @@ async function loadAllPages() {
         ]
       },
       order: [sequelize.literal('"Page.updatedAt" DESC')],
-      include: User
+      raw: true
     });
   } catch (e) {
     console.log('Failed to load all pages!');

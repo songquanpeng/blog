@@ -15,7 +15,7 @@
                                         <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
                                     <% }}); %>
                                     <a class="tag is-light"
-                                       href="/archive/<%= page.post_time.split('-')[0] + '/' + page.post_time.split('-')[1] %>"><%= page.post_time.substring(0, 10) %></a>
+                                       href="/archive/<%= page.createdAt.split('-')[0] + '/' + page.createdAt.split('-')[1] %>"><%= page.createdAt.substring(0, 10) %></a>
                                     <span class="tag is-light"><%- page.view %> views</span>
                                     <div class="page-card-text">
                                         <%= page.description ? page.description : "No description" %>

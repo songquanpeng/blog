@@ -7,10 +7,10 @@ const sequelize = require('../common/database');
 Page.belongsTo(User);
 User.hasMany(Page);
 
-// TODO: insert options!
-
-(async () => {
-  await sequelize.sync({ alter: true });
+async function initializeDatabase() {
+  // The following code will cause the UserId be deleted on startup. :(
+  // await sequelize.sync({ alter: true });
+  await sequelize.sync();
   console.log('Database configured.');
   const isNoAdminExisted =
     (await User.findOne({ where: { isAdmin: true } })) === null;
@@ -19,12 +19,13 @@ User.hasMany(Page);
     await User.create({
       username: 'admin',
       password: '123456',
+      displayName: 'Administrator',
       isAdmin: true,
       isModerator: true
     });
   }
   await initializeOptions();
-})();
+}
 
 async function initializeOptions() {
   let plainOptions = [
@@ -60,7 +61,7 @@ async function initializeOptions() {
     await Option.findOrCreate({ where: { key }, defaults: { value } });
   }
 }
-
+exports.initializeDatabase = initializeDatabase;
 exports.User = User;
 exports.File = File;
 exports.Option = Option;

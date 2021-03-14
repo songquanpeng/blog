@@ -18,6 +18,7 @@ const webRouter = require('./routes/web-router');
 const apiRouterV1 = require('./routes/api-router.v1');
 const app = express();
 const server = http.createServer(app);
+const { initializeDatabase } = require('./models');
 
 app.use(
   rateLimit({
@@ -59,6 +60,7 @@ app.use(
 app.use(flash());
 
 (async () => {
+  await initializeDatabase();
   // load configuration & update app.locals
   await updateConfig(app.locals.config);
   // TODO: check here

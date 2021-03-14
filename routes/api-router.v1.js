@@ -7,7 +7,7 @@ const user = require('../controllers/user');
 const option = require('../controllers/option');
 const file = require('../controllers/file');
 
-router.post('/page/search', adminRequired, page.search);
+router.post('/page/search', userRequired, page.search);
 router.post('/page', userRequired, page.create);
 router.get('/page', userRequired, page.getAll);
 router.get('/page/export/:id', userRequired, page.export_);
