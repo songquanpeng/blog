@@ -6,7 +6,7 @@ class File extends Model {}
 File.init(
   {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },

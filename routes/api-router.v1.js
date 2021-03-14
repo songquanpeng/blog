@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { userRequired, adminRequired } = require('../middlewares/api_auth');
+const { userRequired, adminRequired } = require('../middlewares/api-auth');
+const { upload } = require('../middlewares/upload');
 
 const page = require('../controllers/page');
 const user = require('../controllers/user');
@@ -33,7 +34,7 @@ router.put('/option', adminRequired, option.update);
 router.delete('/option', adminRequired, option.delete_);
 
 router.get('/file', adminRequired, file.getAll);
-router.post('/file', adminRequired, file.upload);
+router.post('/file', adminRequired, upload.single('file'), file.upload);
 router.get('/file/:id', adminRequired, file.get);
 router.delete('/file/:id', adminRequired, file.delete_);
 router.post('/file/search', adminRequired, file.search);

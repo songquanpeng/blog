@@ -3,7 +3,8 @@ let config = {
   port: process.env.PORT || 3000,
   database: 'data.db',
   session_secret: 'justice',
-  auth_cookie_name: 'blog'
+  auth_cookie_name: 'blog',
+  uploadPath: './public/upload'
 };
 
 function init() {}
