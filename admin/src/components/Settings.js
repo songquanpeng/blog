@@ -140,7 +140,7 @@ class Settings extends Component {
       let temp = {};
       if (status) {
         options.forEach((option) => {
-          temp[option.name] = option.value;
+          temp[option.key] = option.value;
         });
         options = temp;
         console.log(options);
@@ -163,7 +163,7 @@ class Settings extends Component {
   submit = async () => {
     let options = this.state.options;
     try {
-      const res = await axios.post(`/api/option/`, options);
+      const res = await axios.put(`/api/option/`, options);
       const { status, message } = res.data;
       if (status) {
         Message.success('Setting updated.');

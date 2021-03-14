@@ -26,12 +26,10 @@ router.post('/user', adminRequired, user.create);
 router.delete('/user/:id', adminRequired, user.delete_);
 
 router.get('/option', adminRequired, option.getAll);
-router.post('/option/search', adminRequired, option.search);
 router.get('/option/shutdown', adminRequired, option.shutdown);
 router.get('/option/:name', adminRequired, option.get);
 //TODO: The origin method is post!!! don't forget modify the admin!
 router.put('/option', adminRequired, option.update);
-router.delete('/option', adminRequired, option.delete_);
 
 router.get('/file', adminRequired, file.getAll);
 router.post('/file', adminRequired, upload.single('file'), file.upload);
