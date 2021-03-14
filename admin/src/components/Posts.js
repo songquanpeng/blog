@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 import { PAGE_OPTIONS } from './Editor';
+import { getDate } from '../utils';
 
 const { Search } = Input;
 
@@ -226,6 +227,10 @@ class Posts extends Component {
       const res = await axios.get('/api/page');
       let { status, message, pages } = res.data;
       if (status) {
+        pages.forEach((page) => {
+          page.createdAt = getDate(page.createdAt);
+          page.updatedAt = getDate(page.updatedAt);
+        });
         this.setState({ pages });
         console.log(pages);
         Message.success('Loading done.');

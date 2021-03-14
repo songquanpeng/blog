@@ -1,12 +1,5 @@
-const { lexer, parser } = require('marked');
-
-function titleToLink(title) {
-  return title.trim().replace(/\s/g, '-');
-}
-
-function getDate(format, dateStr) {
-  if (format === undefined || format === 'default')
-    format = 'yyyy-MM-dd hh:mm:ss';
+export const getDate = (dateStr) => {
+  let format = 'yyyy-MM-dd hh:mm:ss';
   let date;
   if (dateStr) {
     date = new Date(dateStr);
@@ -19,7 +12,7 @@ function getDate(format, dateStr) {
     'h+': date.getHours(),
     'm+': date.getMinutes(),
     's+': date.getSeconds(),
-    S: date.getMilliseconds()
+    S: date.getMilliseconds(),
   };
 
   if (/(y+)/.test(format)) {
@@ -38,14 +31,4 @@ function getDate(format, dateStr) {
     }
   }
   return format;
-}
-
-function md2html(markdown) {
-  return parser(lexer(markdown));
-}
-
-module.exports = {
-  titleToLink,
-  getDate,
-  md2html
 };

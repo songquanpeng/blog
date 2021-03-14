@@ -123,7 +123,7 @@ async function getPage(req, res, next) {
     });
   }
   // Update views
-  page.increment('view');
+  page.increment('view').then();
   page = page.get({ plain: true });
   // Change the data format.
   page.createdAt = getDate('default', page.createdAt);

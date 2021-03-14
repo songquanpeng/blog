@@ -15,12 +15,14 @@ function updateCache(page, isNew, updateConvertedContent) {
   if (isNew) {
     // Add new page to the front of pages.
     pages.unshift(page);
-    // Update the index.
-    updateId2Index();
   } else {
     // Update pages.
-    pages[id2index.get(page.id)] = page;
+    let i = id2index.get(page.id);
+    pages.splice(i, 1);
+    pages.unshift(page);
   }
+  // Update the index.
+  updateId2Index();
 }
 
 function deleteCacheEntry(id) {

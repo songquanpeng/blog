@@ -4,11 +4,10 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const updateConfig = require('./common/util').updateConfig;
+const { updateConfig, loadNoticeContent } = require('./common/config');
 const config = require('./config');
 const serveStatic = require('serve-static');
 const path = require('path');
-const loadNoticeContent = require('./common/util').loadNoticeContent;
 const enableRSS = require('./common/rss').enableRSS;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
@@ -63,8 +62,7 @@ app.use(flash());
   await initializeDatabase();
   // load configuration & update app.locals
   await updateConfig(app.locals.config);
-  // TODO: check here
-  await loadNoticeContent();
+  await loadNoticeContent(app);
   enableRSS(app.locals.config);
 
   // Then we setup the app.
@@ -103,15 +101,6 @@ app.use(flash());
         title: ':{404 Not Found}',
         message: 'The page you requested does not exist, I am sorry for that.'
       });
-    }
-  });
-
-  // TODO: what's wrong with here?
-  app.use(function(err, req, res, next) {
-    res.locals.message = err.message;
-    console.error(err.stack);
-    if (!res.headersSent) {
-      res.send(err.message);
     }
   });
 })();

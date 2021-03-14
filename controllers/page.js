@@ -3,6 +3,7 @@ const sequelize = require('sequelize');
 const { Op } = require('sequelize');
 const { Page } = require('../models');
 const Stream = require('stream');
+const { loadNoticeContent } = require('../common/config');
 const { updateCache } = require('../common/cache');
 const { getDate } = require('../common/util');
 
@@ -40,9 +41,15 @@ async function search(req, res) {
             tag: {
               [Op.like]: `%${keyword}%`
             }
+          },
+          {
+            link: {
+              [Op.like]: `%${keyword}%`
+            }
           }
         ]
-      }
+      },
+      order: [sequelize.literal('"updatedAt" DESC')]
     });
   } catch (e) {
     status = false;
@@ -102,7 +109,9 @@ async function create(req, res) {
     console.error(e);
     message = e.message;
   }
-
+  if (link.toString() === 'notice') {
+    loadNoticeContent(req.app).then();
+  }
   res.json({ status, message, id });
 }
 
@@ -112,7 +121,7 @@ async function getAll(req, res) {
   let message = 'ok';
   try {
     pages = await Page.findAll({
-      order: [sequelize.literal('"Page.updatedAt" DESC')]
+      order: [sequelize.literal('"updatedAt" DESC')]
     });
   } catch (e) {
     console.error(e);
@@ -214,8 +223,10 @@ async function update(req, res, next) {
     message = e.message;
   }
 
-  // TODO: If we update the page notice, we should update sth to make it on index page.
-
+  // If we update the page notice, we should update sth to make it on index page.
+  if (link.toString() === 'notice') {
+    loadNoticeContent(req.app).then();
+  }
   res.json({ status, message });
 }
 

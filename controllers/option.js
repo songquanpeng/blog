@@ -1,3 +1,4 @@
+const { updateConfig } = require('../common/config');
 const { Option } = require('../models');
 
 async function getAll(req, res) {
@@ -55,13 +56,10 @@ async function update(req, res, next) {
       }
     }
   }
-  // TODO: here we actually didn't check the status.
+  // Here we actually didn't check the status.
   let status = true;
   let message = 'ok';
-  // TODO: apply config
-  // updateConfig(req.app.locals.config, () => {
-  //   res.json({ status, message });
-  // });
+  await updateConfig(req.app.locals.config);
   res.json({ status, message });
 }
 
