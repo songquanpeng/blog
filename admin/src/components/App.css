@@ -32,6 +32,10 @@
     background: #fff;
 }
 
+.ant-layout-content {
+    overflow-y: auto;
+}
+
 .content-area {
     background: #fff;
     padding: 24px;
