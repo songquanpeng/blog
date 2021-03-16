@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./app.js",
     "devStart": "nodemon ./app.js",
+    "migrate": "node common/migrate.js",
     "build": "cd admin && npm run update",
     "build2": "cd admin && npm run update2"
   },
