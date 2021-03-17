@@ -68,9 +68,11 @@ async function loadAllPages() {
           { pageStatus: PAGE_STATUS.TOPPED }
         ]
       },
-      order: [sequelize.literal('"Page.updatedAt" DESC')],
-      raw: true,
-      include: User
+      order: [
+        ['pageStatus', 'DESC'],
+        ['updatedAt', 'DESC']
+      ],
+      raw: true
     });
   } catch (e) {
     console.log('Failed to load all pages!');
