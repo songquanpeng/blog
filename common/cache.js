@@ -135,10 +135,18 @@ function convertContent(page, refresh) {
   return convertedContent;
 }
 
+function updateView(id) {
+  let i = id2index.get(id);
+  if (i >= 0 && i < pages.length) {
+    pages[i].view++;
+  }
+}
+
 module.exports = {
   getPagesByRange,
   convertContent,
   deleteCacheEntry,
   getLinks,
-  updateCache
+  updateCache,
+  updateView
 };

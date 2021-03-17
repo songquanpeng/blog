@@ -20,7 +20,7 @@ async function migratePages() {
     }
     pages.forEach(async page => {
       try {
-        await Page.create({
+        let pageObj = await Page.create({
           type: page.type,
           link: page.link,
           pageStatus: page.page_status,

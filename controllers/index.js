@@ -1,3 +1,4 @@
+const { updateView } = require('../common/cache');
 const { getLinks } = require('../common/cache');
 const { getDate } = require('../common/util');
 const { getPagesByRange } = require('../common/cache');
@@ -130,6 +131,7 @@ async function getPage(req, res, next) {
   page.updatedAt = getDate('default', page.updatedAt);
 
   page.view++;
+  updateView(page.id);
   page.converted_content = convertContent(page, false);
   res.locals.links = getLinks(page.id);
   switch (page.type) {
