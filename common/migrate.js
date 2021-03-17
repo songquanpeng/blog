@@ -24,7 +24,7 @@ async function migratePages() {
           type: page.type,
           link: page.link,
           pageStatus: page.page_status,
-          commentStatus: page.comment_statis,
+          commentStatus: page.comment_status,
           title: page.title,
           content: page.content,
           tag: page.tag,
