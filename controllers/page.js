@@ -121,7 +121,23 @@ async function getAll(req, res) {
   let message = 'ok';
   try {
     pages = await Page.findAll({
-      order: [sequelize.literal('"updatedAt" DESC')]
+      attributes: [
+        'id',
+        'type',
+        'link',
+        'pageStatus',
+        'commentStatus',
+        'title',
+        'tag',
+        'password',
+        'view',
+        'upVote',
+        'downVote',
+        'createdAt',
+        'updatedAt',
+        'UserId'
+      ],
+      order: [['updatedAt', 'DESC']]
     });
   } catch (e) {
     console.error(e);
