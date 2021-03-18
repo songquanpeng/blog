@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 const { Page } = require('../models');
 const Stream = require('stream');
 const { loadNoticeContent } = require('../common/config');
-const { updateCache } = require('../common/cache');
+const { updateCache, loadAllPages } = require('../common/cache');
 const { getDate } = require('../common/util');
 
 async function search(req, res) {
@@ -104,6 +104,7 @@ async function create(req, res) {
       id = page.id;
       status = true;
       updateCache(page, true, true);
+      await loadAllPages();
     }
   } catch (e) {
     console.error(e);
@@ -232,6 +233,7 @@ async function update(req, res, next) {
       page.updatedAt = getDate('default', page.updatedAt.toUTCString());
       updateConvertedContent = oldContent !== newPage.content;
       status = true;
+      loadAllPages();
       updateCache(page, false, updateConvertedContent);
     }
   } catch (e) {
@@ -263,6 +265,7 @@ async function delete_(req, res) {
     message = e.message;
   }
   deleteCacheEntry(id);
+  await loadAllPages();
 
   res.json({ status, message });
 }

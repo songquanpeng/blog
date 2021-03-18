@@ -22,7 +22,7 @@ function updateCache(page, isNew, updateConvertedContent) {
     pages.unshift(page);
   }
   // Update the index.
-  updateId2Index();
+  // updateId2Index();
 }
 
 function deleteCacheEntry(id) {
@@ -31,7 +31,7 @@ function deleteCacheEntry(id) {
   // Delete this page form pages array.
   pages.splice(id2index.get(id), 1);
   // Update the index.
-  updateId2Index();
+  // updateId2Index();
 }
 
 function updateId2Index() {
@@ -74,6 +74,7 @@ async function loadAllPages() {
       ],
       raw: true
     });
+    updateId2Index();
   } catch (e) {
     console.log('Failed to load all pages!');
     console.error(e);
@@ -83,7 +84,6 @@ async function loadAllPages() {
 async function getPagesByRange(start, num) {
   if (pages === undefined) {
     await loadAllPages();
-    updateId2Index();
   }
   return pages.slice(start, start + num);
 }
@@ -150,5 +150,6 @@ module.exports = {
   deleteCacheEntry,
   getLinks,
   updateCache,
-  updateView
+  updateView,
+  loadAllPages
 };
