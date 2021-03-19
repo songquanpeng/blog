@@ -1,8 +1,10 @@
 const { convertContent } = require('./cache');
 const Option = require('../models').Option;
 const Page = require('../models').Page;
+const path = require('path');
 
-async function updateConfig(config) {
+async function updateConfig(app) {
+  let config = app.locals.config;
   try {
     let options = await Option.findAll();
     options.forEach(option => {
@@ -13,6 +15,10 @@ async function updateConfig(config) {
     console.error('Unable to update config.');
     console.error(e);
   }
+  app.set(
+    'views',
+    path.join(__dirname, `../themes/${app.locals.config.theme}`)
+  );
 }
 
 async function loadNoticeContent(app) {

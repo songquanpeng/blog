@@ -8,6 +8,8 @@ const { createGzip } = require('zlib');
 const { PAGE_STATUS, PAGE_TYPES } = require('../common/constant');
 const { convertContent } = require('../common/cache');
 const { Op } = require('sequelize');
+const path = require('path');
+const config = require('../config');
 
 async function getIndex(req, res, next) {
   let page = parseInt(req.query.p);
@@ -164,11 +166,26 @@ async function getPage(req, res, next) {
   }
 }
 
+async function getStaticFile(req, res, next) {
+  let filePath = req.path;
+  if (filePath) {
+    res.set('Cache-control', `public, max-age=${config.cacheMaxAge}`);
+    return res.sendFile(
+      path.join(
+        __dirname,
+        `../themes/${req.app.locals.config.theme}/${filePath}`
+      )
+    );
+  }
+  res.sendStatus(404);
+}
+
 module.exports = {
   getIndex,
   getArchive,
   getSitemap,
   getMonthArchive,
   getTag,
-  getPage
+  getPage,
+  getStaticFile
 };

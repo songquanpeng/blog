@@ -9,5 +9,6 @@ router.get('/archive/:year/:month', index.getMonthArchive);
 router.get('/sitemap.xml', index.getSitemap);
 router.get('/tag/:tag', index.getTag);
 router.get('/page/:link', index.getPage);
+router.get(/static\/.*/, index.getStaticFile);
 
 module.exports = router;

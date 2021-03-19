@@ -50,7 +50,6 @@ async function update(req, res, next) {
         if (option) {
           await option.update(newOption);
         }
-        status = option !== null;
       } catch (e) {
         console.error(e);
       }
@@ -59,7 +58,7 @@ async function update(req, res, next) {
   // Here we actually didn't check the status.
   let status = true;
   let message = 'ok';
-  await updateConfig(req.app.locals.config);
+  await updateConfig(req.app);
   res.json({ status, message });
 }
 

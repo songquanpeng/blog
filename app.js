@@ -61,26 +61,14 @@ app.use(flash());
 (async () => {
   await initializeDatabase();
   // load configuration & update app.locals
-  await updateConfig(app.locals.config);
+  await updateConfig(app);
   await loadNoticeContent(app);
   enableRSS(app.locals.config);
 
   // Then we setup the app.
-  app.set('views', path.join(__dirname, `./themes/${app.locals.config.theme}`));
-
-  app.use(
-    '/static',
-    serveStatic(
-      path.join(__dirname, `./themes/${app.locals.config.theme}/static`),
-      {
-        maxAge: '600000'
-      }
-    )
-  );
-
   app.use(
     serveStatic(path.join(__dirname, './public'), {
-      maxAge: '600000'
+      maxAge: config.cacheMaxAge * 1000
     })
   );
 
