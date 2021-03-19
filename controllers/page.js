@@ -205,6 +205,7 @@ async function update(req, res, next) {
   let tag = req.body.tag;
   let description = req.body.description;
   let password = req.body.password;
+  let updatedAt = new Date();
 
   let newPage = {
     type,
@@ -215,7 +216,8 @@ async function update(req, res, next) {
     content,
     tag,
     description,
-    password
+    password,
+    updatedAt
   };
 
   let message = 'ok';

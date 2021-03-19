@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../common/database');
 const { PAGE_TYPES, PAGE_STATUS } = require('../common/constant');
@@ -40,9 +41,13 @@ Page.init(
     view: DataTypes.INTEGER,
     upVote: DataTypes.INTEGER,
     downVote: DataTypes.INTEGER,
-    description: DataTypes.TEXT
+    description: DataTypes.TEXT,
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: Sequelize.NOW
+    }
   },
-  { sequelize }
+  { sequelize, updatedAt: false }
 );
 
 module.exports = Page;
