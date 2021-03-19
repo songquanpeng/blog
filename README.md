@@ -4,7 +4,7 @@
 [![release](https://img.shields.io/github/v/release/songquanpeng/blog)](https://github.com/songquanpeng/blog/releases)
 
 <details>
-<summary><strong><i>Click here to expend English readme</i></strong></summary>
+<summary><strong><i>Click here to expend the English version of readme.</i></strong></summary>
 <div>
  
  ## Description
@@ -35,21 +35,15 @@ npm run build  # For Windows user, please run `npm run build2` instead
 npm start
 ```
 
-How to update it?
-```shell script
-git pull
-npm install
-npm run migrate
-``` 
 </div>
 </details>
 
 ## 描述
-技术栈：Express.js + Knex + SQLite + Bulma.css + React + Ant Design
+技术栈：Express.js（服务端）+ Sequelize（ORM） + React（后台）+ Ant Design（后台 UI 库）
 
 特点：
 1. 支持主题。
-2. 无需配置数据库，开箱即用（如果你不想用 SQLite，请修改 `knexfile.js` 配置文件）。
+2. 无需配置数据库，开箱即用（如果你不想用 SQLite，请修改 `config.js` 配置文件）。
 3. 内置 ACE 代码编辑器，附带多种代码主题。
 
 ## 主题
@@ -60,7 +54,7 @@ npm run migrate
 5. Next: [Hexo Next 风格主题](https://github.com/songquanpeng/blog-theme-next).
 
 **注意**
-1. 如需更改主题，打开后台管理系统中的 setting 页面，下拉框中找到 theme，修改后点击 submit，之后博客系统会主动关闭，这时依赖 pm2 将其重启，重启后用的就是新的主题了，记得浏览器 `Ctrl + F5` 刷新缓存。
+1. 如需更改主题，打开后台管理系统中的 setting 页面，下拉框中找到 theme，修改后点击 submit，记得浏览器 `Ctrl + F5` 刷新缓存。
 2. 由于精力有限，部分主题可能由于未能及时随项目更新导致存在问题。
 
 ## 演示
@@ -80,16 +74,3 @@ npm install
 npm run build  # Windows 用户请运行 `npm run build2`
 npm start
 ```
-
-如果安装了 docker，则：
-```shell script
-docker pull justsong/blog
-docker run justsong/blog -p 80:3000 --name blog
-```
-
-### 更新
-```shell script
-git pull
-npm install
-npm run migrate
-``` 
