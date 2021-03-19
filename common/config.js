@@ -15,6 +15,7 @@ async function updateConfig(app) {
     console.error('Unable to update config.');
     console.error(e);
   }
+  app.cache = {};
   app.set(
     'views',
     path.join(__dirname, `../themes/${app.locals.config.theme}`)
