@@ -235,6 +235,7 @@ class Editor extends Component {
       }
       if (!hasGetTitle && line.startsWith('title')) {
         title = line.substring(6).trim();
+        title = title.toLowerCase();
         hasGetTitle = true;
         continue;
       }
@@ -383,7 +384,7 @@ class Editor extends Component {
   };
 
   getDate(format) {
-    if (format === undefined) format = 'yyyy-MM-dd hh:mm:ss';
+    if (format === undefined) format = 'yyyy-MM-dd hh-mm-ss';
     const date = new Date();
     const o = {
       'M+': date.getMonth() + 1,
@@ -581,10 +582,17 @@ class Editor extends Component {
                 Delete
               </Button>
             </Popconfirm>
+            <Popconfirm
+              title={'Are your sure?'}
+              onConfirm={() => {
+                this.reset();
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button size={'small'}>Reset</Button>
+            </Popconfirm>
 
-            <Button size={'small'} onClick={this.reset}>
-              Reset
-            </Button>
             <Button type="primary" size={'small'} onClick={this.onSubmit}>
               Submit
             </Button>
