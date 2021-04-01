@@ -45,7 +45,7 @@ class Posts extends Component {
             title={`Posted on ${record.createdAt}\nEdited on ${record.updatedAt}`}
           >
             <span>
-              <a href={'/page/' + record.link}>{value}</a>
+              <a href={'/page/' + record.link}>{value ? value : 'No title'}</a>
             </span>
           </Tooltip>
         ),

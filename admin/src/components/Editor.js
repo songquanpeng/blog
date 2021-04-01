@@ -235,7 +235,6 @@ class Editor extends Component {
       }
       if (!hasGetTitle && line.startsWith('title')) {
         title = line.substring(6).trim();
-        title = title.toLowerCase();
         hasGetTitle = true;
         continue;
       }
@@ -419,7 +418,10 @@ class Editor extends Component {
     if (origin === undefined) {
       origin = this.getDate();
     }
-    return origin.trim().replace(/[\s#%+/&=?`]+/g, '-');
+    return origin
+      .trim()
+      .toLowerCase()
+      .replace(/[\s#%+/&=?`]+/g, '-');
   }
 
   reset = (e) => {
@@ -430,17 +432,19 @@ class Editor extends Component {
   deletePage = () => {
     this.setState({ deleteConfirm: false });
     const that = this;
-    axios
-      .delete(`/api/page/${this.props.match.params.id}`)
-      .then(async function (res) {
-        const { status, message } = res.data;
-        if (status) {
-          Message.success('Your page has been deleted.');
-          that.props.history.push('/editor');
-        } else {
-          Message.error(message);
-        }
-      });
+    let id = this.props.match.params.id;
+    if (!id) {
+      id = this.state.page.id;
+    }
+    axios.delete(`/api/page/${id}`).then(async function (res) {
+      const { status, message } = res.data;
+      if (status) {
+        Message.success('Your page has been deleted.');
+        that.props.history.push('/editor');
+      } else {
+        Message.error(message);
+      }
+    });
   };
 
   cancelDelete = () => {
