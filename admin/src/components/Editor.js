@@ -160,6 +160,18 @@ class Editor extends Component {
       await this.fetchData();
       this.adjustEditorLanguage(this.state.page.type);
     }
+
+    // TODO: Register event, not working
+    // document.addEventListener('keydown', (e) => {
+    //   console.log('fuck ', document.isKeyDownEventRegistered);
+    //   if (!document.isKeyDownEventRegistered) {
+    //     document.isKeyDownEventRegistered = true;
+    //     if (e.ctrlKey && e.key === 's') {
+    //       e.preventDefault();
+    //       this.onSubmit();
+    //     }
+    //   }
+    // });
   }
 
   fetchData = async () => {
@@ -214,7 +226,6 @@ class Editor extends Component {
     e.text = this.state.pasteWithFormatting
       ? clipboard.getData('text/html')
       : clipboard.getData('text/plain');
-    console.log(e.text);
     e.preventDefault();
   };
 
@@ -374,6 +385,9 @@ class Editor extends Component {
     if (this.state.page.link === '') {
       let page = { ...this.state.page };
       page.link = this.getValidLink();
+      if (!page.title) {
+        page.title = 'No title';
+      }
       this.setState({ page }, () => {
         this.state.isNewPage ? this.postNewPage() : this.updatePage();
       });

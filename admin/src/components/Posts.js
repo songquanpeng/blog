@@ -232,7 +232,6 @@ class Posts extends Component {
           page.updatedAt = getDate(page.updatedAt);
         });
         this.setState({ pages });
-        console.log(pages);
         Message.success('Loading done.');
       } else {
         Message.error(message);
