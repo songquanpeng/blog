@@ -65,12 +65,18 @@ npm start
 ![后台管理页面文章列表页面](https://user-images.githubusercontent.com/39998050/108320192-6f208980-71fd-11eb-8e3d-92e61dce09e6.png)
 ![编辑器页面](https://user-images.githubusercontent.com/39998050/108320168-6465f480-71fd-11eb-8abd-f74588d9e39a.png)
 
-## 用法
-### 部署
+## 部署
 ```shell script
-git clone --recurse-submodules https://github.com/songquanpeng/blog.git
+git clone https://github.com/songquanpeng/blog.git
 cd blog
+# 获取主题
+git submodule init
+# 更新主题
+git submodule update
+# 安装依赖
 npm install
+# 编译后台管理系统
 npm run build  # Windows 用户请运行 `npm run build2`
+# 启动服务
 npm start
 ```
