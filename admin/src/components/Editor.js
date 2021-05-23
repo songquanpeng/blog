@@ -115,6 +115,7 @@ class Editor extends Component {
       language: 'markdown',
       pasteWithFormatting: false,
       fontSize: 18,
+      saveInterval: 60,
       isNewPage: this.props.match.path === '/editor',
       originPage: undefined,
       page: {
@@ -132,6 +133,7 @@ class Editor extends Component {
       showDrawer: false,
     };
     this.onChange = this.onChange.bind(this);
+    // setInterval(this.onSubmit, this.state.saveInterval);
   }
 
   static getDerivedStateFromProps({ status }) {
@@ -202,15 +204,21 @@ class Editor extends Component {
     if (isNaN(fontSize)) {
       fontSize = 18;
     }
+    let saveInterval = localStorage.getItem('saveInterval');
+    if (saveInterval == null) {
+      saveInterval = this.state.saveInterval;
+    }
     this.setState({
       theme,
       fontSize: parseInt(fontSize),
+      saveInterval: parseInt(saveInterval),
     });
   }
 
   saveEditorConfig() {
     localStorage.setItem('theme', this.state.theme);
     localStorage.setItem('fontSize', this.state.fontSize);
+    localStorage.setItem('saveInterval', this.state.saveInterval);
   }
 
   onChange(newValue) {
@@ -286,9 +294,8 @@ class Editor extends Component {
     });
   };
 
-  onFontSizeChange = (e) => {
-    const { value } = e.target;
-    this.setState({ fontSize: parseInt(value) }, () => {
+  onFontSizeChange = (value) => {
+    this.setState({ fontSize: value }, () => {
       this.saveEditorConfig();
     });
   };
