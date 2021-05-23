@@ -44,8 +44,18 @@ function md2html(markdown) {
   return parser(lexer(markdown));
 }
 
+function parseTagStr(tag) {
+  let tags = tag.split(' ');
+  let category = undefined;
+  if (tags.length !== 0) {
+    category = tags.shift();
+  }
+  return [category, tags];
+}
+
 module.exports = {
   titleToLink,
+  parseTagStr,
   getDate,
   md2html
 };

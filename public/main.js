@@ -5,7 +5,7 @@ function generateTOC() {
 
 function getTitles() {
   const article = document.getElementById('article');
-  const nodes = ['H1', 'H2', 'H3'];
+  const nodes = ['H2'];
   let titles = [];
   let count = 0;
   article.childNodes.forEach(function(e, i) {

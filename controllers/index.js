@@ -10,6 +10,8 @@ const { convertContent } = require('../common/cache');
 const { Op } = require('sequelize');
 const path = require('path');
 const config = require('../config');
+const { parseTagStr } = require('../common/util');
+const { getPageListByTag } = require('../common/cache');
 
 async function getIndex(req, res, next) {
   let page = parseInt(req.query.p);
@@ -135,6 +137,15 @@ async function getPage(req, res, next) {
   page.view++;
   updateView(page.id);
   page.converted_content = convertContent(page, false);
+
+  // Category
+  let [category, tags] = parseTagStr(page.tag);
+  page.tags = tags;
+  if (category) {
+    page.category = category;
+    page.categoryList = await getPageListByTag(page.category);
+  }
+
   res.locals.links = getLinks(page.id);
   switch (page.type) {
     case PAGE_TYPES.ARTICLE:

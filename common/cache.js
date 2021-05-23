@@ -1,16 +1,23 @@
-const { Page, User } = require('../models');
+const { parseTagStr } = require('./util');
+const { Page } = require('../models');
 const { PAGE_STATUS, PAGE_TYPES } = require('./constant');
-const sequelize = require('sequelize');
 const { Op } = require('sequelize');
 const { md2html } = require('./util');
 
 let pages = undefined;
+// Key is the page id, value the index of this page in array pages.
 let id2index = new Map();
+// Key is the page id, value is the converted content.
 let convertedContentCache = new Map();
+// Key is a tag name, value is an array of pages list ordered by their links.
+let categoryCache = new Map();
 
 function updateCache(page, isNew, updateConvertedContent) {
   // update converted content cache
   convertContent(page, updateConvertedContent);
+  // Delete corresponding key in categoryCache
+  let [category, _] = parseTagStr(page.tag);
+  categoryCache.delete(category);
 
   if (isNew) {
     // Add new page to the front of pages.
@@ -26,12 +33,15 @@ function updateCache(page, isNew, updateConvertedContent) {
 }
 
 function deleteCacheEntry(id) {
+  let index = id2index.get(id);
+  // Delete corresponding key in categoryCache
+  let [category, _] = parseTagStr(pages[index].tag);
+  categoryCache.delete(category);
+
   // Clear converted content cache.
   convertedContentCache.delete(id);
   // Delete this page form pages array.
-  pages.splice(id2index.get(id), 1);
-  // Update the index.
-  // updateId2Index();
+  pages.splice(index, 1);
 }
 
 function updateId2Index() {
@@ -81,8 +91,46 @@ async function loadAllPages() {
   }
 }
 
+async function getPageListByTag(tag) {
+  // Check cache.
+  if (categoryCache.has(tag)) {
+    return categoryCache.get(tag);
+  }
+
+  // Retrieve from database.
+  let list = [];
+  try {
+    list = await Page.findAll({
+      where: {
+        [Op.or]: [
+          {
+            tag: {
+              [Op.like]: `${tag} %`
+            }
+          },
+          {
+            tag: {
+              [Op.eq]: `${tag}`
+            }
+          }
+        ]
+      },
+      attributes: ['link', 'title'],
+      order: [['link', 'ASC']],
+      raw: true
+    });
+    // Save it to cache
+    categoryCache.set(tag, list);
+  } catch (e) {
+    console.error('Failed to get pages list by tag!');
+    console.error(e);
+  }
+  return list;
+}
+
 async function getPagesByRange(start, num) {
   if (pages === undefined) {
+    // This means the server is just started.
     await loadAllPages();
   }
   return pages.slice(start, start + num);
@@ -151,5 +199,6 @@ module.exports = {
   getLinks,
   updateCache,
   updateView,
-  loadAllPages
+  loadAllPages,
+  getPageListByTag
 };
