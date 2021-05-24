@@ -25,7 +25,7 @@ function getTitles() {
 
 function insertTOC(titles) {
   const toc = document.getElementById('toc');
-  for (let i = 1; i < titles.length; i++) {
+  for (let i = 0; i < titles.length; i++) {
     let title = titles[i];
     let template = `<li><a href="#${title.id}">${title.text}</a></li>`;
     toc.insertAdjacentHTML('beforeend', template);
