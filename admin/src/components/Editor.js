@@ -115,6 +115,7 @@ class Editor extends Component {
       language: 'markdown',
       pasteWithFormatting: false,
       fontSize: 18,
+      // fontSize: this.loadEditorFontSize(),
       saveInterval: 60,
       isNewPage: this.props.match.path === '/editor',
       originPage: undefined,
@@ -134,6 +135,12 @@ class Editor extends Component {
     };
     this.onChange = this.onChange.bind(this);
     // setInterval(this.onSubmit, this.state.saveInterval);
+    window.showCloseHint = false;
+    window.onbeforeunload = (e) => {
+      if (window.showCloseHint) {
+        return 'Unsaved changes detected.';
+      }
+    };
   }
 
   static getDerivedStateFromProps({ status }) {
@@ -192,18 +199,21 @@ class Editor extends Component {
     }
   };
 
+  loadEditorFontSize() {
+    let fontSize = localStorage.getItem('fontSize');
+    fontSize = parseInt(fontSize);
+    if (!fontSize) {
+      fontSize = 18;
+    }
+    return fontSize;
+  }
+
   loadEditorConfig() {
     let theme = localStorage.getItem('theme');
     if (theme === null) {
       theme = this.state.theme;
     }
-    let fontSize = localStorage.getItem('fontSize');
-    if (fontSize === null) {
-      fontSize = this.state.fontSize;
-    }
-    if (isNaN(fontSize)) {
-      fontSize = 18;
-    }
+    let fontSize = this.loadEditorFontSize();
     let saveInterval = localStorage.getItem('saveInterval');
     if (saveInterval == null) {
       saveInterval = this.state.saveInterval;
@@ -222,6 +232,7 @@ class Editor extends Component {
   }
 
   onChange(newValue) {
+    window.showCloseHint = true;
     let page = { ...this.state.page };
     page.content = newValue;
     localStorage.setItem('editorContent', page.content);
@@ -388,6 +399,7 @@ class Editor extends Component {
   };
 
   onSubmit = (e) => {
+    window.showCloseHint = false;
     this.onEditorBlur();
     if (this.state.page.link === '') {
       let page = { ...this.state.page };
