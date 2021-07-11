@@ -22,7 +22,7 @@ const { initializeDatabase } = require('./models');
 app.use(
   rateLimit({
     windowMs: 30 * 1000,
-    max: 30
+    max: 60
   })
 );
 app.use(

@@ -10,3 +10,6 @@
 [submodule "themes/v2ex"]
 	path = themes/v2ex
 	url = https://github.com/songquanpeng/blog-theme-v2ex
+[submodule "themes/bootstrap5"]
+	path = themes/bootstrap5
+	url = https://github.com/songquanpeng/blog-theme-bootstrap5
