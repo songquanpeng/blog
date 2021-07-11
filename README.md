@@ -25,6 +25,7 @@
     3. W3: [blog-theme-w3](https://github.com/songquanpeng/blog-theme-w3).
     4. V2ex: [blog-theme-v2ex](https://github.com/songquanpeng/blog-theme-v2ex).
     5. Next: [blog-theme-next](https://github.com/songquanpeng/blog-theme-next).
+    6. Bootstrap5: [blog-theme-bootstrap5](https://github.com/songquanpeng/blog-theme-bootstrap5).
 
 ## Deployment
 ```shell script
