@@ -52,7 +52,8 @@ npm start
 2. Bootstrap：[Bootstrap 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap)。
 3. W3：[W3.css 风格主题](https://github.com/songquanpeng/blog-theme-w3)。
 4. V2ex: [V2ex 风格主题](https://github.com/songquanpeng/blog-theme-v2ex)。
-5. Next: [Hexo Next 风格主题](https://github.com/songquanpeng/blog-theme-next).
+5. Next: [Hexo Next 风格主题](https://github.com/songquanpeng/blog-theme-next)。
+6. Bootstrap5: 借鉴自 [CodeLunatic/halo-theme-simple-bootstrap](https://github.com/CodeLunatic/halo-theme-simple-bootstrap) 的 [Bootstrap5 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap5)。
 
 **注意**
 1. 如需更改主题，打开后台管理系统中的 setting 页面，下拉框中找到 theme，修改后点击 submit，记得浏览器 `Ctrl + F5` 刷新缓存。
