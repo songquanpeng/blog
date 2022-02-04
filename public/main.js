@@ -30,4 +30,10 @@ function insertTOC(titles) {
     let template = `<li><a href="#${title.id}">${title.text}</a></li>`;
     toc.insertAdjacentHTML('beforeend', template);
   }
+  if (titles.length === 0) {
+    let tocContainer = document.getElementById('toc-container');
+    if (tocContainer) {
+      tocContainer.style.display = "none";
+    }
+  }
 }
