@@ -21,11 +21,15 @@ async function getIndex(req, res, next) {
   let pageSize = 10;
   let start = page * pageSize;
   let pages = await getPagesByRange(start, pageSize);
-  res.render('index', {
-    pages: pages,
-    prev: `?p=${page - 1}`,
-    next: `?p=${page + 1}`
-  });
+  if (page.length == 0) {
+    res.redirect("/");
+  } else {
+    res.render('index', {
+      pages: pages,
+      prev: `?p=${page - 1}`,
+      next: `?p=${page + 1}`
+    });
+  }
 }
 
 async function getArchive(req, res, next) {
