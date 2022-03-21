@@ -21,7 +21,7 @@ async function getIndex(req, res, next) {
   let pageSize = 10;
   let start = page * pageSize;
   let pages = await getPagesByRange(start, pageSize);
-  if (page.length == 0) {
+  if (page != 0 && pages.length == 0) {
     res.redirect("/");
   } else {
     res.render('index', {
