@@ -71,6 +71,11 @@ const tabs = [
         key: 'brand_image',
         description: 'An image link.',
       },
+      {
+        key: 'index_page_content',
+        description: 'Custom HTML code for index page.',
+        isBlock: true,
+      }
     ],
   },
   {

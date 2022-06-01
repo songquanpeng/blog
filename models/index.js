@@ -54,7 +54,8 @@ async function initializeOptions() {
     ],
     ['port', '3000'],
     ['site_name', 'Site Name'],
-    ['theme', 'bulma']
+    ['theme', 'bulma'],
+    ['index_page_content', '']
   ];
   for (const option of plainOptions) {
     let [key, value] = option;

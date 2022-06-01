@@ -14,6 +14,11 @@ const { parseTagStr } = require('../common/util');
 const { getPageListByTag } = require('../common/cache');
 
 async function getIndex(req, res, next) {
+  if (req.url === '/' && req.app.locals.config.index_page_content !== '') {
+    res.setHeader("Content-Type", "text/html");
+    res.send(req.app.locals.config.index_page_content);
+    return;
+  }
   let page = parseInt(req.query.p);
   if (!page || page <= 0) {
     page = 0;
@@ -21,7 +26,7 @@ async function getIndex(req, res, next) {
   let pageSize = 10;
   let start = page * pageSize;
   let pages = await getPagesByRange(start, pageSize);
-  if (page != 0 && pages.length == 0) {
+  if (page !== 0 && pages.length === 0) {
     res.redirect("/");
   } else {
     res.render('index', {
