@@ -15,8 +15,13 @@ const { getPageListByTag } = require('../common/cache');
 
 async function getIndex(req, res, next) {
   if (req.url === '/' && req.app.locals.config.index_page_content !== '') {
-    res.setHeader("Content-Type", "text/html");
-    res.send(req.app.locals.config.index_page_content);
+    if (req.app.locals.config.index_page_content === '404') {
+      res.status(404);
+      res.end();
+    } else {
+      res.setHeader("Content-Type", "text/html");
+      res.send(req.app.locals.config.index_page_content);
+    }
     return;
   }
   let page = parseInt(req.query.p);
