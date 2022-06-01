@@ -8,7 +8,7 @@ async function getAll(req, res, next) {
   let message = 'ok';
   let status = true;
   try {
-    files = await File.findAll({ raw: true });
+    files = await File.findAll({ order: [['updatedAt', 'DESC']], raw: true });
   } catch (e) {
     status = false;
     message = e.message;
