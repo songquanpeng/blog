@@ -46,6 +46,7 @@ npm start
 1. 支持主题。
 2. 无需配置数据库，开箱即用（如果你不想用 SQLite，请修改 `config.js` 配置文件）。
 3. 内置 ACE 代码编辑器，附带多种代码主题。
+4. Docker 一键部署：`docker run -d -p 3000:3000 justsong/blog`
 
 ## 主题
 1. Bulma：Bulma CSS 风格主题，内置的默认主题。
