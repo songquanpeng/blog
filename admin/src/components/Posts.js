@@ -279,8 +279,9 @@ class Posts extends Component {
     if (index === -1) {
       return;
     }
-    let pages = this.state.pages;
-    pages[index] = page;
+    // https://stackoverflow.com/a/71530834
+    let pages = [...this.state.pages];
+    pages[index] = { ...page };
     this.setState({ pages }, ()=>{
       console.log(this.state.pages[index])
     });
