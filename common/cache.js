@@ -25,8 +25,10 @@ function updateCache(page, isNew, updateConvertedContent) {
   } else {
     // Update pages.
     let i = id2index.get(page.id);
-    pages.splice(i, 1);
-    pages.unshift(page);
+    if (i !== undefined) {
+      pages.splice(i, 1);
+      pages.unshift(page);
+    }
   }
   // Update the index.
   // updateId2Index();
@@ -34,6 +36,7 @@ function updateCache(page, isNew, updateConvertedContent) {
 
 function deleteCacheEntry(id) {
   let index = id2index.get(id);
+  if (index === undefined) return;
   // Delete corresponding key in categoryCache
   let [category, _] = parseTagStr(pages[index].tag);
   categoryCache.delete(category);
@@ -54,7 +57,7 @@ function updateId2Index() {
 function getLinks(id) {
   let i = id2index.get(id);
   if (i === undefined) {
-    i = 0
+    i = 0;
   }
   let prevIndex = Math.max(i - 1, 0);
   let nextIndex = Math.min(i + 1, pages.length - 1);
@@ -190,6 +193,7 @@ function convertContent(page, refresh) {
 
 function updateView(id) {
   let i = id2index.get(id);
+  if (i === undefined) return;
   if (i >= 0 && i < pages.length) {
     pages[i].view++;
   }
