@@ -53,6 +53,9 @@ function updateId2Index() {
 
 function getLinks(id) {
   let i = id2index.get(id);
+  if (i === undefined) {
+    i = 0
+  }
   let prevIndex = Math.max(i - 1, 0);
   let nextIndex = Math.min(i + 1, pages.length - 1);
 
@@ -199,6 +202,6 @@ module.exports = {
   getLinks,
   updateCache,
   updateView,
-  loadAllPages,
+  loadAllPages: loadAllPages,
   getPageListByTag
 };

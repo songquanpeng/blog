@@ -386,6 +386,12 @@ class Editor extends Component {
     this.setState({ page });
   };
 
+  onHiddenStatusChange = () => {
+    let page = { ...this.state.page };
+    page.pageStatus = page.pageStatus === 3 ? 1 : 3;
+    this.setState({ page });
+  };
+
   onPasteWithFormattingChange = () => {
     let pasteWithFormatting = !this.state.pasteWithFormatting;
     this.setState({ pasteWithFormatting });
@@ -590,6 +596,15 @@ class Editor extends Component {
               onChange={this.onStayOnTopStatusChange}
             />{' '}
             Stay on top
+          </Space>
+          <Space>
+            <Switch
+              name="pageStatus"
+              label="Hide on index"
+              checked={this.state.page.pageStatus === 3}
+              onChange={this.onHiddenStatusChange}
+            />{' '}
+            Hide on index
           </Space>
           {/*<Space>*/}
           {/*  <Switch*/}

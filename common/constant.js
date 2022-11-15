@@ -12,7 +12,8 @@ const PAGE_TYPES = {
 const PAGE_STATUS = {
   RECALLED: 0,
   PUBLISHED: 1,
-  TOPPED: 2
+  TOPPED: 2,
+  HIDDEN: 3
 };
 
 module.exports = { PAGE_TYPES, PAGE_STATUS };

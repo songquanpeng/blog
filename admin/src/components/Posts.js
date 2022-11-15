@@ -107,7 +107,7 @@ class Posts extends Component {
                 published
               </Tag>
             );
-          } else {
+          } else if (value === 2) {
             return (
               <Tag
                 icon={<CheckCircleOutlined />}
@@ -115,6 +115,16 @@ class Posts extends Component {
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
               >
                 stay on top
+              </Tag>
+            );
+          } else {
+            return (
+              <Tag
+                icon={<MinusCircleOutlined />}
+                color="default"
+                onClick={() => this.switchStatus(record.id, 'pageStatus')}
+              >
+                hidden
               </Tag>
             );
           }
@@ -269,9 +279,11 @@ class Posts extends Component {
     if (index === -1) {
       return;
     }
-    let pages = { ...this.state.pages };
+    let pages = this.state.pages;
     pages[index] = page;
-    this.setState({ page });
+    this.setState({ pages }, ()=>{
+      console.log(this.state.pages[index])
+    });
   };
 
   deletePage = (id) => {
@@ -300,7 +312,7 @@ class Posts extends Component {
     let page = pages.find((x) => x.id === id);
     let base = 2;
     if (key === 'pageStatus') {
-      base = 3;
+      base = 4;
     }
     page[key] = (page[key] + 1) % base;
     page.id = id;

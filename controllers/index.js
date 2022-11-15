@@ -43,7 +43,7 @@ async function getIndex(req, res, next) {
 }
 
 async function getArchive(req, res, next) {
-  let pages = await getPagesByRange(0, 1000);
+  let pages = await getPagesByRange(0, -1);
   res.render('archive', {
     pages: pages.reverse()
   });
@@ -61,7 +61,7 @@ async function getSitemap(req, res, next) {
     const hostname = 'https://' + req.app.locals.config.domain;
     const smStream = new SitemapStream({ hostname });
     const pipeline = smStream.pipe(createGzip());
-    let pages = await getPagesByRange(0, 1000);
+    let pages = await getPagesByRange(0, -1);
     pages.forEach(page => {
       smStream.write({ url: `/page/` + page.link });
     });
