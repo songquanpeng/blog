@@ -123,9 +123,6 @@ class App extends React.Component {
             <Menu.Item key="1" icon={<CodeOutlined />}>
               <Link to={'/editor'}>Editor</Link>
             </Menu.Item>
-            <Menu.Item key="4" icon={<CommentOutlined />}>
-              <Link to={'/comments'}>Comments</Link>
-            </Menu.Item>
             <Menu.Item key="5" icon={<CloudUploadOutlined />}>
               <Link to={'/files'}>Files</Link>
             </Menu.Item>
