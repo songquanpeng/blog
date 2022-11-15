@@ -2,7 +2,7 @@
 <div class="info">
     <span class="line">
         Tag:
-        <% page.tag.trim().split(" ").forEach(function (tag) {if (tag !== "") {%>
+        <% page.tag.trim().split(";").forEach(function (tag) {if (tag !== "") {%>
             <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
         <% }}); %>
     </span>

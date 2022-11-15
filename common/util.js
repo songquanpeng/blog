@@ -45,7 +45,7 @@ function md2html(markdown) {
 }
 
 function parseTagStr(tag) {
-  let tags = tag.split(' ');
+  let tags = tag.split(';');
   let category = undefined;
   if (tags.length !== 0) {
     category = tags.shift();

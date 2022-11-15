@@ -11,7 +11,7 @@
                                     <div class="page-card-title"><a
                                                 href="/page/<%= page.link %>"><%= page.title ? page.title : 'No title' %></a>
                                     </div>
-                                    <% page.tag.trim().split(" ").forEach(function (tag) { if(tag !== ""){ %>
+                                    <% page.tag.trim().split(";").forEach(function (tag) { if(tag !== ""){ %>
                                         <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
                                     <% }}); %>
                                     <a class="tag is-light"

@@ -71,7 +71,7 @@ class Posts extends Component {
         dataIndex: 'tag',
         render: (tags) => (
           <>
-            {tags.split(' ').map((tag) => {
+            {tags.split(';').map((tag) => {
               return (
                 <Tag color={'cyan'} key={tag}>
                   {tag}

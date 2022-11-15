@@ -276,12 +276,12 @@ class Editor extends Component {
       }
 
       if (line.startsWith('-') && !line.trim().endsWith('-')) {
-        tag += ` ${line.trim().substring(1).trim()}`;
+        tag += `;${line.trim().substring(1).trim()}`;
       } else {
         break;
       }
     }
-    page.tag = tag.trim();
+    page.tag = tag.trim().slice(1);
     page.title = title.trim();
     page.description = description;
     if (page.link === '') page.link = this.getValidLink(page.title);
