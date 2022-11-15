@@ -98,7 +98,7 @@ async function getMonthArchive(req, res, next) {
     res.render('list', { pages, title: time });
   } catch (e) {
     res.render('message', {
-      title: 'Error!',
+      title: 'Error',
       message: e.message
     });
   }
@@ -121,7 +121,7 @@ async function getTag(req, res, next) {
     res.render('list', { pages, title: tag });
   } catch (e) {
     res.render('message', {
-      title: 'Error!',
+      title: 'Error',
       message: e.message
     });
   }
@@ -137,7 +137,7 @@ async function getPage(req, res, next) {
   });
   if (page === null) {
     return res.render('message', {
-      title: 'Error!',
+      title: 'Error',
       message: `No page has link "${link}".`
     });
   }
@@ -185,7 +185,7 @@ async function getPage(req, res, next) {
       break;
     default:
       res.render('message', {
-        title: 'Error!',
+        title: 'Error',
         message: `Unexpected page type: ${page.type}`
       });
   }

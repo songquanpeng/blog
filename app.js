@@ -86,7 +86,7 @@ app.use(flash());
   app.use(function(req, res, next) {
     if (!res.headersSent) {
       res.render('message', {
-        title: ':{404 Not Found}',
+        title: '404 Not Found',
         message: 'The page you requested does not exist, I am sorry for that.'
       });
     }
