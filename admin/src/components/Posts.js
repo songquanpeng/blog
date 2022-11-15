@@ -45,7 +45,7 @@ class Posts extends Component {
             title={`Posted on ${record.createdAt}\nEdited on ${record.updatedAt}`}
           >
             <span>
-              <a href={'/page/' + record.link}>{value ? value : 'No title'}</a>
+              <a target='_blank' href={'/page/' + record.link}>{value ? value : 'No title'}</a>
             </span>
           </Tooltip>
         ),
@@ -93,6 +93,7 @@ class Posts extends Component {
                 icon={<MinusCircleOutlined />}
                 color="default"
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
+                style={{cursor: 'pointer'}}
               >
                 recalled
               </Tag>
@@ -103,6 +104,7 @@ class Posts extends Component {
                 icon={<CheckCircleOutlined />}
                 color="success"
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
+                style={{cursor: 'pointer'}}
               >
                 published
               </Tag>
@@ -113,6 +115,7 @@ class Posts extends Component {
                 icon={<CheckCircleOutlined />}
                 color="orange"
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
+                style={{cursor: 'pointer'}}
               >
                 stay on top
               </Tag>
@@ -123,6 +126,7 @@ class Posts extends Component {
                 icon={<MinusCircleOutlined />}
                 color="default"
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
+                style={{cursor: 'pointer'}}
               >
                 hidden
               </Tag>
@@ -141,6 +145,7 @@ class Posts extends Component {
               icon={<CheckCircleOutlined />}
               color="success"
               onClick={() => this.switchStatus(record.id, 'commentStatus')}
+              style={{cursor: 'pointer'}}
             >
               enabled
             </Tag>
@@ -149,6 +154,7 @@ class Posts extends Component {
               icon={<MinusCircleOutlined />}
               color="default"
               onClick={() => this.switchStatus(record.id, 'commentStatus')}
+              style={{cursor: 'pointer'}}
             >
               disabled
             </Tag>
