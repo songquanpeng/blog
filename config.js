@@ -6,7 +6,7 @@ let config = {
   auth_cookie_name: 'blog',
   uploadPath: './public/upload',
   systemName: 'Blog',
-  systemVersion: 'v0.5.1',
+  systemVersion: 'v0.5.2',
   cacheMaxAge: 600
 };
 
