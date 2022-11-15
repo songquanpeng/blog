@@ -27,6 +27,10 @@ const tabs = [
         key: 'allow_comments',
         description: 'true or false',
       },
+      {
+        key: 'use_cache',
+        description: 'true or false',
+      },
     ],
   },
   {

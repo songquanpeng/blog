@@ -8,3 +8,4 @@ data.db-journal
 /public/*.xml
 package-lock.json
 yarn.lock
+*.log
