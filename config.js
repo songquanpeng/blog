@@ -7,7 +7,7 @@ let config = {
   uploadPath: './public/upload',
   systemName: 'Blog',
   systemVersion: 'v0.5.3',
-  cacheMaxAge: 600
+  cacheMaxAge: 30 * 24 * 3600  // 30 days
 };
 
 function init() {}
