@@ -3,12 +3,22 @@ const { Page } = require('../models');
 const { PAGE_STATUS, PAGE_TYPES } = require('./constant');
 const { Op } = require('sequelize');
 const { md2html } = require('./util');
+const LRU = require('lru-cache');
+const config = require('../config');
+
+const options = {
+  max: config.maxCachePosts,
+  allowStale: true,
+  updateAgeOnGet: true,
+  updateAgeOnHas: false,
+};
 
 let pages = undefined;
 // Key is the page id, value the index of this page in array pages.
 let id2index = new Map();
 // Key is the page id, value is the converted content.
-let convertedContentCache = new Map();
+// let convertedContentCache = new Map();
+const convertedContentCache = new LRU(options);
 // Key is a tag name, value is an array of pages list ordered by their links.
 let categoryCache = new Map();
 
