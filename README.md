@@ -72,7 +72,9 @@ npm start
 
 ## 部署
 ### 通过 Docker 部署
-Docker 一键部署：`docker run -d -p 3000:3000 justsong/blog`
+执行：`docker run -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data justsong/blog`
+
+数据将会保存在宿主机的 `/home/ubuntu/data/blog` 目录。
 
 ### 通过源码部署
 ```shell script
