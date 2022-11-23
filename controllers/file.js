@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { File } = require('../models');
 const uploadPath = require('../config').uploadPath;
 const fs = require('fs');
+const path = require('path');
 
 async function getAll(req, res, next) {
   let files = [];
@@ -66,8 +67,8 @@ async function delete_(req, res, next) {
       }
     });
     status = rows === 1;
-    fs.unlink(uploadPath + '/' + id, error => {
-      console.log(uploadPath + '/' + id);
+    let filePath = path.join(uploadPath, id);
+    fs.unlink(filePath, error => {
       if (error) {
         console.error(error);
       }

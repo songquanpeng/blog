@@ -64,9 +64,11 @@ app.use(flash());
   await loadNoticeContent(app);
   enableRSS(app.locals.config);
 
-  // Then we setup the app.
+  // Then we set up the app.
+  app.use('/upload', express.static(config.uploadPath))
+
   app.use(
-    serveStatic(path.join(__dirname, './public'), {
+    serveStatic(path.join(__dirname, 'public'), {
       maxAge: config.cacheMaxAge * 1000
     })
   );
