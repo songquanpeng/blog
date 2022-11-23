@@ -12,7 +12,6 @@ const enableRSS = require('./common/rss').enableRSS;
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const crypto = require('crypto');
-const cors = require('cors');
 const webRouter = require('./routes/web-router');
 const apiRouterV1 = require('./routes/api-router.v1');
 const app = express();
@@ -81,7 +80,7 @@ app.use(flash());
   });
 
   app.use('/', webRouter);
-  app.use('/api', cors(), apiRouterV1);
+  app.use('/api', apiRouterV1);
 
   app.use(function(req, res, next) {
     if (!res.headersSent) {
