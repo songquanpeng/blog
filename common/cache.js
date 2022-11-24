@@ -121,7 +121,7 @@ async function getPageListByTag(tag) {
         [Op.or]: [
           {
             tag: {
-              [Op.like]: `${tag} %`
+              [Op.like]: `${tag};%`
             }
           },
           {
