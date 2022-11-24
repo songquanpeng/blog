@@ -74,9 +74,21 @@ npm start
 ### 通过 Docker 部署
 执行：`docker run -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog`
 
+开放的端口号为 3000，之后用 Nginx 配置域名，反代以及 SSL 证书即可。
+
 数据将会保存在宿主机的 `/home/ubuntu/data/blog` 目录（数据库文件和上传的文件）。
 
-在该目录下新建一个 `index` 文件夹，里面可以放置 `favicon.ico`, `robots.txt` 等文件，具体参见 `data/index` 目录下的内容。
+如果想在网站根目录上传文件，则在该目录下新建一个 `index` 文件夹，里面可以放置 `favicon.ico`, `robots.txt` 等文件，具体参见 `data/index` 目录下的内容。
+
+更新博客版本的流程：
+```shell script
+# pull new images
+docker pull justsong/blog
+# stop old container
+docker stop id
+# start new container
+docker run -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog
+```
 
 ### 通过源码部署
 ```shell script
