@@ -1,43 +1,40 @@
+<p align="right">
+   <strong>中文</strong> | <a href="./README.en.md">English</a>
+</p>
+
+<div align="center">
+
 # 个人博客系统
-[![Code Size](https://img.shields.io/github/languages/code-size/songquanpeng/blog)](https://github.com/songquanpeng/blog) 
-[![license](https://img.shields.io/github/license/songquanpeng/blog)](https://github.com/songquanpeng/blog) 
-[![release](https://img.shields.io/github/v/release/songquanpeng/blog)](https://github.com/songquanpeng/blog/releases)
 
-<details>
-<summary><strong><i>Click here to expand the README in English.</i></strong></summary>
-<div>
- 
-## Description
-+ This is a blog system powered by Express.js and React.
-+ Demonstrations
-    + [My blog](https://iamazing.cn/) (may not be the latest version).
-    + [Heroku App](https://express-react-blog.herokuapp.com/) (visit the [management system](https://express-react-blog.herokuapp.com/admin/) with default username `admin` and password `123456`)
-
-## Highlights
-1. You can use a **code editor** to edit your content (built-in ACE code editor with multiple themes).
-2. Easy to configure and integrate with disqus and statistics system.
-3. You can copy from OneNote or any other programs and **paste your content with formatting** (with the `paste with formatting` feature, don't forget to set the page type to `raw`).
-4. You can use this to deploy your single page web application (such as a [game](https://iamazing.cn/page/online-battle-city)), just paste the code and set the page type to `raw`.
-5. System deploy is extremely simple, no need to configure the database (here I use SQLite as the default database, but it's easy to move to other database, just by modifying the `knexfile.js`).
-6. **Multiple themes available**:
-    1. Bulma: default theme.
-    2. Bootstrap: [blog-theme-bootstrap](https://github.com/songquanpeng/blog-theme-bootstrap).
-    3. W3: [blog-theme-w3](https://github.com/songquanpeng/blog-theme-w3).
-    4. V2ex: [blog-theme-v2ex](https://github.com/songquanpeng/blog-theme-v2ex).
-    5. Next: [blog-theme-next](https://github.com/songquanpeng/blog-theme-next).
-    6. Bootstrap5: [blog-theme-bootstrap5](https://github.com/songquanpeng/blog-theme-bootstrap5).
-
-## Deployment
-```shell script
-git clone --recurse-submodules https://github.com/songquanpeng/blog.git
-cd blog
-npm install
-npm run build  # For Windows user, please run `npm run build2` instead
-npm start
-```
+_✨ 基于 Node.js 的个人博客系统 ✨_
 
 </div>
-</details>
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/songquanpeng/blog/master/LICENSE">
+    <img src="https://img.shields.io/github/license/songquanpeng/blog?color=brightgreen" alt="license">
+  </a>
+  <a href="https://github.com/songquanpeng/blog/releases/latest">
+    <img src="https://img.shields.io/github/v/release/songquanpeng/blog?color=brightgreen&include_prereleases" alt="release">
+  </a>
+  <a href="https://github.com/songquanpeng/blog/releases/latest">
+    <img src="https://img.shields.io/github/downloads/songquanpeng/blog/total?color=brightgreen&include_prereleases" alt="release">
+  </a>
+  <a href="https://hub.docker.com/repository/docker/justsong/blog">
+    <img src="https://img.shields.io/docker/pulls/justsong/blog?color=brightgreen" alt="docker pull">
+  </a>
+</p>
+
+<p align="center">
+  <a href="#截图展示">截图展示</a>
+  ·
+  <a href="https://iamazing.cn/">在线演示</a>
+  ·
+  <a href="#部署">部署教程</a>
+  ·
+  <a href="https://github.com/songquanpeng/blog/issues">意见反馈</a>
+</p>
+
 
 ## 描述
 技术栈：Express.js（服务端）+ Sequelize（ORM） + React（后台）+ Ant Design（后台 UI 库）
@@ -53,7 +50,7 @@ npm start
 1. Bulma：Bulma CSS 风格主题，内置的默认主题。
 2. Bootstrap：[Bootstrap 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap)（推荐使用）。
 3. W3：[W3.css 风格主题](https://github.com/songquanpeng/blog-theme-w3)。
-4. V2ex: [V2ex 风格主题](https://github.com/songquanpeng/blog-theme-v2ex)。
+4. V2EX: [V2EX 风格主题](https://github.com/songquanpeng/blog-theme-v2ex)。
 5. Next: [Hexo Next 风格主题](https://github.com/songquanpeng/blog-theme-next)。
 6. Bootstrap5: 借鉴自 [CodeLunatic/halo-theme-simple-bootstrap](https://github.com/CodeLunatic/halo-theme-simple-bootstrap) 的 [Bootstrap5 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap5)。
 
@@ -66,7 +63,7 @@ npm start
 1. [我的博客](https://iamazing.cn/) (可能并非最新版本).
 2. [Heroku App](https://express-react-blog.herokuapp.com/) ([后台管理系统地址](https://express-react-blog.herokuapp.com/admin/) 默认用户名 `admin` 以及密码 `123456`)
 
-### 截图演示
+### 截图展示
 ![桌面端首页](https://user-images.githubusercontent.com/39998050/108320215-76e02e00-71fd-11eb-8ecc-caeff90eb0da.png)
 ![后台管理页面文章列表页面](https://user-images.githubusercontent.com/39998050/108320192-6f208980-71fd-11eb-8e3d-92e61dce09e6.png)
 ![编辑器页面](https://user-images.githubusercontent.com/39998050/108320168-6465f480-71fd-11eb-8abd-f74588d9e39a.png)
