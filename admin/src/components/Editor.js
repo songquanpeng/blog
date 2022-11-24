@@ -604,7 +604,7 @@ class Editor extends Component {
               checked={this.state.page.pageStatus === 3}
               onChange={this.onHiddenStatusChange}
             />{' '}
-            首页显示
+            隐藏页面
           </Space>
           {/*<Space>*/}
           {/*  <Switch*/}

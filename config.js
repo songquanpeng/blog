@@ -1,3 +1,5 @@
+let fs = require('fs');
+
 let config = {
   port: process.env.PORT || 3000,
   database: process.env.SQLITE_PATH || './data/data.db',
@@ -9,7 +11,12 @@ let config = {
   maxCachePosts: 32
 };
 
-function init() {}
+function init() {
+  if (!fs.existsSync(config.uploadPath)) {
+    fs.mkdirSync(config.uploadPath);
+  }
+}
+
 init();
 
 module.exports = config;
