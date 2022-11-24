@@ -61,7 +61,7 @@ _✨ 基于 Node.js 的个人博客系统 ✨_
 ## 演示
 ### 在线演示
 1. [JustSong 的个人博客](https://iamazing.cn) (可能并非最新版本).
-2. [Render App](https://blog-vqwv.onrender.com) ([后台管理系统地址](https://blog-vqwv.onrender.com/admin/) 默认用户名 `admin` 以及密码 `123456`)
+2. [Render App](https://nodejs-blog.onrender.com) ([后台管理系统地址](https://nodejs-blog.onrender.com/admin/) 默认用户名 `admin` 以及密码 `123456`)
 
 ### 截图展示
 ![桌面端首页](https://user-images.githubusercontent.com/39998050/108320215-76e02e00-71fd-11eb-8ecc-caeff90eb0da.png)
