@@ -74,7 +74,9 @@ npm start
 ### 通过 Docker 部署
 执行：`docker run -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog`
 
-数据将会保存在宿主机的 `/home/ubuntu/data/blog` 目录。
+数据将会保存在宿主机的 `/home/ubuntu/data/blog` 目录（数据库文件和上传的文件）。
+
+在该目录下新建一个 `index` 文件夹，里面可以放置 `favicon.ico`, `robots.txt` 等文件，具体参见 `data/index` 目录下的内容。
 
 ### 通过源码部署
 ```shell script
