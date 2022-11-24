@@ -65,12 +65,16 @@ app.use(flash());
   enableRSS(app.locals.config);
 
   // Then we set up the app.
-  app.use('/upload', express.static(config.uploadPath))
-
+  let serveStaticOptions = {
+    maxAge: config.cacheMaxAge * 1000
+  };
+  app.use('/upload', serveStatic(config.uploadPath, serveStaticOptions));
+  app.use('/admin', serveStatic(path.join(__dirname, 'public', 'admin'), serveStaticOptions));
+  app.get('/feed.xml', (req, res) => {
+    res.download(path.join(__dirname, 'public', 'feed.xml'));
+  });
   app.use(
-    serveStatic(path.join(__dirname, 'public'), {
-      maxAge: config.cacheMaxAge * 1000
-    })
+    serveStatic(path.join(__dirname, 'data', 'index'), serveStaticOptions)
   );
 
   app.use('*', (req, res, next) => {
