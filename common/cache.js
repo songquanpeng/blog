@@ -149,6 +149,9 @@ async function getPagesByRange(start, num) {
     // This means the server is just started.
     await loadAllPages();
   }
+  if (num === -1) {
+    return pages.slice(start);
+  }
   return pages.slice(start, start + num);
 }
 
