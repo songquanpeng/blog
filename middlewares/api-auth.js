@@ -1,11 +1,11 @@
-const bannedMessage = 'You has been banned.';
-const deniedMessage = 'Permission denied.';
+const bannedMessage = '用户已被封禁';
+const deniedMessage = '访问被拒绝';
 
 exports.userRequired = (req, res, next) => {
   if (!req.session.user) {
     return res.json({
       status: false,
-      message: 'This operation requires login.'
+      message: '用户未登录，或登录状态已过期'
     });
   }
   if (req.session.user.isBlocked) {

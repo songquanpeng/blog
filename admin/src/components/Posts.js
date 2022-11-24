@@ -36,22 +36,22 @@ class Posts extends Component {
     };
     this.columns = [
       {
-        title: 'Title',
+        title: '标题',
         dataIndex: 'title',
         sorter: (a, b) => a.title > b.title,
         sortDirections: ['descend', 'ascend'],
         render: (value, record) => (
           <Tooltip
-            title={`Posted on ${record.createdAt}\nEdited on ${record.updatedAt}`}
+            title={`发布于：${record.createdAt}\n编辑于：${record.updatedAt}`}
           >
             <span>
-              <a target='_blank' href={'/page/' + record.link}>{value ? value : 'No title'}</a>
+              <a target='_blank' href={'/page/' + record.link}>{value ? value : '无标题'}</a>
             </span>
           </Tooltip>
         ),
       },
       {
-        title: 'Type',
+        title: '类型',
         dataIndex: 'type',
         render: (value) => (
           <Tag color={PAGE_OPTIONS[value + 1].key}>
@@ -60,14 +60,14 @@ class Posts extends Component {
         ),
       },
       {
-        title: 'Views',
+        title: '阅读量',
         dataIndex: 'view',
         sorter: (a, b) => parseInt(a.view) > parseInt(b.view),
         sortDirections: ['descend', 'ascend'],
         render: (value) => <Tag color={'blue'}>{value}</Tag>,
       },
       {
-        title: 'Tag',
+        title: '标签',
         dataIndex: 'tag',
         render: (tags) => (
           <>
@@ -82,7 +82,7 @@ class Posts extends Component {
         ),
       },
       {
-        title: 'Page status',
+        title: '状态',
         dataIndex: 'pageStatus',
         sorter: (a, b) => parseInt(a.pageStatus) > parseInt(b.pageStatus),
         sortDirections: ['descend', 'ascend'],
@@ -95,7 +95,7 @@ class Posts extends Component {
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
                 style={{cursor: 'pointer'}}
               >
-                recalled
+                已撤回
               </Tag>
             );
           } else if (value === 1) {
@@ -106,7 +106,7 @@ class Posts extends Component {
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
                 style={{cursor: 'pointer'}}
               >
-                published
+                已发布
               </Tag>
             );
           } else if (value === 2) {
@@ -117,7 +117,7 @@ class Posts extends Component {
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
                 style={{cursor: 'pointer'}}
               >
-                stay on top
+                已置顶
               </Tag>
             );
           } else {
@@ -128,14 +128,14 @@ class Posts extends Component {
                 onClick={() => this.switchStatus(record.id, 'pageStatus')}
                 style={{cursor: 'pointer'}}
               >
-                hidden
+                已隐藏
               </Tag>
             );
           }
         },
       },
       {
-        title: 'Comment status',
+        title: '评论',
         dataIndex: 'commentStatus',
         sorter: (a, b) => parseInt(a.commentStatus) > parseInt(b.commentStatus),
         sortDirections: ['descend', 'ascend'],
@@ -147,7 +147,7 @@ class Posts extends Component {
               onClick={() => this.switchStatus(record.id, 'commentStatus')}
               style={{cursor: 'pointer'}}
             >
-              enabled
+              已开启
             </Tag>
           ) : (
             <Tag
@@ -156,27 +156,27 @@ class Posts extends Component {
               onClick={() => this.switchStatus(record.id, 'commentStatus')}
               style={{cursor: 'pointer'}}
             >
-              disabled
+              已关闭
             </Tag>
           ),
       },
       {
-        title: 'Operation',
+        title: '操作',
         render: (record) => (
           <Space>
             <Button type="primary" onClick={() => this.editPage(record.id)}>
-              Edit
+              编辑
             </Button>
-            <Button onClick={() => this.exportPage(record.id)}>Export</Button>
+            <Button onClick={() => this.exportPage(record.id)}>导出</Button>
             <Popconfirm
               placement="rightTop"
-              title={'Are your sure to delete this page?'}
+              title={'确认删除页面？'}
               onConfirm={() => this.deletePage(record.id)}
-              okText="Yes"
-              cancelText="No"
+              okText="确认"
+              cancelText="取消"
             >
               <Button type="danger" danger>
-                Delete
+                删除
               </Button>
             </Popconfirm>
           </Space>
@@ -191,7 +191,7 @@ class Posts extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Access denied.');
+      Message.error('访问被拒绝');
       this.props.history.push('/login');
       return;
     }
@@ -248,7 +248,7 @@ class Posts extends Component {
           page.updatedAt = getDate(page.updatedAt);
         });
         this.setState({ pages });
-        Message.success('Loading done.');
+        Message.success('数据加载完毕');
       } else {
         Message.error(message);
       }
@@ -302,9 +302,9 @@ class Posts extends Component {
         if (i !== -1) {
           page.deleted = true;
           that.updateTargetPage(i, page);
-          Message.success('Your page has been deleted.');
+          Message.success('删除成功');
         } else {
-          Message.error('Something went wrong.');
+          Message.error('删除失败');
           console.error(id, i, page, that.state.pages);
         }
       } else {
@@ -329,7 +329,7 @@ class Posts extends Component {
         if (res.data.status) {
           let i = that.getPageById(id)[0];
           that.updateTargetPage(i, page);
-          Message.success('Your page has been updated.');
+          Message.success('更新成功');
         } else {
           Message.error(res.data.message);
         }
@@ -342,7 +342,7 @@ class Posts extends Component {
   render() {
     return (
       <div className={'content-area'}>
-        <h1>Posts</h1>
+        <h1>页面管理</h1>
         <Row justify="end" align="middle">
           <Col span={2} style={{ marginRight: '8px' }}>
             <Select
@@ -355,7 +355,7 @@ class Posts extends Component {
           </Col>
           <Col span={8}>
             <Search
-              placeholder='Press "Enter" to search...'
+              placeholder='搜索页面 ...'
               size={'large'}
               value={this.state.keyword}
               onChange={this.searchPages}

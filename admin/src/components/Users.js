@@ -25,7 +25,7 @@ class Users extends Component {
     };
     this.columns = [
       {
-        title: 'Username',
+        title: '用户名',
         dataIndex: 'username',
         render: (value, record) => (
           <Tooltip title={record.displayName}>
@@ -34,47 +34,47 @@ class Users extends Component {
         ),
       },
       {
-        title: 'Email',
+        title: '邮箱',
         dataIndex: 'email',
-        render: (value) => <>{value ? value : 'no email'}</>,
+        render: (value) => <>{value ? value : '无'}</>,
       },
       {
-        title: 'Admin',
+        title: '是否是超级管理员',
         dataIndex: 'isAdmin',
         render: (value) => (
-          <Tag color={value ? 'green' : ''}>{value ? 'Yes' : 'No'}</Tag>
+          <Tag color={value ? 'green' : ''}>{value ? '是' : '否'}</Tag>
         ),
       },
       {
-        title: 'Moderator',
+        title: '是否是普通管理员',
         dataIndex: 'isModerator',
         render: (value) => (
-          <Tag color={value ? 'green' : ''}>{value ? 'Yes' : 'No'}</Tag>
+          <Tag color={value ? 'green' : ''}>{value ? '是' : '否'}</Tag>
         ),
       },
       {
-        title: 'Status',
+        title: '状态',
         dataIndex: 'isBlocked',
         render: (value) => (
           <Tag color={value ? 'red' : 'green'}>
-            {value ? 'Blocked' : 'Normal'}
+            {value ? '被封禁' : '正常'}
           </Tag>
         ),
       },
       {
-        title: 'Operation',
+        title: '操作',
         render: (record) => (
           <Space>
-            <Button onClick={() => this.editUser(record.id)}>Edit</Button>
+            <Button onClick={() => this.editUser(record.id)}>编辑</Button>
             <Popconfirm
               placement="rightTop"
-              title={'Are your sure to delete this user?'}
+              title={'确认删除用户？'}
               onConfirm={() => this.deleteUser(record.id)}
-              okText="Yes"
-              cancelText="No"
+              okText="确认"
+              cancelText="取消"
             >
               <Button type="danger" danger>
-                Delete
+                删除
               </Button>
             </Popconfirm>
           </Space>
@@ -89,7 +89,7 @@ class Users extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Access denied.');
+      Message.error('访问被拒绝');
       this.props.history.push('/login');
       return;
     }
@@ -137,7 +137,7 @@ class Users extends Component {
     axios.delete(`/api/user/${id}`).then(async function (res) {
       const { status, message } = res.data;
       if (status) {
-        Message.success('User has been deleted.');
+        Message.success('用户删除成功');
         await that.fetchData();
       } else {
         Message.error(message);
@@ -152,14 +152,7 @@ class Users extends Component {
   render() {
     return (
       <div className={'content-area'}>
-        <h1>Users</h1>
-        <Button
-          onClick={() => {
-            this.addUser();
-          }}
-        >
-          New account
-        </Button>
+        <h1>用户管理</h1>
         <Table
           columns={this.columns}
           dataSource={this.state.users}
@@ -167,6 +160,13 @@ class Users extends Component {
           style={{ marginTop: '16px' }}
           loading={this.state.loading}
         />
+        <Button
+          onClick={() => {
+            this.addUser();
+          }}
+        >
+          创建新用户账户
+        </Button>
       </div>
     );
   }

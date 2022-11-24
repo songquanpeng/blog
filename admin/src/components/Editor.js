@@ -85,15 +85,15 @@ editorThemes.forEach((theme) => {
 });
 
 export const PAGE_OPTIONS = [
-  { key: 'grey', label: 'ALL Types', value: -1 },
-  { key: 'volcano', label: 'Article', value: 0 },
-  { key: 'geekblue', label: 'Code', value: 1 },
-  { key: 'orange', label: 'Bulletin', value: 2 },
-  { key: 'olive', label: 'Discuss', value: 3 },
-  { key: 'green', label: 'Links', value: 4 },
-  { key: 'pink', label: 'Raw', value: 5 },
-  { key: 'gold', label: 'Media', value: 6 },
-  { key: 'violet', label: 'Timeline', value: 7 },
+  { key: 'grey', label: '全部', value: -1 },
+  { key: 'volcano', label: '文章', value: 0 },
+  { key: 'geekblue', label: '代码', value: 1 },
+  { key: 'orange', label: '简报', value: 2 },
+  { key: 'olive', label: '讨论', value: 3 },
+  { key: 'green', label: '链接', value: 4 },
+  { key: 'pink', label: 'HTML', value: 5 },
+  { key: 'gold', label: '媒体', value: 6 },
+  { key: 'violet', label: '时间线', value: 7 },
 ];
 
 const PAGE_TYPE = {
@@ -111,7 +111,7 @@ class Editor extends Component {
     super(props);
     this.state = {
       loading: false,
-      theme: 'tomorrow',
+      theme: 'solarized_light',
       language: 'markdown',
       pasteWithFormatting: false,
       fontSize: 18,
@@ -138,7 +138,7 @@ class Editor extends Component {
     window.showCloseHint = false;
     window.onbeforeunload = (e) => {
       if (window.showCloseHint) {
-        return 'Unsaved changes detected.';
+        return '检测到未保存的更改';
       }
     };
   }
@@ -159,7 +159,7 @@ class Editor extends Component {
       }
     }
     if (this.state.status === 0) {
-      Message.error('Access denied.');
+      Message.error('访问被拒绝');
       this.props.history.push('/login');
       return;
     }
@@ -411,7 +411,7 @@ class Editor extends Component {
       let page = { ...this.state.page };
       page.link = this.getValidLink();
       if (!page.title) {
-        page.title = 'No title';
+        page.title = '无标题';
       }
       this.setState({ page }, () => {
         this.state.isNewPage ? this.postNewPage() : this.updatePage();
@@ -422,7 +422,7 @@ class Editor extends Component {
   };
 
   getDate(format) {
-    if (format === undefined) format = 'yyyy-MM-dd hh-mm-ss';
+    if (format === undefined) format = 'yyyy-MM-dd';
     const date = new Date();
     const o = {
       'M+': date.getMonth() + 1,
@@ -478,7 +478,7 @@ class Editor extends Component {
     axios.delete(`/api/page/${id}`).then(async function (res) {
       const { status, message } = res.data;
       if (status) {
-        Message.success('Your page has been deleted.');
+        Message.success('页面删除成功');
         that.props.history.push('/editor');
       } else {
         Message.error(message);
@@ -499,7 +499,7 @@ class Editor extends Component {
     axios.put('/api/page', this.state.page).then(async function (res) {
       const { status, message } = res.data;
       if (status) {
-        Message.success('Your page has been updated.');
+        Message.success('页面更新成功');
         that.clearEditorStorage();
       } else {
         Message.error(message);
@@ -515,7 +515,7 @@ class Editor extends Component {
         let page = { ...that.state.page };
         page.id = id;
         that.setState({ isNewPage: false, page });
-        Message.success('Your page has been submitted.');
+        Message.success('页面创建成功');
         that.clearEditorStorage();
       } else {
         Message.error(message);
@@ -545,57 +545,57 @@ class Editor extends Component {
     return (
       <div>
         <Space direction="vertical">
-          Link
+          链接
           <Input
-            placeholder="Article link"
+            placeholder="页面链接"
             name="link"
             value={this.state.page.link}
             onChange={this.onInputChange}
           />
-          Password
+          密码
           <Input
-            placeholder="Password"
+            placeholder="阅读密码"
             name="password"
             value={this.state.page.password}
             onChange={this.onInputChange}
           />
-          Page Type
+          类型
           <Select
             style={{ width: '100%' }}
-            label="Page Type"
+            label="页面类型"
             name="type"
             options={PAGE_OPTIONS}
             value={this.state.page.type}
-            placeholder="Type"
+            placeholder="页面类型"
             onChange={this.onTypeChange}
           />
           <br />
           <Space>
             <Switch
               name="commentStatus"
-              label="Allow comment"
+              label="允许评论"
               checked={this.state.page.commentStatus === 1}
               onChange={this.onCommentStatusChange}
             />{' '}
-            Allow comment
+            允许评论
           </Space>
           <Space>
             <Switch
               name="pageStatus"
-              label="Publish page"
+              label="发布页面"
               checked={this.state.page.pageStatus !== 0}
               onChange={this.onPublishStatusChange}
             />{' '}
-            Publish page
+            发布页面
           </Space>
           <Space>
             <Switch
               name="pageStatus"
-              label="Stay on top"
+              label="置顶页面"
               checked={this.state.page.pageStatus === 2}
               onChange={this.onStayOnTopStatusChange}
             />{' '}
-            Stay on top
+            置顶页面
           </Space>
           <Space>
             <Switch
@@ -604,7 +604,7 @@ class Editor extends Component {
               checked={this.state.page.pageStatus === 3}
               onChange={this.onHiddenStatusChange}
             />{' '}
-            Hide on index
+            首页显示
           </Space>
           {/*<Space>*/}
           {/*  <Switch*/}
@@ -618,12 +618,12 @@ class Editor extends Component {
           <br />
           <Space>
             <Popconfirm
-              title={'Are your sure?'}
+              title={'确认删除页面？'}
               onConfirm={() => {
                 this.deletePage();
               }}
-              okText="Yes"
-              cancelText="No"
+              okText="确认"
+              cancelText="取消"
             >
               <Button
                 type="primary"
@@ -631,49 +631,49 @@ class Editor extends Component {
                 size={'small'}
                 disabled={this.state.isNewPage}
               >
-                Delete
+                删除
               </Button>
             </Popconfirm>
             <Popconfirm
-              title={'Are your sure?'}
+              title={'确认重置页面？'}
               onConfirm={() => {
                 this.reset();
               }}
-              okText="Yes"
-              cancelText="No"
+              okText="确认"
+              cancelText="取消"
             >
-              <Button size={'small'}>Reset</Button>
+              <Button size={'small'}>重置</Button>
             </Popconfirm>
 
             <Button type="primary" size={'small'} onClick={this.onSubmit}>
-              Submit
+              提交
             </Button>
           </Space>
           <br />
-          Code Language
+          编程语言
           <Select
             style={{ width: '100%' }}
-            label="Code Language"
+            label="编程语言"
             name="language"
             options={languages}
             value={this.state.language}
-            placeholder="Language"
+            placeholder="编程语言"
             onChange={this.onLanguageChange}
           />
-          Editor Theme
+          颜色主题
           <Select
             style={{ width: '100%' }}
-            label="Editor Theme"
+            label="颜色主题"
             name="theme"
             options={themes}
             value={this.state.theme}
-            placeholder="Theme"
+            placeholder="颜色主题"
             onChange={this.onThemeChange}
           />
-          Font Size
+          字体大小
           <InputNumber
             style={{ width: '100%' }}
-            placeholder="Font size"
+            placeholder="字体大小"
             name="font_size"
             type="number"
             min="1"

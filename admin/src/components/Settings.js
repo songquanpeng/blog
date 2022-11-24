@@ -9,108 +9,108 @@ const { TabPane } = Tabs;
 
 const tabs = [
   {
-    label: 'System',
+    label: '通用设置',
     settings: [
       {
         key: 'domain',
-        description: 'Notice domain only.',
+        description: '请输入你的域名，例如：www.domain.com',
       },
       {
         key: 'language',
-        description: 'Something like : en, zh.',
+        description: '语言',
       },
       {
         key: 'copyright',
-        description: 'HTML text, attached to the end of the article.',
+        description: '请输入 HTML 代码，其将被放置在页面的末尾',
       },
       {
         key: 'allow_comments',
-        description: 'true or false',
+        description: 'true 或者 false',
       },
       {
         key: 'use_cache',
-        description: 'true or false',
+        description: 'true 或者 false',
       },
     ],
   },
   {
-    label: 'Customize',
+    label: '自定义设置',
     settings: [
       {
         key: 'theme',
         description:
-          "The theme folder's name, you should download and put it in the themes folder. Restart required.",
+          "博客主题，可选值：bulma, bootstrap, bootstrap5, v2ex, next 以及 w3",
       },
       {
         key: 'code_theme',
         description:
-          'Choose one from here: https://www.jsdelivr.com/package/npm/highlight.js?path=styles',
+          '从这里选择一个代码主题：https://www.jsdelivr.com/package/npm/highlight.js?path=styles',
       },
       {
         key: 'site_name',
-        description: "Your website's name.",
+        description: "网站名称",
       },
       {
         key: 'description',
-        description: 'Description for this website.',
+        description: '网站描述信息',
       },
       {
         key: 'nav_links',
-        description: 'Should be a valid json, the format must be correct.',
+        description: '必须是合法的 JSON 格式的文本',
         isBlock: true,
       },
       {
         key: 'author',
-        description: 'Your name.',
+        description: '你的名字',
       },
       {
         key: 'motto',
-        description: 'Your motto.',
+        description: '你的格言',
       },
       {
         key: 'favicon',
-        description: 'An image link.',
+        description: '请输入一个图片链接',
       },
       {
         key: 'brand_image',
-        description: 'An image link.',
+        description: '请输入一个图片链接',
       },
       {
         key: 'index_page_content',
-        description: 'Custom HTML code for index page.',
+        description: '自定义首页 HTML 代码，输入 404 则对外隐藏首页',
         isBlock: true,
       }
     ],
   },
   {
-    label: 'Third Party',
+    label: '其他设置',
     settings: [
       {
         key: 'ad',
-        description: 'Ad code',
+        description: '广告代码',
         isBlock: true,
       },
       {
         key: 'extra_header_code',
-        description: 'For example you can insert google analytics code here.',
+        description: '此处代码会被插入到 header 标签内，可在此处放入统计代码',
         isBlock: true,
       },
       {
         key: 'extra_footer_code',
-        description: 'This code will be inserted into the body tag.',
+        description: '此处代码会被插入到 footer 标签内',
       },
       {
         key: 'disqus',
-        description: 'Your disqus identifier.',
+        description: 'Disqus 标识符，未输入则无法启用评论',
       },
       {
         key: 'extra_footer_text',
-        description: 'Add some text in the footer.',
+        description: '自定义页脚信息，支持 HTML，可在此放入备案信息等',
       },
       {
         key: 'message_push_api',
         description:
-          'Check this out: https://github.com/songquanpeng/message-pusher.',
+          '消息推送 API 链接，具体参见：https://github.com/songquanpeng/message-pusher',
       },
     ],
   },
@@ -134,7 +134,7 @@ class Settings extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Access denied.');
+      Message.error('访问被拒绝');
       this.props.history.push('/login');
       return;
     }
@@ -175,7 +175,7 @@ class Settings extends Component {
       const res = await axios.put(`/api/option/`, options);
       const { status, message } = res.data;
       if (status) {
-        Message.success('Setting updated.');
+        Message.success('设置更新成功');
       } else {
         Message.error(message);
       }
@@ -190,7 +190,7 @@ class Settings extends Component {
   render() {
     return (
       <div className={'content-area'}>
-        <h1>Settings</h1>
+        <h1>系统设置</h1>
         <div style={{ background: '#fff', padding: 16 }}>
           <Tabs tabPosition={'left'}>
             {tabs.map((tab) => {
@@ -236,7 +236,7 @@ class Settings extends Component {
                       );
                     })}
                     <Button type="primary" onClick={() => this.submit()}>
-                      Save
+                      保存设置
                     </Button>
                   </Form>
                 </TabPane>

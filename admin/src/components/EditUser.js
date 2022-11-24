@@ -78,7 +78,7 @@ class EditUser extends Component {
       : await axios.put(`/api/user`, user);
     const { status, message } = res.data;
     if (status) {
-      Message.success('Successfully processed.');
+      Message.success('提交成功');
       this.props.history.goBack();
     } else {
       Message.error(message);
@@ -88,7 +88,7 @@ class EditUser extends Component {
   render() {
     return (
       <div className={'content-area'}>
-        <h1>Edit User</h1>
+        <h1>编辑用户信息</h1>
         <Form
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 8 }}
@@ -97,35 +97,35 @@ class EditUser extends Component {
           ref={this.formRef}
           initialValues={this.state.user}
         >
-          <Form.Item label="Username" name="username" required>
+          <Form.Item label="用户名" name="username" required>
             <Input />
           </Form.Item>
-          <Form.Item label="Password" name="password" required>
+          <Form.Item label="密码" name="password" required>
             <Input />
           </Form.Item>
-          <Form.Item label="Display Name" name="displayName">
+          <Form.Item label="显示名称" name="displayName">
             <Input />
           </Form.Item>
-          <Form.Item label="Email" name="email" type="email">
+          <Form.Item label="邮箱地址" name="email" type="email">
             <Input />
           </Form.Item>
-          <Form.Item label="Avatar" name="avatar" type="link">
+          <Form.Item label="头像链接" name="avatar" type="link">
             <Input />
           </Form.Item>
-          <Form.Item label="Url" name="url" type="url">
+          <Form.Item label="网站链接" name="url" type="url">
             <Input />
           </Form.Item>
-          <Form.Item label="Admin" name="isAdmin">
+          <Form.Item label="超级管理员" name="isAdmin">
             <Switch checked={this.state.user.isAdmin} />
           </Form.Item>
-          <Form.Item label="Moderator" name="isModerator">
+          <Form.Item label="普通管理员" name="isModerator">
             <Switch checked={this.state.user.isModerator} />
           </Form.Item>
-          <Form.Item label="Blocked" name="isBlocked">
+          <Form.Item label="禁用账户" name="isBlocked">
             <Switch checked={this.state.user.isBlocked} />
           </Form.Item>
-          <Form.Item label="Action">
-            <Button onClick={this.submitData}>Submit</Button>
+          <Form.Item label="操作">
+            <Button onClick={this.submitData}>提交更改</Button>
           </Form.Item>
         </Form>
       </div>

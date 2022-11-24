@@ -14,7 +14,7 @@ class Comments extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Access denied.');
+      Message.error('访问被拒绝');
       this.props.history.push('/login');
     }
   }

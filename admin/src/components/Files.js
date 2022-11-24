@@ -39,7 +39,7 @@ class Files extends Component {
     this.filePrefix = `${protocol}//${domain}`;
     this.columns = [
       {
-        title: 'File name',
+        title: '文件名',
         dataIndex: 'filename',
         render: (value, record) => (
           <a href={this.filePrefix + record.path} download={value}>
@@ -48,26 +48,26 @@ class Files extends Component {
         ),
       },
       {
-        title: 'Description',
+        title: '描述',
         dataIndex: 'description',
-        render: (value) => <p>{value}</p>,
+        render: (value) => <p>{value === "" ? "无描述信息" : value}</p>,
       },
       {
-        title: 'Operation',
+        title: '操作',
         render: (record) => (
           <Space>
             <Button onClick={() => this.copyFilePath(record.path)}>
-              Copy file path
+              复制路径
             </Button>
             <Popconfirm
               placement="rightTop"
-              title={'Are your sure to delete this page?'}
+              title={'确认删除文件？'}
               onConfirm={() => this.deleteFile(record.id)}
-              okText="Yes"
-              cancelText="No"
+              okText="确认"
+              cancelText="取消"
             >
               <Button type="danger" danger>
-                Delete
+                删除文件
               </Button>
             </Popconfirm>
           </Space>
@@ -82,7 +82,7 @@ class Files extends Component {
 
   async componentDidMount() {
     if (this.state.status === 0) {
-      Message.error('Access denied.');
+      Message.error('访问被拒绝');
       this.props.history.push('/login');
       return;
     }
@@ -143,7 +143,7 @@ class Files extends Component {
     navigator.clipboard
       .writeText(fullPath)
       .then((r) => {
-        Message.success('Copied: ' + fullPath);
+        Message.success('已复制：' + fullPath);
       })
       .catch((e) => {
         Message.error(e.message);
@@ -155,10 +155,10 @@ class Files extends Component {
       .delete(`/api/file/${id}`)
       .then((res) => {
         if (res.data.status) {
-          Message.success('You files have been deleted');
+          Message.success('文件删除成功');
           this.fetchData().then((r) => {});
         } else {
-          Message.error('Failed to delete file: ', res.data.message);
+          Message.error('文件删除失败：', res.data.message);
         }
       })
       .catch((err) => {
@@ -177,29 +177,29 @@ class Files extends Component {
       onChange(info) {
         const { status } = info.file;
         if (status === 'done') {
-          Message.success(`${info.file.name} file uploaded successfully.`);
+          Message.success(`文件上传成功：${info.file.name}`);
           that.fetchData().then((r) => {});
         } else if (status === 'error') {
-          Message.error(`${info.file.name} file upload failed.`);
+          Message.error(`文件上传失败：${info.file.name}`);
         }
       },
     };
     return (
       <div className={'content-area'}>
-        <h1>Files</h1>
+        <h1>文件管理</h1>
         <div>
           <Dragger {...props}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
             <p className="ant-upload-text">
-              Click or drag file to this area to upload.
+              点击此处上传或者拖拽文件上传
             </p>
           </Dragger>
         </div>
         <Divider />
         <Search
-          placeholder="Search files..."
+          placeholder="搜索文件 ..."
           size={'large'}
           onChange={this.onInputChange}
           enterButton

@@ -32,7 +32,7 @@ class Login extends Component {
       );
       if (status) {
         this.props.getStatus();
-        Message.success('Login successfully!');
+        Message.success('登录成功');
         this.props.history.push('/');
       } else {
         Message.error(message);
@@ -60,12 +60,12 @@ class Login extends Component {
           onValuesChange={this.onValuesChange}
         >
           <Form.Item
-            label="Username"
+            label="用户名"
             name="username"
             rules={[
               {
                 required: true,
-                message: 'Please input your username!',
+                message: '请输入用户名',
               },
             ]}
           >
@@ -73,28 +73,28 @@ class Login extends Component {
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            label="密码"
             name="password"
             rules={[
               {
                 required: true,
-                message: 'Please input your password!',
+                message: '请输入密码',
               },
             ]}
           >
             <Input.Password />
           </Form.Item>
 
-          <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
+          {/*<Form.Item {...tailLayout} name="remember" valuePropName="checked">*/}
+          {/*  <Checkbox>Remember me</Checkbox>*/}
+          {/*</Form.Item>*/}
 
           <Form.Item {...tailLayout}>
             <Space>
               <Button type="primary" htmlType="submit" onClick={this.onSubmit}>
-                Submit
+                提交
               </Button>
-              <Button>Reset</Button>
+              <Button>重置</Button>
             </Space>
           </Form.Item>
         </Form>

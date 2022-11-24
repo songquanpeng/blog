@@ -80,10 +80,10 @@ class App extends React.Component {
     const menu = (
       <Menu>
         <Menu.Item key="1" icon={<UserOutlined />}>
-          <Link to={'/users'}>Account</Link>
+          <Link to={'/users'}>账户管理</Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<SettingOutlined />}>
-          <Link to={'/settings'}>Settings</Link>
+          <Link to={'/settings'}>系统设置</Link>
         </Menu.Item>
         <Menu.Divider />
         {this.state.status === 1 ? (
@@ -94,17 +94,17 @@ class App extends React.Component {
                 this.logout().then((r) => {});
               }}
             >
-              Logout
+              退出登录
             </Link>
           </Menu.Item>
         ) : (
           <Menu.Item key="4" icon={<LoginOutlined />}>
-            <Link to={'/login'}>Login</Link>
+            <Link to={'/login'}>用户登录</Link>
           </Menu.Item>
         )}
         <Menu.Item key="5" icon={<PoweroffOutlined />}>
           <Link to={'/login'} onClick={() => this.shutdownServer()}>
-            Shutdown
+            关闭博客
           </Link>
         </Menu.Item>
       </Menu>
@@ -114,23 +114,23 @@ class App extends React.Component {
       <Layout style={{ height: '100%' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo">
-            <h1>System Admin</h1>
+            <h1>管理</h1>
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['0']}>
             <Menu.Item key="3" icon={<FileTextOutlined />}>
-              <Link to={'/posts'}>Posts</Link>
+              <Link to={'/posts'}>页面管理</Link>
             </Menu.Item>
             <Menu.Item key="1" icon={<CodeOutlined />}>
-              <Link to={'/editor'}>Editor</Link>
+              <Link to={'/editor'}>创建页面</Link>
             </Menu.Item>
             <Menu.Item key="5" icon={<CloudUploadOutlined />}>
-              <Link to={'/files'}>Files</Link>
+              <Link to={'/files'}>文件管理</Link>
             </Menu.Item>
             <Menu.Item key="6" icon={<UserOutlined />}>
-              <Link to={'/users'}>Users</Link>
+              <Link to={'/users'}>用户管理</Link>
             </Menu.Item>
             <Menu.Item key="7" icon={<SettingOutlined />}>
-              <Link to={'/settings'}>Settings</Link>
+              <Link to={'/settings'}>系统设置</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -146,7 +146,7 @@ class App extends React.Component {
             <Space style={{ float: 'right', marginRight: '16px' }}>
               <Dropdown overlay={menu} placement="bottomCenter">
                 <Button type={'text'} icon={<UserOutlined />} size={'large'}>
-                  Admin
+                  管理员
                 </Button>
               </Dropdown>
             </Space>
