@@ -98,7 +98,7 @@ async function getMonthArchive(req, res, next) {
     res.render('list', { pages, title: time });
   } catch (e) {
     res.render('message', {
-      title: 'Error',
+      title: '错误',
       message: e.message
     });
   }
@@ -121,7 +121,7 @@ async function getTag(req, res, next) {
     res.render('list', { pages, title: tag });
   } catch (e) {
     res.render('message', {
-      title: 'Error',
+      title: '错误',
       message: e.message
     });
   }
@@ -137,8 +137,8 @@ async function getPage(req, res, next) {
   });
   if (page === null) {
     return res.render('message', {
-      title: 'Error',
-      message: `No page has link "${link}".`
+      title: '错误',
+      message: `未找到链接为 ${link} 且公共可见的页面`
     });
   }
   // Update views
@@ -185,8 +185,8 @@ async function getPage(req, res, next) {
       break;
     default:
       res.render('message', {
-        title: 'Error',
-        message: `Unexpected page type: ${page.type}`
+        title: '错误',
+        message: `意料之外的页面类型：${page.type}`
       });
   }
 }

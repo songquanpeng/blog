@@ -4,7 +4,7 @@ let config = {
   auth_cookie_name: 'blog',
   uploadPath: process.env.UPLOAD_PATH || './data/upload',
   systemName: 'Blog',
-  systemVersion: 'v0.5.4',
+  systemVersion: 'v0.5.5',
   cacheMaxAge: 30 * 24 * 3600,  // 30 days
   maxCachePosts: 32
 };

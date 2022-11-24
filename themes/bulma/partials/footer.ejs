@@ -4,13 +4,13 @@
     <div class="content has-text-centered">
         <% let date = new Date(); const year = date.getFullYear();%>
         <p>
-            © <%= year%> <a href="//<%= config.domain %>"><%=config.author%></a>.<%- config.extra_footer_text %>
-            Powered by <a href="https://github.com/songquanpeng/blog"><%= systemName + " " + systemVersion%></a> with theme <a href="https://github.com/songquanpeng/blog/tree/master/themes/bulma">bulma</a>.
+            © <%= year%> <a href="//<%= config.domain %>"><%=config.author%></a> <%- config.extra_footer_text %>
+            由 <a href="https://github.com/songquanpeng/blog"><%= systemName + " " + systemVersion%></a> 驱动，主题 <a href="https://github.com/songquanpeng/blog/tree/master/themes/bulma">Bulma</a>
         </p>
     </div>
 </footer>
 </div>
-<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script src="/static/highlight.min.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

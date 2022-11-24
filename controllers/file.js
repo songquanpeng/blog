@@ -20,7 +20,7 @@ async function getAll(req, res, next) {
 async function upload(req, res) {
   const { file } = req;
   const newFile = {
-    description: req.body.description ? req.body.description : 'No description',
+    description: req.body.description,
     filename: file.originalname,
     path: '/upload/' + file.filename,
     id: file.id

@@ -37,7 +37,7 @@ app.locals.systemVersion = config.systemVersion;
 app.locals.config = {};
 app.locals.config.theme = 'bulma';
 app.locals.page = undefined;
-app.locals.notice = 'No page has link "notice"!';
+app.locals.notice = '请创建一个链接为 notice 的页面，其内容将在此显示';
 app.locals.loggedin = false;
 app.locals.isAdmin = false;
 app.locals.sitemap = undefined;
@@ -91,8 +91,8 @@ app.use(flash());
   app.use(function(req, res, next) {
     if (!res.headersSent) {
       res.render('message', {
-        title: '404 Not Found',
-        message: 'The page you requested does not exist, I am sorry for that.'
+        title: '未找到目标页面',
+        message: '所请求的页面不存在，请检查页面链接是否正确'
       });
     }
   });

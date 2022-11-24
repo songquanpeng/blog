@@ -1,13 +1,13 @@
 <%- include('./partials/header') %>
 
 <div class="container">
-    <p class="title is-3">Archive</p>
+    <p class="title is-3">存档</p>
     <table class="table is-fullwidth is-hoverable is-bordered is-striped">
         <thead>
         <tr>
-            <th>Title</th>
-            <th>Post Time</th>
-            <th>Edit Time</th>
+            <th>标题</th>
+            <th>发布时间</th>
+            <th>编辑时间</th>
         </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
                 </td>
                 <td>
                     <time>
-                        <%= page.createdAt.substring(0, 10) %>
+                        <%= page.updatedAt.substring(0, 10) %>
                     </time>
                 </td>
             </tr>

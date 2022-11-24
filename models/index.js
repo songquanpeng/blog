@@ -31,14 +31,14 @@ async function initializeOptions() {
   let plainOptions = [
     ['ad', ''],
     ['allow_comments', 'true'],
-    ['author', 'My Name'],
+    ['author', '我的名字'],
     ['brand_image', ''],
     [
       'code_theme',
       'https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/solarized-light.css'
     ],
     ['copyright', ''],
-    ['description', 'My site description.'],
+    ['description', '站点描述信息'],
     ['disqus', ''],
     ['domain', 'www.your-domain.com'],
     ['extra_footer_code', ''],
@@ -47,13 +47,13 @@ async function initializeOptions() {
     ['favicon', ''],
     ['language', 'zh'],
     ['message_push_api', ''],
-    ['motto', 'My motto.'],
+    ['motto', '我的格言'],
     [
       'nav_links',
-      '[{"key": "Meta","value": [{"link":"/","text":"Home"},{"link":"/archive","text":"Archive"},{"link":"/page/links","text":"Links"},{"link":"/page/about","text":"About"}]},{"key": "Example Dropdown","value": [{"link":"/admin","text":"Admin"}, {"link":"https://github.com/songquanpeng/express-react-blog","text":"Star"}, {"link":"/feed.xml","text":"Feed"}]}]'
+      '[{"key": "Meta","value": [{"link":"/","text":"首页"},{"link":"/archive","text":"存档"},{"link":"/page/links","text":"友链"},{"link":"/page/about","text":"关于"}]},{"key": "其他","value": [{"link":"/admin","text":"后台管理"}, {"link":"https://github.com/songquanpeng/blog","text":"源码地址"}, {"link":"/feed.xml","text":"订阅博客"}]}]'
     ],
     ['port', '3000'],
-    ['site_name', 'Site Name'],
+    ['site_name', '站点名称'],
     ['theme', 'bulma'],
     ['index_page_content', ''],
     ['use_cache', 'true']

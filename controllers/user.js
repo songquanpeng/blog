@@ -8,7 +8,7 @@ async function login(req, res) {
   if (username) username = username.trim();
   if (password) password = password.trim();
   if (username === '' || password === '') {
-    return res.json({ status: false, message: 'Invalid parameter.' });
+    return res.json({ status: false, message: '无效的参数' });
   }
 
   let user = await User.findOne({
@@ -26,19 +26,19 @@ async function login(req, res) {
         user: user
       });
       if (req.app.locals.config.message_push_api) {
-        let url = `${req.app.locals.config.message_push_api}A user with ip address ${req.ip} just logged in to your blog site.`;
+        let url = `${req.app.locals.config.message_push_api}IP 地址为 ${req.ip} 的用户刚刚登录了你的博客网站`;
         axios.get(url).then(() => {});
       }
     } else {
       res.json({
         status: false,
-        message: 'You have been banned.'
+        message: '用户已被封禁'
       });
     }
   } else {
     res.json({
       status: false,
-      message: 'Invalid credentials.'
+      message: '无效的凭证'
     });
   }
 }
@@ -47,7 +47,7 @@ async function logout(req, res) {
   req.session.user = undefined;
   res.json({
     status: true,
-    message: 'Logout successfully.'
+    message: '注销成功'
   });
 }
 
@@ -151,7 +151,7 @@ async function create(req, res) {
   if (!username.trim() || !password.trim()) {
     return res.json({
       status: false,
-      message: 'Invalid parameter: username or password.'
+      message: '无效的参数'
     });
   }
   let message = 'ok';

@@ -9,7 +9,7 @@
                             <div class="media-content">
                                 <div class="content">
                                     <div class="page-card-title"><a
-                                                href="/page/<%= page.link %>"><%= page.title ? page.title : 'No title' %></a>
+                                                href="/page/<%= page.link %>"><%= page.title ? page.title : '无标题' %></a>
                                     </div>
                                     <% page.tag.trim().split(";").forEach(function (tag) { if(tag !== ""){ %>
                                         <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
@@ -18,7 +18,7 @@
                                        href="/archive/<%= page.createdAt.split('-')[0] + '/' + page.createdAt.split('-')[1] %>"><%= page.createdAt.substring(0, 10) %></a>
                                     <span class="tag is-light"><%- page.view %> views</span>
                                     <div class="page-card-text">
-                                        <%= page.description ? page.description : "No description" %>
+                                        <%= page.description ? page.description : "无描述信息" %>
                                     </div>
                                 </div>
                             </div>
@@ -30,11 +30,9 @@
     </div>
     <div class="column is-one-quarter-fullhd">
         <div class="card">
-            <header class="card-header">
-                <p class="card-header-title">
-                    <%= config.site_name %>
-                </p>
-            </header>
+            <p class="card-header-title">
+                <%= config.site_name %>
+            </p>
             <div class="card-content" style="padding: 16px">
                 <div class="content">
                     <%= config.description %>
@@ -42,12 +40,12 @@
                         <img src="<%= config.brand_image %>" style="margin-top: 8px" alt="brand_image">
                     <% }%>
                     <br>
-                    Memory occupied: <%= (process.memoryUsage().rss / (1024 *1024)).toFixed(2) %> MB
+                    内存占用：<%= (process.memoryUsage().rss / (1024 *1024)).toFixed(2) %> MB
                 </div>
             </div>
             <footer class="card-footer">
-                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">System: Blog</a>
-                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">Theme: Bulma</a>
+                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">系统：Blog</a>
+                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">主题：Bulma</a>
             </footer>
         </div>
         <div class="box" style="margin-top: 32px">
