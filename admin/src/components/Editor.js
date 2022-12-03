@@ -94,9 +94,11 @@ export const PAGE_OPTIONS = [
   { key: 'pink', label: 'HTML', value: 5 },
   { key: 'gold', label: '媒体', value: 6 },
   { key: 'violet', label: '时间线', value: 7 },
+  { key: 'cyan', label: '重定向', value: 8 },
+  { key: 'purple', label: '纯文本', value: 9 },
 ];
 
-const PAGE_TYPE = {
+const PAGE_TYPES = {
   ARTICLE: 0,
   CODE: 1,
   BULLETIN: 2,
@@ -104,6 +106,8 @@ const PAGE_TYPE = {
   LINKS: 4,
   RAW: 5,
   MEDIA: 6,
+  REDIRECT: 8,
+  TEXT: 9
 };
 
 class Editor extends Component {
@@ -121,7 +125,7 @@ class Editor extends Component {
       originPage: undefined,
       page: {
         id: this.props.match.params.id,
-        type: PAGE_TYPE.ARTICLE,
+        type: PAGE_TYPES.ARTICLE,
         link: '',
         pageStatus: 1,
         commentStatus: 1,
@@ -322,10 +326,10 @@ class Editor extends Component {
   adjustEditorLanguage(pageType) {
     let language = this.state.language;
     switch (pageType) {
-      case PAGE_TYPE.ARTICLE:
+      case PAGE_TYPES.ARTICLE:
         language = 'markdown';
         break;
-      case PAGE_TYPE.RAW:
+      case PAGE_TYPES.RAW:
         language = 'html';
         break;
       default:
@@ -397,7 +401,7 @@ class Editor extends Component {
     this.setState({ pasteWithFormatting });
     if (this.state.noUserInputContent) {
       let page = { ...this.state.page };
-      page.type = PAGE_TYPE.RAW;
+      page.type = PAGE_TYPES.RAW;
       this.setState({ page }, () => {
         this.adjustEditorLanguage(page.type);
       });

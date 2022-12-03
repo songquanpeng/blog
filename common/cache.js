@@ -199,6 +199,10 @@ function convertContent(page, refresh) {
       linkList[linkCount][key] = value;
     }
     convertedContent = JSON.stringify(linkList);
+  } else if (page.type === PAGE_TYPES.REDIRECT) {
+    convertedContent = lines.join('\n').trim();
+  } else if (page.type === PAGE_TYPES.TEXT) {
+    convertedContent = lines.join('\n').trimStart();
   }
   convertedContentCache.set(page.id, convertedContent);
   return convertedContent;

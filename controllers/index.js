@@ -183,6 +183,13 @@ async function getPage(req, res, next) {
       }
       res.render('links', { page, linkList });
       break;
+    case PAGE_TYPES.REDIRECT:
+      res.redirect(page.converted_content);
+      break;
+    case PAGE_TYPES.TEXT:
+      res.set('Content-Type', 'text/plain');
+      res.send(page.converted_content);
+      break;
     default:
       res.render('message', {
         title: '错误',

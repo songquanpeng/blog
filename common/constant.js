@@ -6,7 +6,9 @@ const PAGE_TYPES = {
   LINKS: 4,
   RAW: 5,
   MEDIA: 6,
-  TIMELINE: 7
+  TIMELINE: 7,
+  REDIRECT: 8,
+  TEXT: 9
 };
 
 const PAGE_STATUS = {
