@@ -1,5 +1,6 @@
 const multer = require('multer');
-const uuid = require('uuid/v1');
+const path = require('path');
+const { fileExists, getDate } = require('../common/util');
 const uploadPath = require('../config').uploadPath;
 
 exports.upload = multer({
@@ -7,9 +8,20 @@ exports.upload = multer({
     destination: function(req, file, callback) {
       callback(null, uploadPath);
     },
-    filename: function(req, file, callback) {
-      let extension = file.originalname.split('.').pop();
-      file.id = uuid() + '.' + extension;
+    filename: async function(req, file, callback) {
+      if (await fileExists(path.join(uploadPath, file.originalname))) {
+        let parts = file.originalname.split('.');
+        let extension = "";
+        if (parts.length > 1) {
+          extension = parts.pop();
+        }
+        file.id = parts.join('.') + getDate("_yyyyMMddhhmmss");
+        if (extension) {
+          file.id += "." + extension;
+        }
+      } else {
+        file.id = file.originalname;
+      }
       callback(null, file.id);
     }
   })

@@ -1,4 +1,5 @@
 const { lexer, parser } = require('marked');
+const fs = require('fs');
 
 function titleToLink(title) {
   return title.trim().replace(/\s/g, '-');
@@ -53,9 +54,14 @@ function parseTagStr(tag) {
   return [category, tags];
 }
 
+async function fileExists(path) {
+  return !!(await fs.promises.stat(path).catch(e => false));
+}
+
 module.exports = {
   titleToLink,
   parseTagStr,
   getDate,
-  md2html
+  md2html,
+  fileExists
 };
