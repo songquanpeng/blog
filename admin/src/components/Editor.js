@@ -527,7 +527,7 @@ class Editor extends Component {
     return (
       <>
         <AceEditor
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', minHeight: '100%'}}
           mode={this.state.language}
           theme={this.state.theme}
           name={'editor'}
@@ -536,6 +536,7 @@ class Editor extends Component {
           fontSize={this.state.fontSize}
           onBlur={this.onEditorBlur}
           setOptions={{ useWorker: false }}
+          maxLines={Infinity}
         />
       </>
     );
