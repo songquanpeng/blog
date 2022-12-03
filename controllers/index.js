@@ -19,7 +19,7 @@ async function getIndex(req, res, next) {
       res.status(404);
       res.end();
     } else {
-      res.setHeader("Content-Type", "text/html");
+      res.setHeader('Content-Type', 'text/html');
       res.send(req.app.locals.config.index_page_content);
     }
     return;
@@ -32,7 +32,7 @@ async function getIndex(req, res, next) {
   let start = page * pageSize;
   let pages = await getPagesByRange(start, pageSize);
   if (page !== 0 && pages.length === 0) {
-    res.redirect("/");
+    res.redirect('/');
   } else {
     res.render('index', {
       pages: pages,
@@ -187,7 +187,13 @@ async function getPage(req, res, next) {
       res.redirect(page.converted_content);
       break;
     case PAGE_TYPES.TEXT:
-      res.set('Content-Type', 'text/plain');
+      let type = 'text/plain';
+      if (page.link.endsWith('.html')) {
+        type = 'text/html';
+      } else if (page.link.endsWith('.json')) {
+        type = 'application/json';
+      }
+      res.set('Content-Type', type);
       res.send(page.converted_content);
       break;
     default:

@@ -95,7 +95,7 @@ export const PAGE_OPTIONS = [
   { key: 'gold', label: '媒体', value: 6 },
   { key: 'violet', label: '时间线', value: 7 },
   { key: 'cyan', label: '重定向', value: 8 },
-  { key: 'purple', label: '纯文本', value: 9 },
+  { key: 'purple', label: '文本', value: 9 },
 ];
 
 const PAGE_TYPES = {
