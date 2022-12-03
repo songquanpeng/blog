@@ -6,7 +6,7 @@ let config = {
   auth_cookie_name: 'blog',
   uploadPath: process.env.UPLOAD_PATH || './data/upload',
   systemName: 'Blog',
-  systemVersion: 'v0.5.6',
+  systemVersion: 'v0.0.0',
   cacheMaxAge: 30 * 24 * 3600,  // 30 days
   maxCachePosts: 32
 };
@@ -15,6 +15,8 @@ function init() {
   if (!fs.existsSync(config.uploadPath)) {
     fs.mkdirSync(config.uploadPath);
   }
+  let meta = JSON.parse(fs.readFileSync('package.json').toString());
+  config.systemVersion = `v${meta.version}`
 }
 
 init();
