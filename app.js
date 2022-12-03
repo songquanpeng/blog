@@ -17,6 +17,7 @@ const apiRouterV1 = require('./routes/api-router.v1');
 const app = express();
 const server = http.createServer(app);
 const { initializeDatabase } = require('./models');
+const { loadAllPages } = require('./common/cache');
 
 app.use(
   rateLimit({
@@ -63,6 +64,8 @@ app.use(flash());
   await updateConfig(app);
   await loadNoticeContent(app);
   enableRSS(app.locals.config);
+  // load pages
+  await loadAllPages();
 
   // Then we set up the app.
   let serveStaticOptions = {
