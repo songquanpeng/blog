@@ -44,7 +44,7 @@ _✨ 基于 Node.js 的个人博客系统 ✨_
 2. 支持多种页面类型，文章页面、HTML 页面、链接页面等等。
 3. 无需配置数据库，开箱即用（如果你不想用 SQLite，请修改 `config.js` 配置文件）。
 4. 内置 ACE 代码编辑器，附带多种代码主题（包括 Solarized Light）。
-5. 支持通过 Docker 部署，详见[此处](#部署)。
+5. 支持通过 Docker 部署，一行命令即可上线部署，详见[此处](#部署)。
 
 ## 主题
 1. Bulma：Bulma CSS 风格主题，内置的默认主题。
@@ -55,7 +55,8 @@ _✨ 基于 Node.js 的个人博客系统 ✨_
 6. Bootstrap5: 借鉴自 [CodeLunatic/halo-theme-simple-bootstrap](https://github.com/CodeLunatic/halo-theme-simple-bootstrap) 的 [Bootstrap5 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap5)。
 
 注意：
-1. 如需更改主题，打开后台管理系统中的 setting 页面，下拉框中找到 theme，修改后点击 submit，记得浏览器 `Ctrl + F5` 刷新缓存。
+1. 更改主题的步骤：打开后台管理系统中的设置页面 -> 自定义设置 -> 找到 THEME -> 修改后点击保存设置，记得浏览器 `Ctrl + F5` 刷新缓存。
+    + 可选的值有：`bulma`，`bootstrap`，`bootstrap5`，`w3`，`next` 以及 `v2ex`。
 2. 由于精力有限，部分主题可能由于未能及时随项目更新导致存在问题。
 
 ## 演示
