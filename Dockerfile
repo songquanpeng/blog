@@ -1,11 +1,11 @@
-FROM node:18 as builder
+FROM node:16 as builder
 
 WORKDIR /app
 COPY . .
 RUN npm install
 RUN cd admin && npm run update && cd .. && rm -r admin
 
-FROM node:18-alpine
+FROM node:16-alpine
 WORKDIR /app
 COPY --from=builder /app /app
 VOLUME ["/app/data"]
