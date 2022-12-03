@@ -50,7 +50,7 @@ class Files extends Component {
       {
         title: '描述',
         dataIndex: 'description',
-        render: (value) => <p>{value === "" ? "无描述信息" : value}</p>,
+        render: (value) => <p>{value ? value : "无描述信息"}</p>,
       },
       {
         title: '操作',
