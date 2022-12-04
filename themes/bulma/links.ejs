@@ -6,21 +6,33 @@
 
     <% if (linkList && linkList.length){ %>
         <% linkList.forEach((link)=>{ %>
-        <div class="link-card">
-            <%if(link && link.image ===""){
-                if(link.link.endsWith("/")) {
-                  link.image  = link.link + "favicon.ico";
-                }else {
-                    link.image  = link.link + "/favicon.ico";
+        <div class="card" style='margin-bottom: 16px'>
+            <% if(link && link.image === ''){
+                if (link.link.endsWith('/')) {
+                    link.image = link.link + 'favicon.ico';
+                } else {
+                    link.image = link.link + '/favicon.ico';
                 }
-            }%>
-            <a href="<%= link.link %>"><img loading="lazy" class="image" src="<%= link.image %>"  alt="⚠️"/></a>
-            <div class="info">
-                <div class="title"><%= link.title %></div>
-                <div class="description"><%= link.description %></div>
+            } %>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <a href="<%= link.link ;%>">
+                            <figure class="image is-48x48">
+                                <img loading="lazy" class="image" src="<%= link.image ;%>" alt="⚠️" />
+                            </figure>
+                        </a>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4"><a href="<%= link.link ;%>" style='color: #363636'><%= link.title ;%></a>
+                        </p>
+                        <p class="subtitle is-6"><%= link.description ;%></p>
+                    </div>
+                </div>
             </div>
         </div>
-    <% })} %>
+
+    <% });} %>
     <%- include('./partials/prev-next') %>
     <%- include('./partials/comment') %>
 </div>
