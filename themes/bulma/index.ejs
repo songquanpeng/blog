@@ -4,12 +4,14 @@
         <div class="page-card-list">
             <% if (pages.length){ %>
                 <% pages.forEach((page)=>{ %>
-                    <div class="box">
-                        <article class="media">
+                    <div class="box" style='padding-top: 16px'>
+                        <article class="media" style='padding: 8px'>
                             <div class="media-content">
                                 <div class="content">
-                                    <div class="page-card-title"><a
-                                                href="/page/<%= page.link %>"><%= page.title ? page.title : '无标题' %></a>
+                                    <div class="page-card-title">
+                                        <a href="/page/<%= page.link %>">
+                                            <%= page.pageStatus === 2 ? '「置顶」' : '' %><%= page.title ? page.title : '无标题' %>
+                                        </a>
                                     </div>
                                     <% page.tag.trim().split(";").forEach(function (tag) { if(tag !== ""){ %>
                                         <a class="tag is-light" href='/tag/<%= tag %>'><%= tag %></a>
@@ -28,25 +30,25 @@
         </div>
         <%- include('./partials/paginator') %>
     </div>
-    <div class="column is-one-quarter-fullhd">
-        <div class="card">
-            <p class="card-header-title">
+    <div class="column is-one-quarter-fullhd" style='margin-top: 8px'>
+        <div class="card" >
+            <p class="card-header-title" style='font-size: larger; padding-bottom: 4px'>
                 <%= config.site_name %>
             </p>
-            <div class="card-content" style="padding: 16px">
+            <div class="card-content" style="padding: 0 16px 16px;">
                 <div class="content">
                     <%= config.description %>
                     <% if(config.brand_image) { %>
                         <img src="<%= config.brand_image %>" style="margin-top: 8px" alt="brand_image">
                     <% }%>
                     <br>
-                    内存占用：<%= (process.memoryUsage().rss / (1024 *1024)).toFixed(2) %> MB
+<!--                    内存占用：<%= (process.memoryUsage().rss / (1024 *1024)).toFixed(2) %> MB-->
                 </div>
             </div>
-            <footer class="card-footer">
-                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">系统：Blog</a>
-                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">主题：Bulma</a>
-            </footer>
+<!--            <footer class="card-footer">-->
+<!--                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">系统：Blog</a>-->
+<!--                <a href="https://github.com/songquanpeng/blog" class="card-footer-item">主题：Bulma</a>-->
+<!--            </footer>-->
         </div>
         <div class="box" style="margin-top: 32px">
             <%- notice %>

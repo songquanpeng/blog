@@ -11,9 +11,24 @@
                 <%- config.ad %>
             </article>
         </div>
-        <div class="column is-one-fifth-fullhd" id='toc-container'>
+        <div class="column is-one-quarter-fullhd" id='toc-container'>
             <aside class="menu toc">
-                <ul class="menu-list" id="toc">
+                <ul class="menu-list">
+                    <% if(page.categoryList.length > 1) { %>
+                        <li>
+                            <p style='font-size: x-large; font-weight: bold'><%- page.category %></p>
+                            <ul>
+                                <% page.categoryList.forEach((p)=>{ %>
+                                    <li><a href="/page/<%= p.link %>"><%= p.title %></a></li>
+                                <% }) %>
+                            </ul>
+                        </li>
+                    <% } %>
+                    <li>
+                        <p style='font-size: x-large; font-weight: bold'>目录</p>
+                        <ul id="toc">
+                        </ul>
+                    </li>
                 </ul>
             </aside>
         </div>
