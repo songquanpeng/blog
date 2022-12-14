@@ -155,7 +155,7 @@ async function getPage(req, res, next) {
   // Category
   let [category, tags] = parseTagStr(page.tag);
   page.tags = tags;
-  if (category) {
+  if (category && category !== "Others") {
     page.category = category;
     page.categoryList = await getPageListByTag(page.category);
   } else {
