@@ -14,8 +14,18 @@ a {
 }
 
 a:hover {
-    text-decoration: none!important;
+    text-decoration: none !important;
     color: #007bff;
+}
+
+.page-card-title a {
+    color: #368CCB;
+    text-decoration: none;
+}
+
+.page-card-title a:hover {
+    color: #368CCB;
+    text-decoration: none;
 }
 
 .wrapper {
@@ -70,11 +80,11 @@ code {
 }
 
 .shadow {
-    box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.02);
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .02);
 }
 
 .nav-shadow {
-    box-shadow: 0 2px 3px rgba(26,26,26,.1);
+    box-shadow: 0 2px 3px rgba(26, 26, 26, .1);
 }
 
 .paginator div {
@@ -97,7 +107,7 @@ code {
     background-color: #ffffff;
 }
 
-.toc-level-1{
+.toc-level-1 {
     list-style-type: none;
 }
 
@@ -136,13 +146,39 @@ img {
     /*font-size: larger;*/
 }
 
+article {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    color: #24292f;
+}
+
+article p, article blockquote, article ul, article ol, article dl, article table, article pre, article details {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+article ul, article ol {
+    padding-left: 2em;
+}
+
+article ul ul, article ul ol, article ol ol, article ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+article .tag {
+    font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
+}
+
 article a {
-    color: #368CCB;
+    color: #007bff;
     text-decoration: none;
 }
 
 article a:hover {
-    color: #368CCB;
+    color: #007bff;
     text-decoration: none;
 }
 
@@ -151,23 +187,25 @@ article h3,
 article h4,
 article h5,
 article h6 {
-    font-weight: 700;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
     line-height: 1.5;
-    margin: 12px 0 15px;
     margin-block-start: 1em;
     margin-block-end: 0.2em;
 }
 
 article h1 {
-    font-size: 1.7em
+    font-size: 2em
 }
 
 article h2 {
-    font-size: 1.6em
+    padding-bottom: 0.3em;
+    font-size: 1.5em;
 }
 
 article h3 {
-    font-size: 1.45em
+    font-size: 1.25em
 }
 
 article h4 {
@@ -177,6 +215,7 @@ article h4 {
 article h5 {
     font-size: 1.1em;
 }
+
 article h6 {
     font-size: 1em;
     font-weight: bold
@@ -202,7 +241,7 @@ article h6 {
 
 article p {
     margin-top: 0;
-    margin-bottom: 1.25rem;
+    margin-bottom: 16px;
 }
 
 article table {
@@ -223,8 +262,11 @@ article table th {
 article blockquote {
     margin-left: 0;
     padding: 0 1em;
-    font-size: smaller;
-    border-left: 5px solid #ddd;
+    border-left: 0.25em solid #ddd;
+}
+
+article ol ul {
+    list-style-type: circle;
 }
 
 article pre {
@@ -235,20 +277,33 @@ article pre {
     font-size: 16px;
     margin-top: 12px;
     margin-bottom: 12px;
+    border-radius: 6px;
 }
 
 article ol {
     text-decoration: none;
     padding-inline-start: 40px;
     margin-bottom: 1.25rem;
+    padding-left: 2em;
+}
+
+article ul {
+    padding-left: 2em;
+}
+
+article li + li {
+    margin-top: 0.25em;
 }
 
 article code {
-    color: #bc9458;
+    color: #24292f;
+    background-color: rgb(175 184 193 / 20%);
     padding: .065em .4em;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", "Cascadia Code", Consolas, Microsoft YaHei, monospace;
 }
 
-article .copyright{
+article .copyright {
     display: none;
 }
 
@@ -257,7 +312,7 @@ article .copyright{
     line-height: 28px;
     text-align: left;
     color: #738292;
-    margin-bottom: 3em
+    margin-bottom: 24px;
 }
 
 .info a {
@@ -272,13 +327,13 @@ article .copyright{
     padding-right: 16px;
 }
 
-.code-page code{
+.code-page code {
     font-size: 18px;
     width: 100%;
     height: 100%;
 }
 
-.code-page pre{
+.code-page pre {
     margin-top: 2px;
     overflow-x: auto;
     padding: 0;
@@ -286,7 +341,7 @@ article .copyright{
     background-color: rgba(0, 0, 0, 0);
 }
 
-.code-page .control-panel{
+.code-page .control-panel {
     width: 100%;
 }
 
