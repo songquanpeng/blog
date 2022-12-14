@@ -158,6 +158,8 @@ async function getPage(req, res, next) {
   if (category) {
     page.category = category;
     page.categoryList = await getPageListByTag(page.category);
+  } else {
+    page.categoryList = [];
   }
 
   res.locals.links = getLinks(page.id);
