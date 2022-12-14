@@ -129,7 +129,8 @@ async function getPageListByTag(tag) {
               [Op.eq]: `${tag}`
             }
           }
-        ]
+        ],
+        [Op.not]: [{ pageStatus: PAGE_STATUS.RECALLED }]
       },
       attributes: ['link', 'title'],
       order: [['link', 'ASC']],
