@@ -274,10 +274,13 @@ article pre {
     display: block;
     overflow: auto;
     padding: 0;
-    font-size: 16px;
     margin-top: 12px;
     margin-bottom: 12px;
     border-radius: 6px;
+}
+
+article pre code {
+    font-size: 14px;
 }
 
 article ol {
