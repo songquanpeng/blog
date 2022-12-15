@@ -79,15 +79,7 @@ _✨ 基于 Node.js 的个人博客系统 ✨_
 
 如果想在网站根目录上传文件，则在该目录下新建一个 `index` 文件夹，里面可以放置 `favicon.ico`, `robots.txt` 等文件，具体参见 `data/index` 目录下的内容。
 
-更新博客版本的流程：
-```shell script
-# pull new images
-docker pull justsong/blog
-# stop old container
-docker stop id
-# start new container
-docker run -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog
-```
+更新博客版本的命令：`docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`
 
 ### 通过源码部署
 ```shell script
