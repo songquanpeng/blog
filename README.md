@@ -71,7 +71,7 @@ _✨ 基于 Node.js 的个人博客系统 ✨_
 
 ## 部署
 ### 通过 Docker 部署
-执行：`docker run -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog`
+执行：`docker run --restart=always -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog`
 
 开放的端口号为 3000，之后用 Nginx 配置域名，反代以及 SSL 证书即可。
 
