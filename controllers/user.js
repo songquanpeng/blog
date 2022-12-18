@@ -112,6 +112,7 @@ async function get(req, res) {
   let message = 'ok';
   try {
     user = await User.findOne({
+      attributes: { exclude: ['password'] },
       where: {
         id
       },
@@ -129,7 +130,10 @@ async function getAll(req, res) {
   let message = 'ok';
   let status = true;
   try {
-    users = await User.findAll({ raw: true });
+    users = await User.findAll({
+      attributes: { exclude: ['password'] },
+      raw: true
+    });
   } catch (e) {
     status = false;
     message = e.message;
@@ -139,7 +143,7 @@ async function getAll(req, res) {
 
 async function create(req, res) {
   const username = req.body.username;
-  const password = req.body.password;
+  let password = req.body.password;
   let displayName = req.body.displayName;
   if (!displayName) {
     displayName = username;
@@ -157,6 +161,7 @@ async function create(req, res) {
       message: '无效的参数'
     });
   }
+  password = hashPasswordWithSalt(password);
   let message = 'ok';
   let user = undefined;
   try {
