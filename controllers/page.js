@@ -6,6 +6,7 @@ const Stream = require('stream');
 const { loadNoticeContent } = require('../common/config');
 const { updateCache, loadAllPages } = require('../common/cache');
 const { getDate } = require('../common/util');
+const { PAGE_STATUS } = require('../common/constant');
 
 async function search(req, res) {
   const type = Number(req.body.type);
@@ -156,7 +157,7 @@ async function export_(req, res, next) {
       const filename = page.link + '.md';
       res.setHeader(
         'Content-disposition',
-        "attachment; filename*=UTF-8''" + encodeURIComponent(filename)
+        'attachment; filename*=UTF-8\'\'' + encodeURIComponent(filename)
       );
       res.setHeader('Content-type', 'text/md');
       const fileStream = new Stream.Readable({
@@ -191,6 +192,36 @@ async function get(req, res) {
     status = false;
   }
   res.json({ status, message, page });
+}
+
+async function getPasswordProtected(req, res) {
+  const id = req.params.id;
+  const password = req.query.password;
+  let status = false;
+  let message = '';
+  let content = '';
+  if (!password) {
+    res.json({ status, message: '密码不能为空', content });
+    return;
+  }
+  try {
+    let page = await Page.findOne({
+      where: {
+        id, password,
+        [Op.not]: [{ pageStatus: PAGE_STATUS.RECALLED }]
+      }
+    });
+    if (page) {
+      content = convertContent(page, false);
+      status = true;
+    } else {
+      message = "密码错误，或文章不存在或被撤回";
+    }
+  } catch (e) {
+    console.error(e);
+    message = e.message;
+  }
+  res.json({ status, message, content });
 }
 
 async function update(req, res, next) {
@@ -278,6 +309,7 @@ module.exports = {
   getAll,
   export_,
   get,
+  getPasswordProtected,
   update,
   delete_
 };

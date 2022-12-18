@@ -150,12 +150,15 @@ async function getPage(req, res, next) {
 
   page.view++;
   updateView(page.id);
-  page.converted_content = convertContent(page, false);
-
+  if (page.password) {
+    page.converted_content = '<p>本篇文章被密码保护，需要输入密码才能查看，但是正在使用的主题不支持该功能！</p>';
+  } else {
+    page.converted_content = convertContent(page, false);
+  }
   // Category
   let [category, tags] = parseTagStr(page.tag);
   page.tags = tags;
-  if (category && category !== "Others") {
+  if (category && category !== 'Others') {
     page.category = category;
     page.categoryList = await getPageListByTag(page.category);
   } else {

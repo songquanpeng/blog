@@ -5,8 +5,25 @@
         <div class="column">
             <article id="article">
                 <%- include('./partials/page-info') %>
-                <%-page.converted_content%>
-                <p class="copyright"><strong>Links: <a href="<%-page.link%>"><%-page.link%></a></strong></p>
+                <% if(page.password) { %>
+                    <div id='anchorId'>
+                        <label class="label" id='labelId'>本篇文章被密码保护，请输入访问密码：</label>
+                        <div class="field has-addons">
+                            <div class="control" style='display: block'>
+                                <input class="input" type="password" placeholder="访问密码" id='passwordInputId'>
+                            </div>
+                            <div class="control">
+                                <button class="button"
+                                        onclick='submitArticlePassword("<%- page.id %>", "passwordInputId", "labelId", "anchorId")'>
+                                    提交
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <%- page.converted_content %>
+                <% } %>
+                <p class="copyright"><strong>Links: <a href="<%- page.link %>"><%- page.link %></a></strong></p>
                 <%- config.copyright %>
                 <%- config.ad %>
             </article>
@@ -37,10 +54,12 @@
     <%- include('./partials/comment') %>
 </div>
 
-<script>
-  (function() {
-    generateTOC();
-  })();
-</script>
+<% if(!page.password) { %>
+    <script>
+      (function() {
+        generateTOC();
+      })();
+    </script>
+<% } %>
 
 <%- include('./partials/footer') %>
