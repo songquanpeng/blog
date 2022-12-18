@@ -3,6 +3,7 @@ const File = require('./file');
 const Option = require('./option');
 const Page = require('./page');
 const sequelize = require('../common/database');
+const { hashPasswordWithSalt } = require('../common/util');
 
 Page.belongsTo(User);
 User.hasMany(Page);
@@ -18,7 +19,7 @@ async function initializeDatabase() {
     console.log('No admin user existed! Creating one for you.');
     await User.create({
       username: 'admin',
-      password: '123456',
+      password: hashPasswordWithSalt('123456'),
       displayName: 'Administrator',
       isAdmin: true,
       isModerator: true
@@ -63,6 +64,7 @@ async function initializeOptions() {
     await Option.findOrCreate({ where: { key }, defaults: { value } });
   }
 }
+
 exports.initializeDatabase = initializeDatabase;
 exports.User = User;
 exports.File = File;

@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const { User } = require('../models');
 const axios = require('axios');
+const { hashPasswordWithSalt, checkPassword } = require('../common/util');
 
 async function login(req, res) {
   let username = req.body.username;
@@ -13,11 +14,11 @@ async function login(req, res) {
 
   let user = await User.findOne({
     where: {
-      [Op.and]: [{ username }, { password }]
+      [Op.and]: [{ username }]
     },
     raw: true
   });
-  if (user) {
+  if (user && checkPassword(password, user.password)) {
     if (!user.isBlocked) {
       req.session.user = user;
       res.json({
@@ -72,7 +73,6 @@ async function update(req, res) {
 
   let newUser = {
     username,
-    password,
     displayName,
     isAdmin,
     isModerator,
@@ -91,6 +91,9 @@ async function update(req, res) {
       }
     });
     if (user) {
+      if (password) {
+        newUser.password = hashPasswordWithSalt(password);
+      }
       await user.update(newUser);
     }
     status = user !== null;

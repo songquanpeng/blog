@@ -1,5 +1,6 @@
 const { lexer, parser } = require('marked');
 const fs = require('fs');
+const crypto = require('crypto');
 
 function titleToLink(title) {
   return title.trim().replace(/\s/g, '-');
@@ -58,10 +59,31 @@ async function fileExists(path) {
   return !!(await fs.promises.stat(path).catch(e => false));
 }
 
+const saltLength = 16;
+
+function hashPasswordWithSalt(password) {
+  const salt = crypto.randomBytes(Math.ceil(saltLength / 2)).toString('hex').slice(0, saltLength);
+  const hash = crypto.createHmac('sha512', salt);
+  hash.update(password);
+  const hashedPassword = hash.digest('hex');
+  return salt + hashedPassword;
+}
+
+function checkPassword(plainTextPassword, hashedPasswordWithSalt) {
+  const salt = hashedPasswordWithSalt.substring(0, saltLength);
+  const realHashedPassword = hashedPasswordWithSalt.substring(saltLength);
+  const hash = crypto.createHmac('sha512', salt);
+  hash.update(plainTextPassword);
+  const hashedPassword = hash.digest('hex');
+  return hashedPassword === realHashedPassword;
+}
+
 module.exports = {
   titleToLink,
   parseTagStr,
   getDate,
   md2html,
-  fileExists
+  fileExists,
+  hashPasswordWithSalt,
+  checkPassword
 };
