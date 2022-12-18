@@ -12,7 +12,7 @@ router.post('/page/search', userRequired, page.search);
 router.post('/page', userRequired, page.create);
 router.get('/page', userRequired, page.getAll);
 router.get('/page/export/:id', userRequired, page.export_);
-router.get('/page/password/:id', page.getPasswordProtected);
+router.get('/page/render/:id', page.getRenderedPage);
 router.get('/page/:id', userRequired, page.get);
 router.put('/page', userRequired, page.update);
 router.delete('/page/:id', userRequired, page.delete_);

@@ -41,7 +41,7 @@ function insertTOC(titles) {
 async function submitArticlePassword(postId, passwordInputId, labelId, anchorId) {
   let password = document.getElementById(passwordInputId).value;
   if (!password) return;
-  let res = await fetch(`/api/page/password/${postId}?password=${password}`);
+  let res = await fetch(`/api/page/render/${postId}?password=${password}`);
   let data = await res.json();
   if (data.status) {
     document.getElementById(anchorId).style.display = 'none';

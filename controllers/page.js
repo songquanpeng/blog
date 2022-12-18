@@ -194,15 +194,14 @@ async function get(req, res) {
   res.json({ status, message, page });
 }
 
-async function getPasswordProtected(req, res) {
+async function getRenderedPage(req, res) {
   const id = req.params.id;
-  const password = req.query.password;
+  let password = req.query.password;
   let status = false;
   let message = '';
   let content = '';
   if (!password) {
-    res.json({ status, message: '密码不能为空', content });
-    return;
+    password = '';
   }
   try {
     let page = await Page.findOne({
@@ -215,7 +214,7 @@ async function getPasswordProtected(req, res) {
       content = convertContent(page, false);
       status = true;
     } else {
-      message = "密码错误，或文章不存在或被撤回";
+      message = '文章不存在或被撤回，或密码错误';
     }
   } catch (e) {
     console.error(e);
@@ -309,7 +308,7 @@ module.exports = {
   getAll,
   export_,
   get,
-  getPasswordProtected,
+  getRenderedPage,
   update,
   delete_
 };
