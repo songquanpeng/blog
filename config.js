@@ -12,11 +12,13 @@ let config = {
 };
 
 function init() {
-  if (!fs.existsSync(config.uploadPath)) {
-    fs.mkdirSync(config.uploadPath);
+  if (config.systemVersion === 'v0.0.0') {
+    if (!fs.existsSync(config.uploadPath)) {
+      fs.mkdirSync(config.uploadPath);
+    }
+    let meta = JSON.parse(fs.readFileSync('package.json').toString());
+    config.systemVersion = `v${meta.version}`;
   }
-  let meta = JSON.parse(fs.readFileSync('package.json').toString());
-  config.systemVersion = `v${meta.version}`
 }
 
 init();
