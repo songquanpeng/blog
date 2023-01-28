@@ -29,6 +29,7 @@ import 'ace-builds/src-noconflict/mode-csharp';
 import 'ace-builds/src-noconflict/snippets/csharp';
 
 import axios from 'axios';
+import { getDate } from '../utils';
 
 const modes = [
   'markdown',
@@ -252,6 +253,7 @@ class Editor extends Component {
         isImage = true;
       }
       formData.append("file", files[0]);
+      formData.append("description", `编辑文章《${this.state.page.title}》时上传，时间为 ${getDate()}`)
       let res = await axios.post('/api/file', formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
