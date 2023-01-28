@@ -1,15 +1,5 @@
 import React, { Component } from 'react';
-import {
-  message as Message,
-  Button,
-  Space,
-  Select,
-  Switch,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Layout,
-} from 'antd';
+import { Button, Input, InputNumber, Layout, message as Message, Popconfirm, Select, Space, Switch } from 'antd';
 
 import AceEditor from 'react-ace';
 import { connect } from 'react-redux';
@@ -52,7 +42,7 @@ const modes = [
   'css',
   'sql',
   'golang',
-  'csharp',
+  'csharp'
 ];
 
 const { Sider, Content } = Layout;
@@ -72,7 +62,7 @@ const editorThemes = [
   'textmate',
   'solarized_dark',
   'solarized_light',
-  'terminal',
+  'terminal'
 ];
 
 editorThemes.forEach((theme) =>
@@ -95,7 +85,7 @@ export const PAGE_OPTIONS = [
   { key: 'gold', label: '媒体', value: 6 },
   { key: 'violet', label: '时间线', value: 7 },
   { key: 'cyan', label: '重定向', value: 8 },
-  { key: 'purple', label: '文本', value: 9 },
+  { key: 'purple', label: '文本', value: 9 }
 ];
 
 const PAGE_TYPES = {
@@ -133,9 +123,9 @@ class Editor extends Component {
         content: '---\ntitle: \ndescription: \ntags: \n- Others\n---\n',
         tag: '',
         password: '',
-        description: '',
+        description: ''
       },
-      showDrawer: false,
+      showDrawer: false
     };
     this.onChange = this.onChange.bind(this);
     // setInterval(this.onSubmit, this.state.saveInterval);
@@ -185,6 +175,8 @@ class Editor extends Component {
     //     }
     //   }
     // });
+
+    document.querySelector('.ace_editor').addEventListener('paste', this.onPaste, true);
   }
 
   fetchData = async () => {
@@ -225,7 +217,7 @@ class Editor extends Component {
     this.setState({
       theme,
       fontSize: parseInt(fontSize),
-      saveInterval: parseInt(saveInterval),
+      saveInterval: parseInt(saveInterval)
     });
   }
 
@@ -244,12 +236,36 @@ class Editor extends Component {
     this.setState({ page, noUserInputContent });
   }
 
-  onPaste = (e) => {
-    const clipboard = e.clipboardData;
-    e.text = this.state.pasteWithFormatting
-      ? clipboard.getData('text/html')
-      : clipboard.getData('text/plain');
-    e.preventDefault();
+  onPaste = async (e) => {
+    const { selection } = this.content.editor;
+    const { row, column, document } = selection.anchor;
+    const lines = document.$lines;
+    let index = column;
+    for (let i = 0; i < row; i += 1) {
+      index += lines[i].length + 1;
+    }
+    const {files} = e.clipboardData;
+    let isImage = false;
+    if (files.length) {
+      let formData = new FormData();
+      if (files[0]['type'].split('/')[0] === 'image') {
+        isImage = true;
+      }
+      formData.append("file", files[0]);
+      let res = await axios.post('/api/file', formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (res.data.status) {
+        const {file} = res.data;
+        const { page } = this.state;
+        const { content } = page;
+        const uploadContent = `${isImage ? "!" : ""}[${file.filename}](${file.path})`;
+        page.content = `${content.substring(0, index)}${uploadContent}${content.substring(index)}`;
+        this.setState({ page }, () => {
+          selection.moveCursorTo(row, lines[row].length + uploadContent.length);
+        });
+      }
+    }
   };
 
   onEditorBlur = () => {
@@ -356,7 +372,7 @@ class Editor extends Component {
           'css',
           'csharp',
           'golang',
-          'sql',
+          'sql'
         ].includes(value)
       ) {
         content = '/*\ntitle: \ndescription: \ntags: \n- Others\n*/\n';
@@ -434,7 +450,7 @@ class Editor extends Component {
       'h+': date.getHours(),
       'm+': date.getMinutes(),
       's+': date.getSeconds(),
-      S: date.getMilliseconds(),
+      S: date.getMilliseconds()
     };
 
     if (/(y+)/.test(format)) {
@@ -479,7 +495,7 @@ class Editor extends Component {
     if (!id) {
       id = this.state.page.id;
     }
-    axios.delete(`/api/page/${id}`).then(async function (res) {
+    axios.delete(`/api/page/${id}`).then(async function(res) {
       const { status, message } = res.data;
       if (status) {
         Message.success('页面删除成功');
@@ -500,7 +516,7 @@ class Editor extends Component {
 
   updatePage() {
     const that = this;
-    axios.put('/api/page', this.state.page).then(async function (res) {
+    axios.put('/api/page', this.state.page).then(async function(res) {
       const { status, message } = res.data;
       if (status) {
         Message.success('页面更新成功');
@@ -513,7 +529,7 @@ class Editor extends Component {
 
   postNewPage() {
     const that = this;
-    axios.post('/api/page', this.state.page).then(async function (res) {
+    axios.post('/api/page', this.state.page).then(async function(res) {
       const { status, message, id } = res.data;
       if (status) {
         let page = { ...that.state.page };
@@ -531,7 +547,10 @@ class Editor extends Component {
     return (
       <>
         <AceEditor
-          style={{ width: '100%', minHeight: '100%'}}
+          ref={(content) => {
+            this.content = content;
+          }}
+          style={{ width: '100%', minHeight: '100%' }}
           mode={this.state.language}
           theme={this.state.theme}
           name={'editor'}
@@ -549,36 +568,36 @@ class Editor extends Component {
   renderPanel() {
     return (
       <div>
-        <Space direction="vertical">
+        <Space direction='vertical'>
           链接
           <Input
-            placeholder="页面链接"
-            name="link"
+            placeholder='页面链接'
+            name='link'
             value={this.state.page.link}
             onChange={this.onInputChange}
           />
           密码
           <Input
-            placeholder="阅读密码"
-            name="password"
+            placeholder='阅读密码'
+            name='password'
             value={this.state.page.password}
             onChange={this.onInputChange}
           />
           类型
           <Select
             style={{ width: '100%' }}
-            label="页面类型"
-            name="type"
+            label='页面类型'
+            name='type'
             options={PAGE_OPTIONS}
             value={this.state.page.type}
-            placeholder="页面类型"
+            placeholder='页面类型'
             onChange={this.onTypeChange}
           />
           <br />
           <Space>
             <Switch
-              name="commentStatus"
-              label="允许评论"
+              name='commentStatus'
+              label='允许评论'
               checked={this.state.page.commentStatus === 1}
               onChange={this.onCommentStatusChange}
             />{' '}
@@ -586,8 +605,8 @@ class Editor extends Component {
           </Space>
           <Space>
             <Switch
-              name="pageStatus"
-              label="发布页面"
+              name='pageStatus'
+              label='发布页面'
               checked={this.state.page.pageStatus !== 0}
               onChange={this.onPublishStatusChange}
             />{' '}
@@ -595,8 +614,8 @@ class Editor extends Component {
           </Space>
           <Space>
             <Switch
-              name="pageStatus"
-              label="置顶页面"
+              name='pageStatus'
+              label='置顶页面'
               checked={this.state.page.pageStatus === 2}
               onChange={this.onStayOnTopStatusChange}
             />{' '}
@@ -604,8 +623,8 @@ class Editor extends Component {
           </Space>
           <Space>
             <Switch
-              name="pageStatus"
-              label="Hide on index"
+              name='pageStatus'
+              label='Hide on index'
               checked={this.state.page.pageStatus === 3}
               onChange={this.onHiddenStatusChange}
             />{' '}
@@ -627,11 +646,11 @@ class Editor extends Component {
               onConfirm={() => {
                 this.deletePage();
               }}
-              okText="确认"
-              cancelText="取消"
+              okText='确认'
+              cancelText='取消'
             >
               <Button
-                type="primary"
+                type='primary'
                 danger
                 size={'small'}
                 disabled={this.state.isNewPage}
@@ -644,13 +663,13 @@ class Editor extends Component {
               onConfirm={() => {
                 this.reset();
               }}
-              okText="确认"
-              cancelText="取消"
+              okText='确认'
+              cancelText='取消'
             >
               <Button size={'small'}>重置</Button>
             </Popconfirm>
 
-            <Button type="primary" size={'small'} onClick={this.onSubmit}>
+            <Button type='primary' size={'small'} onClick={this.onSubmit}>
               提交
             </Button>
           </Space>
@@ -658,30 +677,30 @@ class Editor extends Component {
           编程语言
           <Select
             style={{ width: '100%' }}
-            label="编程语言"
-            name="language"
+            label='编程语言'
+            name='language'
             options={languages}
             value={this.state.language}
-            placeholder="编程语言"
+            placeholder='编程语言'
             onChange={this.onLanguageChange}
           />
           颜色主题
           <Select
             style={{ width: '100%' }}
-            label="颜色主题"
-            name="theme"
+            label='颜色主题'
+            name='theme'
             options={themes}
             value={this.state.theme}
-            placeholder="颜色主题"
+            placeholder='颜色主题'
             onChange={this.onThemeChange}
           />
           字体大小
           <InputNumber
             style={{ width: '100%' }}
-            placeholder="字体大小"
-            name="font_size"
-            type="number"
-            min="1"
+            placeholder='字体大小'
+            name='font_size'
+            type='number'
+            min='1'
             value={this.state.fontSize}
             onChange={this.onFontSizeChange}
           />
@@ -696,14 +715,14 @@ class Editor extends Component {
         style={{
           height: '100%',
           borderTop: 'solid 1px #bfbfbf',
-          backgroundColor: '#fff',
+          backgroundColor: '#fff'
         }}
       >
         <Sider
           style={{
             backgroundColor: '#fff',
             padding: '16px',
-            marginRight: '10px',
+            marginRight: '10px'
           }}
         >
           {this.renderPanel()}
