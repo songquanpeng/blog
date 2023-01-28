@@ -9,7 +9,8 @@ exports.upload = multer({
       callback(null, uploadPath);
     },
     filename: async function(req, file, callback) {
-      if (await fileExists(path.join(uploadPath, file.originalname))) {
+      file.originalname = file.originalname.replaceAll(" ", "_");
+      if (await fileExists(path.join(uploadPath, path.basename(file.originalname)))) {
         let parts = file.originalname.split('.');
         let extension = "";
         if (parts.length > 1) {
