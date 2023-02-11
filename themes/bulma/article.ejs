@@ -28,7 +28,7 @@
                 <%- config.ad %>
             </article>
         </div>
-        <div class="column is-one-quarter-fullhd" id='toc-container'>
+        <div class="column is-one-quarter-fullhd">
             <aside class="menu toc">
                 <ul class="menu-list">
                     <% if(page.categoryList.length > 1) { %>
@@ -41,7 +41,7 @@
                             </ul>
                         </li>
                     <% } %>
-                    <li>
+                    <li id='toc-container'>
                         <p style='font-size: x-large; font-weight: bold'>目录</p>
                         <ul id="toc">
                         </ul>
