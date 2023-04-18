@@ -45,6 +45,7 @@ _✨ 基于 Node.js 的个人博客系统 ✨_
 3. 无需配置数据库，开箱即用（如果你不想用 SQLite，请修改 `config.js` 配置文件）。
 4. 内置 ACE 代码编辑器，附带多种代码主题（包括 Solarized Light）。
 5. 支持通过 Docker 部署，一行命令即可上线部署，详见[此处](#部署)。
+6. 支持通过 Token 验证发布文章，详见[此处](./bin/create_page_with_token.py)。
 
 ## 主题
 1. Bulma：Bulma CSS 风格主题，内置的默认主题。
