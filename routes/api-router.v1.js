@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { userRequired, adminRequired } = require('../middlewares/api-auth');
+const { userRequired, adminRequired, tokenAuth } = require('../middlewares/api-auth');
 const { upload } = require('../middlewares/upload');
 
 const page = require('../controllers/page');
@@ -9,7 +9,7 @@ const option = require('../controllers/option');
 const file = require('../controllers/file');
 
 router.post('/page/search', userRequired, page.search);
-router.post('/page', userRequired, page.create);
+router.post('/page', tokenAuth, userRequired, page.create);
 router.get('/page', userRequired, page.getAll);
 router.get('/page/export/:id', userRequired, page.export_);
 router.get('/page/render/:id', page.getRenderedPage);

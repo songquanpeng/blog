@@ -6,7 +6,7 @@ const Stream = require('stream');
 const { loadNoticeContent } = require('../common/config');
 const { updateCache, loadAllPages } = require('../common/cache');
 const { getDate } = require('../common/util');
-const { PAGE_STATUS } = require('../common/constant');
+const { PAGE_STATUS, PAGE_TYPES } = require('../common/constant');
 
 async function search(req, res) {
   const type = Number(req.body.type);
@@ -76,6 +76,26 @@ async function create(req, res) {
   let view = 0;
   let upVote = 0;
   let downVote = 0;
+
+  if (req.session.authWithToken) {
+    let oldContent = content;
+    content = `---\ntitle: ${title}\ndescription: ${description}\ntags: \n`;
+    let tags = req.body.tags;
+    for (let i = 0; i < tags.length; i++) {
+      content += `- ${tags[i]}\n`;
+    }
+    content += `---\n\n${oldContent}`;
+    tag = tags.join(';');
+    if (pageStatus === undefined) {
+      pageStatus = PAGE_STATUS.PUBLISHED;
+    }
+    if (commentStatus === undefined) {
+      commentStatus = 1;
+    }
+    if (type === undefined) {
+      type = PAGE_TYPES.ARTICLE;
+    }
+  }
 
   let page;
   let message = 'ok';
