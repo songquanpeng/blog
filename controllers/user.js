@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const { User } = require('../models');
 const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
 const { hashPasswordWithSalt, checkPassword } = require('../common/util');
 
 async function login(req, res) {
@@ -57,6 +58,31 @@ async function status(req, res) {
     status: true,
     user: req.session.user
   });
+}
+
+async function refreshToken(req, res) {
+  let uuid = uuidv4();
+  let userId = req.session.user.id;
+  let user = await User.findOne({
+    where: {
+      id: userId
+    }
+  })
+  if (user) {
+    await user.update({
+      accessToken: uuid
+    });
+    res.json({
+      status: true,
+      message: 'ok',
+      accessToken: uuid
+    });
+  } else {
+    res.json({
+      status: false,
+      message: '用户不存在'
+    });
+  }
 }
 
 async function update(req, res) {
@@ -209,6 +235,7 @@ module.exports = {
   login,
   logout,
   status,
+  refreshToken,
   update,
   get,
   getAll,

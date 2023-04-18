@@ -132,6 +132,21 @@ class Users extends Component {
     this.props.history.push('/users/new');
   };
 
+  refreshToken = async ()=>{
+    try {
+      const res = await axios.post(`/api/user/refresh_token`);
+      const { status, message, accessToken } = res.data;
+      if (status) {
+        await navigator.clipboard.writeText(accessToken);
+        Message.success('Access Token 刷新成功，已复制到剪切板');
+      } else {
+        Message.error(message);
+      }
+    } catch (e) {
+      Message.error(e.message);
+    }
+  }
+
   deleteUser = (id) => {
     const that = this;
     axios.delete(`/api/user/${id}`).then(async function (res) {
@@ -166,6 +181,14 @@ class Users extends Component {
           }}
         >
           创建新用户账户
+        </Button>
+        <Button
+          onClick={() => {
+            this.refreshToken().then();
+          }}
+          style={{ marginLeft: '16px' }}
+        >
+          刷新 Access Token
         </Button>
       </div>
     );

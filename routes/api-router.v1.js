@@ -20,6 +20,7 @@ router.delete('/page/:id', userRequired, page.delete_);
 router.post('/user/login', user.login);
 router.get('/user/logout', user.logout);
 router.get('/user/status', userRequired, user.status);
+router.post('/user/refresh_token', userRequired, user.refreshToken);
 router.put('/user', adminRequired, user.update);
 router.get('/user', adminRequired, user.getAll);
 router.get('/user/:id', adminRequired, user.get);
