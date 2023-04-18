@@ -95,6 +95,9 @@ async function create(req, res) {
     if (type === undefined) {
       type = PAGE_TYPES.ARTICLE;
     }
+    if (link === undefined) {
+      link = title;
+    }
   }
 
   let page;
