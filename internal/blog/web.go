@@ -115,9 +115,9 @@ func (a *App) page(c *gin.Context) {
 		a.renderError(c, http.StatusNotFound, "页面不存在", "未找到该公开页面")
 		return
 	}
-	if page.PageStatus == StatusHidden {
-		c.Header("X-Robots-Tag", "noindex, follow")
-	}
+	// StatusHidden is the legacy "Hide on index" state: it removes a page
+	// from listing pages and the sitemap, but the historical implementation
+	// still allowed search engines to index the canonical page itself.
 	if page.Type == PageRedirect {
 		target := strings.TrimSpace(stripFrontMatter(page.Content))
 		if !safeNavigationURL(target) {

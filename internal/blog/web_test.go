@@ -3,6 +3,7 @@ package blog
 import (
 	"bytes"
 	"encoding/json"
+	"html/template"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -77,6 +78,34 @@ func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	}
 	if robots := recorder.Header().Get("X-Robots-Tag"); robots != "noindex, nofollow, nosnippet" {
 		t.Fatalf("raw page X-Robots-Tag = %q", robots)
+	}
+}
+
+func TestHiddenPagePreservesLegacySearchIndexability(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	page := Page{Type: PageArticle, Link: "hidden", PageStatus: StatusHidden, CommentStatus: 1, Title: "Hidden", Content: "content"}
+	if err := store.CreatePage(t.Context(), &page); err != nil {
+		t.Fatal(err)
+	}
+
+	templates := template.Must(template.New("layout.gohtml").Parse(`{{define "layout.gohtml"}}ok{{end}}`))
+	gin.SetMode(gin.TestMode)
+	app := &App{store: store, templates: templates, cfg: Config{PublicURL: "https://blog.example"}}
+	router := gin.New()
+	router.GET("/page/:link", app.page)
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/page/hidden", nil)
+	router.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("hidden page response = %d %s", recorder.Code, recorder.Body.String())
+	}
+	if robots := recorder.Header().Get("X-Robots-Tag"); robots != "" {
+		t.Fatalf("legacy hidden page unexpectedly blocks indexing: %q", robots)
 	}
 }
 
