@@ -281,10 +281,20 @@ span.line { display: inline-block; margin-right: 4px; }
   .toc { border-left: 0; padding-left: 0; }
 }
 
+/* Bulma's columns use negative outer margins. On the stacked home layout that
+   cancels the column gutter and makes cards look flush against mobile screens. */
+@media screen and (max-width: 1023px) {
+  .index-layout { margin-inline: 0; }
+  .index-layout > .column { padding-inline: 12px; }
+  .index-layout .page-card-list { margin-inline: 0; }
+  .index-layout .index-sidebar { margin-top: 8px; }
+}
+
 @media screen and (max-width: 768px) {
-  .page-card-list { margin-inline: 4px; }
   .index-page-box { border-radius: 6px; }
   .index-page-box:hover { transform: none; }
+  .index-layout .content h2.page-card-title { font-size: 1.3rem; line-height: 1.4; }
+  .index-layout .page-card-text { margin-top: 14px; line-height: 1.65; }
   .article-container { padding-inline: 14px; }
   .archive-container { padding-inline: 8px; }
   .pagination { gap: 8px; }

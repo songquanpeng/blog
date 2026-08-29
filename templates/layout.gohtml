@@ -34,13 +34,13 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
-  <link rel="stylesheet" href="/static/main.css?v=bulma-classic-20260830">
+  <link rel="stylesheet" href="/static/main.css?v=bulma-mobile-20260830">
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
   <link rel="icon" href="{{.Favicon}}">
   <script defer src="/static/highlight.min.js"></script>
-  <script defer src="/static/main.js?v=bulma-classic-20260830"></script>
+  <script defer src="/static/main.js?v=bulma-mobile-20260830"></script>
   {{if .JSONLD}}<script nonce="{{.Nonce}}" type="application/ld+json">{{.JSONLD}}</script>{{end}}
 </head>
 <body>
@@ -66,7 +66,7 @@
   <main id="content-wrap">
     <div class="container">
       {{if eq .Kind "index"}}
-        <div class="columns is-desktop">
+        <div class="columns is-desktop index-layout">
           <section class="column" aria-label="文章列表">
             <div class="page-card-list">
               {{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content">
