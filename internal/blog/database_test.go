@@ -13,6 +13,21 @@ import (
 	"gorm.io/gorm"
 )
 
+func TestStripFrontMatterOnlyAtDocumentStart(t *testing.T) {
+	bodyWithRule := "first paragraph\n\n---\n\nlast paragraph"
+	if got := stripFrontMatter(bodyWithRule); got != bodyWithRule {
+		t.Fatalf("horizontal rule truncated article: %q", got)
+	}
+	frontMatter := "---\ntitle: Example\ntags: test\n---\n# Heading\n\nBody"
+	if got := stripFrontMatter(frontMatter); got != "# Heading\n\nBody" {
+		t.Fatalf("front matter body = %q", got)
+	}
+	malformed := "---\ntitle: Missing closing delimiter\nBody"
+	if got := stripFrontMatter(malformed); got != malformed {
+		t.Fatalf("malformed front matter was removed: %q", got)
+	}
+}
+
 func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "data.db")
 	db, err := sql.Open("sqlite3", path)

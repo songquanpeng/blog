@@ -579,7 +579,7 @@ func (s *Store) DeleteFile(ctx context.Context, id string) (bool, error) {
 
 func toMicroPost(row dbMicroPost) MicroPost {
 	return MicroPost{ID: row.ID, Content: row.Content, Status: row.Status,
-		CreatedAt: formatDBTime(row.CreatedAt), UpdatedAt: formatDBTime(row.UpdatedAt)}
+		CreatedAt: formatDBTime(row.CreatedAt), UpdatedAt: formatDBTime(row.UpdatedAt), Accent: microblogAccent(row.Content)}
 }
 
 func (s *Store) MicroPosts(ctx context.Context, publicOnly bool, offset, limit int) ([]MicroPost, int64, error) {

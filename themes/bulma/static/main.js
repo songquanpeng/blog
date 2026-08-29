@@ -55,6 +55,91 @@ function enhanceArticle() {
   });
 }
 
+function enhanceMicroblog() {
+  const stream = document.getElementById('microblog-stream');
+  const loader = document.getElementById('microblog-loader');
+  const button = loader?.querySelector('button');
+  const status = loader?.querySelector('[role="status"]');
+  if (!stream || !loader || !button || !status) return;
+
+  let offset = Number(loader.dataset.nextOffset) || stream.querySelectorAll('.micro-post').length;
+  let loading = false;
+  let hasMore = true;
+  let observer;
+
+  const appendPost = (post) => {
+    const article = document.createElement('article');
+    article.className = 'box micro-post';
+    article.id = `micro-post-${post.id}`;
+    article.dataset.microAccent = String(post.accent ?? 0);
+
+    const content = document.createElement('div');
+    content.className = 'micro-post-content';
+    content.innerHTML = post.html;
+
+    const footer = document.createElement('footer');
+    const link = document.createElement('a');
+    link.href = `#${article.id}`;
+    const time = document.createElement('time');
+    time.dateTime = post.createdAt;
+    time.textContent = post.createdLabel;
+    const id = document.createElement('span');
+    id.textContent = `#${post.id}`;
+    link.append(time);
+    footer.append(link, id);
+    article.append(content, footer);
+    return article;
+  };
+
+  const loadMore = async () => {
+    if (loading || !hasMore) return;
+    loading = true;
+    observer?.unobserve(loader);
+    loader.setAttribute('aria-busy', 'true');
+    button.disabled = true;
+    button.textContent = '正在加载…';
+    status.textContent = '';
+    try {
+      const endpoint = new URL(window.location.pathname, window.location.origin);
+      endpoint.searchParams.set('format', 'json');
+      endpoint.searchParams.set('offset', String(offset));
+      const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
+      const payload = await response.json();
+      if (!response.ok || !payload.status) throw new Error(payload.message || '加载失败');
+      const fragment = document.createDocumentFragment();
+      payload.posts.forEach((post) => fragment.append(appendPost(post)));
+      stream.append(fragment);
+      offset = payload.nextOffset;
+      hasMore = Boolean(payload.hasMore) && payload.posts.length > 0;
+      if (!hasMore) {
+        loader.classList.add('is-complete');
+        button.hidden = true;
+        status.textContent = '已经看到全部片语了';
+      } else {
+        button.disabled = false;
+        button.textContent = '继续加载';
+        observer?.observe(loader);
+      }
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = '重试加载';
+      status.textContent = error.message || '加载失败，请重试';
+      observer?.observe(loader);
+    } finally {
+      loading = false;
+      loader.removeAttribute('aria-busy');
+    }
+  };
+
+  button.addEventListener('click', loadMore);
+  if ('IntersectionObserver' in window) {
+    observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) loadMore();
+    }, { rootMargin: '480px 0px' });
+    observer.observe(loader);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const burger = document.querySelector('.navbar-burger');
   if (burger) {
@@ -141,6 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   enhanceArticle();
+  enhanceMicroblog();
   generateTOC();
   window.hljs?.highlightAll();
 });

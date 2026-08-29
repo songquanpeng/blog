@@ -214,7 +214,7 @@ func (a *App) rawPageContent(c *gin.Context) {
 	document.WriteString(template.HTMLEscapeString(optionFromStore(a, c, "language", "zh-CN")))
 	document.WriteString("\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>")
 	document.WriteString(template.HTMLEscapeString(page.Title))
-	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-refined-20260829\"></head><body><main class=\"raw\">")
+	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-classic-20260830\"></head><body><main class=\"raw\">")
 	document.WriteString(content)
 	document.WriteString(`</main><script>new ResizeObserver(function(){parent.postMessage({type:"blog-raw-height",height:document.documentElement.scrollHeight},"*")}).observe(document.documentElement)</script></body></html>`)
 

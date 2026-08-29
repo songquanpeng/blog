@@ -76,6 +76,7 @@ type MicroPost struct {
 	CreatedAt string        `json:"createdAt"`
 	UpdatedAt string        `json:"updatedAt"`
 	Rendered  template.HTML `json:"-"`
+	Accent    int           `json:"-"`
 }
 
 type Option struct {
@@ -101,39 +102,40 @@ type NavGroup struct {
 }
 
 type ViewData struct {
-	Kind          string
-	Lang          string
-	OGLocale      string
-	Title         string
-	Description   string
-	Robots        string
-	Canonical     string
-	SiteURL       string
-	SiteName      string
-	SiteInitial   string
-	Motto         string
-	Author        string
-	Year          int
-	Favicon       string
-	BrandImage    string
-	SocialImage   string
-	CodeTheme     string
-	Copyright     template.HTML
-	ExtraFooter   template.HTML
-	Notice        template.HTML
-	PrimaryNav    []NavItem
-	Nav           []NavGroup
-	Pages         []Page
-	MicroPosts    []MicroPost
-	Page          *Page
-	Links         []Link
-	Prev          *Page
-	Next          *Page
-	PrevURL       string
-	NextURL       string
-	ListTitle     string
-	Message       string
-	JSONLD        template.JS
-	Nonce         string
-	AllowUnsafe   bool
+	Kind        string
+	Lang        string
+	OGLocale    string
+	Title       string
+	Description string
+	Robots      string
+	Canonical   string
+	SiteURL     string
+	SiteName    string
+	SiteInitial string
+	Motto       string
+	Author      string
+	Year        int
+	Favicon     string
+	BrandImage  string
+	SocialImage string
+	CodeTheme   string
+	Copyright   template.HTML
+	ExtraFooter template.HTML
+	Notice      template.HTML
+	PrimaryNav  []NavItem
+	Nav         []NavGroup
+	Pages       []Page
+	MicroPosts  []MicroPost
+	MicroOffset int
+	Page        *Page
+	Links       []Link
+	Prev        *Page
+	Next        *Page
+	PrevURL     string
+	NextURL     string
+	ListTitle   string
+	Message     string
+	JSONLD      template.JS
+	Nonce       string
+	AllowUnsafe bool
 }

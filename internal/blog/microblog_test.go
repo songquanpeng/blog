@@ -1,6 +1,8 @@
 package blog
 
 import (
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
@@ -54,6 +56,61 @@ func TestMicroblogPublicPathAndFeatureSwitch(t *testing.T) {
 	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/notes/daily", nil))
 	if recorder.Code != http.StatusNotFound {
 		t.Fatalf("disabled microblog = %d %q", recorder.Code, recorder.Body.String())
+	}
+}
+
+func TestMicroblogPublicInfiniteScrollFeed(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	for i := 0; i < microblogPageSize+3; i++ {
+		post := MicroPost{Content: fmt.Sprintf("public note %d", i), Status: MicroPostPublic}
+		if err := store.CreateMicroPost(t.Context(), &post); err != nil {
+			t.Fatal(err)
+		}
+	}
+	private := MicroPost{Content: "private note", Status: MicroPostPrivate}
+	if err := store.CreateMicroPost(t.Context(), &private); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.UpdateOptions(t.Context(), map[string]any{"microblog_path": "notes", "microblog_enabled": "true"}); err != nil {
+		t.Fatal(err)
+	}
+
+	app := &App{store: store}
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+	router.NoRoute(func(c *gin.Context) {
+		if !app.tryMicroblog(c) {
+			c.Status(http.StatusNotFound)
+		}
+	})
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, fmt.Sprintf("/notes?format=json&offset=%d", microblogPageSize), nil))
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("feed response = %d %s", recorder.Code, recorder.Body.String())
+	}
+	var payload struct {
+		Status     bool              `json:"status"`
+		Posts      []publicMicroPost `json:"posts"`
+		NextOffset int               `json:"nextOffset"`
+		HasMore    bool              `json:"hasMore"`
+	}
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatal(err)
+	}
+	if !payload.Status || len(payload.Posts) != 3 || payload.NextOffset != microblogPageSize+3 || payload.HasMore {
+		t.Fatalf("feed payload = %#v", payload)
+	}
+	for _, post := range payload.Posts {
+		if !strings.Contains(post.HTML, "<p>") || strings.Contains(post.HTML, "private note") || post.CreatedLabel == "" {
+			t.Fatalf("rendered feed post = %#v", post)
+		}
+	}
+	if cache := recorder.Header().Get("Cache-Control"); cache != "no-store" {
+		t.Fatalf("feed cache policy = %q", cache)
 	}
 }
 

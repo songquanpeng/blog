@@ -148,15 +148,17 @@ func (a *App) safeHTML(value string) template.HTML {
 }
 
 func stripFrontMatter(content string) string {
-	lines := strings.Split(content, "\n")
-	cut := 0
+	normalized := strings.TrimPrefix(content, "\ufeff")
+	lines := strings.Split(normalized, "\n")
+	if len(lines) == 0 || strings.TrimSpace(strings.TrimSuffix(lines[0], "\r")) != "---" {
+		return content
+	}
 	for i := 1; i < len(lines); i++ {
-		if strings.HasPrefix(lines[i], "---") {
-			cut = i + 1
-			break
+		if strings.TrimSpace(strings.TrimSuffix(lines[i], "\r")) == "---" {
+			return strings.Join(lines[i+1:], "\n")
 		}
 	}
-	return strings.Join(lines[cut:], "\n")
+	return content
 }
 
 func (a *App) renderContent(page Page) template.HTML {

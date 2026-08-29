@@ -51,6 +51,42 @@ func TestRootVerificationAssetsExposeOnlySafeTextFiles(t *testing.T) {
 	}
 }
 
+func TestUploadedSVGIsRenderableWithIsolatedPolicy(t *testing.T) {
+	uploadDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(uploadDir, "diagram.svg"), []byte(`<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M0 0h10v10z"/></svg>`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(uploadDir, "not-an-image.svg"), []byte(`<html><script>alert(1)</script></html>`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	gin.SetMode(gin.TestMode)
+	app := &App{cfg: Config{UploadPath: uploadDir}}
+	router := gin.New()
+	router.GET("/upload/*filepath", app.uploadedAsset)
+
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/upload/diagram.svg", nil))
+	if recorder.Code != http.StatusOK || !strings.HasPrefix(recorder.Header().Get("Content-Type"), "image/svg+xml") {
+		t.Fatalf("SVG response = %d %q", recorder.Code, recorder.Header().Get("Content-Type"))
+	}
+	if disposition := recorder.Header().Get("Content-Disposition"); disposition != "" {
+		t.Fatalf("SVG unexpectedly downloaded: %q", disposition)
+	}
+	if csp := recorder.Header().Get("Content-Security-Policy"); !strings.Contains(csp, "default-src 'none'") || !strings.Contains(csp, "sandbox") {
+		t.Fatalf("SVG isolation policy = %q", csp)
+	}
+
+	recorder = httptest.NewRecorder()
+	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/upload/not-an-image.svg", nil))
+	if disposition := recorder.Header().Get("Content-Disposition"); !strings.HasPrefix(disposition, "attachment") {
+		t.Fatalf("non-SVG payload disposition = %q", disposition)
+	}
+	if contentType := recorder.Header().Get("Content-Type"); contentType != "application/octet-stream" {
+		t.Fatalf("non-SVG payload content type = %q", contentType)
+	}
+}
+
 func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
 	if err != nil {

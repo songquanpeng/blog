@@ -21,6 +21,34 @@ type microblogConfig struct {
 	Description string `json:"description"`
 }
 
+type publicMicroPost struct {
+	ID           uint64 `json:"id"`
+	HTML         string `json:"html"`
+	CreatedAt    string `json:"createdAt"`
+	CreatedLabel string `json:"createdLabel"`
+	Accent       int    `json:"accent"`
+}
+
+func microblogAccent(content string) int {
+	for _, char := range strings.TrimSpace(content) {
+		return int(char) % 9
+	}
+	return 0
+}
+
+func (a *App) renderPublicMicroPosts(posts []MicroPost) []publicMicroPost {
+	items := make([]publicMicroPost, 0, len(posts))
+	for i := range posts {
+		posts[i].Rendered = a.renderContent(Page{Type: PageArticle, Content: posts[i].Content})
+		items = append(items, publicMicroPost{
+			ID: posts[i].ID, HTML: string(posts[i].Rendered),
+			CreatedAt: posts[i].CreatedAt, CreatedLabel: displayDateTime(posts[i].CreatedAt),
+			Accent: posts[i].Accent,
+		})
+	}
+	return items
+}
+
 func currentMicroblogConfig(options map[string]string) microblogConfig {
 	enabled, err := strconv.ParseBool(strings.TrimSpace(options["microblog_enabled"]))
 	if err != nil {
@@ -257,6 +285,22 @@ func (a *App) tryMicroblog(c *gin.Context) bool {
 	if !config.Enabled || requestPath != config.Path {
 		return false
 	}
+	if c.Query("format") == "json" {
+		offset := microblogOffset(c)
+		posts, total, err := a.store.MicroPosts(c.Request.Context(), true, offset, microblogPageSize)
+		if err != nil {
+			a.apiFailure(c, "微博客加载失败", err)
+			return true
+		}
+		nextOffset := offset + len(posts)
+		c.Header("Cache-Control", "no-store")
+		c.Header("X-Robots-Tag", "noindex, nofollow")
+		c.JSON(http.StatusOK, gin.H{
+			"status": true, "posts": a.renderPublicMicroPosts(posts), "total": total,
+			"nextOffset": nextOffset, "hasMore": int64(nextOffset) < total,
+		})
+		return true
+	}
 	pageNumber, parseErr := strconv.Atoi(c.Query("p"))
 	if parseErr != nil || pageNumber < 0 || pageNumber > 1_000_000 {
 		pageNumber = 0
@@ -285,6 +329,7 @@ func (a *App) tryMicroblog(c *gin.Context) bool {
 		posts[i].Rendered = a.renderContent(Page{Type: PageArticle, Content: posts[i].Content})
 	}
 	data.Kind, data.MicroPosts, data.ListTitle = "microblog", posts, config.Title
+	data.MicroOffset = offset + len(posts)
 	if pageNumber > 0 {
 		data.PrevURL = basePath
 		if pageNumber > 1 {

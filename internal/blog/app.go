@@ -1,7 +1,9 @@
 package blog
 
 import (
+	"bytes"
 	"context"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"html/template"
@@ -426,19 +428,48 @@ func (a *App) uploadedAsset(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	buffer := make([]byte, 512)
+	buffer := make([]byte, 32*1024)
 	read, _ := file.Read(buffer)
 	_ = file.Close()
-	contentType := http.DetectContentType(buffer[:read])
-	safeInline := contentType == "image/png" || contentType == "image/jpeg" || contentType == "image/gif" || contentType == "image/webp" || contentType == "image/avif"
+	contentType, safeInline := inlineUploadContentType(clean, buffer[:read])
 	if safeInline {
 		c.Header("Content-Type", contentType)
 		c.Header("Cache-Control", "public, max-age=2592000")
+		if contentType == "image/svg+xml" {
+			// SVG is active XML. Keep uploaded diagrams renderable in <img> while
+			// preventing a directly opened upload from inheriting the site's CSP.
+			c.Header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data: https: http:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; sandbox")
+		}
 	} else {
 		c.Header("Content-Disposition", mime.FormatMediaType("attachment", map[string]string{"filename": clean}))
 		c.Header("Content-Type", "application/octet-stream")
 	}
 	c.File(target)
+}
+
+func inlineUploadContentType(name string, prefix []byte) (string, bool) {
+	contentType := http.DetectContentType(prefix)
+	switch contentType {
+	case "image/png", "image/jpeg", "image/gif", "image/webp", "image/avif":
+		return contentType, true
+	}
+	if !strings.EqualFold(filepath.Ext(name), ".svg") {
+		return contentType, false
+	}
+
+	decoder := xml.NewDecoder(bytes.NewReader(prefix))
+	for {
+		token, err := decoder.Token()
+		if err != nil {
+			return contentType, false
+		}
+		if start, ok := token.(xml.StartElement); ok {
+			if strings.EqualFold(start.Name.Local, "svg") {
+				return "image/svg+xml", true
+			}
+			return contentType, false
+		}
+	}
 }
 
 func (a *App) serveKnownFile(c *gin.Context, name string, cache bool) {
