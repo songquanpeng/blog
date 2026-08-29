@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 )
+
+var uploadedSVGSourcePattern = regexp.MustCompile(`(?i)(\bsrc=["']/upload/[^"'?#]+\.svg)(["'])`)
 
 func (a *App) baseView(c *gin.Context, title, description, canonicalPath string) (ViewData, error) {
 	options, err := a.store.Options(c.Request.Context())
@@ -161,6 +164,10 @@ func stripFrontMatter(content string) string {
 	return content
 }
 
+func versionUploadedSVGReferences(rendered string) string {
+	return uploadedSVGSourcePattern.ReplaceAllString(rendered, `${1}?v=svg-inline-20260830${2}`)
+}
+
 func (a *App) renderContent(page Page) template.HTML {
 	content := stripFrontMatter(page.Content)
 	if page.Type == PageRaw {
@@ -174,7 +181,7 @@ func (a *App) renderContent(page Page) template.HTML {
 	if err := markdown.Convert([]byte(content), &rendered); err != nil {
 		return template.HTML(bluemonday.StrictPolicy().Sanitize(content))
 	}
-	return a.safeHTML(rendered.String())
+	return a.safeHTML(versionUploadedSVGReferences(rendered.String()))
 }
 
 func (a *App) render(c *gin.Context, status int, data ViewData) {

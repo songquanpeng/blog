@@ -28,6 +28,19 @@ func TestStripFrontMatterOnlyAtDocumentStart(t *testing.T) {
 	}
 }
 
+func TestVersionUploadedSVGReferences(t *testing.T) {
+	rendered := `<p><img src="/upload/chart.svg" alt="chart"><img src='/upload/diagram.SVG'><img src="https://example.com/chart.svg"><img src="/upload/already.svg?rev=1"></p>`
+	got := versionUploadedSVGReferences(rendered)
+	for _, expected := range []string{`src="/upload/chart.svg?v=svg-inline-20260830"`, `src='/upload/diagram.SVG?v=svg-inline-20260830'`} {
+		if !strings.Contains(got, expected) {
+			t.Fatalf("versioned SVG output missing %q: %s", expected, got)
+		}
+	}
+	if !strings.Contains(got, `src="https://example.com/chart.svg"`) || !strings.Contains(got, `src="/upload/already.svg?rev=1"`) {
+		t.Fatalf("unrelated SVG source changed: %s", got)
+	}
+}
+
 func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "data.db")
 	db, err := sql.Open("sqlite3", path)
