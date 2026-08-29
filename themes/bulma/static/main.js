@@ -1,3 +1,50 @@
+const THEME_STORAGE_KEY = 'blog-theme';
+
+function storedTheme() {
+  try {
+    const value = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return value === 'dark' || value === 'light' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function currentTheme() {
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+}
+
+function sendThemeToFrame(frame) {
+  frame.contentWindow?.postMessage({ type: 'blog-theme', theme: currentTheme() }, '*');
+}
+
+function applyTheme(theme, persist = false) {
+  const normalized = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = normalized;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', normalized === 'dark' ? '#11161c' : '#ffffff');
+  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+    const dark = normalized === 'dark';
+    button.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    button.setAttribute('aria-label', dark ? '切换到日间主题' : '切换到夜间主题');
+    button.title = dark ? '切换到日间主题' : '切换到夜间主题';
+  });
+  document.querySelectorAll('.raw-frame').forEach(sendThemeToFrame);
+  if (persist) {
+    try { window.localStorage.setItem(THEME_STORAGE_KEY, normalized); } catch { /* private mode */ }
+  }
+}
+
+function initializeTheme() {
+  applyTheme(currentTheme());
+  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', true));
+  });
+  const media = window.matchMedia?.('(prefers-color-scheme: dark)');
+  media?.addEventListener?.('change', (event) => {
+    if (!storedTheme()) applyTheme(event.matches ? 'dark' : 'light');
+  });
+  document.querySelectorAll('.raw-frame').forEach((frame) => frame.addEventListener('load', () => sendThemeToFrame(frame)));
+}
+
 function generateTOC() {
   const article = document.getElementById('article');
   const container = document.getElementById('toc-container');
@@ -17,6 +64,28 @@ function generateTOC() {
     toc.append(item);
   });
   container.hidden = headings.length === 0;
+}
+
+function markImageUnavailable(image) {
+  if (image.dataset.imageFallback === 'true') return;
+  image.dataset.imageFallback = 'true';
+  image.classList.add('is-broken-image');
+  const fallback = document.createElement('span');
+  fallback.className = 'image-fallback';
+  fallback.setAttribute('role', 'img');
+  const label = (image.alt || '').trim();
+  fallback.setAttribute('aria-label', label || '图片暂时无法加载');
+  fallback.textContent = label ? `${label}（暂时无法加载）` : '图片暂时无法加载';
+  image.insertAdjacentElement('afterend', fallback);
+}
+
+function enhanceImages() {
+  document.querySelectorAll('img').forEach((image) => {
+    if (image.dataset.imageEnhanced === 'true') return;
+    image.dataset.imageEnhanced = 'true';
+    image.addEventListener('error', () => markImageUnavailable(image), { once: true });
+    if (image.complete && image.naturalWidth === 0) markImageUnavailable(image);
+  });
 }
 
 function enhanceArticle() {
@@ -109,6 +178,7 @@ function enhanceMicroblog() {
       const fragment = document.createDocumentFragment();
       payload.posts.forEach((post) => fragment.append(appendPost(post)));
       stream.append(fragment);
+      enhanceImages();
       offset = payload.nextOffset;
       hasMore = Boolean(payload.hasMore) && payload.posts.length > 0;
       if (!hasMore) {
@@ -141,19 +211,29 @@ function enhanceMicroblog() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initializeTheme();
   const burger = document.querySelector('.navbar-burger');
   if (burger) {
     burger.addEventListener('click', () => {
       const target = document.getElementById(burger.dataset.target);
-      burger.classList.toggle('is-active');
+      const opened = burger.classList.toggle('is-active');
       target?.classList.toggle('is-active');
-      burger.setAttribute('aria-expanded', burger.classList.contains('is-active') ? 'true' : 'false');
+      burger.setAttribute('aria-expanded', opened ? 'true' : 'false');
+      if (!opened) {
+        document.querySelectorAll('.nav-group.is-open').forEach((group) => group.classList.remove('is-open'));
+        document.querySelectorAll('.nav-group-label[aria-expanded="true"]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
+      }
     });
   }
 
   document.querySelectorAll('.nav-group-label').forEach((button) => {
     button.addEventListener('click', () => {
       const group = button.closest('.nav-group');
+      document.querySelectorAll('.nav-group.is-open').forEach((item) => {
+        if (item === group) return;
+        item.classList.remove('is-open');
+        item.querySelector('.nav-group-label')?.setAttribute('aria-expanded', 'false');
+      });
       const expanded = group?.classList.toggle('is-open') || false;
       button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
     });
@@ -183,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
           frame.title = '受保护的 HTML 页面';
           frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups allow-modals allow-downloads');
           frame.srcdoc = payload.content;
+          frame.addEventListener('load', () => sendThemeToFrame(frame));
           content.replaceChildren(frame);
         } else {
           content.innerHTML = payload.content;
@@ -226,13 +307,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   enhanceArticle();
+  enhanceImages();
   enhanceMicroblog();
   generateTOC();
   window.hljs?.highlightAll();
 });
 
 window.addEventListener('message', (event) => {
-  if (!event.data || event.data.type !== 'blog-raw-height') return;
+  if (!event.data) return;
+  if (event.data.type === 'blog-raw-ready') {
+    document.querySelectorAll('.raw-frame').forEach((frame) => {
+      if (frame.contentWindow === event.source) sendThemeToFrame(frame);
+    });
+    return;
+  }
+  if (event.data.type !== 'blog-raw-height') return;
   document.querySelectorAll('.raw-frame').forEach((frame) => {
     if (frame.contentWindow !== event.source) return;
     const height = Number(event.data.height);

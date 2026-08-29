@@ -3,6 +3,15 @@ import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './admin.css';
 
+try {
+  const saved = window.localStorage.getItem('blog-theme');
+  const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#111712' : '#f4f5f1');
+} catch {
+  document.documentElement.dataset.theme = 'light';
+}
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />

@@ -143,7 +143,7 @@ func (a *App) page(c *gin.Context) {
 			contentType = "application/json; charset=utf-8"
 		} else if strings.HasSuffix(strings.ToLower(page.Link), ".html") {
 			contentType = "text/html; charset=utf-8"
-			content = string(a.safeHTML(content))
+			content = responsiveHTMLDocument(string(a.safeHTML(content)))
 		}
 		c.Data(http.StatusOK, contentType, []byte(content))
 		return
@@ -156,6 +156,7 @@ func (a *App) page(c *gin.Context) {
 	page.Tags = splitTags(page.Tag)
 	if len(page.Tags) > 0 && page.Tags[0] != "Others" {
 		page.Category = page.Tags[0]
+		data.Related, _ = a.store.PagesByTag(c.Request.Context(), page.Category)
 	}
 	if page.Password == "" && page.Type != PageCode && page.Type != PageRaw {
 		page.Rendered = a.renderContent(page)
@@ -202,6 +203,20 @@ func (a *App) page(c *gin.Context) {
 	a.render(c, http.StatusOK, data)
 }
 
+func responsiveHTMLDocument(content string) string {
+	const viewport = `<meta name="viewport" content="width=device-width,initial-scale=1">`
+	const compatibilityStyle = `<style id="blog-responsive-compat">html,body{max-width:100%}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}input,select,textarea{max-width:calc(100% - 4px)}</style>`
+	lower := strings.ToLower(content)
+	insertion := compatibilityStyle
+	if !strings.Contains(lower, `name="viewport"`) && !strings.Contains(lower, `name='viewport'`) {
+		insertion = viewport + insertion
+	}
+	if headEnd := strings.Index(lower, "</head>"); headEnd >= 0 {
+		return content[:headEnd] + insertion + content[headEnd:]
+	}
+	return insertion + content
+}
+
 func (a *App) rawPageContent(c *gin.Context) {
 	page, err := a.store.PublicPageByLink(c.Request.Context(), c.Param("link"))
 	if err != nil || page.Type != PageRaw || page.Password != "" {
@@ -214,9 +229,9 @@ func (a *App) rawPageContent(c *gin.Context) {
 	document.WriteString(template.HTMLEscapeString(optionFromStore(a, c, "language", "zh-CN")))
 	document.WriteString("\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>")
 	document.WriteString(template.HTMLEscapeString(page.Title))
-	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-mobile-20260830\"></head><body><main class=\"raw\">")
+	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-theme-20260830\"></head><body><main class=\"raw\">")
 	document.WriteString(content)
-	document.WriteString(`</main><script>new ResizeObserver(function(){parent.postMessage({type:"blog-raw-height",height:document.documentElement.scrollHeight},"*")}).observe(document.documentElement)</script></body></html>`)
+	document.WriteString(`</main><script>addEventListener("message",function(e){if(e.data&&e.data.type==="blog-theme"){document.documentElement.dataset.theme=e.data.theme}});new ResizeObserver(function(){parent.postMessage({type:"blog-raw-height",height:document.documentElement.scrollHeight},"*")}).observe(document.documentElement);parent.postMessage({type:"blog-raw-ready"},"*")</script></body></html>`)
 
 	c.Header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline' https: http:; style-src 'unsafe-inline' https: http:; img-src data: https: http:; font-src data: https: http:; connect-src https: http:; frame-src https: http:; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'self' https: http:; sandbox allow-scripts allow-forms allow-popups allow-modals allow-downloads")
 	c.Header("X-Frame-Options", "SAMEORIGIN")

@@ -4,6 +4,20 @@ import { api } from './api.js';
 const PAGE_TYPES = ['文章', '代码', '公告', '讨论', '友链', 'HTML', '媒体', '时间线', '重定向', '文本'];
 const PAGE_STATES = ['已撤回', '已发布', '已置顶', '已隐藏'];
 const EMPTY_PAGE = { type: 0, link: '', pageStatus: 1, commentStatus: 1, title: '', content: '', tag: 'Others', password: '', description: '' };
+const THEME_STORAGE_KEY = 'blog-theme';
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  const dark = theme === 'dark';
+  function toggle() {
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'dark' ? '#111712' : '#f4f5f1');
+    try { window.localStorage.setItem(THEME_STORAGE_KEY, next); } catch { /* private mode */ }
+    setTheme(next);
+  }
+  return <button className="admin-theme-toggle" type="button" onClick={toggle} aria-label={dark ? '切换到日间主题' : '切换到夜间主题'} aria-pressed={dark} title={dark ? '切换到日间主题' : '切换到夜间主题'}><span aria-hidden="true">{dark ? '☀' : '☾'}</span></button>;
+}
 
 function useHashRoute() {
   const read = () => window.location.hash.replace(/^#\/?/, '') || 'posts';
@@ -34,7 +48,7 @@ function Notice({ notice, clear }) {
 
 function Login({ route }) {
   const returnTo = route.startsWith('cli') ? `/admin/#/${route}` : '/admin/';
-  return <main className="login-shell"><section className="login-card"><div className="login-art" aria-hidden="true"><span className="login-orbit orbit-one" /><span className="login-orbit orbit-two" /><span className="login-letter">B</span><p>WRITE · PUBLISH · OWN</p></div><div className="login-panel"><a className="login-brand" href="/"><span>B</span> Blog Studio</a><div className="login-copy"><p className="page-kicker">WELCOME BACK</p><h1>回到你的写作空间</h1><p>内容、文件和站点设置都在这里。只有配置的 GitHub 账户可以访问。</p></div><a className="button primary wide" href={`/auth/github?return_to=${encodeURIComponent(returnTo)}`}>使用 GitHub 安全登录 <span>→</span></a><a className="back-link" href="/">← 返回博客首页</a></div></section></main>;
+  return <main className="login-shell"><section className="login-card"><div className="login-art" aria-hidden="true"><span className="login-orbit orbit-one" /><span className="login-orbit orbit-two" /><span className="login-letter">B</span><p>WRITE · PUBLISH · OWN</p></div><div className="login-panel"><div className="login-topbar"><a className="login-brand" href="/"><span>B</span> Blog Studio</a><ThemeToggle /></div><div className="login-copy"><p className="page-kicker">WELCOME BACK</p><h1>回到你的写作空间</h1><p>内容、文件和站点设置都在这里。只有配置的 GitHub 账户可以访问。</p></div><a className="button primary wide" href={`/auth/github?return_to=${encodeURIComponent(returnTo)}`}>使用 GitHub 安全登录 <span>→</span></a><a className="back-link" href="/">← 返回博客首页</a></div></section></main>;
 }
 
 function Layout({ user, route, children }) {
@@ -48,7 +62,7 @@ function Layout({ user, route, children }) {
   ];
   return <div className="admin-shell">
     <aside className="admin-sidebar">
-      <a className="admin-brand" href="/"><span className="admin-brand-mark">B</span><span><strong>Blog Studio</strong><small>独立写作后台</small></span></a>
+      <div className="admin-brand-row"><a className="admin-brand" href="/"><span className="admin-brand-mark">B</span><span><strong>Blog Studio</strong><small>独立写作后台</small></span></a><ThemeToggle /></div>
       <nav className="admin-nav" aria-label="管理导航">{items.map(([key, icon, label]) => <a key={key} className={route.startsWith(key) ? 'is-active' : ''} href={`#/${key}`}><span className="nav-icon" aria-hidden="true">{icon}</span><span>{label}</span>{route.startsWith(key) && <i />}</a>)}</nav>
       <a className="view-site-link" href="/" target="_blank" rel="noreferrer"><span>↗</span> 在新窗口查看博客</a>
       <div className="admin-account">{user.avatar_url ? <img src={user.avatar_url} alt="" /> : <span className="account-fallback">{(user.name || user.login || 'A')[0]}</span>}<div><strong>{user.name || user.login}</strong><small><span /> 已登录</small></div><a href="/auth/logout" aria-label="退出登录">退出</a></div>

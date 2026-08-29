@@ -125,6 +125,7 @@ type ViewData struct {
 	PrimaryNav  []NavItem
 	Nav         []NavGroup
 	Pages       []Page
+	Related     []Page
 	MicroPosts  []MicroPost
 	MicroOffset int
 	Page        *Page

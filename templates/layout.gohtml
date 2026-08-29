@@ -32,15 +32,16 @@
   {{if .SocialImage}}<meta name="twitter:image" content="{{.SocialImage}}">
   <meta name="twitter:image:alt" content="{{.Title}}">{{end}}
   <meta name="theme-color" content="#ffffff">
+  <script nonce="{{.Nonce}}">(()=>{try{const saved=localStorage.getItem('blog-theme');const dark=saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'dark':'light'}catch{document.documentElement.dataset.theme='light'}})()</script>
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
-  <link rel="stylesheet" href="/static/main.css?v=bulma-mobile-20260830">
+  <link rel="stylesheet" href="/static/main.css?v=bulma-theme-20260830">
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
   <link rel="icon" href="{{.Favicon}}">
   <script defer src="/static/highlight.min.js"></script>
-  <script defer src="/static/main.js?v=bulma-mobile-20260830"></script>
+  <script defer src="/static/main.js?v=bulma-theme-20260830"></script>
   {{if .JSONLD}}<script nonce="{{.Nonce}}" type="application/ld+json">{{.JSONLD}}</script>{{end}}
 </head>
 <body>
@@ -50,6 +51,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item site-brand" href="/">{{.SiteName}}</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换到夜间主题" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="theme-icon-moon" d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/><path class="theme-icon-sun" d="M12 3.4V1.8M12 22.2v-1.6M20.6 12h1.6M1.8 12h1.6M18.1 5.9l1.1-1.1M4.8 19.2l1.1-1.1M18.1 18.1l1.1 1.1M4.8 4.8l1.1 1.1M16.4 12a4.4 4.4 0 1 1-8.8 0 4.4 4.4 0 0 1 8.8 0Z"/></svg></button>
         <button class="navbar-burger burger" type="button" aria-label="菜单" aria-expanded="false" data-target="mainNavbar">
           <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
         </button>
@@ -57,7 +59,7 @@
       <div id="mainNavbar" class="navbar-menu">
         <div class="navbar-start">
           {{range .PrimaryNav}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}
-          {{range .Nav}}{{if .Value}}<div class="navbar-item has-dropdown is-hoverable"><span class="navbar-link">{{.Key}}</span><div class="navbar-dropdown">{{range .Value}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}</div></div>{{end}}{{end}}
+          {{range .Nav}}{{if .Value}}<div class="navbar-item has-dropdown is-hoverable nav-group"><button class="navbar-link nav-group-label" type="button" aria-expanded="false">{{.Key}}</button><div class="navbar-dropdown">{{range .Value}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}</div></div>{{end}}{{end}}
         </div>
       </div>
     </div>
@@ -92,7 +94,7 @@
       {{else if eq .Kind "custom"}}
         <article class="article-container">{{.Page.Rendered}}</article>
       {{else if eq .Kind "archive"}}
-        <section class="archive-container"><h1 class="title is-3 archive-title">存档</h1><div class="table-container"><table class="table is-fullwidth is-hoverable is-bordered is-striped"><thead><tr><th>标题</th><th>发布时间</th><th>编辑时间</th></tr></thead><tbody>{{range .Pages}}<tr><td><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></td><td><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></td><td><time datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time></td></tr>{{end}}</tbody></table></div></section>
+        <section class="archive-container"><h1 class="title is-3 archive-title">存档</h1><div class="table-container"><table class="table is-fullwidth is-hoverable is-bordered is-striped archive-table"><thead><tr><th>标题</th><th>发布时间</th><th>编辑时间</th></tr></thead><tbody>{{range .Pages}}<tr><td data-label="标题"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></td><td data-label="发布时间"><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></td><td data-label="编辑时间"><time datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time></td></tr>{{end}}</tbody></table></div></section>
       {{else if eq .Kind "list"}}
         <section class="archive-container"><h1 class="title is-3 archive-title">{{.ListTitle}}</h1><div class="page-card-list">{{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content"><h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></h2><time class="tag is-light" datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time><div class="page-card-text">{{.Description}}</div></div></div></article></div>{{else}}<div class="notification is-light">没有匹配的文章。</div>{{end}}</div></section>
       {{else if eq .Kind "message"}}
@@ -104,7 +106,7 @@
       {{else if eq .Kind "code"}}
         <section class="code-page">{{template "page-info" .}}<div class="control-panel"><button class="button is-light" type="button" data-focus-code>Focus</button> <button class="button is-light" type="button" data-copy-code>Copy</button></div><pre><code id="code-display">{{.Page.Content}}</code></pre>{{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}{{template "prev-next" .}}</section>
       {{else if eq .Kind "article"}}
-        <div class="article-container article-container-wide"><div class="columns is-desktop"><div class="column"><article id="article">{{template "page-info" .}}{{if .Page.Password}}<form class="protected-page" data-page-id="{{.Page.ID}}" data-page-type="{{.Page.Type}}"><label class="label" for="article-password">本篇文章被密码保护，请输入访问密码：</label><div class="protected-controls field has-addons"><div class="control"><input class="input" id="article-password" type="password" autocomplete="current-password" placeholder="访问密码" required></div><div class="control"><button class="button" type="submit">提交</button></div></div><p class="help protected-message" aria-live="polite"></p><div class="protected-content"></div></form>{{else}}<div class="article-content">{{.Page.Rendered}}</div>{{end}}{{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}</article></div><aside class="column is-one-quarter-fullhd"><nav class="menu toc" aria-label="文章目录"><ul class="menu-list"><li id="toc-container"><p class="toc-title">目录</p><ul id="toc"></ul></li></ul></nav></aside></div>{{template "prev-next" .}}</div>
+        <div class="article-container article-container-wide"><div class="columns is-desktop"><div class="column"><article id="article">{{template "page-info" .}}{{if .Page.Password}}<form class="protected-page" data-page-id="{{.Page.ID}}" data-page-type="{{.Page.Type}}"><label class="label" for="article-password">本篇文章被密码保护，请输入访问密码：</label><div class="protected-controls field has-addons"><div class="control"><input class="input" id="article-password" type="password" autocomplete="current-password" placeholder="访问密码" required></div><div class="control"><button class="button" type="submit">提交</button></div></div><p class="help protected-message" aria-live="polite"></p><div class="protected-content"></div></form>{{else}}<div class="article-content">{{.Page.Rendered}}</div>{{end}}{{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}</article></div><aside class="column is-one-quarter-fullhd article-sidebar"><nav class="menu toc" aria-label="文章辅助导航"><ul class="menu-list">{{if gt (len .Related) 1}}<li class="related-container"><p class="toc-title">{{.Page.Category}}</p><ul>{{range .Related}}<li><a{{if eq .ID $.Page.ID}} class="is-current" aria-current="page"{{end}} href="/page/{{pathEscape .Link}}">{{.Title}}</a></li>{{end}}</ul></li>{{end}}<li id="toc-container"><p class="toc-title">目录</p><ul id="toc"></ul></li></ul></nav></aside></div>{{template "prev-next" .}}</div>
       {{end}}
     </div>
   </main>
@@ -115,7 +117,7 @@
 </html>
 
 {{define "page-info"}}
-  <h1 class="title is-3 is-4-mobile">{{.Page.Title}}</h1>
+  <h1 class="title is-3 page-title">{{.Page.Title}}</h1>
   {{if .Page.Description}}<p class="article-summary">{{.Page.Description}}</p>{{end}}
   <div class="info"><span class="line">标签：{{range .Page.Tags}}<a class="tag is-light" href="/tag/{{pathEscape .}}">{{.}}</a>{{end}}</span><span class="line">发布于：<time class="tag is-light" datetime="{{.Page.CreatedAt}}">{{dateTime .Page.CreatedAt}}</time></span><span class="line">编辑于：<time class="tag is-light" datetime="{{.Page.UpdatedAt}}">{{dateTime .Page.UpdatedAt}}</time></span><span class="line">浏览量：<span class="tag is-light">{{.Page.View}}</span></span></div>
 {{end}}
@@ -123,4 +125,4 @@
 {{define "page-pagination"}}{{if or .PrevURL .NextURL}}<nav class="pagination is-centered" aria-label="分页">{{if .PrevURL}}<a class="pagination-previous shadow" href="{{.PrevURL}}">上一页</a>{{else}}<span></span>{{end}}{{if .NextURL}}<a class="pagination-next shadow" href="{{.NextURL}}">下一页</a>{{end}}</nav>{{end}}{{end}}
 {{define "micro-post"}}<article class="box micro-post" id="micro-post-{{.ID}}" data-micro-accent="{{.Accent}}"><div class="micro-post-content">{{.Rendered}}</div><footer><a href="#micro-post-{{.ID}}"><time datetime="{{.CreatedAt}}">{{dateTime .CreatedAt}}</time></a><span>#{{.ID}}</span></footer></article>{{end}}
 
-{{define "prev-next"}}{{if or .Prev .Next}}<nav class="pagination is-centered" aria-label="相邻文章">{{if .Prev}}<a class="pagination-previous shadow" href="/page/{{pathEscape .Prev.Link}}">{{.Prev.Title}}</a>{{end}}{{if .Next}}<a class="pagination-next shadow" href="/page/{{pathEscape .Next.Link}}">{{.Next.Title}}</a>{{end}}</nav>{{end}}{{end}}
+{{define "prev-next"}}{{if or .Prev .Next}}<nav class="pagination article-pagination{{if not .Prev}} is-next-only{{end}}" aria-label="相邻文章">{{if .Prev}}<a class="pagination-previous shadow" href="/page/{{pathEscape .Prev.Link}}"><span class="page-nav-label">← 上一篇</span><span class="page-nav-title">{{.Prev.Title}}</span></a>{{end}}{{if .Next}}<a class="pagination-next shadow" href="/page/{{pathEscape .Next.Link}}"><span class="page-nav-label">下一篇 →</span><span class="page-nav-title">{{.Next.Title}}</span></a>{{end}}</nav>{{end}}{{end}}

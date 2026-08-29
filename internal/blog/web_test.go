@@ -109,12 +109,37 @@ func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	if recorder.Code != http.StatusOK || !strings.Contains(recorder.Body.String(), `<script>function run(){}</script>`) {
 		t.Fatalf("raw page response = %d %s", recorder.Code, recorder.Body.String())
 	}
+	if body := recorder.Body.String(); !strings.Contains(body, `type==="blog-theme"`) || !strings.Contains(body, `type:"blog-raw-ready"`) {
+		t.Fatalf("raw page does not synchronize its theme: %s", body)
+	}
 	csp := recorder.Header().Get("Content-Security-Policy")
 	if !strings.Contains(csp, "sandbox allow-scripts") || strings.Contains(csp, "allow-same-origin") {
 		t.Fatalf("raw page CSP does not enforce opaque sandbox: %q", csp)
 	}
 	if robots := recorder.Header().Get("X-Robots-Tag"); robots != "noindex, nofollow, nosnippet" {
 		t.Fatalf("raw page X-Robots-Tag = %q", robots)
+	}
+}
+
+func TestResponsiveHTMLDocumentAddsCompatibilityHead(t *testing.T) {
+	original := `<html><head><title>Legacy tool</title></head><body><input style="width:100%"></body></html>`
+	result := responsiveHTMLDocument(original)
+	for _, expected := range []string{
+		`<meta name="viewport" content="width=device-width,initial-scale=1">`,
+		`<style id="blog-responsive-compat">`,
+		`<title>Legacy tool</title>`,
+	} {
+		if !strings.Contains(result, expected) {
+			t.Errorf("responsive HTML is missing %q: %s", expected, result)
+		}
+	}
+	if strings.Index(result, `blog-responsive-compat`) > strings.Index(result, `</head>`) {
+		t.Fatalf("compatibility head was inserted outside <head>: %s", result)
+	}
+
+	withViewport := responsiveHTMLDocument(`<html><head><meta name='viewport' content='width=640'></head></html>`)
+	if strings.Count(withViewport, "name='viewport'")+strings.Count(withViewport, `name="viewport"`) != 1 {
+		t.Fatalf("existing viewport was duplicated: %s", withViewport)
 	}
 }
 
@@ -128,7 +153,6 @@ func TestHiddenPagePreservesLegacySearchIndexability(t *testing.T) {
 	if err := store.CreatePage(t.Context(), &page); err != nil {
 		t.Fatal(err)
 	}
-
 	templates := template.Must(template.New("layout.gohtml").Parse(`{{define "layout.gohtml"}}ok{{end}}`))
 	gin.SetMode(gin.TestMode)
 	app := &App{store: store, templates: templates, cfg: Config{PublicURL: "https://blog.example"}}
@@ -163,6 +187,11 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 	if err := store.CreatePage(t.Context(), &page); err != nil {
 		t.Fatal(err)
 	}
+	related := Page{Type: PageArticle, Link: "related-guide", PageStatus: StatusPublished, CommentStatus: 1,
+		Title: "Related Guide", Description: "Another article in the category.", Tag: "SEO;Testing", Content: "Related content."}
+	if err := store.CreatePage(t.Context(), &related); err != nil {
+		t.Fatal(err)
+	}
 
 	functions := template.FuncMap{
 		"date": shortDate, "dateTime": displayDateTime, "archiveURL": archiveURL, "splitTags": splitTags,
@@ -189,6 +218,8 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`<meta name="twitter:card" content="summary_large_image">`,
 		`"@type":"BreadcrumbList"`,
 		`"@type":"BlogPosting"`,
+		`data-theme-toggle`,
+		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("page is missing SEO output %q", expected)
