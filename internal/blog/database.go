@@ -76,6 +76,16 @@ type dbFile struct {
 
 func (dbFile) TableName() string { return "Files" }
 
+type dbMicroPost struct {
+	ID        uint64    `gorm:"column:id;primaryKey;autoIncrement"`
+	Content   string    `gorm:"column:content;type:text;not null"`
+	Status    int       `gorm:"column:status;not null;index:micro_posts_public_order,priority:1"`
+	CreatedAt time.Time `gorm:"column:createdAt;index:micro_posts_public_order,priority:2"`
+	UpdatedAt time.Time `gorm:"column:updatedAt"`
+}
+
+func (dbMicroPost) TableName() string { return "MicroPosts" }
+
 // CLI credentials live in dedicated tables so historical user access tokens
 // can never become administrator credentials by accident. Only SHA-256
 // digests of bearer and device codes are persisted.
@@ -138,7 +148,10 @@ var defaultOptions = []dbOption{
 	{Key: "domain", Value: "www.your-domain.com"}, {Key: "extra_footer_code", Value: ""},
 	{Key: "extra_footer_text", Value: ""}, {Key: "extra_header_code", Value: ""},
 	{Key: "favicon", Value: "/favicon.ico"}, {Key: "language", Value: "zh-CN"},
+	{Key: "social_image", Value: ""},
 	{Key: "message_push_api", Value: ""}, {Key: "motto", Value: "我的格言"},
+	{Key: "microblog_enabled", Value: "true"}, {Key: "microblog_path", Value: "microblog"},
+	{Key: "microblog_title", Value: "片语"}, {Key: "microblog_description", Value: "随手记下的想法与日常。"},
 	{Key: "nav_links", Value: `[{"key":"Meta","value":[{"link":"/","text":"首页"},{"link":"/archive","text":"存档"},{"link":"/page/links","text":"友链"},{"link":"/page/about","text":"关于"}]},{"key":"其他","value":[{"link":"/admin/","text":"后台管理"},{"link":"/feed.xml","text":"订阅博客"}]}]`},
 	{Key: "port", Value: "3000"}, {Key: "site_name", Value: "站点名称"},
 	{Key: "theme", Value: "bulma"}, {Key: "index_page_content", Value: ""},
@@ -171,7 +184,7 @@ func (s *Store) Close() error {
 func (s *Store) migrate() error {
 	// Do not auto-alter Sequelize-created tables. SQLite table reconstruction
 	// would be an unnecessary risk for historical installations.
-	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbDeviceAuthorization{}, &dbCLIToken{}} {
+	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbMicroPost{}, &dbDeviceAuthorization{}, &dbCLIToken{}} {
 		if !s.db.Migrator().HasTable(model) {
 			if err := s.db.AutoMigrate(model); err != nil {
 				return fmt.Errorf("gorm migrate: %w", err)
@@ -561,5 +574,52 @@ func (s *Store) CreateFile(ctx context.Context, file StoredFile) error {
 
 func (s *Store) DeleteFile(ctx context.Context, id string) (bool, error) {
 	result := s.db.WithContext(ctx).Where("id = ?", id).Delete(&dbFile{})
+	return result.RowsAffected == 1, result.Error
+}
+
+func toMicroPost(row dbMicroPost) MicroPost {
+	return MicroPost{ID: row.ID, Content: row.Content, Status: row.Status,
+		CreatedAt: formatDBTime(row.CreatedAt), UpdatedAt: formatDBTime(row.UpdatedAt)}
+}
+
+func (s *Store) MicroPosts(ctx context.Context, publicOnly bool, offset, limit int) ([]MicroPost, int64, error) {
+	query := s.db.WithContext(ctx).Model(&dbMicroPost{})
+	if publicOnly {
+		query = query.Where("status = ?", MicroPostPublic)
+	}
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	var rows []dbMicroPost
+	if err := query.Order("createdAt DESC, id DESC").Offset(offset).Limit(limit).Find(&rows).Error; err != nil {
+		return nil, 0, err
+	}
+	posts := make([]MicroPost, 0, len(rows))
+	for _, row := range rows {
+		posts = append(posts, toMicroPost(row))
+	}
+	return posts, total, nil
+}
+
+func (s *Store) CreateMicroPost(ctx context.Context, post *MicroPost) error {
+	row := dbMicroPost{Content: post.Content, Status: post.Status}
+	// Status 0 is a meaningful private state. Select it explicitly so GORM
+	// does not replace the zero value with the schema's public default.
+	if err := s.db.WithContext(ctx).Select("Content", "Status").Create(&row).Error; err != nil {
+		return err
+	}
+	*post = toMicroPost(row)
+	return nil
+}
+
+func (s *Store) UpdateMicroPost(ctx context.Context, post MicroPost) (bool, error) {
+	result := s.db.WithContext(ctx).Model(&dbMicroPost{}).Where("id = ?", post.ID).
+		Updates(map[string]any{"content": post.Content, "status": post.Status, "updatedAt": time.Now().UTC()})
+	return result.RowsAffected == 1, result.Error
+}
+
+func (s *Store) DeleteMicroPost(ctx context.Context, id uint64) (bool, error) {
+	result := s.db.WithContext(ctx).Where("id = ?", id).Delete(&dbMicroPost{})
 	return result.RowsAffected == 1, result.Error
 }

@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -106,6 +107,111 @@ func TestHiddenPagePreservesLegacySearchIndexability(t *testing.T) {
 	}
 	if robots := recorder.Header().Get("X-Robots-Tag"); robots != "" {
 		t.Fatalf("legacy hidden page unexpectedly blocks indexing: %q", robots)
+	}
+}
+
+func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	if err := store.UpdateOptions(t.Context(), map[string]any{
+		"site_name": "Example Notes", "description": "A small independent publication.",
+		"author": "Example Author", "language": "zh-CN", "social_image": "/icon512.png",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	page := Page{Type: PageArticle, Link: "search-ready", PageStatus: StatusPublished, CommentStatus: 1,
+		Title: "Search Ready", Description: "A useful page description.", Tag: "SEO;Go", Content: "## Useful section\n\nContent."}
+	if err := store.CreatePage(t.Context(), &page); err != nil {
+		t.Fatal(err)
+	}
+
+	functions := template.FuncMap{
+		"date": shortDate, "dateTime": displayDateTime, "archiveURL": archiveURL, "splitTags": splitTags,
+		"pathEscape": url.PathEscape, "add": func(a, b int) int { return a + b },
+	}
+	templates := template.Must(template.New("layout.gohtml").Funcs(functions).ParseGlob(filepath.Join("..", "..", "templates", "*.gohtml")))
+	gin.SetMode(gin.TestMode)
+	app := &App{store: store, templates: templates, cfg: Config{PublicURL: "https://blog.example"}}
+	router := gin.New()
+	router.GET("/page/:link", app.page)
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/page/search-ready", nil)
+	router.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("page response = %d %s", recorder.Code, recorder.Body.String())
+	}
+	body := recorder.Body.String()
+	for _, expected := range []string{
+		"<title>Search Ready — Example Notes</title>",
+		`<link rel="canonical" href="https://blog.example/page/search-ready">`,
+		`<meta property="og:locale" content="zh_CN">`,
+		`<meta property="article:tag" content="SEO">`,
+		`<meta name="twitter:card" content="summary_large_image">`,
+		`"@type":"BreadcrumbList"`,
+		`"@type":"BlogPosting"`,
+	} {
+		if !strings.Contains(body, expected) {
+			t.Errorf("page is missing SEO output %q", expected)
+		}
+	}
+}
+
+func TestProtectedRawPageReturnsVerbatimSandboxPayload(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	page := Page{Type: PageRaw, Link: "private-tool", PageStatus: StatusPublished, CommentStatus: 1,
+		Title: "Private Tool", Password: "secret", Content: `<button onclick="run()">Run</button><script>function run(){}</script>`}
+	if err := store.CreatePage(t.Context(), &page); err != nil {
+		t.Fatal(err)
+	}
+	gin.SetMode(gin.TestMode)
+	app := &App{store: store}
+	router := gin.New()
+	router.POST("/api/page/render/:id", app.renderedPage)
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, "/api/page/render/"+page.ID, strings.NewReader(`{"password":"secret"}`))
+	request.Header.Set("Content-Type", "application/json")
+	router.ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("raw response = %d %s", recorder.Code, recorder.Body.String())
+	}
+	var payload struct {
+		Raw     bool   `json:"raw"`
+		Content string `json:"content"`
+	}
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatal(err)
+	}
+	if !payload.Raw || payload.Content != page.Content {
+		t.Fatalf("raw payload was changed: %#v", payload)
+	}
+}
+
+func TestRobotsAddsSitemapToCustomRules(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	indexDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(indexDir, "robots.txt"), []byte("User-agent: *\nDisallow: /admin/\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	gin.SetMode(gin.TestMode)
+	app := &App{store: store, cfg: Config{IndexPath: indexDir, PublicURL: "https://blog.example"}}
+	router := gin.New()
+	router.GET("/robots.txt", app.robots)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/robots.txt", nil))
+	if body := recorder.Body.String(); !strings.Contains(body, "Disallow: /admin/") || !strings.Contains(body, "Sitemap: https://blog.example/sitemap.xml") {
+		t.Fatalf("robots response = %q", body)
 	}
 }
 

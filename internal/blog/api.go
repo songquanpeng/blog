@@ -170,7 +170,14 @@ func (a *App) renderedPage(c *gin.Context) {
 		c.JSON(http.StatusForbidden, gin.H{"status": false, "message": "密码错误"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "content": a.renderContent(page)})
+	if page.Type == PageRaw {
+		// Raw pages are returned verbatim and mounted in an opaque sandbox by the
+		// public UI. This preserves owner-authored tools without giving them the
+		// blog origin or access to the administrator session.
+		c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "content": stripFrontMatter(page.Content), "raw": true})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "content": a.renderContent(page), "raw": false})
 }
 
 func (a *App) exportPage(c *gin.Context) {

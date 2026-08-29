@@ -5,51 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.Title}}</title>
   <meta name="description" content="{{.Description}}">
+  <meta name="author" content="{{.Author}}">
+  <meta name="robots" content="{{.Robots}}">
   <link rel="canonical" href="{{.Canonical}}">
-  {{if and .Page (eq .Page.PageStatus 3)}}<meta name="robots" content="noindex,follow">{{else}}<meta name="robots" content="index,follow,max-image-preview:large">{{end}}
+  {{if .PrevURL}}<link rel="prev" href="{{.SiteURL}}{{.PrevURL}}">{{end}}
+  {{if .NextURL}}<link rel="next" href="{{.SiteURL}}{{.NextURL}}">{{end}}
+  {{if .Prev}}<link rel="prev" href="{{.SiteURL}}/page/{{pathEscape .Prev.Link}}">{{end}}
+  {{if .Next}}<link rel="next" href="{{.SiteURL}}/page/{{pathEscape .Next.Link}}">{{end}}
+  <link rel="alternate" hreflang="{{.Lang}}" href="{{.Canonical}}">
+  <link rel="alternate" hreflang="x-default" href="{{.Canonical}}">
+  <link rel="alternate" type="application/atom+xml" title="{{.SiteName}}" href="{{.SiteURL}}/feed.xml">
   <meta property="og:type" content="{{if .Page}}article{{else}}website{{end}}">
+  <meta property="og:locale" content="{{.OGLocale}}">
   <meta property="og:title" content="{{.Title}}">
   <meta property="og:description" content="{{.Description}}">
   <meta property="og:url" content="{{.Canonical}}">
   <meta property="og:site_name" content="{{.SiteName}}">
+  {{if .Page}}<meta property="article:published_time" content="{{.Page.CreatedAt}}">
+  <meta property="article:modified_time" content="{{.Page.UpdatedAt}}">
+  {{range .Page.Tags}}<meta property="article:tag" content="{{.}}">{{end}}{{end}}
   {{if .SocialImage}}<meta property="og:image" content="{{.SocialImage}}">
-  <meta property="og:image:alt" content="{{.SiteName}}">{{end}}
-  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image:alt" content="{{.Title}}">{{end}}
+  <meta name="twitter:card" content="{{if .SocialImage}}summary_large_image{{else}}summary{{end}}">
   <meta name="twitter:title" content="{{.Title}}">
   <meta name="twitter:description" content="{{.Description}}">
-  {{if .SocialImage}}<meta name="twitter:image" content="{{.SocialImage}}">{{end}}
+  {{if .SocialImage}}<meta name="twitter:image" content="{{.SocialImage}}">
+  <meta name="twitter:image:alt" content="{{.Title}}">{{end}}
   <meta name="theme-color" content="#ffffff">
-  <link rel="alternate" type="application/atom+xml" title="{{.SiteName}}" href="/feed.xml">
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
-  <link rel="stylesheet" href="/static/main.css?v=bulma-20260829">
+  <link rel="stylesheet" href="/static/main.css?v=bulma-refined-20260829">
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
   <link rel="icon" href="{{.Favicon}}">
   <script defer src="/static/highlight.min.js"></script>
-  <script defer src="/static/main.js?v=bulma-20260829"></script>
+  <script defer src="/static/main.js?v=bulma-refined-20260829"></script>
   {{if .JSONLD}}<script nonce="{{.Nonce}}" type="application/ld+json">{{.JSONLD}}</script>{{end}}
 </head>
 <body>
+<a class="skip-link" href="#content-wrap">跳到正文</a>
 <div id="page-container">
-  <nav class="navbar nav-shadow" role="navigation" aria-label="main navigation">
+  <nav class="navbar nav-shadow" role="navigation" aria-label="主导航">
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item site-brand" href="/">{{.SiteName}}</a>
-        <button class="navbar-burger burger" type="button" aria-label="menu" aria-expanded="false" data-target="mainNavbar">
+        <button class="navbar-burger burger" type="button" aria-label="菜单" aria-expanded="false" data-target="mainNavbar">
           <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
         </button>
       </div>
       <div id="mainNavbar" class="navbar-menu">
         <div class="navbar-start">
           {{range .PrimaryNav}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}
-          {{range .Nav}}
-            {{if .Value}}<div class="navbar-item has-dropdown is-hoverable">
-              <span class="navbar-link">{{.Key}}</span>
-              <div class="navbar-dropdown">{{range .Value}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}</div>
-            </div>{{end}}
-          {{end}}
+          {{range .Nav}}{{if .Value}}<div class="navbar-item has-dropdown is-hoverable"><span class="navbar-link">{{.Key}}</span><div class="navbar-dropdown">{{range .Value}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}</div></div>{{end}}{{end}}
         </div>
       </div>
     </div>
@@ -61,96 +69,41 @@
         <div class="columns is-desktop">
           <section class="column" aria-label="文章列表">
             <div class="page-card-list">
-              {{range .Pages}}
-                <div class="box index-page-box">
-                  <article class="media index-page-media">
-                    <div class="media-content"><div class="content">
-                      <h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{if eq .PageStatus 2}}「置顶」{{end}}{{if .Title}}{{.Title}}{{else}}无标题{{end}}</a></h2>
-                      {{range splitTags .Tag}}<a class="tag is-light" href="/tag/{{pathEscape .}}">{{.}}</a>{{end}}
-                      <a class="tag is-light" href="{{archiveURL .CreatedAt}}"><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></a>
-                      <span class="tag is-light">{{.View}} views</span>
-                      <div class="page-card-text">{{if .Description}}{{.Description}}{{else}}无描述信息{{end}}</div>
-                    </div></div>
-                  </article>
-                </div>
-              {{else}}<div class="notification is-light">还没有公开文章。</div>{{end}}
+              {{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content">
+                <h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{if eq .PageStatus 2}}「置顶」{{end}}{{if .Title}}{{.Title}}{{else}}无标题{{end}}</a></h2>
+                <div class="page-card-meta">{{range splitTags .Tag}}<a class="tag is-light" href="/tag/{{pathEscape .}}">{{.}}</a>{{end}}<a class="tag is-light" href="{{archiveURL .CreatedAt}}"><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></a><span class="tag is-light">{{.View}} views</span></div>
+                <div class="page-card-text">{{if .Description}}{{.Description}}{{else}}无描述信息{{end}}</div>
+              </div></div></article></div>{{else}}<div class="notification is-light">还没有公开文章。</div>{{end}}
             </div>
-            <nav class="pagination is-centered" aria-label="pagination">
-              <a class="pagination-previous shadow" href="{{if .PrevURL}}{{.PrevURL}}{{else}}/{{end}}">上一页</a>
-              <a class="pagination-next shadow" href="{{if .NextURL}}{{.NextURL}}{{else}}.{{end}}">下一页</a>
-            </nav>
+            {{template "page-pagination" .}}
           </section>
           <aside class="column is-one-quarter-fullhd index-sidebar">
-            <section class="card">
-              <p class="card-header-title sidebar-title">{{.SiteName}}</p>
-              <div class="card-content sidebar-content"><div class="content">
-                {{.Description}}
-                {{if .BrandImage}}<img class="brand-image" loading="lazy" src="{{.BrandImage}}" alt="{{.SiteName}}">{{end}}
-              </div></div>
-            </section>
+            <section class="card"><p class="card-header-title sidebar-title">{{.SiteName}}</p><div class="card-content sidebar-content"><div class="content">{{.Description}}{{if .BrandImage}}<img class="brand-image" loading="lazy" src="{{.BrandImage}}" alt="{{.SiteName}}">{{end}}</div></div></section>
             {{if .Notice}}<section class="box notice">{{.Notice}}</section>{{end}}
           </aside>
         </div>
+      {{else if eq .Kind "microblog"}}
+        <section class="microblog-page article-container">
+          <header class="microblog-header"><h1 class="title is-3 is-4-mobile">{{.ListTitle}}</h1><p class="subtitle is-6">{{.Description}}</p></header>
+          <div class="microblog-stream">{{range .MicroPosts}}<article class="box micro-post" id="micro-post-{{.ID}}"><div class="micro-post-content">{{.Rendered}}</div><footer><a href="#micro-post-{{.ID}}"><time datetime="{{.CreatedAt}}">{{dateTime .CreatedAt}}</time></a><span>#{{.ID}}</span></footer></article>{{else}}<div class="notification is-light">这里还没有公开片语。</div>{{end}}</div>
+          {{template "page-pagination" .}}
+        </section>
       {{else if eq .Kind "custom"}}
         <article class="article-container">{{.Page.Rendered}}</article>
       {{else if eq .Kind "archive"}}
-        <section class="archive-container">
-          <h1 class="title is-3 archive-title">存档</h1>
-          <div class="table-container"><table class="table is-fullwidth is-hoverable is-bordered is-striped"><thead><tr><th>标题</th><th>发布时间</th><th>编辑时间</th></tr></thead><tbody>
-            {{range .Pages}}<tr><td><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></td><td><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></td><td><time datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time></td></tr>{{end}}
-          </tbody></table></div>
-        </section>
+        <section class="archive-container"><h1 class="title is-3 archive-title">存档</h1><div class="table-container"><table class="table is-fullwidth is-hoverable is-bordered is-striped"><thead><tr><th>标题</th><th>发布时间</th><th>编辑时间</th></tr></thead><tbody>{{range .Pages}}<tr><td><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></td><td><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></td><td><time datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time></td></tr>{{end}}</tbody></table></div></section>
       {{else if eq .Kind "list"}}
-        <section class="archive-container">
-          <h1 class="title is-3 archive-title">{{.ListTitle}}</h1>
-          <div class="page-card-list">{{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content"><h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></h2><time class="tag is-light" datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time><div class="page-card-text">{{.Description}}</div></div></div></article></div>{{else}}<div class="notification is-light">没有匹配的文章。</div>{{end}}</div>
-        </section>
+        <section class="archive-container"><h1 class="title is-3 archive-title">{{.ListTitle}}</h1><div class="page-card-list">{{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content"><h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></h2><time class="tag is-light" datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time><div class="page-card-text">{{.Description}}</div></div></div></article></div>{{else}}<div class="notification is-light">没有匹配的文章。</div>{{end}}</div></section>
       {{else if eq .Kind "message"}}
-        <section class="notification is-light message-panel"><h1 class="title is-4">{{.Title}}</h1><p>{{.Message}}</p></section>
+        <section class="notification is-light message-panel"><h1 class="title is-4">{{.Title}}</h1><p>{{.Message}}</p><p class="message-home"><a href="/">返回首页</a></p></section>
       {{else if eq .Kind "links"}}
-        <section class="links"><article>{{template "page-info" .}}</article>
-          {{range .Links}}<div class="card link-entry"><div class="card-content"><div class="media">{{if .Image}}<div class="media-left"><a href="{{.URL}}" rel="noopener noreferrer"><figure class="image is-48x48"><img loading="lazy" src="{{.Image}}" alt=""></figure></a></div>{{end}}<div class="media-content"><p class="title is-4"><a class="link-entry-title" href="{{.URL}}" rel="noopener noreferrer">{{.Title}}</a></p><p class="subtitle is-6">{{.Description}}</p></div></div></div></div>{{end}}
-          {{template "prev-next" .}}
-        </section>
+        <section class="links"><article>{{template "page-info" .}}</article>{{range .Links}}<div class="card link-entry"><div class="card-content"><div class="media">{{if .Image}}<div class="media-left"><a href="{{.URL}}" rel="noopener noreferrer"><figure class="image is-48x48"><img loading="lazy" src="{{.Image}}" alt=""></figure></a></div>{{end}}<div class="media-content"><p class="title is-4"><a class="link-entry-title" href="{{.URL}}" rel="noopener noreferrer">{{.Title}}</a></p><p class="subtitle is-6">{{.Description}}</p></div></div></div></div>{{end}}{{template "prev-next" .}}</section>
       {{else if eq .Kind "raw"}}
-        <section class="raw-page">
-          {{template "page-info" .}}
-          <iframe class="raw-frame" src="/raw/{{pathEscape .Page.Link}}" title="{{.Page.Title}}" sandbox="allow-scripts allow-forms allow-popups allow-modals allow-downloads"></iframe>
-          {{template "prev-next" .}}
-        </section>
+        <section class="raw-page">{{template "page-info" .}}<iframe class="raw-frame" src="/raw/{{pathEscape .Page.Link}}" title="{{.Page.Title}}" sandbox="allow-scripts allow-forms allow-popups allow-modals allow-downloads"></iframe>{{template "prev-next" .}}</section>
       {{else if eq .Kind "code"}}
-        <section class="code-page">
-          {{template "page-info" .}}
-          <div class="control-panel"><button class="button is-light" type="button" data-focus-code>Focus</button> <button class="button is-light" type="button" data-copy-code>Copy</button></div>
-          <pre><code id="code-display">{{.Page.Content}}</code></pre>
-          {{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}
-          {{template "prev-next" .}}
-        </section>
+        <section class="code-page">{{template "page-info" .}}<div class="control-panel"><button class="button is-light" type="button" data-focus-code>Focus</button> <button class="button is-light" type="button" data-copy-code>Copy</button></div><pre><code id="code-display">{{.Page.Content}}</code></pre>{{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}{{template "prev-next" .}}</section>
       {{else if eq .Kind "article"}}
-        <div class="article-container article-container-wide">
-          <div class="columns is-desktop">
-            <div class="column">
-              <article id="article">
-                {{template "page-info" .}}
-                {{if .Page.Password}}
-                  <form class="protected-page" data-page-id="{{.Page.ID}}">
-                    <label class="label" for="article-password">本篇文章被密码保护，请输入访问密码：</label>
-                    <div class="field has-addons"><div class="control"><input class="input" id="article-password" type="password" autocomplete="current-password" placeholder="访问密码" required></div><div class="control"><button class="button" type="submit">提交</button></div></div>
-                    <p class="help protected-message" aria-live="polite"></p>
-                    <div class="protected-content"></div>
-                  </form>
-                {{else}}<div class="article-content">{{.Page.Rendered}}</div>{{end}}
-                {{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}
-              </article>
-            </div>
-            <aside class="column is-one-quarter-fullhd">
-              <nav class="menu toc" aria-label="文章目录">
-                <ul class="menu-list"><li id="toc-container"><p class="toc-title">目录</p><ul id="toc"></ul></li></ul>
-              </nav>
-            </aside>
-          </div>
-          {{template "prev-next" .}}
-        </div>
+        <div class="article-container article-container-wide"><div class="columns is-desktop"><div class="column"><article id="article">{{template "page-info" .}}{{if .Page.Password}}<form class="protected-page" data-page-id="{{.Page.ID}}" data-page-type="{{.Page.Type}}"><label class="label" for="article-password">本篇文章被密码保护，请输入访问密码：</label><div class="protected-controls field has-addons"><div class="control"><input class="input" id="article-password" type="password" autocomplete="current-password" placeholder="访问密码" required></div><div class="control"><button class="button" type="submit">提交</button></div></div><p class="help protected-message" aria-live="polite"></p><div class="protected-content"></div></form>{{else}}<div class="article-content">{{.Page.Rendered}}</div>{{end}}{{if .Copyright}}<div class="copyright">{{.Copyright}}</div>{{end}}</article></div><aside class="column is-one-quarter-fullhd"><nav class="menu toc" aria-label="文章目录"><ul class="menu-list"><li id="toc-container"><p class="toc-title">目录</p><ul id="toc"></ul></li></ul></nav></aside></div>{{template "prev-next" .}}</div>
       {{end}}
     </div>
   </main>
@@ -162,17 +115,10 @@
 
 {{define "page-info"}}
   <h1 class="title is-3 is-4-mobile">{{.Page.Title}}</h1>
-  <div class="info">
-    <span class="line">标签：{{range .Page.Tags}}<a class="tag is-light" href="/tag/{{pathEscape .}}">{{.}}</a>{{end}}</span>
-    <span class="line">发布于：<time class="tag is-light" datetime="{{.Page.CreatedAt}}">{{dateTime .Page.CreatedAt}}</time></span>
-    <span class="line">编辑于：<time class="tag is-light" datetime="{{.Page.UpdatedAt}}">{{dateTime .Page.UpdatedAt}}</time></span>
-    <span class="line">浏览量：<span class="tag is-light">{{.Page.View}}</span></span>
-  </div>
+  {{if .Page.Description}}<p class="article-summary">{{.Page.Description}}</p>{{end}}
+  <div class="info"><span class="line">标签：{{range .Page.Tags}}<a class="tag is-light" href="/tag/{{pathEscape .}}">{{.}}</a>{{end}}</span><span class="line">发布于：<time class="tag is-light" datetime="{{.Page.CreatedAt}}">{{dateTime .Page.CreatedAt}}</time></span><span class="line">编辑于：<time class="tag is-light" datetime="{{.Page.UpdatedAt}}">{{dateTime .Page.UpdatedAt}}</time></span><span class="line">浏览量：<span class="tag is-light">{{.Page.View}}</span></span></div>
 {{end}}
 
-{{define "prev-next"}}
-  {{if or .Prev .Next}}<nav class="pagination is-centered" aria-label="相邻文章">
-    {{if .Prev}}<a class="pagination-previous shadow" href="/page/{{pathEscape .Prev.Link}}">{{.Prev.Title}}</a>{{end}}
-    {{if .Next}}<a class="pagination-next shadow" href="/page/{{pathEscape .Next.Link}}">{{.Next.Title}}</a>{{end}}
-  </nav>{{end}}
-{{end}}
+{{define "page-pagination"}}{{if or .PrevURL .NextURL}}<nav class="pagination is-centered" aria-label="分页">{{if .PrevURL}}<a class="pagination-previous shadow" href="{{.PrevURL}}">上一页</a>{{else}}<span></span>{{end}}{{if .NextURL}}<a class="pagination-next shadow" href="{{.NextURL}}">下一页</a>{{end}}</nav>{{end}}{{end}}
+
+{{define "prev-next"}}{{if or .Prev .Next}}<nav class="pagination is-centered" aria-label="相邻文章">{{if .Prev}}<a class="pagination-previous shadow" href="/page/{{pathEscape .Prev.Link}}">{{.Prev.Title}}</a>{{end}}{{if .Next}}<a class="pagination-next shadow" href="/page/{{pathEscape .Next.Link}}">{{.Next.Title}}</a>{{end}}</nav>{{end}}{{end}}

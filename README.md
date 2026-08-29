@@ -1,15 +1,16 @@
 # 个人博客系统
 
-使用 **Gin + GORM + React + Bulma** 的单人博客系统。公开页面由 Go 服务端渲染，管理后台使用 React；旧版 Sequelize SQLite 数据可直接挂载使用。
+使用 **Gin + GORM + React + Bulma** 的单人博客系统。公开页面保留经典 Bulma 主题并由 Go 服务端渲染，管理后台使用独立的 React 设计系统；旧版 Sequelize SQLite 数据可直接挂载使用。
 
 ## 特性
 
-- 只保留 Bulma 主题，公开站点与管理后台视觉统一。
+- 公开站点保留兼容旧内容的 Bulma 主题，管理后台使用更适合写作与内容管理的独立界面。
 - 服务端输出完整语义化 HTML，包含 canonical、Open Graph、JSON-LD、Atom、sitemap 和 robots。
 - 显式沿用旧表名及字段名：`Pages`、`Users`、`Options`、`Files`。旧用户数据只用于显示历史作者，不再参与认证。
 - 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
 - 内置 `blog-cli`：通过本站 device flow 授权，覆盖页面发布/撤回/隐藏/删除、站点标题与侧边栏、全部设置和文件管理；token 默认有效一年并可随时撤销。
-- Markdown/HTML 默认经过净化；包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
+- 内置微博客子功能：公开短内容位于独立路径（默认 `/microblog`），支持 Markdown、公开/私密状态、分页和完整后台 CRUD；启停、访问路径、标题与简介均可即时调整，停用不会删除数据。
+- Markdown 经过安全渲染；站点所有者发布的 HTML 会被完整保留，其中独立 HTML 页面运行在无同源权限的沙箱中。应用还包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
 - 历史 Raw 工具页在无 `same-origin` 权限的 CSP sandbox 中运行，保留脚本交互但不能读取主站 Cookie、后台 API 响应或父页面 DOM。
 - 保留 `PORT`、`SQLITE_PATH`、`UPLOAD_PATH`、3000 端口、`/app/data` 卷、旧 URL 与主要 `/api` 路径。
 - 支持 Docker、Makefile、`npm start`，以及旧的 `pm2 start app.js` 启动入口。
@@ -52,6 +53,19 @@ blog-cli file upload cover.webp --description "文章封面"
 `blog-cli help --json` 会输出完整的机器可读命令目录、参数约定、页面类型和状态值。CLI 在 stdout 不是终端时自动输出稳定 JSON envelope，错误使用非零退出码，并在结果中给出下一步命令。删除与关机等破坏性操作必须显式传入 `--yes`。
 
 登录采用由本站实现的 device flow：CLI 只显示一次性授权码，管理员在后台核对客户端名称并批准后才签发 token。数据库仅保存 device code 和 token 的 SHA-256 摘要。可在后台 CLI 页面查看和撤销所有有效凭据，也可执行 `blog-cli auth logout` 撤销当前凭据。
+
+## 微博客
+
+登录后台后打开“微博客”，即可发布、编辑或删除短内容，并为每条内容选择公开或私密状态。公开页面默认位于 `/microblog`；同一设置页可直接停用整个公开功能，或把它改为 `notes`、`notes/daily` 等未被系统占用的独立路径。启用时该入口会自动加入主导航和 sitemap。
+
+微博数据保存在独立的 `MicroPosts` 表中，不与文章 `Pages` 表混用。旧版 `songquanpeng/microblog` 数据不会在应用启动时自动迁移；升级后可使用一次性工具先预演、再明确写入：
+
+```bash
+python3 bin/import_microblog.py /path/to/microblog.db /path/to/blog/data.db
+python3 bin/import_microblog.py /path/to/microblog.db /path/to/blog/data.db --apply
+```
+
+导入器不会删除目标数据；相同记录会跳过，ID 冲突但内容不同的记录会以新 ID 追加。执行前仍应备份两个数据库。
 
 ## 本地部署
 
@@ -109,11 +123,11 @@ docker run --restart=always -d \
 
 ## 历史数据升级
 
-升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。
+升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts`）、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。
 
 旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。自动化管理统一使用由本站 device flow 签发且可撤销的 CLI token。
 
-危险的历史自定义 HTML 默认会被净化。如确需完全恢复受信任的旧 HTML，可设置 `BLOG_ALLOW_UNSAFE_HTML=true`；这会显著扩大 XSS 风险，不建议用于多人可写数据。
+站点采用单一所有者写入模型，因此默认完整保留受信任的历史自定义 HTML；独立 HTML 页面仍在无法访问后台登录态的沙箱中运行。如果部署环境允许不受信任的用户写入，可设置 `BLOG_ALLOW_UNSAFE_HTML=false` 开启净化。
 
 合并旧域名时应先在数据库和上传目录副本上检查同路径异内容冲突，保持 `/page/:link`、`/upload/:file` 等原路径不变。验收通过后再把旧域名的每一个请求按原 path 和 query 做永久重定向到新域名，同时更新 `PUBLIC_URL`、canonical、sitemap 和搜索引擎站点设置；不要把所有旧链接统一跳到首页。
 
@@ -131,7 +145,7 @@ docker run --restart=always -d \
 | `CLI_TOKEN_TTL_HOURS` | `8760` | CLI token 有效期，默认 365 天 |
 | `CLI_DEVICE_CODE_TTL_MINUTES` | `10` | device flow 授权码有效期 |
 | `BLOG_ENABLE_SHUTDOWN` | `false` | 是否恢复旧远程关机接口 |
-| `BLOG_ALLOW_UNSAFE_HTML` | `false` | 是否允许未经净化的管理员 HTML |
+| `BLOG_ALLOW_UNSAFE_HTML` | `true` | 是否完整保留站点所有者发布的 HTML；多人写入时建议设为 `false` |
 
 反向代理可继续使用仓库中的 [blog.conf](./blog.conf)，生产环境应启用 HTTPS。
 
@@ -142,7 +156,7 @@ make test   # Go race tests + React production build
 make check  # 额外运行 go vet、govulncheck 与 npm audit
 ```
 
-测试包含旧 Sequelize schema 读取、HTML 净化、固定链接校验和 GitHub 不可变 ID 白名单。
+测试包含旧 Sequelize schema 读取、受信任 HTML 与沙箱隔离、固定链接校验、SEO 元数据和 GitHub 不可变 ID 白名单。
 
 ## License
 

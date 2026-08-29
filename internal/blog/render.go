@@ -23,13 +23,17 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 	}
 	siteName := option(options, "site_name", "Blog")
 	if title == "" {
-		title = option(options, "motto", "") + " | " + siteName
+		title = siteName
+		if motto := strings.TrimSpace(options["motto"]); motto != "" && motto != siteName {
+			title += " · " + motto
+		}
 	} else if title != siteName {
-		title += " | " + siteName
+		title += " — " + siteName
 	}
 	if description == "" {
 		description = option(options, "description", "")
 	}
+	description = plainDescription(description)
 	base := a.publicURL(c, options)
 	canonical := base + canonicalPath
 	var nav []NavGroup
@@ -50,22 +54,44 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 		primaryNav = nav[0].Value
 		nav = nav[1:]
 	}
+	microblog := currentMicroblogConfig(options)
+	if microblog.Enabled {
+		microblogLink := "/" + microblog.Path
+		found := false
+		for _, item := range primaryNav {
+			if strings.TrimRight(item.Link, "/") == microblogLink {
+				found = true
+				break
+			}
+		}
+		if !found {
+			primaryNav = append(primaryNav, NavItem{Text: microblog.Title, Link: microblogLink})
+		}
+	}
 	nonce, _ := c.Get("cspNonce")
 	codeTheme := ""
 	if uploadedCodeTheme(options["code_theme"]) != "" {
 		codeTheme = "/code-theme.css"
 	}
 	brandImage := strings.TrimSpace(options["brand_image"])
+	socialImage := strings.TrimSpace(options["social_image"])
+	if socialImage == "" {
+		socialImage = brandImage
+	}
+	language := option(options, "language", "zh-CN")
+	author := option(options, "author", siteName)
 	data := ViewData{
-		Lang: option(options, "language", "zh-CN"), Title: title, Description: description,
-		Canonical: canonical, SiteURL: base, SiteName: siteName, Motto: options["motto"], Author: options["author"],
+		Lang: language, OGLocale: strings.ReplaceAll(language, "-", "_"), Title: title, Description: description,
+		Robots:    "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+		Canonical: canonical, SiteURL: base, SiteName: siteName, SiteInitial: firstRune(siteName), Motto: options["motto"], Author: author,
 		Year: time.Now().Year(), Favicon: option(options, "favicon", "/favicon.ico"), BrandImage: brandImage,
-		SocialImage: publicAssetURL(base, brandImage), CodeTheme: codeTheme,
+		SocialImage: publicAssetURL(base, socialImage), CodeTheme: codeTheme,
 		PrimaryNav: primaryNav, Nav: nav, Copyright: a.safeHTML(options["copyright"]),
 		ExtraFooter: a.safeHTML(options["extra_footer_text"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,
 		Nonce: fmt.Sprint(nonce),
 	}
-	// The historical Bulma theme treated the special notice page as site
+	data.JSONLD = siteJSONLD(data)
+	// The historical public theme treated the special notice page as site
 	// configuration, even when its regular page status was recalled.
 	if notice, err := a.store.PageByLink(c.Request.Context(), "notice"); err == nil {
 		data.Notice = a.renderContent(notice)
@@ -165,22 +191,95 @@ func (a *App) renderError(c *gin.Context, status int, title, message string) {
 		return
 	}
 	data.Kind, data.Message = "message", message
+	data.Robots = "noindex,follow"
 	a.render(c, status, data)
 }
 
 func articleJSONLD(data ViewData, page Page) template.JS {
-	payload := map[string]any{
-		"@context": "https://schema.org", "@type": "BlogPosting", "headline": page.Title,
-		"description": page.Description, "datePublished": page.CreatedAt, "dateModified": page.UpdatedAt,
-		"mainEntityOfPage": data.Canonical,
+	article := map[string]any{
+		"@type": "BlogPosting", "@id": data.Canonical + "#article", "url": data.Canonical, "headline": page.Title,
+		"description": firstNonEmpty(page.Description, data.Description), "datePublished": page.CreatedAt, "dateModified": page.UpdatedAt,
+		"mainEntityOfPage": map[string]string{"@type": "WebPage", "@id": data.Canonical},
+		"isPartOf":         map[string]string{"@id": data.SiteURL + "/#website"},
 		"author":           map[string]string{"@type": "Person", "name": firstNonEmpty(page.Author, data.Author)},
 		"publisher":        map[string]string{"@type": "Organization", "name": data.SiteName},
 	}
 	if data.SocialImage != "" {
-		payload["image"] = data.SocialImage
+		article["image"] = data.SocialImage
+	}
+	if len(page.Tags) > 0 {
+		article["keywords"] = page.Tags
+	}
+	payload := map[string]any{
+		"@context": "https://schema.org",
+		"@graph": []any{
+			map[string]any{"@type": "WebSite", "@id": data.SiteURL + "/#website", "url": data.SiteURL + "/", "name": data.SiteName, "description": data.Description, "inLanguage": data.Lang},
+			map[string]any{"@type": "BreadcrumbList", "@id": data.Canonical + "#breadcrumb", "itemListElement": []any{
+				map[string]any{"@type": "ListItem", "position": 1, "name": "首页", "item": data.SiteURL + "/"},
+				map[string]any{"@type": "ListItem", "position": 2, "name": page.Title, "item": data.Canonical},
+			}},
+			article,
+		},
 	}
 	encoded, _ := json.Marshal(payload)
 	return template.JS(encoded)
+}
+
+func siteJSONLD(data ViewData) template.JS {
+	payload := map[string]any{
+		"@context": "https://schema.org", "@type": "WebSite", "@id": data.SiteURL + "/#website",
+		"url": data.SiteURL + "/", "name": data.SiteName, "description": data.Description,
+		"inLanguage": data.Lang, "publisher": map[string]string{"@type": "Person", "name": data.Author},
+	}
+	encoded, _ := json.Marshal(payload)
+	return template.JS(encoded)
+}
+
+func collectionJSONLD(data ViewData, pages []Page, name string) template.JS {
+	items := make([]any, 0, len(pages))
+	for index, page := range pages {
+		items = append(items, map[string]any{
+			"@type": "ListItem", "position": index + 1, "name": page.Title,
+			"url": data.SiteURL + "/page/" + url.PathEscape(page.Link),
+		})
+	}
+	payload := map[string]any{
+		"@context": "https://schema.org", "@type": "CollectionPage", "@id": data.Canonical,
+		"url": data.Canonical, "name": name, "description": data.Description, "inLanguage": data.Lang,
+		"isPartOf":   map[string]string{"@id": data.SiteURL + "/#website"},
+		"mainEntity": map[string]any{"@type": "ItemList", "itemListElement": items},
+	}
+	encoded, _ := json.Marshal(payload)
+	return template.JS(encoded)
+}
+
+func microblogJSONLD(data ViewData, posts []MicroPost, name string) template.JS {
+	items := make([]any, 0, len(posts))
+	for index, post := range posts {
+		items = append(items, map[string]any{
+			"@type": "ListItem", "position": index + 1,
+			"item": map[string]any{
+				"@type": "SocialMediaPosting", "articleBody": plainDescription(post.Content),
+				"datePublished": post.CreatedAt, "dateModified": post.UpdatedAt,
+				"author": map[string]string{"@type": "Person", "name": data.Author},
+			},
+		})
+	}
+	payload := map[string]any{
+		"@context": "https://schema.org", "@type": "CollectionPage", "@id": data.Canonical,
+		"url": data.Canonical, "name": name, "description": data.Description, "inLanguage": data.Lang,
+		"isPartOf":   map[string]string{"@id": data.SiteURL + "/#website"},
+		"mainEntity": map[string]any{"@type": "ItemList", "itemListElement": items},
+	}
+	encoded, _ := json.Marshal(payload)
+	return template.JS(encoded)
+}
+
+func firstRune(value string) string {
+	for _, char := range strings.TrimSpace(value) {
+		return string(char)
+	}
+	return "B"
 }
 
 func firstNonEmpty(values ...string) string {

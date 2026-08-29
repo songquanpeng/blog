@@ -43,7 +43,7 @@ func loadConfig() (Config, error) {
 		TemplateGlob:       env("TEMPLATE_GLOB", "./templates/*.gohtml"),
 		IndexPath:          env("INDEX_PATH", "./data/index"),
 		DefaultIndexPath:   env("DEFAULT_INDEX_PATH", "./data/index"),
-		AllowUnsafeHTML:    envBool("BLOG_ALLOW_UNSAFE_HTML", false),
+		AllowUnsafeHTML:    envBool("BLOG_ALLOW_UNSAFE_HTML", true),
 		EnableShutdown:     envBool("BLOG_ENABLE_SHUTDOWN", false),
 		MaxUploadBytes:     int64(envInt("MAX_UPLOAD_MB", 20)) << 20,
 		SessionTTL:         time.Duration(envInt("SESSION_TTL_HOURS", 24)) * time.Hour,

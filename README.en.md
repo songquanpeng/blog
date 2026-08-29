@@ -1,12 +1,25 @@
 # Personal Blog
 
-A single-owner blog built with Gin, GORM, React, and Bulma. Public pages are server-rendered for SEO; the React admin uses GitHub OAuth exclusively.
+A single-owner blog built with Gin, GORM, React, and Bulma. Public pages keep the classic Bulma theme and are server-rendered for SEO; the React admin uses its own management-focused design system and GitHub OAuth exclusively.
 
 The refactor preserves the historical SQLite tables and fields, URLs, API paths, port 3000, `/app/data` volume, and the `PORT`, `SQLITE_PATH`, and `UPLOAD_PATH` environment variables. Legacy users remain only as historical author references and are never used for authentication.
 
+## Microblog
+
+The integrated microblog publishes Markdown short notes at an independent path (`/microblog` by default). Its admin page provides complete create, edit, visibility, and delete controls plus an immediate feature switch and configurable path, title, and description. Disabling the public feature returns 404 at that path while retaining all data and admin access.
+
+Microblog entries live in their own `MicroPosts` table. Legacy `songquanpeng/microblog` data is deliberately not imported during application startup. Use the one-time importer in dry-run mode first, then apply it explicitly:
+
+```bash
+python3 bin/import_microblog.py /path/to/microblog.db /path/to/blog/data.db
+python3 bin/import_microblog.py /path/to/microblog.db /path/to/blog/data.db --apply
+```
+
+The importer never deletes target rows; exact matches are skipped and conflicting IDs are appended under new IDs.
+
 ## blog-cli
 
-After signing in, open **CLI** in the admin sidebar and copy the installation command generated from `PUBLIC_URL`. The standalone Go client (no Python or Go runtime required) uses this blog's own browser device flow; tokens last 365 days by default and can be revoked from the same page.
+After signing in, open **CLI** in the admin sidebar and copy the installation command generated from `PUBLIC_URL`. `blog-cli` is a standalone Go program in this repository's `cli/` directory; the installer selects and verifies the Linux/macOS amd64/arm64 binary, with no Python or Go runtime required. It uses this blog's own browser device flow; tokens last 365 days by default and can be revoked from the same page.
 
 ```bash
 blog-cli auth login
@@ -53,7 +66,7 @@ docker run -d --restart=always -p 3000:3000 \
   blog:local
 ```
 
-Back up `data/data.db` and `data/upload` before upgrading. Existing Sequelize tables are not auto-altered by GORM. HTML is sanitized by default; setting `BLOG_ALLOW_UNSAFE_HTML=true` restores trusted legacy HTML at the cost of XSS protection.
+Back up `data/data.db` and `data/upload` before upgrading. Existing Sequelize tables are not auto-altered by GORM. Owner-authored HTML is preserved by default and standalone HTML pages run in an opaque sandbox; set `BLOG_ALLOW_UNSAFE_HTML=false` when untrusted users can write content.
 
 Run `make help` for local build, development, test, audit, and Docker commands.
 

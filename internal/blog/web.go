@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -16,7 +17,15 @@ import (
 )
 
 func (a *App) index(c *gin.Context) {
-	data, err := a.baseView(c, "", "", "/")
+	pageNumber, _ := strconv.Atoi(c.Query("p"))
+	if pageNumber < 0 {
+		pageNumber = 0
+	}
+	canonicalPath := "/"
+	if pageNumber > 0 {
+		canonicalPath = fmt.Sprintf("/?p=%d", pageNumber)
+	}
+	data, err := a.baseView(c, "", "", canonicalPath)
 	if err != nil {
 		a.renderError(c, http.StatusInternalServerError, "加载失败", err.Error())
 		return
@@ -37,10 +46,6 @@ func (a *App) index(c *gin.Context) {
 		a.renderError(c, http.StatusInternalServerError, "加载失败", err.Error())
 		return
 	}
-	pageNumber, _ := strconv.Atoi(c.Query("p"))
-	if pageNumber < 0 {
-		pageNumber = 0
-	}
 	start := pageNumber * 10
 	if start >= len(pages) && pageNumber > 0 {
 		c.Redirect(http.StatusFound, "/")
@@ -57,6 +62,7 @@ func (a *App) index(c *gin.Context) {
 	if end < len(pages) {
 		data.NextURL = fmt.Sprintf("/?p=%d", pageNumber+1)
 	}
+	data.JSONLD = collectionJSONLD(data, data.Pages, data.SiteName)
 	a.render(c, http.StatusOK, data)
 }
 
@@ -72,6 +78,7 @@ func (a *App) archive(c *gin.Context) {
 		return
 	}
 	data.Kind, data.Pages = "archive", pages
+	data.JSONLD = collectionJSONLD(data, pages, "文章存档 — "+data.SiteName)
 	a.render(c, http.StatusOK, data)
 }
 
@@ -90,6 +97,7 @@ func (a *App) monthArchive(c *gin.Context) {
 	title := fmt.Sprintf("%04d-%02d", year, month)
 	data, _ := a.baseView(c, title, title+" 文章存档", c.Request.URL.Path)
 	data.Kind, data.Pages, data.ListTitle = "list", pages, title
+	data.JSONLD = collectionJSONLD(data, pages, title+" 文章存档")
 	a.render(c, http.StatusOK, data)
 }
 
@@ -106,6 +114,7 @@ func (a *App) tag(c *gin.Context) {
 	}
 	data, _ := a.baseView(c, tag, "标签 "+tag+" 下的文章", "/tag/"+url.PathEscape(tag))
 	data.Kind, data.Pages, data.ListTitle = "list", pages, tag
+	data.JSONLD = collectionJSONLD(data, pages, "标签 "+tag)
 	a.render(c, http.StatusOK, data)
 }
 
@@ -152,6 +161,9 @@ func (a *App) page(c *gin.Context) {
 		page.Rendered = a.renderContent(page)
 	}
 	data.Kind, data.Page = "article", &page
+	if page.PageStatus == StatusHidden || page.Password != "" {
+		data.Robots = "noindex,follow,noarchive"
+	}
 	if page.Type == PageCode {
 		data.Kind = "code"
 	} else if page.Type == PageLinks {
@@ -159,7 +171,7 @@ func (a *App) page(c *gin.Context) {
 	} else if page.Type == PageRaw && page.Password == "" {
 		data.Kind = "raw"
 	} else if page.Type != PageArticle && page.Type != PageDiscuss && page.Type != PageRaw {
-		a.renderError(c, http.StatusNotImplemented, "页面类型暂不支持", fmt.Sprintf("历史页面类型 %d 没有对应的 Bulma 视图", page.Type))
+		a.renderError(c, http.StatusNotImplemented, "页面类型暂不支持", fmt.Sprintf("历史页面类型 %d 没有对应的公开视图", page.Type))
 		return
 	}
 	publicPages, _ := a.store.PublicPages(c.Request.Context())
@@ -202,7 +214,7 @@ func (a *App) rawPageContent(c *gin.Context) {
 	document.WriteString(template.HTMLEscapeString(optionFromStore(a, c, "language", "zh-CN")))
 	document.WriteString("\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>")
 	document.WriteString(template.HTMLEscapeString(page.Title))
-	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-20260829\"></head><body><main class=\"raw\">")
+	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-refined-20260829\"></head><body><main class=\"raw\">")
 	document.WriteString(content)
 	document.WriteString(`</main><script>new ResizeObserver(function(){parent.postMessage({type:"blog-raw-height",height:document.documentElement.scrollHeight},"*")}).observe(document.documentElement)</script></body></html>`)
 
@@ -240,9 +252,34 @@ func (a *App) sitemap(c *gin.Context) {
 	}
 	options, _ := a.store.Options(c.Request.Context())
 	base := a.publicURL(c, options)
-	set := sitemapURLSet{XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9", URLs: []sitemapURL{{Location: base + "/"}, {Location: base + "/archive"}}}
+	lastModified := ""
+	if len(pages) > 0 {
+		lastModified = shortDate(pages[0].UpdatedAt)
+	}
+	set := sitemapURLSet{XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9", URLs: []sitemapURL{{Location: base + "/", Modified: lastModified}, {Location: base + "/archive", Modified: lastModified}}}
+	microblog := currentMicroblogConfig(options)
+	if microblog.Enabled {
+		microPosts, _, _ := a.store.MicroPosts(c.Request.Context(), true, 0, 1)
+		modified := ""
+		if len(microPosts) > 0 {
+			modified = shortDate(microPosts[0].UpdatedAt)
+		}
+		set.URLs = append(set.URLs, sitemapURL{Location: base + "/" + microblog.Path, Modified: modified})
+	}
+	tags := make(map[string]struct{})
 	for _, page := range pages {
 		set.URLs = append(set.URLs, sitemapURL{Location: base + "/page/" + url.PathEscape(page.Link), Modified: shortDate(page.UpdatedAt)})
+		for _, tag := range splitTags(page.Tag) {
+			tags[tag] = struct{}{}
+		}
+	}
+	tagNames := make([]string, 0, len(tags))
+	for tag := range tags {
+		tagNames = append(tagNames, tag)
+	}
+	sort.Strings(tagNames)
+	for _, tag := range tagNames {
+		set.URLs = append(set.URLs, sitemapURL{Location: base + "/tag/" + url.PathEscape(tag), Modified: lastModified})
 	}
 	encoded, err := xml.MarshalIndent(set, "", "  ")
 	if err != nil {
@@ -296,9 +333,24 @@ func (a *App) feed(c *gin.Context) {
 func (a *App) robots(c *gin.Context) {
 	custom := filepath.Join(a.cfg.IndexPath, "robots.txt")
 	if info, err := os.Stat(custom); err == nil && !info.IsDir() {
-		c.File(custom)
+		content, readErr := os.ReadFile(custom)
+		if readErr == nil {
+			text := strings.TrimSpace(string(content))
+			if !strings.Contains(strings.ToLower(text), "sitemap:") {
+				text += "\nSitemap: " + a.publicURL(c, optionMap(a, c)) + "/sitemap.xml"
+			}
+			c.Header("Content-Type", "text/plain; charset=utf-8")
+			c.String(http.StatusOK, "%s\n", text)
+			return
+		}
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 	options, _ := a.store.Options(c.Request.Context())
-	c.String(http.StatusOK, "User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n", a.publicURL(c, options))
+	c.String(http.StatusOK, "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\nDisallow: /auth/\nSitemap: %s/sitemap.xml\n", a.publicURL(c, options))
+}
+
+func optionMap(a *App, c *gin.Context) map[string]string {
+	options, _ := a.store.Options(c.Request.Context())
+	return options
 }

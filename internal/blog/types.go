@@ -61,6 +61,23 @@ type StoredFile struct {
 	UpdatedAt   string `json:"updatedAt"`
 }
 
+const (
+	MicroPostPrivate = 0
+	MicroPostPublic  = 1
+)
+
+// MicroPost is intentionally separate from Page: short notes have no title or
+// permalink and can therefore evolve without coupling them to the article
+// schema inherited from the original blog.
+type MicroPost struct {
+	ID        uint64        `json:"id"`
+	Content   string        `json:"content"`
+	Status    int           `json:"status"`
+	CreatedAt string        `json:"createdAt"`
+	UpdatedAt string        `json:"updatedAt"`
+	Rendered  template.HTML `json:"-"`
+}
+
 type Option struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
@@ -84,35 +101,39 @@ type NavGroup struct {
 }
 
 type ViewData struct {
-	Kind        string
-	Lang        string
-	Title       string
-	Description string
-	Canonical   string
-	SiteURL     string
-	SiteName    string
-	Motto       string
-	Author      string
-	Year        int
-	Favicon     string
-	BrandImage  string
-	SocialImage string
-	CodeTheme   string
-	Copyright   template.HTML
-	ExtraFooter template.HTML
-	Notice      template.HTML
-	PrimaryNav  []NavItem
-	Nav         []NavGroup
-	Pages       []Page
-	Page        *Page
-	Links       []Link
-	Prev        *Page
-	Next        *Page
-	PrevURL     string
-	NextURL     string
-	ListTitle   string
-	Message     string
-	JSONLD      template.JS
-	Nonce       string
-	AllowUnsafe bool
+	Kind          string
+	Lang          string
+	OGLocale      string
+	Title         string
+	Description   string
+	Robots        string
+	Canonical     string
+	SiteURL       string
+	SiteName      string
+	SiteInitial   string
+	Motto         string
+	Author        string
+	Year          int
+	Favicon       string
+	BrandImage    string
+	SocialImage   string
+	CodeTheme     string
+	Copyright     template.HTML
+	ExtraFooter   template.HTML
+	Notice        template.HTML
+	PrimaryNav    []NavItem
+	Nav           []NavGroup
+	Pages         []Page
+	MicroPosts    []MicroPost
+	Page          *Page
+	Links         []Link
+	Prev          *Page
+	Next          *Page
+	PrevURL       string
+	NextURL       string
+	ListTitle     string
+	Message       string
+	JSONLD        template.JS
+	Nonce         string
+	AllowUnsafe   bool
 }

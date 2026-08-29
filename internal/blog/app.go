@@ -168,11 +168,19 @@ func (a *App) routes() *gin.Engine {
 		admin.POST("/cli/device/deny", a.denyDeviceCode)
 		admin.GET("/cli/tokens", a.listCLITokens)
 		admin.DELETE("/cli/tokens/:id", a.revokeCLIToken)
+		admin.GET("/microblog", a.microblogAdmin)
+		admin.POST("/microblog", a.createMicroPost)
+		admin.PUT("/microblog/config", a.updateMicroblogConfig)
+		admin.PUT("/microblog/:id", a.updateMicroPost)
+		admin.DELETE("/microblog/:id", a.deleteMicroPost)
 	}
 
 	router.GET("/admin", func(c *gin.Context) { c.Redirect(http.StatusMovedPermanently, "/admin/") })
 	router.GET("/admin/*filepath", a.adminFile)
 	router.NoRoute(func(c *gin.Context) {
+		if a.tryMicroblog(c) {
+			return
+		}
 		a.renderError(c, http.StatusNotFound, "未找到目标页面", "所请求的页面不存在，请检查页面链接是否正确")
 	})
 	return router

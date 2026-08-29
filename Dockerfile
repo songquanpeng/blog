@@ -6,6 +6,7 @@ COPY admin/ ./
 RUN npm run build
 
 FROM golang:1.25-alpine AS backend
+ARG CLI_VERSION=dev
 RUN apk add --no-cache build-base
 WORKDIR /src
 COPY go.mod go.sum ./
@@ -16,7 +17,7 @@ RUN CGO_ENABLED=1 go build -trimpath -ldflags="-s -w" -o /out/blog ./cmd/blog \
     && mkdir -p /out/cli \
     && for target in linux-amd64 linux-arm64 darwin-amd64 darwin-arm64; do \
          os=${target%-*}; arch=${target#*-}; binary="/out/cli/blog-cli-$target"; \
-         CGO_ENABLED=0 GOOS=$os GOARCH=$arch go build -trimpath -ldflags="-s -w" -o "$binary" ./cli; \
+         CGO_ENABLED=0 GOOS=$os GOARCH=$arch go build -trimpath -ldflags="-s -w -X main.version=$CLI_VERSION" -o "$binary" ./cli; \
          gzip -n -9 "$binary"; \
          sha256sum "$binary.gz" | cut -d ' ' -f 1 > "$binary.gz.sha256"; \
        done
