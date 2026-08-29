@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
@@ -44,15 +45,27 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 		}
 		nav[i].Value = filtered
 	}
+	primaryNav := []NavItem{}
+	if len(nav) > 0 {
+		primaryNav = nav[0].Value
+		nav = nav[1:]
+	}
 	nonce, _ := c.Get("cspNonce")
+	codeTheme := ""
+	if uploadedCodeTheme(options["code_theme"]) != "" {
+		codeTheme = "/code-theme.css"
+	}
 	data := ViewData{
 		Lang: option(options, "language", "zh-CN"), Title: title, Description: description,
-		Canonical: canonical, SiteName: siteName, Motto: options["motto"], Author: options["author"],
-		Favicon: option(options, "favicon", "/favicon.ico"), BrandImage: options["brand_image"], Nav: nav,
-		Copyright: a.safeHTML(options["copyright"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,
+		Canonical: canonical, SiteURL: base, SiteName: siteName, Motto: options["motto"], Author: options["author"],
+		Year: time.Now().Year(), Favicon: option(options, "favicon", "/favicon.ico"), BrandImage: options["brand_image"], CodeTheme: codeTheme,
+		PrimaryNav: primaryNav, Nav: nav, Copyright: a.safeHTML(options["copyright"]),
+		ExtraFooter: a.safeHTML(options["extra_footer_text"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,
 		Nonce: fmt.Sprint(nonce),
 	}
-	if notice, err := a.store.PublicPageByLink(c.Request.Context(), "notice"); err == nil {
+	// The historical Bulma theme treated the special notice page as site
+	// configuration, even when its regular page status was recalled.
+	if notice, err := a.store.PageByLink(c.Request.Context(), "notice"); err == nil {
 		data.Notice = a.renderContent(notice)
 	}
 	return data, nil
@@ -191,6 +204,11 @@ func parseLinks(content string) []Link {
 			}
 		case "description":
 			links[current].Description = value
+		}
+	}
+	for i := range links {
+		if links[i].Image == "" && safeNavigationURL(links[i].URL) {
+			links[i].Image = strings.TrimRight(links[i].URL, "/") + "/favicon.ico"
 		}
 	}
 	return links

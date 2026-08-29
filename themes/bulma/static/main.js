@@ -1,3 +1,24 @@
+function generateTOC() {
+  const article = document.getElementById('article');
+  const container = document.getElementById('toc-container');
+  const toc = document.getElementById('toc');
+  if (!article || !container || !toc) return;
+
+  toc.replaceChildren();
+  const headings = article.querySelectorAll('.article-content h2, .protected-content h2');
+  headings.forEach((heading, index) => {
+    if (!heading.id) heading.id = `section-${index + 1}`;
+    const item = document.createElement('li');
+    item.className = 'toc-level-2';
+    const link = document.createElement('a');
+    link.href = `#${encodeURIComponent(heading.id)}`;
+    link.textContent = heading.textContent || `第 ${index + 1} 节`;
+    item.append(link);
+    toc.append(item);
+  });
+  container.hidden = headings.length === 0;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const burger = document.querySelector('.navbar-burger');
   if (burger) {
@@ -31,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         password.value = '';
         form.querySelector('.field').remove();
         message.textContent = '';
+        generateTOC();
         window.hljs?.highlightAll();
       } catch (error) {
         message.textContent = error.message;
@@ -48,5 +70,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  document.querySelectorAll('[data-focus-code]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const code = document.getElementById('code-display');
+      const focused = document.body.classList.toggle('code-focus-mode');
+      if (focused && code) {
+        document.body.style.backgroundColor = getComputedStyle(code).backgroundColor;
+      } else {
+        document.body.style.removeProperty('background-color');
+      }
+      button.textContent = focused ? 'Exit Focus' : 'Focus';
+    });
+  });
+
+  generateTOC();
   window.hljs?.highlightAll();
+});
+
+window.addEventListener('message', (event) => {
+  if (!event.data || event.data.type !== 'blog-raw-height') return;
+  document.querySelectorAll('.raw-frame').forEach((frame) => {
+    if (frame.contentWindow !== event.source) return;
+    const height = Number(event.data.height);
+    if (Number.isFinite(height) && height > 0) {
+      frame.style.height = `${Math.min(Math.max(height, 320), 20000)}px`;
+    }
+  });
 });

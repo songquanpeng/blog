@@ -79,7 +79,9 @@ type DBPage = dbPage
 
 type pageRow struct {
 	DBPage
-	Author string `gorm:"column:author"`
+	Author       string `gorm:"column:author"`
+	CreatedAtRaw string `gorm:"column:created_at_raw"`
+	UpdatedAtRaw string `gorm:"column:updated_at_raw"`
 }
 
 var defaultOptions = []dbOption{
@@ -187,7 +189,7 @@ func (s *Store) UpdateOptions(ctx context.Context, options map[string]any) error
 
 func (s *Store) pageQuery(ctx context.Context) *gorm.DB {
 	return s.db.WithContext(ctx).Table("Pages AS p").
-		Select("p.*, COALESCE(u.displayName, '') AS author").
+		Select("p.*, COALESCE(u.displayName, '') AS author, CAST(p.createdAt AS TEXT) AS created_at_raw, CAST(p.updatedAt AS TEXT) AS updated_at_raw").
 		Joins("LEFT JOIN Users AS u ON u.id = p.UserId")
 }
 
@@ -200,8 +202,30 @@ func toPage(row pageRow) Page {
 		CommentStatus: row.CommentStatus, Title: row.Title, Content: row.Content,
 		Tag: row.Tag, Password: row.Password, View: row.View, UpVote: row.UpVote,
 		DownVote: row.DownVote, Description: row.Description,
-		CreatedAt: formatDBTime(row.CreatedAt), UpdatedAt: formatDBTime(row.UpdatedAt),
+		CreatedAt: normalizeDBTime(row.CreatedAtRaw, row.CreatedAt), UpdatedAt: normalizeDBTime(row.UpdatedAtRaw, row.UpdatedAt),
 		UserID: userID, Author: row.Author}
+}
+
+func normalizeDBTime(raw string, fallback time.Time) string {
+	raw = strings.TrimSpace(raw)
+	if raw != "" {
+		layouts := []string{
+			time.RFC3339Nano,
+			"2006-01-02 15:04:05.999999999 -07:00",
+			"2006-01-02 15:04:05.999999999Z07:00",
+			"2006-01-02 15:04:05",
+			"2006-01-02",
+		}
+		for _, layout := range layouts {
+			if parsed, err := time.Parse(layout, raw); err == nil {
+				return parsed.In(time.Local).Format(time.RFC3339)
+			}
+		}
+		// Preserve a historical value we do not recognize. Templates can still
+		// display its YYYY-MM-DD prefix instead of silently showing no date.
+		return raw
+	}
+	return formatDBTime(fallback)
 }
 
 func formatDBTime(value time.Time) string {
@@ -240,7 +264,7 @@ func (s *Store) PublicPages(ctx context.Context) ([]Page, error) {
 }
 
 func (s *Store) ArchivePages(ctx context.Context) ([]Page, error) {
-	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus != ?", StatusRecalled).Order("p.createdAt DESC"))
+	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus != ?", StatusRecalled).Order("p.updatedAt ASC"))
 }
 
 func (s *Store) PagesByTag(ctx context.Context, tag string) ([]Page, error) {
@@ -280,6 +304,18 @@ func (s *Store) PageByID(ctx context.Context, id string) (Page, error) {
 func (s *Store) PublicPageByLink(ctx context.Context, link string) (Page, error) {
 	var row pageRow
 	result := s.pageQuery(ctx).Where("p.link = ? AND p.pageStatus != ?", link, StatusRecalled).Order("p.updatedAt DESC").Limit(1).Scan(&row)
+	if result.Error != nil {
+		return Page{}, result.Error
+	}
+	if row.ID == "" {
+		return Page{}, gorm.ErrRecordNotFound
+	}
+	return toPage(row), nil
+}
+
+func (s *Store) PageByLink(ctx context.Context, link string) (Page, error) {
+	var row pageRow
+	result := s.pageQuery(ctx).Where("p.link = ?", link).Order("p.updatedAt DESC").Limit(1).Scan(&row)
 	if result.Error != nil {
 		return Page{}, result.Error
 	}

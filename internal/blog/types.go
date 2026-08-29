@@ -89,13 +89,18 @@ type ViewData struct {
 	Title       string
 	Description string
 	Canonical   string
+	SiteURL     string
 	SiteName    string
 	Motto       string
 	Author      string
+	Year        int
 	Favicon     string
 	BrandImage  string
+	CodeTheme   string
 	Copyright   template.HTML
+	ExtraFooter template.HTML
 	Notice      template.HTML
+	PrimaryNav  []NavItem
 	Nav         []NavGroup
 	Pages       []Page
 	Page        *Page

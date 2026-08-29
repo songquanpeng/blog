@@ -4,15 +4,68 @@ body {
     margin: 0;
 }
 
-.site-brand { font-weight: 800; letter-spacing: -.02em; }
-.page-card { margin-bottom: 1rem; }
-.page-card .title { margin-bottom: .75rem; }
-.article-header { margin-bottom: 2rem; }
-.article-navigation { margin-top: 3rem; gap: 1rem; }
-.notice { margin-top: 1.5rem; }
-.link-card { height: 100%; }
-.protected-content { margin-top: 1.5rem; }
-.footer { margin-top: 3rem; }
+.site-brand {
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.index-page-box {
+    padding-top: 16px;
+}
+
+.box article.index-page-media {
+    padding: 8px;
+}
+
+.index-sidebar {
+    margin-top: 8px;
+}
+
+.sidebar-title {
+    font-size: larger;
+    padding-bottom: 4px;
+}
+
+.sidebar-content {
+    padding: 0 16px 16px;
+}
+
+.brand-image {
+    margin-top: 8px;
+}
+
+.notice {
+    margin-top: 32px;
+}
+
+.archive-title {
+    margin-top: 24px;
+}
+
+.article-container.article-container-wide {
+    max-width: 1200px;
+}
+
+.toc-title {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.link-entry {
+    margin-bottom: 16px;
+}
+
+.link-entry-title {
+    color: #363636;
+}
+
+.protected-content {
+    margin-top: 24px;
+}
+
+.message-panel {
+    margin: 24px 16px;
+}
 
 nav {
     margin-bottom: 16px;
@@ -74,6 +127,14 @@ code {
     color: #000000;
     text-decoration: none;
     margin-bottom: 4px;
+}
+
+.content h2.page-card-title {
+    font-size: x-large;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0 0 4px;
+    padding: 0;
 }
 
 .page-card-text {
@@ -352,7 +413,7 @@ article .copyright {
 }
 
 .code-page pre {
-    margin-top: 2px;
+    margin-top: 27px;
     overflow-x: auto;
     padding: 0;
     font-size: 16px;
@@ -361,6 +422,10 @@ article .copyright {
 
 .code-page .control-panel {
     width: 100%;
+}
+
+.code-focus-mode #footer {
+    visibility: hidden;
 }
 
 #code-display {
@@ -388,6 +453,17 @@ article .copyright {
 
 .raw {
     padding: 16px;
+}
+
+.raw-page {
+    margin: 16px;
+}
+
+.raw-frame {
+    border: 0;
+    display: block;
+    min-height: 75vh;
+    width: 100%;
 }
 
 .raw .raw-content {

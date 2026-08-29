@@ -3,11 +3,14 @@ package blog
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
+	"gorm.io/gorm"
 )
 
 func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
@@ -30,7 +33,8 @@ func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
 			updatedAt DATETIME, createdAt DATETIME NOT NULL, UserId VARCHAR(255)
 		)`,
 		`INSERT INTO Users VALUES ('legacy-user','admin','Legacy Author','unused','token','', '', '',1,1,0,'2021-01-01 00:00:00','2021-01-01 00:00:00')`,
-		`INSERT INTO Pages VALUES ('legacy-page',0,'hello',1,1,'Hello','# Hello','Go;Gin','',7,0,0,'Old article','2021-02-03 04:05:06','2021-02-01 00:00:00','legacy-user')`,
+		`INSERT INTO Pages VALUES ('legacy-page',0,'hello',1,1,'Hello','# Hello','Go;Gin','',7,0,0,'Old article','2021-02-03 04:05:06.455 +00:00','2021-02-01 00:00:00.000 +00:00','legacy-user')`,
+		`INSERT INTO Pages VALUES ('legacy-notice',0,'notice',0,1,'Notice','Historical notice','','',0,0,0,'','2021-02-03 04:05:06.455 +00:00','2021-02-01 00:00:00.000 +00:00','legacy-user')`,
 	}
 	for _, statement := range schema {
 		if _, err := db.Exec(statement); err != nil {
@@ -53,6 +57,17 @@ func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
 	if page.Title != "Hello" || page.Author != "Legacy Author" || page.View != 7 {
 		t.Fatalf("unexpected historical page: %#v", page)
 	}
+	createdAt, err := time.Parse(time.RFC3339, page.CreatedAt)
+	if err != nil || createdAt.Unix() != 1612137600 {
+		t.Fatalf("historical createdAt = %q, want parseable original instant", page.CreatedAt)
+	}
+	if _, err := store.PublicPageByLink(context.Background(), "notice"); !errors.Is(err, gorm.ErrRecordNotFound) {
+		t.Fatalf("recalled notice unexpectedly public: %v", err)
+	}
+	notice, err := store.PageByLink(context.Background(), "notice")
+	if err != nil || notice.Content != "Historical notice" {
+		t.Fatalf("historical special notice not readable: %#v, %v", notice, err)
+	}
 	options, err := store.Options(context.Background())
 	if err != nil {
 		t.Fatal(err)
@@ -71,6 +86,24 @@ func TestContentSanitizationAndFrontMatter(t *testing.T) {
 	}
 	if !strings.Contains(rendered, "Safe") {
 		t.Fatalf("expected markdown content, got %s", rendered)
+	}
+}
+
+func TestLegacyLinkWithoutImageUsesFavicon(t *testing.T) {
+	links := parseLinks("title: Example\nlink: https://example.com/path/\nimage:\n")
+	if len(links) != 1 || links[0].Image != "https://example.com/path/favicon.ico" {
+		t.Fatalf("legacy favicon fallback = %#v", links)
+	}
+}
+
+func TestUploadedCodeThemePathValidation(t *testing.T) {
+	if got := uploadedCodeTheme("/upload/solarized.css"); got != "solarized.css" {
+		t.Fatalf("valid code theme = %q", got)
+	}
+	for _, value := range []string{"https://example.com/theme.css", "/upload/../secret.css", "/upload/theme.js"} {
+		if got := uploadedCodeTheme(value); got != "" {
+			t.Fatalf("unsafe code theme %q accepted as %q", value, got)
+		}
 	}
 }
 

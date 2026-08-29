@@ -3,6 +3,7 @@ package blog
 import (
 	"encoding/xml"
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/url"
 	"os"
@@ -144,7 +145,7 @@ func (a *App) page(c *gin.Context) {
 	if len(page.Tags) > 0 && page.Tags[0] != "Others" {
 		page.Category = page.Tags[0]
 	}
-	if page.Password == "" && page.Type != PageCode {
+	if page.Password == "" && page.Type != PageCode && page.Type != PageRaw {
 		page.Rendered = a.renderContent(page)
 	}
 	data.Kind, data.Page = "article", &page
@@ -152,13 +153,17 @@ func (a *App) page(c *gin.Context) {
 		data.Kind = "code"
 	} else if page.Type == PageLinks {
 		data.Kind, data.Links = "links", parseLinks(page.Content)
+	} else if page.Type == PageRaw && page.Password == "" {
+		data.Kind = "raw"
 	} else if page.Type != PageArticle && page.Type != PageDiscuss && page.Type != PageRaw {
 		a.renderError(c, http.StatusNotImplemented, "页面类型暂不支持", fmt.Sprintf("历史页面类型 %d 没有对应的 Bulma 视图", page.Type))
 		return
 	}
 	publicPages, _ := a.store.PublicPages(c.Request.Context())
+	foundCurrent := false
 	for i := range publicPages {
 		if publicPages[i].ID == page.ID {
+			foundCurrent = true
 			if i > 0 {
 				data.Prev = &publicPages[i-1]
 			}
@@ -168,10 +173,48 @@ func (a *App) page(c *gin.Context) {
 			break
 		}
 	}
+	if !foundCurrent {
+		if len(publicPages) > 0 {
+			data.Prev = &publicPages[0]
+		}
+		if len(publicPages) > 1 {
+			data.Next = &publicPages[1]
+		}
+	}
 	data.JSONLD = articleJSONLD(data, page)
 	a.store.IncrementView(c.Request.Context(), page.ID)
 	page.View++
 	a.render(c, http.StatusOK, data)
+}
+
+func (a *App) rawPageContent(c *gin.Context) {
+	page, err := a.store.PublicPageByLink(c.Request.Context(), c.Param("link"))
+	if err != nil || page.Type != PageRaw || page.Password != "" {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	content := stripFrontMatter(page.Content)
+	var document strings.Builder
+	document.WriteString("<!doctype html><html lang=\"")
+	document.WriteString(template.HTMLEscapeString(optionFromStore(a, c, "language", "zh-CN")))
+	document.WriteString("\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>")
+	document.WriteString(template.HTMLEscapeString(page.Title))
+	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-20260829\"></head><body><main class=\"raw\">")
+	document.WriteString(content)
+	document.WriteString(`</main><script>new ResizeObserver(function(){parent.postMessage({type:"blog-raw-height",height:document.documentElement.scrollHeight},"*")}).observe(document.documentElement)</script></body></html>`)
+
+	c.Header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline' https: http:; style-src 'unsafe-inline' https: http:; img-src data: https: http:; font-src data: https: http:; connect-src https: http:; frame-src https: http:; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'self' https: http:; sandbox allow-scripts allow-forms allow-popups allow-modals allow-downloads")
+	c.Header("X-Frame-Options", "SAMEORIGIN")
+	c.Header("Cache-Control", "no-store")
+	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(document.String()))
+}
+
+func optionFromStore(a *App, c *gin.Context, key, fallback string) string {
+	options, err := a.store.Options(c.Request.Context())
+	if err != nil {
+		return fallback
+	}
+	return option(options, key, fallback)
 }
 
 type sitemapURLSet struct {

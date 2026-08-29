@@ -41,6 +41,8 @@ func New() (*App, error) {
 	}
 	templates, err := template.New("layout.gohtml").Funcs(template.FuncMap{
 		"date":       shortDate,
+		"dateTime":   displayDateTime,
+		"archiveURL": archiveURL,
 		"splitTags":  splitTags,
 		"pathEscape": url.PathEscape,
 		"add":        func(a, b int) int { return a + b },
@@ -105,10 +107,12 @@ func (a *App) routes() *gin.Engine {
 	router.GET("/archive", a.archive)
 	router.GET("/archive/:year/:month", a.monthArchive)
 	router.GET("/tag/:tag", a.tag)
+	router.GET("/raw/:link", a.rawPageContent)
 	router.GET("/page/:link", a.page)
 	router.GET("/sitemap.xml", a.sitemap)
 	router.GET("/feed.xml", a.feed)
 	router.GET("/robots.txt", a.robots)
+	router.GET("/code-theme.css", a.codeThemeAsset)
 	router.GET("/static/*filepath", a.staticFile(filepath.Join("themes", "bulma", "static")))
 	router.GET("/upload/*filepath", a.uploadedAsset)
 	for _, filename := range []string{"favicon.ico", "manifest.json", "icon192.png", "icon512.png"} {
@@ -301,8 +305,45 @@ func (a *App) staticFile(root string) gin.HandlerFunc {
 			c.Status(http.StatusNotFound)
 			return
 		}
-		a.serveKnownFile(c, candidate, true)
+		cache := clean != "main.css" && clean != "main.js"
+		if !cache {
+			c.Header("Cache-Control", "no-cache")
+		}
+		a.serveKnownFile(c, candidate, cache)
 	}
+}
+
+func uploadedCodeTheme(value string) string {
+	value = strings.TrimSpace(value)
+	if !strings.HasPrefix(value, "/upload/") {
+		return ""
+	}
+	name := strings.TrimPrefix(value, "/upload/")
+	if name == "" || filepath.Base(name) != name || !strings.EqualFold(filepath.Ext(name), ".css") {
+		return ""
+	}
+	return name
+}
+
+func (a *App) codeThemeAsset(c *gin.Context) {
+	options, err := a.store.Options(c.Request.Context())
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	name := uploadedCodeTheme(options["code_theme"])
+	if name == "" {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	target := filepath.Join(a.cfg.UploadPath, name)
+	if !containedPath(a.cfg.UploadPath, target) {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	c.Header("Content-Type", "text/css; charset=utf-8")
+	c.Header("Cache-Control", "no-cache")
+	c.File(target)
 }
 
 func containedPath(root, candidate string) bool {
@@ -389,6 +430,25 @@ func (a *App) adminFile(c *gin.Context) {
 func shortDate(value string) string {
 	if len(value) >= 10 {
 		return value[:10]
+	}
+	return value
+}
+
+func archiveURL(value string) string {
+	value = shortDate(value)
+	if len(value) >= 7 && value[4] == '-' {
+		return "/archive/" + value[:4] + "/" + value[5:7]
+	}
+	return "/archive"
+}
+
+func displayDateTime(value string) string {
+	if parsed, err := time.Parse(time.RFC3339, value); err == nil {
+		return parsed.In(time.Local).Format("2006-01-02 15:04:05")
+	}
+	value = strings.Replace(value, "T", " ", 1)
+	if len(value) >= 19 {
+		return value[:19]
 	}
 	return value
 }

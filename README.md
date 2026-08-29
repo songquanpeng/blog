@@ -9,6 +9,7 @@
 - 显式沿用旧表名及字段名：`Pages`、`Users`、`Options`、`Files`。旧用户数据只用于显示历史作者，不再参与认证。
 - 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
 - Markdown/HTML 默认经过净化；包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
+- 历史 Raw 工具页在无 `same-origin` 权限的 CSP sandbox 中运行，保留脚本交互但不能读取主站 Cookie、后台 API 响应或父页面 DOM。
 - 保留 `PORT`、`SQLITE_PATH`、`UPLOAD_PATH`、3000 端口、`/app/data` 卷、旧 URL 与主要 `/api` 路径。
 - 支持 Docker、Makefile、`npm start`，以及旧的 `pm2 start app.js` 启动入口。
 
@@ -102,6 +103,8 @@ docker run --restart=always -d \
 旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。新的自动发布凭证仅来自 `BLOG_API_TOKEN`。
 
 危险的历史自定义 HTML 默认会被净化。如确需完全恢复受信任的旧 HTML，可设置 `BLOG_ALLOW_UNSAFE_HTML=true`；这会显著扩大 XSS 风险，不建议用于多人可写数据。
+
+合并旧域名时应先在数据库和上传目录副本上检查同路径异内容冲突，保持 `/page/:link`、`/upload/:file` 等原路径不变。验收通过后再把旧域名的每一个请求按原 path 和 query 做永久重定向到新域名，同时更新 `PUBLIC_URL`、canonical、sitemap 和搜索引擎站点设置；不要把所有旧链接统一跳到首页。
 
 ## 常用环境变量
 
