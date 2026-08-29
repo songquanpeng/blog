@@ -4,6 +4,16 @@ body {
     margin: 0;
 }
 
+.site-brand { font-weight: 800; letter-spacing: -.02em; }
+.page-card { margin-bottom: 1rem; }
+.page-card .title { margin-bottom: .75rem; }
+.article-header { margin-bottom: 2rem; }
+.article-navigation { margin-top: 3rem; gap: 1rem; }
+.notice { margin-top: 1.5rem; }
+.link-card { height: 100%; }
+.protected-content { margin-top: 1.5rem; }
+.footer { margin-top: 3rem; }
+
 nav {
     margin-bottom: 16px;
 }

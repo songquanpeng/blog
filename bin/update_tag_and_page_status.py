@@ -20,7 +20,6 @@ def main(args):
         cursor.execute("UPDATE Pages SET tag = ? WHERE id = ?", (page_tag, page_id))
         if hide_page:
             cursor.execute("UPDATE Pages SET pageStatus = ? WHERE id = ?", (3, page_id))
-        cursor.execute("")
         connection.commit()
 
 

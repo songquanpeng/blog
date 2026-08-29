@@ -1,64 +1,48 @@
-<p align="right">
-    <a href="./README.md">中文</a> | <strong>English</strong>
-</p>
+# Personal Blog
 
+A single-owner blog built with Gin, GORM, React, and Bulma. Public pages are server-rendered for SEO; the React admin uses GitHub OAuth exclusively.
 
-<div align="center">
+The refactor preserves the historical SQLite tables and fields, URLs, API paths, port 3000, `/app/data` volume, and the `PORT`, `SQLITE_PATH`, and `UPLOAD_PATH` environment variables. Legacy users remain only as historical author references and are never used for authentication.
 
-# Blog
+## Quick start
 
-_✨ Node.js based blog system ✨_
+Create a GitHub OAuth App with callback URL `https://your-domain/auth/github/callback`, then:
 
-</div>
+Local builds require Go 1.25+, Node.js 22+, npm, and a C toolchain for the GORM SQLite driver.
 
-<p align="center">
-  <a href="https://raw.githubusercontent.com/songquanpeng/blog/master/LICENSE">
-    <img src="https://img.shields.io/github/license/songquanpeng/blog?color=brightgreen" alt="license">
-  </a>
-  <a href="https://github.com/songquanpeng/blog/releases/latest">
-    <img src="https://img.shields.io/github/v/release/songquanpeng/blog?color=brightgreen&include_prereleases" alt="release">
-  </a>
-  <a href="https://github.com/songquanpeng/blog/releases/latest">
-    <img src="https://img.shields.io/github/downloads/songquanpeng/blog/total?color=brightgreen&include_prereleases" alt="release">
-  </a>
-  <a href="https://hub.docker.com/repository/docker/justsong/blog">
-    <img src="https://img.shields.io/docker/pulls/justsong/blog?color=brightgreen" alt="docker pull">
-  </a>
-</p>
+```bash
+make install
+make test
+make build
 
-<p align="center">
-  <a href="https://iamazing.cn/">Demo</a>
-  ·
-  <a href="https://github.com/songquanpeng/blog/blob/master/README.en.md#deployment">Tutorial</a>
-  ·
-  <a href="https://github.com/songquanpeng/blog/issues">Feedback</a>
-</p>
-
-## Description
-+ This is a blog system powered by Express.js and React.
-+ Demonstrations
-    + [My blog](https://iamazing.cn/) (may not be the latest version).
-    + [Heroku App](https://express-react-blog.herokuapp.com/) (visit the [management system](https://express-react-blog.herokuapp.com/admin/) with default username `admin` and password `123456`)
-
-## Highlights
-1. You can use a **code editor** to edit your content (built-in ACE code editor with multiple themes).
-2. Easy to configure and integrate with disqus and statistics system.
-3. You can copy from OneNote or any other programs and **paste your content with formatting** (with the `paste with formatting` feature, don't forget to set the page type to `raw`).
-4. You can use this to deploy your single page web application (such as a [game](https://iamazing.cn/page/online-battle-city)), just paste the code and set the page type to `raw`.
-5. System deploy is extremely simple, no need to configure the database (here I use SQLite as the default database, but it's easy to move to other database, just by modifying the `knexfile.js`).
-6. **Multiple themes available**:
-    1. Bulma: default theme.
-    2. Bootstrap: [blog-theme-bootstrap](https://github.com/songquanpeng/blog-theme-bootstrap).
-    3. W3: [blog-theme-w3](https://github.com/songquanpeng/blog-theme-w3).
-    4. V2EX: [blog-theme-v2ex](https://github.com/songquanpeng/blog-theme-v2ex).
-    5. Next: [blog-theme-next](https://github.com/songquanpeng/blog-theme-next).
-    6. Bootstrap5: [blog-theme-bootstrap5](https://github.com/songquanpeng/blog-theme-bootstrap5).
-
-## Deployment
-```shell script
-git clone --recurse-submodules https://github.com/songquanpeng/blog.git
-cd blog
-npm install
-npm run build  # For Windows user, please run `npm run build2` instead
-npm start
+export PUBLIC_URL=https://your-domain
+export GITHUB_CLIENT_ID=...
+export GITHUB_CLIENT_SECRET=...
+export GITHUB_ALLOWED_USER_ID=...
+export GITHUB_CALLBACK_URL=https://your-domain/auth/github/callback
+export SESSION_SECRET="$(openssl rand -hex 32)"
+./bin/blog
 ```
+
+For Docker:
+
+```bash
+docker build -t blog:local .
+docker run -d --restart=always -p 3000:3000 \
+  -v /home/ubuntu/data/blog:/app/data \
+  -e PUBLIC_URL=https://your-domain \
+  -e GITHUB_CLIENT_ID=... \
+  -e GITHUB_CLIENT_SECRET=... \
+  -e GITHUB_ALLOWED_USER_ID=... \
+  -e GITHUB_CALLBACK_URL=https://your-domain/auth/github/callback \
+  -e SESSION_SECRET=... \
+  blog:local
+```
+
+Back up `data/data.db` and `data/upload` before upgrading. Existing Sequelize tables are not auto-altered by GORM. HTML is sanitized by default; setting `BLOG_ALLOW_UNSAFE_HTML=true` restores trusted legacy HTML at the cost of XSS protection.
+
+Run `make help` for local build, development, test, audit, and Docker commands.
+
+## License
+
+MIT

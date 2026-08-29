@@ -1,5 +1,14 @@
 .idea
+.git
+.github
 node_modules
+.env*
+!.env.example
+bin
+data/*.db*
+data/upload/*
+!data/upload/.gitignore
+public/admin
 .env
 data.db-journal
 .vscode

@@ -1,54 +1,52 @@
-function generateTOC() {
-  const titles = getTitles();
-  insertTOC(titles);
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const burger = document.querySelector('.navbar-burger');
+  if (burger) {
+    burger.addEventListener('click', () => {
+      const target = document.getElementById(burger.dataset.target);
+      burger.classList.toggle('is-active');
+      target?.classList.toggle('is-active');
+      burger.setAttribute('aria-expanded', burger.classList.contains('is-active') ? 'true' : 'false');
+    });
+  }
 
-function getTitles() {
-  const article = document.getElementById('article');
-  const nodes = ['H2'];
-  let titles = [];
-  let count = 0;
-  article.childNodes.forEach(function(e, i) {
-    if (nodes.includes(e.nodeName)) {
-      const id = 'h' + count++;
-      e.setAttribute('id', id);
-      titles.push({
-        id: id,
-        text: e.innerHTML,
-        level: Number(e.nodeName.substring(1, 2)),
-        nodeName: e.nodeName
-      });
-    }
+  document.querySelectorAll('.protected-page').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const password = form.querySelector('input[type="password"]');
+      const message = form.querySelector('.protected-message');
+      const content = form.querySelector('.protected-content');
+      if (!password?.value) return;
+      message.textContent = '正在验证…';
+      try {
+        const endpoint = '/api/page/render/' + encodeURIComponent(form.dataset.pageId);
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password.value }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.status) throw new Error(payload.message || '密码错误');
+        content.innerHTML = payload.content;
+        password.value = '';
+        form.querySelector('.field').remove();
+        message.textContent = '';
+        window.hljs?.highlightAll();
+      } catch (error) {
+        message.textContent = error.message;
+        password.value = '';
+        password.focus();
+      }
+    });
   });
-  return titles;
-}
 
-function insertTOC(titles) {
-  const toc = document.getElementById('toc');
-  for (let i = 0; i < titles.length; i++) {
-    let title = titles[i];
-    let template = `<li><a href='#${title.id}'>${title.text}</a></li>`;
-    toc.insertAdjacentHTML('beforeend', template);
-  }
-  if (titles.length === 0) {
-    let tocContainer = document.getElementById('toc-container');
-    if (tocContainer) {
-      tocContainer.style.display = 'none';
-    }
-  }
-}
+  document.querySelectorAll('[data-copy-code]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const code = document.getElementById('code-display')?.textContent || '';
+      await navigator.clipboard.writeText(code);
+      button.textContent = '已复制';
+    });
+  });
 
-async function submitArticlePassword(postId, passwordInputId, labelId, anchorId) {
-  let password = document.getElementById(passwordInputId).value;
-  if (!password) return;
-  let res = await fetch(`/api/page/render/${postId}?password=${password}`);
-  let data = await res.json();
-  if (data.status) {
-    document.getElementById(anchorId).style.display = 'none';
-    document.getElementById(anchorId).insertAdjacentHTML('beforebegin', data.content);
-    generateTOC();
-  } else {
-    document.getElementById(labelId).innerText = "密码错误，请重试！";
-    document.getElementById(passwordInputId).value = '';
-  }
-}
+  window.hljs?.highlightAll();
+});

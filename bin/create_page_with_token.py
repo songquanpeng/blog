@@ -1,15 +1,21 @@
 import requests
+import os
 
 
 def create_page(title, description, tags, content):
-    res = requests.post('http://localhost:3000/api/page', json={
+    token = os.environ.get('BLOG_API_TOKEN')
+    if not token:
+        raise RuntimeError('BLOG_API_TOKEN is required')
+    base_url = os.environ.get('BLOG_URL', 'http://localhost:3000').rstrip('/')
+    res = requests.post(base_url + '/api/page', json={
         'title': title,
         'description': description,
         'tags': tags,
         'content': content
     }, headers={
-        'authorization': "366f984e-10a4-4b35-8ab2-f196e8b02aaf"
-    })
+        'authorization': 'Bearer ' + token
+    }, timeout=15)
+    res.raise_for_status()
     return res.json()
 
 

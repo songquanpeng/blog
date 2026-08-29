@@ -1,104 +1,133 @@
-<p align="right">
-   <strong>中文</strong> | <a href="./README.en.md">English</a>
-</p>
-
-<div align="center">
-
 # 个人博客系统
 
-_✨ 基于 Node.js 的个人博客系统 ✨_
+使用 **Gin + GORM + React + Bulma** 的单人博客系统。公开页面由 Go 服务端渲染，管理后台使用 React；旧版 Sequelize SQLite 数据可直接挂载使用。
 
-</div>
+## 特性
 
-<p align="center">
-  <a href="https://raw.githubusercontent.com/songquanpeng/blog/master/LICENSE">
-    <img src="https://img.shields.io/github/license/songquanpeng/blog?color=brightgreen" alt="license">
-  </a>
-  <a href="https://github.com/songquanpeng/blog/releases/latest">
-    <img src="https://img.shields.io/github/v/release/songquanpeng/blog?color=brightgreen&include_prereleases" alt="release">
-  </a>
-  <a href="https://github.com/songquanpeng/blog/releases/latest">
-    <img src="https://img.shields.io/github/downloads/songquanpeng/blog/total?color=brightgreen&include_prereleases" alt="release">
-  </a>
-  <a href="https://hub.docker.com/repository/docker/justsong/blog">
-    <img src="https://img.shields.io/docker/pulls/justsong/blog?color=brightgreen" alt="docker pull">
-  </a>
-</p>
+- 只保留 Bulma 主题，公开站点与管理后台视觉统一。
+- 服务端输出完整语义化 HTML，包含 canonical、Open Graph、JSON-LD、Atom、sitemap 和 robots。
+- 显式沿用旧表名及字段名：`Pages`、`Users`、`Options`、`Files`。旧用户数据只用于显示历史作者，不再参与认证。
+- 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
+- Markdown/HTML 默认经过净化；包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
+- 保留 `PORT`、`SQLITE_PATH`、`UPLOAD_PATH`、3000 端口、`/app/data` 卷、旧 URL 与主要 `/api` 路径。
+- 支持 Docker、Makefile、`npm start`，以及旧的 `pm2 start app.js` 启动入口。
 
-<p align="center">
-  <a href="#截图展示">截图展示</a>
-  ·
-  <a href="https://iamazing.cn/">在线演示</a>
-  ·
-  <a href="#部署">部署教程</a>
-  ·
-  <a href="https://github.com/songquanpeng/blog/issues">意见反馈</a>
-</p>
+## GitHub OAuth 配置
 
+在 GitHub 的 Developer settings → OAuth Apps 中创建 OAuth App，回调地址填写：
 
-## 描述
-技术栈：Express.js（服务端）+ Sequelize（ORM） + React（后台）+ Ant Design（后台 UI 库）
+```text
+https://你的域名/auth/github/callback
+```
 
-特点：
-1. 支持多种主题。
-2. 支持多种页面类型，文章页面、HTML 页面、链接页面等等。
-3. 无需配置数据库，开箱即用（如果你不想用 SQLite，请修改 `config.js` 配置文件）。
-4. 内置 ACE 代码编辑器，附带多种代码主题（包括 Solarized Light）。
-5. 支持通过 Docker 部署，一行命令即可上线部署，详见[此处](#部署)。
-6. 支持通过 Token 验证发布文章，详见[此处](./bin/create_page_with_token.py)。
+至少设置以下环境变量：
 
-## 主题
-1. Bulma：Bulma CSS 风格主题，内置的默认主题。
-2. Bootstrap：[Bootstrap 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap)（推荐使用）。
-3. W3：[W3.css 风格主题](https://github.com/songquanpeng/blog-theme-w3)。
-4. V2EX: [V2EX 风格主题](https://github.com/songquanpeng/blog-theme-v2ex)。
-5. Next: [Hexo Next 风格主题](https://github.com/songquanpeng/blog-theme-next)。
-6. Bootstrap5: 借鉴自 [CodeLunatic/halo-theme-simple-bootstrap](https://github.com/CodeLunatic/halo-theme-simple-bootstrap) 的 [Bootstrap5 风格主题](https://github.com/songquanpeng/blog-theme-bootstrap5)。
+```dotenv
+GITHUB_CLIENT_ID=...
+GITHUB_CLIENT_SECRET=...
+GITHUB_ALLOWED_USER_ID=123456
+GITHUB_CALLBACK_URL=https://你的域名/auth/github/callback
+PUBLIC_URL=https://你的域名
+SESSION_SECRET=至少32字节的随机字符串
+```
 
-注意：
-1. 更改主题的步骤：打开后台管理系统中的设置页面 -> 自定义设置 -> 找到 THEME -> 修改后点击保存设置，记得浏览器 `Ctrl + F5` 刷新缓存。
-    + 可选的值有：`bulma`，`bootstrap`，`bootstrap5`，`w3`，`next` 以及 `v2ex`。
-2. 由于精力有限，部分主题可能由于未能及时随项目更新导致存在问题。
+`GITHUB_ALLOWED_USER_ID` 比用户名可靠，因为用户名可以修改。若暂时无法取得 ID，也可使用 `GITHUB_ALLOWED_LOGIN`。
 
-## 演示
-### 在线演示
-1. [JustSong 的个人博客](https://iamazing.cn) (可能并非最新版本).
-2. [Render App](https://nodejs-blog.onrender.com) ([后台管理系统地址](https://nodejs-blog.onrender.com/admin/) 默认用户名 `admin` 以及密码 `123456`)
+如需通过脚本发布文章，额外设置高强度随机值：
 
-### 截图展示
-![桌面端首页](https://user-images.githubusercontent.com/39998050/108320215-76e02e00-71fd-11eb-8ecc-caeff90eb0da.png)
-![后台管理页面文章列表页面](https://user-images.githubusercontent.com/39998050/108320192-6f208980-71fd-11eb-8e3d-92e61dce09e6.png)
-![编辑器页面](https://user-images.githubusercontent.com/39998050/108320168-6465f480-71fd-11eb-8abd-f74588d9e39a.png)
+```dotenv
+BLOG_API_TOKEN=...
+```
 
-## 部署
-### 通过 Docker 部署
-执行：`docker run --restart=always -d -p 3000:3000 -v /home/ubuntu/data/blog:/app/data -e TZ=Asia/Shanghai justsong/blog`
+客户端可使用 `Authorization: Bearer <token>`，也兼容旧脚本直接把 token 放入 `Authorization`。
 
-开放的端口号为 3000，之后用 Nginx 配置域名，反代以及 SSL 证书即可。
+## 本地部署
 
-数据将会保存在宿主机的 `/home/ubuntu/data/blog` 目录（数据库文件和上传的文件）。
+需要 Go 1.25+、Node.js 22+、npm 和 C 编译工具链（GORM SQLite 驱动需要 CGO）。
 
-如果想在网站根目录上传文件，则在该目录下新建一个 `index` 文件夹，里面可以放置 `favicon.ico`, `robots.txt` 等文件，具体参见 `data/index` 目录下的内容。
+```bash
+make install
+make test
+make build
 
-更新博客版本的命令：`docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`
+export GITHUB_CLIENT_ID=...
+export GITHUB_CLIENT_SECRET=...
+export GITHUB_ALLOWED_USER_ID=...
+export GITHUB_CALLBACK_URL=http://localhost:3000/auth/github/callback
+export PUBLIC_URL=http://localhost:3000
+export SESSION_SECRET="$(openssl rand -hex 32)"
+./bin/blog
+```
 
-### 通过源码部署
-```shell script
-git clone https://github.com/songquanpeng/blog.git
-cd blog
-# 获取主题
-git submodule init
-# 更新主题
-git submodule update
-# 安装依赖
-npm install
-# 编译后台管理系统
-npm run build  # Windows 用户请运行 `npm run build2`
-# 启动服务
+开发时可分别运行：
+
+```bash
+make dev
+make dev-admin
+```
+
+旧源码部署入口仍可使用：
+
+```bash
 npm start
-# 推荐使用 pm2 进行启动
-# 1. 安装 pm2
-npm i -g pm2
-# 2. 使用 pm2 启动服务
+# 或先 make build，然后：
 pm2 start ./app.js --name blog
 ```
+
+## Docker 部署
+
+旧版数据卷和端口参数保持不变，只需增加 OAuth 环境变量：
+
+```bash
+docker build -t blog:local .
+docker run --restart=always -d \
+  -p 3000:3000 \
+  -v /home/ubuntu/data/blog:/app/data \
+  -e TZ=Asia/Shanghai \
+  -e PUBLIC_URL=https://你的域名 \
+  -e GITHUB_CLIENT_ID=... \
+  -e GITHUB_CLIENT_SECRET=... \
+  -e GITHUB_ALLOWED_USER_ID=... \
+  -e GITHUB_CALLBACK_URL=https://你的域名/auth/github/callback \
+  -e SESSION_SECRET=... \
+  blog:local
+```
+
+容器启动时会修正旧数据卷权限，服务进程随后以非 root 用户运行。
+
+## 历史数据升级
+
+升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。
+
+旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。新的自动发布凭证仅来自 `BLOG_API_TOKEN`。
+
+危险的历史自定义 HTML 默认会被净化。如确需完全恢复受信任的旧 HTML，可设置 `BLOG_ALLOW_UNSAFE_HTML=true`；这会显著扩大 XSS 风险，不建议用于多人可写数据。
+
+## 常用环境变量
+
+| 变量 | 默认值 | 用途 |
+| --- | --- | --- |
+| `PORT` | `3000` | HTTP 端口 |
+| `SQLITE_PATH` | `./data/data.db` | SQLite 文件 |
+| `UPLOAD_PATH` | `./data/upload` | 上传目录 |
+| `PUBLIC_URL` | 自动推断 | canonical、sitemap、feed 基础 URL |
+| `TRUSTED_PROXIES` | 空 | 逗号分隔的可信反向代理 CIDR/IP |
+| `MAX_UPLOAD_MB` | `20` | 单文件上限 |
+| `SESSION_TTL_HOURS` | `24` | 管理会话时长 |
+| `BLOG_ENABLE_SHUTDOWN` | `false` | 是否恢复旧远程关机接口 |
+| `BLOG_ALLOW_UNSAFE_HTML` | `false` | 是否允许未经净化的管理员 HTML |
+
+反向代理可继续使用仓库中的 [blog.conf](./blog.conf)，生产环境应启用 HTTPS。
+
+## 测试
+
+```bash
+make test   # Go race tests + React production build
+make check  # 额外运行 go vet、govulncheck 与 npm audit
+```
+
+测试包含旧 Sequelize schema 读取、HTML 净化、固定链接校验和 GitHub 不可变 ID 白名单。
+
+## License
+
+MIT
