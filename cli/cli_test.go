@@ -21,9 +21,73 @@ func TestHelpIsMachineReadableAndAgentFriendly(t *testing.T) {
 	payload := decodeCLIOutput(t, out.Bytes())
 	data := objectValue(payload["data"])
 	commands := objectValue(data["commands"])
-	for _, command := range []string{"page create", "page publish|recall|hide|top ID_OR_LINK", "file list|get|upload|delete", "site sidebar get|set FILE"} {
+	for _, command := range []string{"search QUERY", "page create", "page search QUERY", "page publish|recall|hide|top ID_OR_LINK", "microblog create [TEXT]", "microblog delete ID --yes", "file list|get|upload|delete", "site sidebar get|set FILE"} {
 		if _, ok := commands[command]; !ok {
 			t.Fatalf("manifest missing %q: %#v", command, commands)
+		}
+	}
+}
+
+func TestSearchAndMicroblogManagement(t *testing.T) {
+	post := map[string]any{"id": 7, "content": "a small searchable thought", "status": 1, "createdAt": "2026-08-30T00:00:00Z", "updatedAt": "2026-08-30T00:00:00Z"}
+	handler := http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if request.Header.Get("Authorization") != "Bearer test-token" {
+			writeTestJSON(writer, http.StatusUnauthorized, map[string]any{"status": false, "message": "bad token"})
+			return
+		}
+		switch request.Method + " " + request.URL.Path {
+		case "POST /api/page/search":
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true, "pages": []any{map[string]any{
+				"id": "p1", "title": "Searchable", "link": "searchable", "content": "deep body match", "type": 0,
+				"pageStatus": 1, "view": 42, "upVote": 3, "downVote": 1, "createdAt": "2026-08-29T00:00:00Z",
+			}}})
+		case "GET /api/microblog":
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true, "posts": []any{post}, "total": 1})
+		case "POST /api/microblog/search":
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true, "posts": []any{post}, "total": 1})
+		case "GET /api/microblog/7":
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true, "post": post})
+		case "POST /api/microblog":
+			var input map[string]any
+			_ = json.NewDecoder(request.Body).Decode(&input)
+			post["content"], post["status"] = input["content"], input["status"]
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true, "post": post})
+		case "PUT /api/microblog/7":
+			_ = json.NewDecoder(request.Body).Decode(&post)
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true})
+		case "DELETE /api/microblog/7":
+			writeTestJSON(writer, http.StatusOK, map[string]any{"status": true})
+		default:
+			writeTestJSON(writer, http.StatusNotFound, map[string]any{"status": false, "message": "unexpected endpoint"})
+		}
+	})
+	server := httptest.NewServer(handler)
+	defer server.Close()
+	configPath := writeTestConfig(t, server.URL, "test-token")
+
+	search := runOK(t, []string{"search", "searchable", "--json", "--config", configPath})
+	searchData := objectValue(search["data"])
+	pages := objectSlice(searchData["pages"])
+	if len(pages) != 1 || pages[0]["content"] != "deep body match" || intValue(pages[0]["view"]) != 42 {
+		t.Fatalf("search did not preserve page content and metadata: %#v", searchData)
+	}
+	if posts := objectSlice(searchData["microPosts"]); len(posts) != 1 || posts[0]["content"] != "a small searchable thought" {
+		t.Fatalf("search did not include microblogs: %#v", searchData)
+	}
+	commands := [][]string{
+		{"page", "search", "body"},
+		{"microblog", "list", "--status", "public"},
+		{"microblog", "get", "7"},
+		{"microblog", "create", "new thought", "--status", "private"},
+		{"microblog", "update", "7", "updated thought"},
+		{"microblog", "private", "7"},
+		{"microblog", "publish", "7"},
+		{"microblog", "delete", "7", "--yes"},
+	}
+	for _, command := range commands {
+		arguments := append(append([]string{}, command...), "--json", "--config", configPath)
+		if payload := runOK(t, arguments); payload["ok"] != true {
+			t.Fatalf("%v output: %#v", command, payload)
 		}
 	}
 }

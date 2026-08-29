@@ -1,6 +1,7 @@
 package blog
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 	"unicode"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 const microblogPageSize = 12
@@ -84,8 +86,16 @@ func microblogOffset(c *gin.Context) int {
 	return offset
 }
 
+func microblogLimit(c *gin.Context) int {
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil || limit < 1 || limit > 500 {
+		return 100
+	}
+	return limit
+}
+
 func (a *App) microblogAdmin(c *gin.Context) {
-	posts, total, err := a.store.MicroPosts(c.Request.Context(), false, microblogOffset(c), 100)
+	posts, total, err := a.store.MicroPosts(c.Request.Context(), false, microblogOffset(c), microblogLimit(c))
 	if err != nil {
 		a.apiFailure(c, "读取微博客失败", err)
 		return
@@ -96,6 +106,49 @@ func (a *App) microblogAdmin(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "posts": posts, "total": total, "config": currentMicroblogConfig(options)})
+}
+
+func (a *App) searchMicroPosts(c *gin.Context) {
+	var input struct {
+		Keyword string `json:"keyword"`
+		Status  int    `json:"status"`
+		Offset  int    `json:"offset"`
+		Limit   int    `json:"limit"`
+	}
+	input.Status, input.Limit = -1, 100
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "搜索参数无效"})
+		return
+	}
+	if input.Offset < 0 || input.Limit < 1 || input.Limit > 500 || input.Status < -1 || input.Status > 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "搜索范围无效"})
+		return
+	}
+	posts, total, err := a.store.SearchMicroPosts(c.Request.Context(), input.Keyword, input.Status, input.Offset, input.Limit)
+	if err != nil {
+		a.apiFailure(c, "搜索微博客失败", err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "posts": posts, "total": total,
+		"offset": input.Offset, "limit": input.Limit})
+}
+
+func (a *App) getMicroPost(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "微博 ID 无效"})
+		return
+	}
+	post, err := a.store.MicroPostByID(c.Request.Context(), id)
+	if err != nil {
+		status := http.StatusInternalServerError
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			status = http.StatusNotFound
+		}
+		c.JSON(status, gin.H{"status": false, "message": "微博不存在"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "post": post})
 }
 
 func (a *App) createMicroPost(c *gin.Context) {

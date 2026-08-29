@@ -169,8 +169,10 @@ func (a *App) routes() *gin.Engine {
 		admin.GET("/cli/tokens", a.listCLITokens)
 		admin.DELETE("/cli/tokens/:id", a.revokeCLIToken)
 		admin.GET("/microblog", a.microblogAdmin)
+		admin.POST("/microblog/search", a.searchMicroPosts)
 		admin.POST("/microblog", a.createMicroPost)
 		admin.PUT("/microblog/config", a.updateMicroblogConfig)
+		admin.GET("/microblog/:id", a.getMicroPost)
 		admin.PUT("/microblog/:id", a.updateMicroPost)
 		admin.DELETE("/microblog/:id", a.deleteMicroPost)
 	}

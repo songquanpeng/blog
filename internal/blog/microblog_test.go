@@ -75,6 +75,14 @@ func TestMicroblogCRUD(t *testing.T) {
 	if err != nil || total != 1 || len(posts) != 1 || posts[0].Content != "updated" || posts[0].Status != MicroPostPrivate {
 		t.Fatalf("list = %#v, %d, %v", posts, total, err)
 	}
+	found, err := store.MicroPostByID(t.Context(), post.ID)
+	if err != nil || found.Content != "updated" {
+		t.Fatalf("get = %#v, %v", found, err)
+	}
+	matched, matchedTotal, err := store.SearchMicroPosts(t.Context(), "date", MicroPostPrivate, 0, 20)
+	if err != nil || matchedTotal != 1 || len(matched) != 1 || matched[0].ID != post.ID {
+		t.Fatalf("search = %#v, %d, %v", matched, matchedTotal, err)
+	}
 	public, publicTotal, err := store.MicroPosts(t.Context(), true, 0, 100)
 	if err != nil || publicTotal != 0 || len(public) != 0 {
 		t.Fatalf("public list = %#v, %d, %v", public, publicTotal, err)

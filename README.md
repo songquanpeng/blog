@@ -8,7 +8,7 @@
 - 服务端输出完整语义化 HTML，包含 canonical、Open Graph、JSON-LD、Atom、sitemap 和 robots。
 - 显式沿用旧表名及字段名：`Pages`、`Users`、`Options`、`Files`。旧用户数据只用于显示历史作者，不再参与认证。
 - 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
-- 内置 `blog-cli`：通过本站 device flow 授权，覆盖页面发布/撤回/隐藏/删除、站点标题与侧边栏、全部设置和文件管理；token 默认有效一年并可随时撤销。
+- 内置 `blog-cli`：通过本站 device flow 授权，覆盖页面与微博客 CRUD、正文统一检索、页面发布状态、站点标题与侧边栏、全部设置和文件管理；token 默认有效一年并可随时撤销。
 - 内置微博客子功能：公开短内容位于独立路径（默认 `/microblog`），支持 Markdown、公开/私密状态、分页和完整后台 CRUD；启停、访问路径、标题与简介均可即时调整，停用不会删除数据。
 - Markdown 经过安全渲染；站点所有者发布的 HTML 会被完整保留，其中独立 HTML 页面运行在无同源权限的沙箱中。应用还包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
 - 历史 Raw 工具页在无 `same-origin` 权限的 CSP sandbox 中运行，保留脚本交互但不能读取主站 Cookie、后台 API 响应或父页面 DOM。
@@ -42,15 +42,24 @@ SESSION_SECRET=至少32字节的随机字符串
 
 ```bash
 blog-cli auth login
+blog-cli search "关键词" --json
+blog-cli page search "正文关键词" --status published --json
 blog-cli page list --json
 blog-cli page create --title "标题" --link slug --content-file post.md --status published
 blog-cli page hide slug
+blog-cli microblog create "一条短内容" --status public
+blog-cli microblog list --search "关键词" --status public --json
+blog-cli microblog update 42 --content-file note.md
+blog-cli microblog private 42
+blog-cli microblog delete 42 --yes
 blog-cli site title "新的博客标题"
 blog-cli site sidebar set sidebar.json
 blog-cli file upload cover.webp --description "文章封面"
 ```
 
-`blog-cli help --json` 会输出完整的机器可读命令目录、参数约定、页面类型和状态值。CLI 在 stdout 不是终端时自动输出稳定 JSON envelope，错误使用非零退出码，并在结果中给出下一步命令。删除与关机等破坏性操作必须显式传入 `--yes`。
+`blog-cli search` 默认同时检索文章标题、链接、摘要、标签、完整正文以及微博客正文；结果包含正文、阅读量、赞踩数、发布时间和更新时间等元数据。可用 `--scope page|microblog` 缩小范围，或使用 `--type`、`--page-status`、`--micro-status`、`--limit`、`--offset` 继续筛选。`page list --search` 保留紧凑列表输出，`page search` 则返回正文和完整元数据。
+
+`blog-cli help --json` 会输出完整的机器可读命令目录、参数约定、页面类型和状态值。微博客正文可以直接作为参数传入，也可用 `--content-file FILE`（`-` 表示 stdin）。CLI 在 stdout 不是终端时自动输出稳定 JSON envelope，错误使用非零退出码，并在结果中给出下一步命令。删除与关机等破坏性操作必须显式传入 `--yes`。
 
 登录采用由本站实现的 device flow：CLI 只显示一次性授权码，管理员在后台核对客户端名称并批准后才签发 token。数据库仅保存 device code 和 token 的 SHA-256 摘要。可在后台 CLI 页面查看和撤销所有有效凭据，也可执行 `blog-cli auth logout` 撤销当前凭据。
 

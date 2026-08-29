@@ -37,6 +37,12 @@ func (app *application) execute(arguments []string) (any, []string, *cliError) {
 	if command == "setting" {
 		command = "settings"
 	}
+	if command == "micro" || command == "micropost" || command == "microposts" {
+		command = "microblog"
+	}
+	if command == "find" {
+		command = "search"
+	}
 	switch command {
 	case "info":
 		if len(arguments) != 1 {
@@ -48,6 +54,10 @@ func (app *application) execute(arguments []string) (any, []string, *cliError) {
 		return app.authCommand(arguments[1:])
 	case "page":
 		return app.pageCommand(arguments[1:])
+	case "microblog":
+		return app.microblogCommand(arguments[1:])
+	case "search":
+		return app.searchCommand(arguments[1:])
 	case "settings":
 		return app.settingsCommand(arguments[1:])
 	case "site":
@@ -67,6 +77,20 @@ func (app *application) pageCommand(arguments []string) (any, []string, *cliErro
 	}
 	action, rest := arguments[0], arguments[1:]
 	switch action {
+	case "search":
+		args, err := parseArgs(rest, []string{"--type", "--status"}, nil)
+		if err != nil {
+			return nil, nil, err
+		}
+		if err := requirePositionals(args, 1, "page search QUERY [--type TYPE] [--status STATUS]"); err != nil {
+			return nil, nil, err
+		}
+		pages, err := app.searchPages(args.positionals[0], args)
+		if err != nil {
+			return nil, nil, err
+		}
+		return map[string]any{"query": args.positionals[0], "pages": pages, "count": len(pages)},
+			[]string{"查看单篇: blog-cli page get ID_OR_LINK --json", "同时搜索微博客: blog-cli search " + args.positionals[0] + " --json"}, nil
 	case "list":
 		args, err := parseArgs(rest, []string{"--search", "--type", "--status"}, nil)
 		if err != nil {

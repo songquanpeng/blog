@@ -77,6 +77,26 @@ func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
 	}
 }
 
+func TestSearchPagesMatchesBodyAndPreservesMetrics(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	page := Page{Type: PageArticle, Link: "body-search", PageStatus: StatusPublished, CommentStatus: 1,
+		Title: "Unrelated title", Content: "A uniquely searchable phrase", View: 37, UpVote: 4, DownVote: 2}
+	if err := store.CreatePage(t.Context(), &page); err != nil {
+		t.Fatal(err)
+	}
+	pages, err := store.SearchPages(t.Context(), "uniquely searchable", -1)
+	if err != nil || len(pages) != 1 {
+		t.Fatalf("search pages = %#v, %v", pages, err)
+	}
+	if pages[0].Content != page.Content || pages[0].View != 37 || pages[0].UpVote != 4 || pages[0].DownVote != 2 {
+		t.Fatalf("search result lost content or metadata: %#v", pages[0])
+	}
+}
+
 func TestContentSanitizationAndFrontMatter(t *testing.T) {
 	app := &App{cfg: Config{AllowUnsafeHTML: false}}
 	page := Page{Type: PageArticle, Content: "---\ntitle: test\n---\n# Safe\n<script>alert(1)</script><a href=\"javascript:alert(2)\">bad</a>"}

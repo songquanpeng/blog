@@ -23,13 +23,21 @@ After signing in, open **CLI** in the admin sidebar and copy the installation co
 
 ```bash
 blog-cli auth login
+blog-cli search "keyword" --json
+blog-cli page search "body text" --status published --json
 blog-cli page list --json
 blog-cli page create --title "Title" --link slug --content-file post.md --status published
+blog-cli microblog create "A short note" --status public
+blog-cli microblog list --search "keyword" --json
+blog-cli microblog update 42 --content-file note.md
+blog-cli microblog delete 42 --yes
 blog-cli site title "New blog title"
 blog-cli site sidebar set sidebar.json
 ```
 
-Run `blog-cli help --json` for a machine-readable command catalog. Non-interactive output is JSON by default, every result suggests useful next commands, and destructive operations require `--yes`. Configure lifetimes with `CLI_TOKEN_TTL_HOURS` (default `8760`) and `CLI_DEVICE_CODE_TTL_MINUTES` (default `10`).
+`blog-cli search` searches page titles, links, descriptions, tags, full bodies, and microblog bodies by default. Page results preserve content plus metadata such as views, votes, and timestamps. Use `--scope page|microblog` and the type, status, limit, and offset filters to narrow results; use `page search` when only complete page results are needed.
+
+Run `blog-cli help --json` for a machine-readable command catalog. Microblog content can be passed directly or read from a file/stdin with `--content-file`. Non-interactive output is JSON by default, every result suggests useful next commands, and destructive operations require `--yes`. Configure lifetimes with `CLI_TOKEN_TTL_HOURS` (default `8760`) and `CLI_DEVICE_CODE_TTL_MINUTES` (default `10`).
 
 ## Quick start
 

@@ -472,7 +472,7 @@ func (s *Store) AllPages(ctx context.Context) ([]Page, error) {
 
 func (s *Store) SearchPages(ctx context.Context, keyword string, pageType int) ([]Page, error) {
 	like := "%" + keyword + "%"
-	query := s.pageQuery(ctx).Where("p.title LIKE ? OR p.description LIKE ? OR p.tag LIKE ? OR p.link LIKE ?", like, like, like, like)
+	query := s.pageQuery(ctx).Where("p.title LIKE ? OR p.description LIKE ? OR p.tag LIKE ? OR p.link LIKE ? OR p.content LIKE ?", like, like, like, like, like)
 	if pageType >= 0 {
 		query = query.Where("p.type = ?", pageType)
 	}
@@ -600,6 +600,35 @@ func (s *Store) MicroPosts(ctx context.Context, publicOnly bool, offset, limit i
 		posts = append(posts, toMicroPost(row))
 	}
 	return posts, total, nil
+}
+
+func (s *Store) SearchMicroPosts(ctx context.Context, keyword string, status, offset, limit int) ([]MicroPost, int64, error) {
+	query := s.db.WithContext(ctx).Model(&dbMicroPost{})
+	if keyword = strings.TrimSpace(keyword); keyword != "" {
+		query = query.Where("content LIKE ?", "%"+keyword+"%")
+	}
+	if status == MicroPostPrivate || status == MicroPostPublic {
+		query = query.Where("status = ?", status)
+	}
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	var rows []dbMicroPost
+	if err := query.Order("createdAt DESC, id DESC").Offset(offset).Limit(limit).Find(&rows).Error; err != nil {
+		return nil, 0, err
+	}
+	posts := make([]MicroPost, 0, len(rows))
+	for _, row := range rows {
+		posts = append(posts, toMicroPost(row))
+	}
+	return posts, total, nil
+}
+
+func (s *Store) MicroPostByID(ctx context.Context, id uint64) (MicroPost, error) {
+	var row dbMicroPost
+	err := s.db.WithContext(ctx).First(&row, "id = ?", id).Error
+	return toMicroPost(row), err
 }
 
 func (s *Store) CreateMicroPost(ctx context.Context, post *MicroPost) error {
