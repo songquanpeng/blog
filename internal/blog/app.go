@@ -2,7 +2,6 @@ package blog
 
 import (
 	"context"
-	"crypto/subtle"
 	"errors"
 	"fmt"
 	"html/template"
@@ -102,6 +101,8 @@ func (a *App) routes() *gin.Engine {
 	router.GET("/auth/github", a.githubLogin)
 	router.GET("/auth/github/callback", a.githubCallback)
 	router.GET("/auth/logout", a.logout)
+	router.GET("/cli/blog-cli", a.cliDownload)
+	router.GET("/cli/install.sh", a.cliInstaller)
 
 	router.GET("/", a.index)
 	router.GET("/archive", a.archive)
@@ -131,11 +132,16 @@ func (a *App) routes() *gin.Engine {
 		api.POST("/user/login", a.legacyLoginGone)
 		api.GET("/page/render/:id", a.renderedPage)
 		api.POST("/page/render/:id", a.renderedPage)
-		api.POST("/page", a.publisherRequired(), a.createPage)
+		api.GET("/cli/info", a.cliInfo)
+		api.POST("/cli/device/code", a.createDeviceCode)
+		api.POST("/cli/device/token", a.exchangeDeviceCode)
+		api.GET("/cli/me", a.cliRequired(), a.cliIdentity)
+		api.DELETE("/cli/token", a.cliRequired(), a.revokeCurrentCLIToken)
 
 		admin := api.Group("")
 		admin.Use(a.adminRequired())
 		admin.POST("/page/search", a.searchPages)
+		admin.POST("/page", a.createPage)
 		admin.GET("/page", a.allPages)
 		admin.GET("/page/export/:id", a.exportPage)
 		admin.GET("/page/:id", a.getPage)
@@ -155,6 +161,11 @@ func (a *App) routes() *gin.Engine {
 		admin.POST("/file/", a.uploadFile)
 		admin.POST("/file/search", a.searchFiles)
 		admin.DELETE("/file/:id", a.deleteFile)
+		admin.GET("/cli/device/:code", a.deviceCodeStatus)
+		admin.POST("/cli/device/approve", a.approveDeviceCode)
+		admin.POST("/cli/device/deny", a.denyDeviceCode)
+		admin.GET("/cli/tokens", a.listCLITokens)
+		admin.DELETE("/cli/tokens/:id", a.revokeCLIToken)
 	}
 
 	router.GET("/admin", func(c *gin.Context) { c.Redirect(http.StatusMovedPermanently, "/admin/") })
@@ -277,26 +288,9 @@ func (a *App) limitBody() gin.HandlerFunc {
 
 func (a *App) adminRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if err := validateSameOrigin(c); err != nil {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": false, "message": err.Error()})
-			return
-		}
-		_, entry, ok := a.sessions.get(c)
-		if !ok || entry.User == nil || !entry.User.IsAdmin {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": false, "message": "请使用 GitHub 登录"})
-			return
-		}
-		c.Set("githubUser", *entry.User)
-		c.Next()
-	}
-}
-
-func (a *App) publisherRequired() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		provided := strings.TrimSpace(c.GetHeader("Authorization"))
-		provided = strings.TrimSpace(strings.TrimPrefix(provided, "Bearer "))
-		if a.cfg.APIToken != "" && len(provided) == len(a.cfg.APIToken) && subtle.ConstantTimeCompare([]byte(provided), []byte(a.cfg.APIToken)) == 1 {
-			c.Set("apiPublisher", true)
+		if info, ok := a.authenticateCLIToken(c); ok {
+			c.Set("cliToken", info)
+			c.Set("githubUser", GitHubUser{ID: info.GitHubUserID, Login: info.GitHubLogin, IsAdmin: true})
 			c.Next()
 			return
 		}

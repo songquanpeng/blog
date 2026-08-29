@@ -24,12 +24,13 @@ type Config struct {
 	EnableShutdown      bool
 	MaxUploadBytes      int64
 	SessionTTL          time.Duration
+	CLITokenTTL         time.Duration
+	DeviceCodeTTL       time.Duration
 	GitHubClientID      string
 	GitHubClientSecret  string
 	GitHubAllowedLogin  string
 	GitHubAllowedUserID int64
 	OAuthCallbackURL    string
-	APIToken            string
 	PublicURL           string
 }
 
@@ -46,11 +47,12 @@ func loadConfig() (Config, error) {
 		EnableShutdown:     envBool("BLOG_ENABLE_SHUTDOWN", false),
 		MaxUploadBytes:     int64(envInt("MAX_UPLOAD_MB", 20)) << 20,
 		SessionTTL:         time.Duration(envInt("SESSION_TTL_HOURS", 24)) * time.Hour,
+		CLITokenTTL:        time.Duration(envInt("CLI_TOKEN_TTL_HOURS", 365*24)) * time.Hour,
+		DeviceCodeTTL:      time.Duration(envInt("CLI_DEVICE_CODE_TTL_MINUTES", 10)) * time.Minute,
 		GitHubClientID:     strings.TrimSpace(os.Getenv("GITHUB_CLIENT_ID")),
 		GitHubClientSecret: strings.TrimSpace(os.Getenv("GITHUB_CLIENT_SECRET")),
 		GitHubAllowedLogin: strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_LOGIN")),
 		OAuthCallbackURL:   strings.TrimSpace(os.Getenv("GITHUB_CALLBACK_URL")),
-		APIToken:           strings.TrimSpace(os.Getenv("BLOG_API_TOKEN")),
 		PublicURL:          strings.TrimRight(strings.TrimSpace(os.Getenv("PUBLIC_URL")), "/"),
 	}
 	if id, err := strconv.ParseInt(strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_USER_ID")), 10, 64); err == nil {

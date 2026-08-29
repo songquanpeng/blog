@@ -43,17 +43,16 @@ func (a *App) legacyLoginGone(c *gin.Context) {
 }
 
 type pageInput struct {
-	ID            string   `json:"id"`
-	Type          int      `json:"type"`
-	Link          string   `json:"link"`
-	PageStatus    *int     `json:"pageStatus"`
-	CommentStatus *int     `json:"commentStatus"`
-	Title         string   `json:"title"`
-	Content       string   `json:"content"`
-	Tag           string   `json:"tag"`
-	Tags          []string `json:"tags"`
-	Password      string   `json:"password"`
-	Description   string   `json:"description"`
+	ID            string `json:"id"`
+	Type          int    `json:"type"`
+	Link          string `json:"link"`
+	PageStatus    *int   `json:"pageStatus"`
+	CommentStatus *int   `json:"commentStatus"`
+	Title         string `json:"title"`
+	Content       string `json:"content"`
+	Tag           string `json:"tag"`
+	Password      string `json:"password"`
+	Description   string `json:"description"`
 }
 
 func (input pageInput) page() Page {
@@ -99,35 +98,6 @@ func (a *App) createPage(c *gin.Context) {
 		return
 	}
 	page := input.page()
-	if _, tokenPublisher := c.Get("apiPublisher"); tokenPublisher {
-		if input.Tag == "" && len(input.Tags) > 0 {
-			page.Tag = strings.Join(input.Tags, ";")
-		}
-		if page.Link == "" {
-			page.Link = page.Title
-		}
-		// Historical token clients omitted these two fields.
-		if input.PageStatus == nil {
-			page.PageStatus = StatusPublished
-		}
-		if input.CommentStatus == nil {
-			page.CommentStatus = 1
-		}
-		var metadata strings.Builder
-		metadata.WriteString("---\ntitle: ")
-		metadata.WriteString(strings.ReplaceAll(page.Title, "\n", " "))
-		metadata.WriteString("\ndescription: ")
-		metadata.WriteString(strings.ReplaceAll(page.Description, "\n", " "))
-		metadata.WriteString("\ntags:\n")
-		for _, tag := range input.Tags {
-			metadata.WriteString("- ")
-			metadata.WriteString(strings.ReplaceAll(tag, "\n", " "))
-			metadata.WriteByte('\n')
-		}
-		metadata.WriteString("---\n\n")
-		metadata.WriteString(page.Content)
-		page.Content = metadata.String()
-	}
 	if err := validatePage(page); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": err.Error()})
 		return

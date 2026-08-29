@@ -22,12 +22,13 @@ function Notice({ notice, clear }) {
   return <div className={`notification ${notice.error ? 'is-danger' : 'is-success'}`}><button className="delete" onClick={clear} />{notice.text}</div>;
 }
 
-function Login() {
-  return <main className="login-shell"><section className="box login-box"><h1 className="title">博客管理</h1><p className="content">后台仅允许配置的 GitHub 账户访问。</p><a className="button is-dark is-fullwidth" href="/auth/github">使用 GitHub 登录</a><a className="button is-text is-fullwidth" href="/">返回博客</a></section></main>;
+function Login({ route }) {
+  const returnTo = route.startsWith('cli') ? `/admin/#/${route}` : '/admin/';
+  return <main className="login-shell"><section className="box login-box"><h1 className="title">博客管理</h1><p className="content">后台仅允许配置的 GitHub 账户访问。</p><a className="button is-dark is-fullwidth" href={`/auth/github?return_to=${encodeURIComponent(returnTo)}`}>使用 GitHub 登录</a><a className="button is-text is-fullwidth" href="/">返回博客</a></section></main>;
 }
 
 function Layout({ user, route, children }) {
-  const items = [['posts', '页面'], ['editor', '新建'], ['files', '文件'], ['settings', '设置']];
+  const items = [['posts', '页面'], ['editor', '新建'], ['files', '文件'], ['settings', '设置'], ['cli', 'CLI']];
   return <div className="admin-shell">
     <aside className="admin-sidebar">
       <a className="admin-brand" href="/">Blog</a>
@@ -36,6 +37,51 @@ function Layout({ user, route, children }) {
     </aside>
     <main className="admin-content">{children}</main>
   </div>;
+}
+
+function CLI({ route, notify }) {
+  const [info, setInfo] = useState(null);
+  const [tokens, setTokens] = useState([]);
+  const [code, setCode] = useState(() => new URLSearchParams(route.split('?')[1] || '').get('code') || '');
+  const [device, setDevice] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const normalized = code.trim().toUpperCase();
+  const loadTokens = useCallback(() => api('/api/cli/tokens').then((payload) => setTokens(payload.tokens || [])).catch((error) => notify(error.message, true)), [notify]);
+  useEffect(() => { const routeCode = new URLSearchParams(route.split('?')[1] || '').get('code'); if (routeCode) setCode(routeCode); }, [route]);
+  useEffect(() => { api('/api/cli/info').then(setInfo).catch((error) => notify(error.message, true)); loadTokens(); }, [loadTokens, notify]);
+  useEffect(() => {
+    if (!normalized) { setDevice(null); return; }
+    if (!/^[A-HJ-NP-Z2-9]{4}-?[A-HJ-NP-Z2-9]{4}$/.test(normalized)) { setDevice(null); return; }
+    const formatted = normalized.includes('-') ? normalized : `${normalized.slice(0, 4)}-${normalized.slice(4)}`;
+    api(`/api/cli/device/${encodeURIComponent(formatted)}`).then((payload) => setDevice(payload.device)).catch(() => setDevice(null));
+  }, [normalized]);
+  async function decide(approve) {
+    setBusy(true);
+    try {
+      const payload = await api(`/api/cli/device/${approve ? 'approve' : 'deny'}`, { method: 'POST', body: { userCode: normalized } });
+      notify(payload.message); setDevice((current) => current ? { ...current, state: approve ? 'approved' : 'denied' } : current);
+    } catch (error) { notify(error.message, true); }
+    finally { setBusy(false); }
+  }
+  async function revoke(id) {
+    if (!window.confirm('确认撤销这个 CLI token？使用它的终端会立即失去访问权限。')) return;
+    try { await api(`/api/cli/tokens/${encodeURIComponent(id)}`, { method: 'DELETE' }); await loadTokens(); notify('CLI token 已撤销'); }
+    catch (error) { notify(error.message, true); }
+  }
+  async function copy(value) {
+    try { await navigator.clipboard.writeText(value); notify('安装命令已复制'); }
+    catch { notify('无法自动复制，请手动选择命令', true); }
+  }
+  return <section><h1 className="title">命令行工具</h1><p className="subtitle">通过 CLI 完成页面、文件、站点设置及其他全部后台操作。</p>
+    <div className="box"><h2 className="title is-5">安装</h2><p>需要 Python 3.9+。安装脚本会把 <code>blog-cli</code> 放到 <code>~/.local/bin</code>。</p>{info && <div className="cli-command"><code>{info.installCommand}</code><button className="button is-small" onClick={() => copy(info.installCommand)}>复制</button></div>}<p className="help">安装后运行 <code>blog-cli auth login</code>。非交互环境默认输出 JSON，也可在任意命令中使用 <code>--json</code>。</p></div>
+    <div className="box"><h2 className="title is-5">批准设备登录</h2><div className="field has-addons"><div className="control is-expanded"><input className="input cli-code-input" value={code} onChange={(event) => setCode(event.target.value)} placeholder="ABCD-EFGH" maxLength="9" /></div></div>
+      {device ? <div className="notification is-warning is-light"><p><strong>{device.clientName}</strong> 请求管理博客。</p><p>授权码：<strong>{device.userCode}</strong> · 状态：{device.state} · 到期：{new Date(device.expiresAt).toLocaleString()}</p>{device.state === 'pending' && <div className="buttons mt-3"><button className={`button is-primary ${busy ? 'is-loading' : ''}`} disabled={busy} onClick={() => decide(true)}>批准</button><button className="button" disabled={busy} onClick={() => decide(false)}>拒绝</button></div>}</div> : normalized && <p className="help">输入有效的终端授权码后，将在这里显示设备信息。请逐字核对后再批准。</p>}
+    </div>
+    <div className="box"><div className="level"><div className="level-left"><h2 className="title is-5">已授权的 CLI</h2></div><div className="level-right"><button className="button is-small" onClick={loadTokens}>刷新</button></div></div>
+      {tokens.length === 0 ? <p className="has-text-grey">尚无有效 CLI token。</p> : <div className="table-container"><table className="table is-fullwidth"><thead><tr><th>客户端</th><th>账户</th><th>最近使用</th><th>到期</th><th /></tr></thead><tbody>{tokens.map((token) => <tr key={token.id}><td>{token.clientName}<small>{token.id}</small></td><td>{token.githubLogin}</td><td>{token.lastUsedAt ? new Date(token.lastUsedAt).toLocaleString() : '从未'}</td><td>{new Date(token.expiresAt).toLocaleDateString()}</td><td><button className="button is-small is-danger is-light" onClick={() => revoke(token.id)}>撤销</button></td></tr>)}</tbody></table></div>}
+    </div>
+    <div className="notification is-info is-light"><strong>Agent 使用提示：</strong>运行 <code>blog-cli help --json</code> 可获得完整、机器可读的命令目录。每次命令都会主动返回推荐的下一步；删除和关机等破坏性操作必须显式传入 <code>--yes</code>。</div>
+  </section>;
 }
 
 function Posts({ notify }) {
@@ -123,11 +169,12 @@ export default function App() {
   const notify = useCallback((text, error = false) => setNotice({ text, error }), []);
   useEffect(() => { api('/api/user/status').then((payload) => setUser(payload.user)).catch(() => setUser(null)).finally(() => setReady(true)); }, []);
   if (!ready) return <main className="loading-shell"><progress className="progress is-small is-primary" max="100" /></main>;
-  if (!user) return <Login />;
+  if (!user) return <Login route={route} />;
   const editorMatch = route.match(/^editor(?:\/(.+))?$/);
   let content = <Posts notify={notify} />;
   if (editorMatch) content = <Editor id={editorMatch[1]} notify={notify} />;
   else if (route === 'files') content = <Files notify={notify} />;
   else if (route === 'settings') content = <Settings notify={notify} />;
+  else if (route.startsWith('cli')) content = <CLI route={route} notify={notify} />;
   return <Layout user={user} route={route}><Notice notice={notice} clear={() => setNotice(null)} />{content}</Layout>;
 }

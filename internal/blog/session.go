@@ -18,11 +18,12 @@ import (
 const sessionCookie = "blog"
 
 type session struct {
-	User         *GitHubUser
-	OAuthState   string
-	PKCEVerifier string
-	OAuthExpires time.Time
-	ExpiresAt    time.Time
+	User          *GitHubUser
+	OAuthState    string
+	PKCEVerifier  string
+	OAuthExpires  time.Time
+	OAuthReturnTo string
+	ExpiresAt     time.Time
 }
 
 type sessionStore struct {

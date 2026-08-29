@@ -49,3 +49,18 @@ func TestGitHubLoginUsesStatePKCEAndCookieSecurityAttributes(t *testing.T) {
 		t.Fatalf("session cookie lacks security attributes: %s", cookie)
 	}
 }
+
+func TestOAuthReturnTargetAllowsOnlyAdminPage(t *testing.T) {
+	for value, want := range map[string]string{
+		"/admin/#/cli?code=ABCD-EFGH": "/admin/#/cli?code=ABCD-EFGH",
+		"/admin/":                     "/admin/",
+		"https://evil.example/admin/": "",
+		"//evil.example/admin/":       "",
+		"/page/post":                  "",
+		"/admin\\evil":                "",
+	} {
+		if got := safeOAuthReturnTo(value); got != want {
+			t.Errorf("safeOAuthReturnTo(%q) = %q, want %q", value, got, want)
+		}
+	}
+}

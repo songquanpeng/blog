@@ -44,6 +44,7 @@ func (a *App) githubLogin(c *gin.Context) {
 		entry.OAuthState = state
 		entry.PKCEVerifier = verifier
 		entry.OAuthExpires = time.Now().Add(10 * time.Minute)
+		entry.OAuthReturnTo = safeOAuthReturnTo(c.Query("return_to"))
 	})
 	query := url.Values{
 		"client_id":             {a.cfg.GitHubClientID},
@@ -85,13 +86,30 @@ func (a *App) githubCallback(c *gin.Context) {
 		return
 	}
 	user.IsAdmin = true
+	returnTo := entry.OAuthReturnTo
 	a.sessions.update(token, func(entry *session) {
 		entry.User = &user
 		entry.OAuthState = ""
 		entry.PKCEVerifier = ""
 		entry.OAuthExpires = time.Time{}
+		entry.OAuthReturnTo = ""
 	})
-	c.Redirect(http.StatusFound, "/admin/")
+	if returnTo == "" {
+		returnTo = "/admin/"
+	}
+	c.Redirect(http.StatusFound, returnTo)
+}
+
+func safeOAuthReturnTo(value string) string {
+	value = strings.TrimSpace(value)
+	if value == "" || strings.ContainsAny(value, "\\\r\n") || strings.HasPrefix(value, "//") {
+		return ""
+	}
+	parsed, err := url.Parse(value)
+	if err != nil || parsed.IsAbs() || parsed.Host != "" || parsed.Path != "/admin/" {
+		return ""
+	}
+	return parsed.String()
 }
 
 func (a *App) oauthConfigured() error {

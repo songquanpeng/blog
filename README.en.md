@@ -4,6 +4,20 @@ A single-owner blog built with Gin, GORM, React, and Bulma. Public pages are ser
 
 The refactor preserves the historical SQLite tables and fields, URLs, API paths, port 3000, `/app/data` volume, and the `PORT`, `SQLITE_PATH`, and `UPLOAD_PATH` environment variables. Legacy users remain only as historical author references and are never used for authentication.
 
+## blog-cli
+
+After signing in, open **CLI** in the admin sidebar and copy the installation command generated from `PUBLIC_URL`. The Python 3.9+ client uses this blog's own browser device flow; tokens last 365 days by default and can be revoked from the same page.
+
+```bash
+blog-cli auth login
+blog-cli page list --json
+blog-cli page create --title "Title" --link slug --content-file post.md --status published
+blog-cli site title "New blog title"
+blog-cli site sidebar set sidebar.json
+```
+
+Run `blog-cli help --json` for a machine-readable command catalog. Non-interactive output is JSON by default, every result suggests useful next commands, and destructive operations require `--yes`. Configure lifetimes with `CLI_TOKEN_TTL_HOURS` (default `8760`) and `CLI_DEVICE_CODE_TTL_MINUTES` (default `10`).
+
 ## Quick start
 
 Create a GitHub OAuth App with callback URL `https://your-domain/auth/github/callback`, then:

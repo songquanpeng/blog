@@ -117,14 +117,14 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 	}
 	defer store.Close()
 	sessions := newSessionStore([]byte("0123456789abcdef0123456789abcdef"), time.Hour)
-	app := &App{store: store, sessions: sessions, cfg: Config{APIToken: "publisher-token", UploadPath: dataDir, MaxUploadBytes: 1 << 20}}
+	app := &App{store: store, sessions: sessions, cfg: Config{UploadPath: dataDir, MaxUploadBytes: 1 << 20}}
 
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	api := router.Group("/api")
-	api.POST("/page", app.publisherRequired(), app.createPage)
 	admin := api.Group("")
 	admin.Use(app.adminRequired())
+	admin.POST("/page", app.createPage)
 	admin.GET("/page/:id", app.getPage)
 	admin.PUT("/page", app.updatePage)
 	admin.DELETE("/page/:id", app.deletePage)
@@ -154,12 +154,8 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 		return recorder
 	}
 
-	createBody := bytes.NewBufferString(`{"title":"Regression","link":"regression","content":"# ok","tags":["test"]}`)
-	createRequest := httptest.NewRequest(http.MethodPost, "/api/page", createBody)
-	createRequest.Header.Set("Content-Type", "application/json")
-	createRequest.Header.Set("Authorization", "Bearer publisher-token")
-	createRecorder := httptest.NewRecorder()
-	router.ServeHTTP(createRecorder, createRequest)
+	createBody := bytes.NewBufferString(`{"title":"Regression","link":"regression","content":"# ok","tag":"test","pageStatus":1,"commentStatus":1}`)
+	createRecorder := do(http.MethodPost, "/api/page", "application/json", createBody, true)
 	if createRecorder.Code != http.StatusOK {
 		t.Fatalf("create page = %d %s", createRecorder.Code, createRecorder.Body.String())
 	}
@@ -168,6 +164,14 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 	}
 	if err := json.Unmarshal(createRecorder.Body.Bytes(), &created); err != nil || created.ID == "" {
 		t.Fatalf("create response = %s, %v", createRecorder.Body.String(), err)
+	}
+	legacyRequest := httptest.NewRequest(http.MethodPost, "/api/page", strings.NewReader(`{"title":"Blocked","link":"blocked","content":"x","pageStatus":1,"commentStatus":1}`))
+	legacyRequest.Header.Set("Content-Type", "application/json")
+	legacyRequest.Header.Set("Authorization", "Bearer publisher-token")
+	legacyRecorder := httptest.NewRecorder()
+	router.ServeHTTP(legacyRecorder, legacyRequest)
+	if legacyRecorder.Code != http.StatusUnauthorized {
+		t.Fatalf("legacy publishing token unexpectedly accepted = %d %s", legacyRecorder.Code, legacyRecorder.Body.String())
 	}
 
 	if recorder := do(http.MethodGet, "/api/page/"+created.ID, "", nil, true); recorder.Code != http.StatusOK {

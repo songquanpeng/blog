@@ -2,6 +2,7 @@ package blog
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"strings"
@@ -75,6 +76,51 @@ type dbFile struct {
 
 func (dbFile) TableName() string { return "Files" }
 
+// CLI credentials live in dedicated tables so historical user access tokens
+// can never become administrator credentials by accident. Only SHA-256
+// digests of bearer and device codes are persisted.
+type dbDeviceAuthorization struct {
+	DeviceCodeHash string     `gorm:"column:deviceCodeHash;primaryKey;type:text"`
+	UserCodeHash   string     `gorm:"column:userCodeHash;uniqueIndex;not null;type:text"`
+	ClientName     string     `gorm:"column:clientName;type:text"`
+	Status         string     `gorm:"column:status;index;not null"`
+	GitHubUserID   int64      `gorm:"column:githubUserId"`
+	GitHubLogin    string     `gorm:"column:githubLogin;type:text"`
+	ExpiresAt      time.Time  `gorm:"column:expiresAt;index;not null"`
+	ApprovedAt     *time.Time `gorm:"column:approvedAt"`
+	CreatedAt      time.Time  `gorm:"column:createdAt"`
+}
+
+func (dbDeviceAuthorization) TableName() string { return "CLIDeviceAuthorizations" }
+
+type dbCLIToken struct {
+	ID           string     `gorm:"column:id;primaryKey;type:text"`
+	TokenHash    string     `gorm:"column:tokenHash;uniqueIndex;not null;type:text"`
+	ClientName   string     `gorm:"column:clientName;type:text"`
+	GitHubUserID int64      `gorm:"column:githubUserId;index"`
+	GitHubLogin  string     `gorm:"column:githubLogin;type:text"`
+	ExpiresAt    time.Time  `gorm:"column:expiresAt;index;not null"`
+	LastUsedAt   *time.Time `gorm:"column:lastUsedAt"`
+	CreatedAt    time.Time  `gorm:"column:createdAt"`
+}
+
+func (dbCLIToken) TableName() string { return "CLITokens" }
+
+type CLITokenInfo struct {
+	ID           string `json:"id"`
+	ClientName   string `json:"clientName"`
+	GitHubUserID int64  `json:"githubUserId"`
+	GitHubLogin  string `json:"githubLogin"`
+	ExpiresAt    string `json:"expiresAt"`
+	LastUsedAt   string `json:"lastUsedAt,omitempty"`
+	CreatedAt    string `json:"createdAt"`
+}
+
+func credentialHash(value string) string {
+	digest := sha256.Sum256([]byte(value))
+	return fmt.Sprintf("%x", digest[:])
+}
+
 type DBPage = dbPage
 
 type pageRow struct {
@@ -125,7 +171,7 @@ func (s *Store) Close() error {
 func (s *Store) migrate() error {
 	// Do not auto-alter Sequelize-created tables. SQLite table reconstruction
 	// would be an unnecessary risk for historical installations.
-	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}} {
+	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbDeviceAuthorization{}, &dbCLIToken{}} {
 		if !s.db.Migrator().HasTable(model) {
 			if err := s.db.AutoMigrate(model); err != nil {
 				return fmt.Errorf("gorm migrate: %w", err)
@@ -136,6 +182,137 @@ func (s *Store) migrate() error {
 		return err
 	}
 	return s.db.Model(&dbOption{}).Where("key = ?", "theme").Update("value", "bulma").Error
+}
+
+func (s *Store) CreateDeviceAuthorization(ctx context.Context, deviceCode, userCode, clientName string, expiresAt time.Time) error {
+	_ = s.db.WithContext(ctx).Where("expiresAt < ?", time.Now()).Delete(&dbDeviceAuthorization{}).Error
+	row := dbDeviceAuthorization{DeviceCodeHash: credentialHash(deviceCode), UserCodeHash: credentialHash(strings.ToUpper(userCode)),
+		ClientName: clientName, Status: "pending", ExpiresAt: expiresAt}
+	return s.db.WithContext(ctx).Create(&row).Error
+}
+
+func (s *Store) DeviceAuthorizationByUserCode(ctx context.Context, userCode string) (dbDeviceAuthorization, error) {
+	var row dbDeviceAuthorization
+	err := s.db.WithContext(ctx).First(&row, "userCodeHash = ?", credentialHash(strings.ToUpper(userCode))).Error
+	return row, err
+}
+
+func (s *Store) ApproveDeviceAuthorization(ctx context.Context, userCode string, user GitHubUser) (dbDeviceAuthorization, error) {
+	now := time.Now().UTC()
+	result := s.db.WithContext(ctx).Model(&dbDeviceAuthorization{}).
+		Where("userCodeHash = ? AND status = ? AND expiresAt > ?", credentialHash(strings.ToUpper(userCode)), "pending", now).
+		Updates(map[string]any{"status": "approved", "githubUserId": user.ID, "githubLogin": user.Login, "approvedAt": now})
+	if result.Error != nil {
+		return dbDeviceAuthorization{}, result.Error
+	}
+	if result.RowsAffected != 1 {
+		return dbDeviceAuthorization{}, gorm.ErrRecordNotFound
+	}
+	return s.DeviceAuthorizationByUserCode(ctx, userCode)
+}
+
+func (s *Store) DenyDeviceAuthorization(ctx context.Context, userCode string) error {
+	result := s.db.WithContext(ctx).Model(&dbDeviceAuthorization{}).
+		Where("userCodeHash = ? AND status = ?", credentialHash(strings.ToUpper(userCode)), "pending").Update("status", "denied")
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected != 1 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
+
+// ExchangeDeviceAuthorization consumes an approved device code exactly once
+// and creates a separately revocable bearer credential.
+func (s *Store) ExchangeDeviceAuthorization(ctx context.Context, deviceCode, rawToken string, tokenExpiresAt time.Time) (CLITokenInfo, string, error) {
+	var info CLITokenInfo
+	state := "invalid_grant"
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var row dbDeviceAuthorization
+		result := tx.Where("deviceCodeHash = ?", credentialHash(deviceCode)).Limit(1).Find(&row)
+		if result.Error != nil {
+			return result.Error
+		}
+		if result.RowsAffected == 0 {
+			return gorm.ErrRecordNotFound
+		}
+		if time.Now().After(row.ExpiresAt) {
+			state = "expired_token"
+			return nil
+		}
+		if row.Status == "pending" {
+			state = "authorization_pending"
+			return nil
+		}
+		if row.Status == "denied" {
+			state = "access_denied"
+			return nil
+		}
+		result = tx.Where("deviceCodeHash = ? AND status = ?", row.DeviceCodeHash, "approved").Delete(&dbDeviceAuthorization{})
+		if result.Error != nil {
+			return result.Error
+		}
+		if result.RowsAffected != 1 {
+			state = "invalid_grant"
+			return nil
+		}
+		tokenRow := dbCLIToken{ID: uuid.NewString(), TokenHash: credentialHash(rawToken), ClientName: row.ClientName,
+			GitHubUserID: row.GitHubUserID, GitHubLogin: row.GitHubLogin, ExpiresAt: tokenExpiresAt}
+		if err := tx.Create(&tokenRow).Error; err != nil {
+			return err
+		}
+		info = cliTokenInfo(tokenRow)
+		state = "ok"
+		return nil
+	})
+	return info, state, err
+}
+
+func (s *Store) ValidateCLIToken(ctx context.Context, rawToken string) (CLITokenInfo, error) {
+	var row dbCLIToken
+	result := s.db.WithContext(ctx).Where("tokenHash = ?", credentialHash(rawToken)).Limit(1).Find(&row)
+	if result.Error != nil {
+		return CLITokenInfo{}, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return CLITokenInfo{}, gorm.ErrRecordNotFound
+	}
+	if time.Now().After(row.ExpiresAt) {
+		_ = s.db.WithContext(ctx).Delete(&row).Error
+		return CLITokenInfo{}, gorm.ErrRecordNotFound
+	}
+	now := time.Now().UTC()
+	_ = s.db.WithContext(ctx).Model(&row).Update("lastUsedAt", now).Error
+	row.LastUsedAt = &now
+	return cliTokenInfo(row), nil
+}
+
+func (s *Store) CLITokens(ctx context.Context) ([]CLITokenInfo, error) {
+	_ = s.db.WithContext(ctx).Where("expiresAt < ?", time.Now()).Delete(&dbCLIToken{}).Error
+	var rows []dbCLIToken
+	if err := s.db.WithContext(ctx).Order("createdAt DESC").Find(&rows).Error; err != nil {
+		return nil, err
+	}
+	result := make([]CLITokenInfo, 0, len(rows))
+	for _, row := range rows {
+		result = append(result, cliTokenInfo(row))
+	}
+	return result, nil
+}
+
+func (s *Store) RevokeCLIToken(ctx context.Context, id string) (bool, error) {
+	result := s.db.WithContext(ctx).Where("id = ?", id).Delete(&dbCLIToken{})
+	return result.RowsAffected == 1, result.Error
+}
+
+func cliTokenInfo(row dbCLIToken) CLITokenInfo {
+	info := CLITokenInfo{ID: row.ID, ClientName: row.ClientName, GitHubUserID: row.GitHubUserID,
+		GitHubLogin: row.GitHubLogin, ExpiresAt: formatDBTime(row.ExpiresAt), CreatedAt: formatDBTime(row.CreatedAt)}
+	if row.LastUsedAt != nil {
+		info.LastUsedAt = formatDBTime(*row.LastUsedAt)
+	}
+	return info
 }
 
 func (s *Store) Options(ctx context.Context) (map[string]string, error) {

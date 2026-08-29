@@ -14,6 +14,9 @@ html, body, #root { min-height: 100%; margin: 0; background: #f7f8fa; }
 .login-shell, .loading-shell { min-height: 100vh; display: grid; place-items: center; padding: 1rem; }
 .login-box { width: min(100%, 420px); }
 .loading-shell .progress { width: min(80%, 420px); }
+.cli-command { margin: 1rem 0 .5rem; display: flex; align-items: center; gap: .75rem; padding: .8rem 1rem; overflow: auto; background: #f5f5f5; border-radius: 6px; }
+.cli-command code { flex: 1; color: #222; white-space: nowrap; }
+.cli-code-input { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 1.25rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 @media (max-width: 800px) {
   .admin-shell { display: block; }
   .admin-sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid #e8e8e8; }

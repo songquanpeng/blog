@@ -8,6 +8,7 @@
 - 服务端输出完整语义化 HTML，包含 canonical、Open Graph、JSON-LD、Atom、sitemap 和 robots。
 - 显式沿用旧表名及字段名：`Pages`、`Users`、`Options`、`Files`。旧用户数据只用于显示历史作者，不再参与认证。
 - 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
+- 内置 `blog-cli`：通过本站 device flow 授权，覆盖页面发布/撤回/隐藏/删除、站点标题与侧边栏、全部设置和文件管理；token 默认有效一年并可随时撤销。
 - Markdown/HTML 默认经过净化；包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
 - 历史 Raw 工具页在无 `same-origin` 权限的 CSP sandbox 中运行，保留脚本交互但不能读取主站 Cookie、后台 API 响应或父页面 DOM。
 - 保留 `PORT`、`SQLITE_PATH`、`UPLOAD_PATH`、3000 端口、`/app/data` 卷、旧 URL 与主要 `/api` 路径。
@@ -34,13 +35,23 @@ SESSION_SECRET=至少32字节的随机字符串
 
 `GITHUB_ALLOWED_USER_ID` 比用户名可靠，因为用户名可以修改。若暂时无法取得 ID，也可使用 `GITHUB_ALLOWED_LOGIN`。
 
-如需通过脚本发布文章，额外设置高强度随机值：
+## blog-cli
 
-```dotenv
-BLOG_API_TOKEN=...
+管理员登录后台后打开“CLI”页面，复制页面中根据 `PUBLIC_URL` 生成的安装命令。安装器只依赖 `curl`，CLI 本身需要 Python 3.9+，默认安装到 `~/.local/bin/blog-cli`。
+
+```bash
+blog-cli auth login
+blog-cli page list --json
+blog-cli page create --title "标题" --link slug --content-file post.md --status published
+blog-cli page hide slug
+blog-cli site title "新的博客标题"
+blog-cli site sidebar set sidebar.json
+blog-cli file upload cover.webp --description "文章封面"
 ```
 
-客户端可使用 `Authorization: Bearer <token>`，也兼容旧脚本直接把 token 放入 `Authorization`。
+`blog-cli help --json` 会输出完整的机器可读命令目录、参数约定、页面类型和状态值。CLI 在 stdout 不是终端时自动输出稳定 JSON envelope，错误使用非零退出码，并在结果中给出下一步命令。删除与关机等破坏性操作必须显式传入 `--yes`。
+
+登录采用由本站实现的 device flow：CLI 只显示一次性授权码，管理员在后台核对客户端名称并批准后才签发 token。数据库仅保存 device code 和 token 的 SHA-256 摘要。可在后台 CLI 页面查看和撤销所有有效凭据，也可执行 `blog-cli auth logout` 撤销当前凭据。
 
 ## 本地部署
 
@@ -100,7 +111,7 @@ docker run --restart=always -d \
 
 升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。
 
-旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。新的自动发布凭证仅来自 `BLOG_API_TOKEN`。
+旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。自动化管理统一使用由本站 device flow 签发且可撤销的 CLI token。
 
 危险的历史自定义 HTML 默认会被净化。如确需完全恢复受信任的旧 HTML，可设置 `BLOG_ALLOW_UNSAFE_HTML=true`；这会显著扩大 XSS 风险，不建议用于多人可写数据。
 
@@ -117,6 +128,8 @@ docker run --restart=always -d \
 | `TRUSTED_PROXIES` | 空 | 逗号分隔的可信反向代理 CIDR/IP |
 | `MAX_UPLOAD_MB` | `20` | 单文件上限 |
 | `SESSION_TTL_HOURS` | `24` | 管理会话时长 |
+| `CLI_TOKEN_TTL_HOURS` | `8760` | CLI token 有效期，默认 365 天 |
+| `CLI_DEVICE_CODE_TTL_MINUTES` | `10` | device flow 授权码有效期 |
 | `BLOG_ENABLE_SHUTDOWN` | `false` | 是否恢复旧远程关机接口 |
 | `BLOG_ALLOW_UNSAFE_HTML` | `false` | 是否允许未经净化的管理员 HTML |
 
