@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -14,6 +15,39 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+func TestRootVerificationAssetsExposeOnlySafeTextFiles(t *testing.T) {
+	indexDir := t.TempDir()
+	for name, content := range map[string]string{
+		"WW_verify_ybb0BCv891RgHPr7.txt": "verification-data",
+		"robots.txt":                     "handled elsewhere",
+		".secret.txt":                    "secret",
+		"unsafe.html":                    "<script>alert(1)</script>",
+	} {
+		if err := os.WriteFile(filepath.Join(indexDir, name), []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	app := &App{cfg: Config{IndexPath: indexDir, DefaultIndexPath: indexDir}}
+	assets := app.rootVerificationAssets()
+	if len(assets) != 1 || assets[0] != "WW_verify_ybb0BCv891RgHPr7.txt" {
+		t.Fatalf("verification assets = %#v", assets)
+	}
+
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+	for _, filename := range assets {
+		name := filename
+		router.GET("/"+name, func(c *gin.Context) { app.serveKnownFile(c, app.indexFile(name), false) })
+	}
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/WW_verify_ybb0BCv891RgHPr7.txt", nil)
+	router.ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusOK || recorder.Body.String() != "verification-data" || !strings.HasPrefix(recorder.Header().Get("Content-Type"), "text/plain") {
+		t.Fatalf("verification response = %d %q %q", recorder.Code, recorder.Header().Get("Content-Type"), recorder.Body.String())
+	}
+}
 
 func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))

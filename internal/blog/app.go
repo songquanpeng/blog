@@ -119,6 +119,10 @@ func (a *App) routes() *gin.Engine {
 		name := filename
 		router.GET("/"+name, func(c *gin.Context) { a.serveKnownFile(c, a.indexFile(name), false) })
 	}
+	for _, filename := range a.rootVerificationAssets() {
+		name := filename
+		router.GET("/"+name, func(c *gin.Context) { a.serveKnownFile(c, a.indexFile(name), false) })
+	}
 
 	api := router.Group("/api")
 	{
@@ -177,6 +181,46 @@ func (a *App) indexFile(name string) string {
 		return custom
 	}
 	return filepath.Join(a.cfg.DefaultIndexPath, name)
+}
+
+// rootVerificationAssets preserves historical webmaster verification files
+// without turning the data/index directory into an executable same-origin
+// document root. Only regular, plainly named text files are exposed.
+func (a *App) rootVerificationAssets() []string {
+	seen := make(map[string]struct{})
+	var names []string
+	for _, dir := range []string{a.cfg.DefaultIndexPath, a.cfg.IndexPath} {
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			continue
+		}
+		for _, entry := range entries {
+			name := entry.Name()
+			if _, ok := seen[name]; ok || !safeRootVerificationName(name) {
+				continue
+			}
+			info, err := entry.Info()
+			if err != nil || !info.Mode().IsRegular() {
+				continue
+			}
+			seen[name] = struct{}{}
+			names = append(names, name)
+		}
+	}
+	return names
+}
+
+func safeRootVerificationName(name string) bool {
+	if len(name) == 0 || len(name) > 128 || name == "robots.txt" || filepath.Ext(name) != ".txt" || name[0] == '.' {
+		return false
+	}
+	for _, char := range name {
+		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || (char >= '0' && char <= '9') || char == '-' || char == '_' || char == '.' {
+			continue
+		}
+		return false
+	}
+	return true
 }
 
 func (a *App) securityHeaders() gin.HandlerFunc {
