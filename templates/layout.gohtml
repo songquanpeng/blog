@@ -12,8 +12,12 @@
   <meta property="og:description" content="{{.Description}}">
   <meta property="og:url" content="{{.Canonical}}">
   <meta property="og:site_name" content="{{.SiteName}}">
-  {{if .BrandImage}}<meta property="og:image" content="{{.BrandImage}}">{{end}}
+  {{if .SocialImage}}<meta property="og:image" content="{{.SocialImage}}">
+  <meta property="og:image:alt" content="{{.SiteName}}">{{end}}
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{.Title}}">
+  <meta name="twitter:description" content="{{.Description}}">
+  {{if .SocialImage}}<meta name="twitter:image" content="{{.SocialImage}}">{{end}}
   <meta name="theme-color" content="#ffffff">
   <link rel="alternate" type="application/atom+xml" title="{{.SiteName}}" href="/feed.xml">
   <link rel="stylesheet" href="/static/bulma.min.css">

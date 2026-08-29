@@ -96,6 +96,7 @@ type ViewData struct {
 	Year        int
 	Favicon     string
 	BrandImage  string
+	SocialImage string
 	CodeTheme   string
 	Copyright   template.HTML
 	ExtraFooter template.HTML

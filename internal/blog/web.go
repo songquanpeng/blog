@@ -115,6 +115,9 @@ func (a *App) page(c *gin.Context) {
 		a.renderError(c, http.StatusNotFound, "页面不存在", "未找到该公开页面")
 		return
 	}
+	if page.PageStatus == StatusHidden {
+		c.Header("X-Robots-Tag", "noindex, follow")
+	}
 	if page.Type == PageRedirect {
 		target := strings.TrimSpace(stripFrontMatter(page.Content))
 		if !safeNavigationURL(target) {
@@ -205,6 +208,7 @@ func (a *App) rawPageContent(c *gin.Context) {
 
 	c.Header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline' https: http:; style-src 'unsafe-inline' https: http:; img-src data: https: http:; font-src data: https: http:; connect-src https: http:; frame-src https: http:; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'self' https: http:; sandbox allow-scripts allow-forms allow-popups allow-modals allow-downloads")
 	c.Header("X-Frame-Options", "SAMEORIGIN")
+	c.Header("X-Robots-Tag", "noindex, nofollow, nosnippet")
 	c.Header("Cache-Control", "no-store")
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(document.String()))
 }

@@ -55,10 +55,12 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 	if uploadedCodeTheme(options["code_theme"]) != "" {
 		codeTheme = "/code-theme.css"
 	}
+	brandImage := strings.TrimSpace(options["brand_image"])
 	data := ViewData{
 		Lang: option(options, "language", "zh-CN"), Title: title, Description: description,
 		Canonical: canonical, SiteURL: base, SiteName: siteName, Motto: options["motto"], Author: options["author"],
-		Year: time.Now().Year(), Favicon: option(options, "favicon", "/favicon.ico"), BrandImage: options["brand_image"], CodeTheme: codeTheme,
+		Year: time.Now().Year(), Favicon: option(options, "favicon", "/favicon.ico"), BrandImage: brandImage,
+		SocialImage: publicAssetURL(base, brandImage), CodeTheme: codeTheme,
 		PrimaryNav: primaryNav, Nav: nav, Copyright: a.safeHTML(options["copyright"]),
 		ExtraFooter: a.safeHTML(options["extra_footer_text"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,
 		Nonce: fmt.Sprint(nonce),
@@ -99,6 +101,17 @@ func safeNavigationURL(value string) bool {
 	}
 	parsed, err := url.Parse(value)
 	return err == nil && (parsed.Scheme == "https" || parsed.Scheme == "http") && parsed.Host != ""
+}
+
+func publicAssetURL(base, value string) string {
+	value = strings.TrimSpace(value)
+	if strings.HasPrefix(value, "/") && !strings.HasPrefix(value, "//") {
+		return strings.TrimRight(base, "/") + value
+	}
+	if safeNavigationURL(value) {
+		return value
+	}
+	return ""
 }
 
 func (a *App) safeHTML(value string) template.HTML {
@@ -162,6 +175,9 @@ func articleJSONLD(data ViewData, page Page) template.JS {
 		"mainEntityOfPage": data.Canonical,
 		"author":           map[string]string{"@type": "Person", "name": firstNonEmpty(page.Author, data.Author)},
 		"publisher":        map[string]string{"@type": "Organization", "name": data.SiteName},
+	}
+	if data.SocialImage != "" {
+		payload["image"] = data.SocialImage
 	}
 	encoded, _ := json.Marshal(payload)
 	return template.JS(encoded)

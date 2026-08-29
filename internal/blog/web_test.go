@@ -75,6 +75,9 @@ func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	if !strings.Contains(csp, "sandbox allow-scripts") || strings.Contains(csp, "allow-same-origin") {
 		t.Fatalf("raw page CSP does not enforce opaque sandbox: %q", csp)
 	}
+	if robots := recorder.Header().Get("X-Robots-Tag"); robots != "noindex, nofollow, nosnippet" {
+		t.Fatalf("raw page X-Robots-Tag = %q", robots)
+	}
 }
 
 func TestAdminCRUDAndUploadWorkflow(t *testing.T) {

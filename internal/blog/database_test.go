@@ -127,3 +127,22 @@ func TestGitHubIdentityAllowlistPrefersImmutableID(t *testing.T) {
 		t.Fatal("login must not override configured immutable ID")
 	}
 }
+
+func TestPublicAssetURL(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		value string
+		want  string
+	}{
+		{name: "root relative", value: "/upload/brand.webp", want: "https://justsong.cn/upload/brand.webp"},
+		{name: "absolute", value: "https://cdn.example.com/brand.webp", want: "https://cdn.example.com/brand.webp"},
+		{name: "protocol relative rejected", value: "//evil.example/image.png", want: ""},
+		{name: "script rejected", value: "javascript:alert(1)", want: ""},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if got := publicAssetURL("https://justsong.cn", test.value); got != test.want {
+				t.Fatalf("publicAssetURL() = %q, want %q", got, test.want)
+			}
+		})
+	}
+}
