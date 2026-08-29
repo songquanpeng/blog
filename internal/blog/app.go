@@ -21,12 +21,13 @@ import (
 )
 
 type App struct {
-	cfg        Config
-	store      *Store
-	router     *gin.Engine
-	templates  *template.Template
-	sessions   *sessionStore
-	httpClient *http.Client
+	cfg         Config
+	store       *Store
+	router      *gin.Engine
+	templates   *template.Template
+	sessions    *sessionStore
+	httpClient  *http.Client
+	cliDistPath string
 }
 
 func New() (*App, error) {
@@ -52,8 +53,9 @@ func New() (*App, error) {
 	}
 	app := &App{
 		cfg: cfg, store: store, templates: templates,
-		sessions:   newSessionStore(cfg.SessionSecret, cfg.SessionTTL),
-		httpClient: &http.Client{Timeout: 12 * time.Second},
+		sessions:    newSessionStore(cfg.SessionSecret, cfg.SessionTTL),
+		httpClient:  &http.Client{Timeout: 12 * time.Second},
+		cliDistPath: env("CLI_DIST_PATH", "./dist/cli"),
 	}
 	app.router = app.routes()
 	return app, nil
@@ -101,7 +103,7 @@ func (a *App) routes() *gin.Engine {
 	router.GET("/auth/github", a.githubLogin)
 	router.GET("/auth/github/callback", a.githubCallback)
 	router.GET("/auth/logout", a.logout)
-	router.GET("/cli/blog-cli", a.cliDownload)
+	router.GET("/cli/download/:artifact", a.cliDownload)
 	router.GET("/cli/install.sh", a.cliInstaller)
 
 	router.GET("/", a.index)

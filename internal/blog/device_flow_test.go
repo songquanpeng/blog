@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -135,21 +136,41 @@ func TestCLIDeviceFlowIssuesRevocableAdminToken(t *testing.T) {
 
 func TestCLIAssetsUseConfiguredBaseURL(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-	app := &App{cfg: Config{PublicURL: "https://blog.example/base"}}
+	dist := t.TempDir()
+	artifact := "blog-cli-linux-amd64.gz"
+	if err := os.WriteFile(filepath.Join(dist, artifact), []byte("go-binary-gzip"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dist, artifact+".sha256"), []byte("abc123\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	app := &App{cfg: Config{PublicURL: "https://blog.example/base"}, cliDistPath: dist}
 	router := gin.New()
-	router.GET("/cli/blog-cli", app.cliDownload)
+	router.GET("/cli/download/:artifact", app.cliDownload)
 	router.GET("/cli/install.sh", app.cliInstaller)
 	router.GET("/api/cli/info", app.cliInfo)
 
 	for target, expected := range map[string]string{
-		"/cli/blog-cli":   `DEFAULT_BASE_URL = "https://blog.example/base"`,
-		"/cli/install.sh": `base_url=${1:-'https://blog.example/base'}`,
-		"/api/cli/info":   `https://blog.example/base/cli/install.sh`,
+		"/cli/download/" + artifact:             "go-binary-gzip",
+		"/cli/download/" + artifact + ".sha256": "abc123",
+		"/cli/install.sh":                       `base_url=${1:-'https://blog.example/base'}`,
+		"/api/cli/info":                         `https://blog.example/base/cli/install.sh`,
 	} {
 		recorder := httptest.NewRecorder()
 		router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, target, nil))
 		if recorder.Code != http.StatusOK || !strings.Contains(recorder.Body.String(), expected) {
 			t.Fatalf("%s = %d, missing %q in %s", target, recorder.Code, expected, recorder.Body.String())
 		}
+	}
+
+	installer := httptest.NewRecorder()
+	router.ServeHTTP(installer, httptest.NewRequest(http.MethodGet, "/cli/install.sh", nil))
+	if strings.Contains(installer.Body.String(), "python3") || !strings.Contains(installer.Body.String(), "/cli/download/") || !strings.Contains(installer.Body.String(), "sha256") {
+		t.Fatalf("installer is not standalone/checksummed: %s", installer.Body.String())
+	}
+	missing := httptest.NewRecorder()
+	router.ServeHTTP(missing, httptest.NewRequest(http.MethodGet, "/cli/download/blog-cli-windows-amd64.gz", nil))
+	if missing.Code != http.StatusNotFound {
+		t.Fatalf("unsupported artifact = %d", missing.Code)
 	}
 }

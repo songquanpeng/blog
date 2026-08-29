@@ -11,6 +11,8 @@ admin/node_modules/
 *.log
 *.*~
 /bin/blog
+/bin/blog-cli
+/dist/cli/
 /public/admin/
 /public/ads.txt
 /public/*.xml

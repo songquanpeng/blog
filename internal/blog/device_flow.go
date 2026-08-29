@@ -1,21 +1,17 @@
 package blog
 
 import (
-	_ "embed"
 	"fmt"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
-
-//go:embed cli_dist/blog-cli.py
-var blogCLISource string
 
 const deviceAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
@@ -57,6 +53,7 @@ func (a *App) cliInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": true, "message": "ok", "name": "blog-cli", "baseUrl": base,
 		"installCommand":            "curl -fsSL " + shellQuote(base+"/cli/install.sh") + " | sh",
+		"supportedPlatforms":        []string{"linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64"},
 		"tokenLifetimeSeconds":      int64(a.cliTokenTTL().Seconds()),
 		"deviceCodeLifetimeSeconds": int64(a.deviceCodeTTL().Seconds()),
 		"agentHint":                 "安装后运行 blog-cli help --json 获取完整的机器可读命令清单；非交互输出默认使用 JSON。",
@@ -291,11 +288,29 @@ func (a *App) revokeCLIToken(c *gin.Context) {
 }
 
 func (a *App) cliDownload(c *gin.Context) {
-	source := strings.ReplaceAll(blogCLISource, `"__BLOG_BASE_URL__"`, strconv.Quote(a.requestBaseURL(c)))
-	c.Header("Content-Type", "text/x-python; charset=utf-8")
-	c.Header("Content-Disposition", `attachment; filename="blog-cli"`)
-	c.Header("Cache-Control", "no-store")
-	c.String(http.StatusOK, "%s", source)
+	artifact := c.Param("artifact")
+	if !allowedCLIArtifact(artifact) {
+		c.JSON(http.StatusNotFound, gin.H{"status": false, "message": "CLI 构建产物不存在"})
+		return
+	}
+	if strings.HasSuffix(artifact, ".sha256") {
+		c.Header("Content-Type", "text/plain; charset=utf-8")
+	} else {
+		c.Header("Content-Type", "application/gzip")
+	}
+	c.Header("Content-Disposition", `attachment; filename="`+artifact+`"`)
+	c.Header("Cache-Control", "public, max-age=3600")
+	c.File(filepath.Join(a.cliDistPath, artifact))
+}
+
+func allowedCLIArtifact(name string) bool {
+	for _, platform := range []string{"linux-amd64", "linux-arm64", "darwin-amd64", "darwin-arm64"} {
+		base := "blog-cli-" + platform + ".gz"
+		if name == base || name == base+".sha256" {
+			return true
+		}
+	}
+	return false
 }
 
 func (a *App) cliInstaller(c *gin.Context) {
@@ -304,17 +319,44 @@ func (a *App) cliInstaller(c *gin.Context) {
 set -eu
 base_url=${1:-%s}
 install_dir=${BLOG_CLI_INSTALL_DIR:-"$HOME/.local/bin"}
-if ! command -v python3 >/dev/null 2>&1; then
-  printf 'blog-cli requires Python 3.9 or newer\n' >&2
+kernel=$(uname -s)
+machine=$(uname -m)
+case "$kernel" in
+  Linux) platform=linux ;;
+  Darwin) platform=darwin ;;
+  *) printf 'Unsupported operating system: %%s\n' "$kernel" >&2; exit 1 ;;
+esac
+case "$machine" in
+  x86_64|amd64) architecture=amd64 ;;
+  arm64|aarch64) architecture=arm64 ;;
+  *) printf 'Unsupported architecture: %%s\n' "$machine" >&2; exit 1 ;;
+esac
+mkdir -p "$install_dir"
+archive=$(mktemp "${TMPDIR:-/tmp}/blog-cli.XXXXXX")
+temporary=$(mktemp "${TMPDIR:-/tmp}/blog-cli-bin.XXXXXX")
+trap 'rm -f "$archive" "$temporary"' EXIT HUP INT TERM
+artifact="blog-cli-$platform-$architecture.gz"
+download_url="$base_url/cli/download/$artifact"
+curl -fsSL "$download_url" -o "$archive"
+expected=$(curl -fsSL "$download_url.sha256" | tr -d '[:space:]')
+if command -v sha256sum >/dev/null 2>&1; then
+  actual=$(sha256sum "$archive" | awk '{print $1}')
+elif command -v shasum >/dev/null 2>&1; then
+  actual=$(shasum -a 256 "$archive" | awk '{print $1}')
+else
+  printf 'SHA-256 checker not found (need sha256sum or shasum)\n' >&2
   exit 1
 fi
-mkdir -p "$install_dir"
-temporary=$(mktemp "${TMPDIR:-/tmp}/blog-cli.XXXXXX")
-trap 'rm -f "$temporary"' EXIT HUP INT TERM
-curl -fsSL "$base_url/cli/blog-cli" -o "$temporary"
+if [ "$expected" != "$actual" ]; then
+  printf 'blog-cli checksum mismatch\n' >&2
+  exit 1
+fi
+gzip -dc "$archive" > "$temporary"
 chmod 0755 "$temporary"
 mv "$temporary" "$install_dir/blog-cli"
+"$install_dir/blog-cli" --base-url "$base_url" info --json >/dev/null
 trap - EXIT HUP INT TERM
+rm -f "$archive"
 printf 'blog-cli installed at %%s\n' "$install_dir/blog-cli"
 case ":$PATH:" in
   *":$install_dir:"*) ;;

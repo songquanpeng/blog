@@ -37,7 +37,7 @@ SESSION_SECRET=至少32字节的随机字符串
 
 ## blog-cli
 
-管理员登录后台后打开“CLI”页面，复制页面中根据 `PUBLIC_URL` 生成的安装命令。安装器只依赖 `curl`，CLI 本身需要 Python 3.9+，默认安装到 `~/.local/bin/blog-cli`。
+管理员登录后台后打开“CLI”页面，复制页面中根据 `PUBLIC_URL` 生成的安装命令。`blog-cli` 是位于本仓库 `cli/` 的独立 Go 程序；安装器自动选择 Linux/macOS 的 amd64/arm64 二进制并校验 SHA-256，默认安装到 `~/.local/bin/blog-cli`，运行时不依赖 Python 或 Go。
 
 ```bash
 blog-cli auth login

@@ -6,7 +6,7 @@ The refactor preserves the historical SQLite tables and fields, URLs, API paths,
 
 ## blog-cli
 
-After signing in, open **CLI** in the admin sidebar and copy the installation command generated from `PUBLIC_URL`. The Python 3.9+ client uses this blog's own browser device flow; tokens last 365 days by default and can be revoked from the same page.
+After signing in, open **CLI** in the admin sidebar and copy the installation command generated from `PUBLIC_URL`. The standalone Go client (no Python or Go runtime required) uses this blog's own browser device flow; tokens last 365 days by default and can be revoked from the same page.
 
 ```bash
 blog-cli auth login
