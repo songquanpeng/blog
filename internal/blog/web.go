@@ -224,12 +224,20 @@ func (a *App) rawPageContent(c *gin.Context) {
 		return
 	}
 	content := stripFrontMatter(page.Content)
+	options, _ := a.store.Options(c.Request.Context())
+	theme := publicTheme(options["theme"])
 	var document strings.Builder
-	document.WriteString("<!doctype html><html lang=\"")
-	document.WriteString(template.HTMLEscapeString(optionFromStore(a, c, "language", "zh-CN")))
+	document.WriteString("<!doctype html><html data-site-theme=\"")
+	document.WriteString(theme)
+	document.WriteString("\" lang=\"")
+	document.WriteString(template.HTMLEscapeString(option(options, "language", "zh-CN")))
 	document.WriteString("\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>")
 	document.WriteString(template.HTMLEscapeString(page.Title))
-	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-theme-20260830\"></head><body><main class=\"raw\">")
+	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-theme-20260830\">")
+	if theme == publicThemeStudio {
+		document.WriteString("<link rel=\"stylesheet\" href=\"/theme/studio/main.css?v=studio-20260830\">")
+	}
+	document.WriteString("</head><body><main class=\"raw\">")
 	document.WriteString(content)
 	document.WriteString(`</main><script>addEventListener("message",function(e){if(e.data&&e.data.type==="blog-theme"){document.documentElement.dataset.theme=e.data.theme}});new ResizeObserver(function(){parent.postMessage({type:"blog-raw-height",height:document.documentElement.scrollHeight},"*")}).observe(document.documentElement);parent.postMessage({type:"blog-raw-ready"},"*")</script></body></html>`)
 
@@ -238,14 +246,6 @@ func (a *App) rawPageContent(c *gin.Context) {
 	c.Header("X-Robots-Tag", "noindex, nofollow, nosnippet")
 	c.Header("Cache-Control", "no-store")
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(document.String()))
-}
-
-func optionFromStore(a *App, c *gin.Context, key, fallback string) string {
-	options, err := a.store.Options(c.Request.Context())
-	if err != nil {
-		return fallback
-	}
-	return option(options, key, fallback)
 }
 
 type sitemapURLSet struct {

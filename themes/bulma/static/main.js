@@ -19,8 +19,9 @@ function sendThemeToFrame(frame) {
 
 function applyTheme(theme, persist = false) {
   const normalized = theme === 'dark' ? 'dark' : 'light';
+  const studio = document.documentElement.dataset.siteTheme === 'studio';
   document.documentElement.dataset.theme = normalized;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', normalized === 'dark' ? '#11161c' : '#ffffff');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', normalized === 'dark' ? (studio ? '#101511' : '#11161c') : (studio ? '#f4f5f1' : '#ffffff'));
   document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
     const dark = normalized === 'dark';
     button.setAttribute('aria-pressed', dark ? 'true' : 'false');

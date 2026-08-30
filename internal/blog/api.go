@@ -298,6 +298,10 @@ func (a *App) updateOptions(c *gin.Context) {
 			}
 		}
 	}
+	if raw, ok := options["theme"]; ok && !validPublicTheme(fmt.Sprint(raw)) {
+		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "前台主题无效"})
+		return
+	}
 	_, modeChanged := options[githubProxyModeOption]
 	_, proxyURLChanged := options[githubProxyURLOption]
 	if modeChanged || proxyURLChanged {

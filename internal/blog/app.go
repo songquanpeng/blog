@@ -119,6 +119,7 @@ func (a *App) routes() *gin.Engine {
 	router.GET("/robots.txt", a.robots)
 	router.GET("/code-theme.css", a.codeThemeAsset)
 	router.GET("/static/*filepath", a.staticFile(filepath.Join("themes", "bulma", "static")))
+	router.GET("/theme/studio/*filepath", a.staticFile(filepath.Join("themes", "studio", "static")))
 	router.GET("/upload/*filepath", a.uploadedAsset)
 	for _, filename := range []string{"favicon.ico", "manifest.json", "icon192.png", "icon512.png"} {
 		name := filename

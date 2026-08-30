@@ -122,6 +122,9 @@ func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	if err := store.CreatePage(t.Context(), &page); err != nil {
 		t.Fatal(err)
 	}
+	if err := store.UpdateOptions(t.Context(), map[string]any{"theme": "studio"}); err != nil {
+		t.Fatal(err)
+	}
 
 	gin.SetMode(gin.TestMode)
 	app := &App{store: store, cfg: Config{UploadPath: t.TempDir()}}
@@ -136,6 +139,9 @@ func TestRawPageRunsOnlyInsideOpaqueSandbox(t *testing.T) {
 	}
 	if body := recorder.Body.String(); !strings.Contains(body, `type==="blog-theme"`) || !strings.Contains(body, `type:"blog-raw-ready"`) {
 		t.Fatalf("raw page does not synchronize its theme: %s", body)
+	}
+	if body := recorder.Body.String(); !strings.Contains(body, `data-site-theme="studio"`) || !strings.Contains(body, `/theme/studio/main.css`) {
+		t.Fatalf("raw page does not use the selected public theme: %s", body)
 	}
 	csp := recorder.Header().Get("Content-Security-Policy")
 	if !strings.Contains(csp, "sandbox allow-scripts") || strings.Contains(csp, "allow-same-origin") {
@@ -203,7 +209,7 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 	defer store.Close()
 	if err := store.UpdateOptions(t.Context(), map[string]any{
 		"site_name": "Example Notes", "description": "A small independent publication.",
-		"author": "Example Author", "language": "zh-CN", "social_image": "/icon512.png",
+		"author": "Example Author", "language": "zh-CN", "social_image": "/icon512.png", "theme": "studio",
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -247,6 +253,8 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`class="navbar-end"`,
 		`theme-toggle-mobile`,
 		`theme-toggle-desktop`,
+		`data-site-theme="studio"`,
+		`href="/theme/studio/main.css?v=studio-20260830"`,
 		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {
@@ -390,7 +398,10 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 	if recorder := do(http.MethodPut, "/api/page", "application/json", update, true); recorder.Code != http.StatusOK {
 		t.Fatalf("update page = %d %s", recorder.Code, recorder.Body.String())
 	}
-	if recorder := do(http.MethodPut, "/api/option", "application/json", bytes.NewBufferString(`{"theme":"bootstrap5","site_name":"Regression"}`), true); recorder.Code != http.StatusOK {
+	if recorder := do(http.MethodPut, "/api/option", "application/json", bytes.NewBufferString(`{"theme":"bootstrap5"}`), true); recorder.Code != http.StatusBadRequest {
+		t.Fatalf("invalid theme unexpectedly accepted = %d %s", recorder.Code, recorder.Body.String())
+	}
+	if recorder := do(http.MethodPut, "/api/option", "application/json", bytes.NewBufferString(`{"theme":"studio","site_name":"Regression"}`), true); recorder.Code != http.StatusOK {
 		t.Fatalf("update options = %d %s", recorder.Code, recorder.Body.String())
 	}
 	validNavigation := `{"nav_links":"[{\"key\":\"主导航\",\"value\":[{\"text\":\"首页\",\"link\":\"/\"}]}]"}`
@@ -402,7 +413,7 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 		t.Fatalf("invalid navigation unexpectedly accepted = %d %s", recorder.Code, recorder.Body.String())
 	}
 	options, _ := store.Options(t.Context())
-	if options["theme"] != "bulma" || options["site_name"] != "Regression" || !strings.Contains(options["nav_links"], "主导航") {
+	if options["theme"] != "studio" || options["site_name"] != "Regression" || !strings.Contains(options["nav_links"], "主导航") {
 		t.Fatalf("updated options = %#v", options)
 	}
 

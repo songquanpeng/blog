@@ -346,6 +346,22 @@ function HomePageEditor({ value, onChange }) {
   return <div className="home-page-editor"><div className="home-mode-grid" role="radiogroup" aria-label="首页展示方式">{choices.map(([key, title, description]) => <label className={mode === key ? 'is-selected' : ''} key={key}><input type="radio" name="home-page-mode" checked={mode === key} onChange={() => onChange(valueForHomePageMode(key, value))} /><span><strong>{title}</strong><small>{description}</small></span></label>)}</div>{mode === 'custom' && <label className="field"><span className="field-label">首页 HTML <code>index_page_content</code></span><textarea className="textarea code-input home-html-input" rows="10" value={value} onChange={(event) => onChange(event.target.value)} placeholder="<section>…</section>" /><small>保存后会替代文章列表。可在新窗口打开站点检查效果。</small></label>}</div>;
 }
 
+const SITE_THEMES = [
+  { value: 'bulma', name: 'Bulma 经典', description: '保留现在简洁、紧凑的博客阅读体验。', preview: 'theme-preview-bulma' },
+  { value: 'studio', name: 'Studio 宋韵', description: '匹配管理后台的墨绿气质，用宋体与衬线字体重排长文。', preview: 'theme-preview-studio' },
+];
+
+function SiteThemeSettings({ value, onChange }) {
+  const selected = SITE_THEMES.some((theme) => theme.value === value) ? value : 'bulma';
+  return <section className="panel settings-group site-theme-settings"><header><div><h2>前台主题</h2><p>保存后立即切换公开站点的排版与视觉，无需重启。</p></div><a className="button subtle small" href="/" target="_blank" rel="noreferrer">预览站点 ↗</a></header>
+    <div className="site-theme-grid" role="radiogroup" aria-label="前台主题">{SITE_THEMES.map((theme) => <label className={selected === theme.value ? 'is-selected' : ''} key={theme.value}>
+      <input type="radio" name="site-theme" value={theme.value} checked={selected === theme.value} onChange={() => onChange(theme.value)} />
+      <span className={`site-theme-preview ${theme.preview}`} aria-hidden="true"><i /><b /><b /><em /><em /></span>
+      <span><strong>{theme.name}</strong><small>{theme.description}</small></span>
+    </label>)}</div>
+  </section>;
+}
+
 function GitHubNetworkSettings({ mode, proxyUrl, forced, onChange, notify }) {
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState(null);
@@ -402,6 +418,7 @@ function Settings({ notify }) {
   if (loading) return <div className="loading-page"><div className="loading-bar"><i /></div></div>;
   return <form onSubmit={save}><PageHeader kicker="SITE CONFIGURATION" title="站点设置" description="管理品牌、搜索展示和全局内容。" actions={<button className="button primary" disabled={saving}>{saving ? '保存中…' : '保存全部设置'}</button>} />
     <div className="settings-stack">{SETTING_GROUPS.map((group) => <section className="panel settings-group" key={group.title}><header><div><h2>{group.title}</h2><p>{group.description}</p></div></header><div className="settings-fields">{group.fields.map(([key, label, type, placeholder]) => <label className={`field ${type === 'textarea' ? 'full' : ''}`} key={key}><span className="field-label">{label}<code>{key}</code></span>{type === 'text' ? <input className="input" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOption(key, event.target.value)} /> : <textarea className="textarea" rows="3" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOption(key, event.target.value)} />}</label>)}</div></section>)}
+      <SiteThemeSettings value={options.theme || 'bulma'} onChange={(value) => setOption('theme', value)} />
       <GitHubNetworkSettings mode={options.github_proxy_mode || 'direct'} proxyUrl={options.github_proxy_url || ''} forced={networkForced} onChange={setOption} notify={notify} />
       <section className="panel settings-group navigation-settings"><header><div><h2>导航菜单</h2><p>添加链接、调整顺序，并把常用页面组织成下拉菜单。</p></div><a className="button subtle small" href="/" target="_blank" rel="noreferrer">查看站点 ↗</a></header><NavigationEditor value={options.nav_links || ''} pages={pages} onChange={(value) => setOption('nav_links', value)} /></section>
       <section className="panel settings-group"><header><div><h2>首页与文章</h2><p>选择首页呈现方式，并设置每篇文章末尾的统一说明。</p></div></header><div className="settings-fields"><div className="full"><HomePageEditor value={options.index_page_content || ''} onChange={(value) => setOption('index_page_content', value)} /></div><label className="field full"><span className="field-label">文章版权说明 <code>copyright</code></span><textarea className="textarea" rows="4" value={options.copyright || ''} placeholder="例如：转载请注明作者与原文链接" onChange={(event) => setOption('copyright', event.target.value)} /><small>显示在所有文章正文之后，支持 HTML。</small></label></div></section>

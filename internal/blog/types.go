@@ -119,6 +119,7 @@ type ViewData struct {
 	BrandImage  string
 	SocialImage string
 	CodeTheme   string
+	Theme       string
 	Copyright   template.HTML
 	ExtraFooter template.HTML
 	Notice      template.HTML

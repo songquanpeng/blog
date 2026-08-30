@@ -105,6 +105,35 @@ func TestHistoricalSequelizeDatabaseIsReadable(t *testing.T) {
 	}
 }
 
+func TestPublicThemeOptionPersistsAndNormalizes(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "data.db")
+	store, err := openStore(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.UpdateOptions(t.Context(), map[string]any{"theme": "studio"}); err != nil {
+		t.Fatal(err)
+	}
+	store.Close()
+
+	store, err = openStore(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	options, err := store.Options(t.Context())
+	if err != nil || options["theme"] != "studio" {
+		t.Fatalf("persisted theme = %q, %v", options["theme"], err)
+	}
+	if err := store.UpdateOptions(t.Context(), map[string]any{"theme": "unknown"}); err != nil {
+		t.Fatal(err)
+	}
+	options, err = store.Options(t.Context())
+	if err != nil || options["theme"] != "bulma" {
+		t.Fatalf("normalized theme = %q, %v", options["theme"], err)
+	}
+}
+
 func TestSearchPagesMatchesBodyAndPreservesMetrics(t *testing.T) {
 	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
 	if err != nil {

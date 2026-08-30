@@ -5,6 +5,7 @@
 ## 特性
 
 - 公开站点保留兼容旧内容的 Bulma 主题，管理后台使用更适合写作与内容管理的独立界面。
+- 公开站点可在经典 Bulma 与 Studio 宋韵主题之间即时切换；Studio 使用与管理后台一致的墨绿视觉和更适合中文长文的宋体排版。
 - 服务端输出完整语义化 HTML，包含 canonical、Open Graph、JSON-LD、Atom、sitemap 和 robots。
 - 显式沿用旧表名及字段名：`Pages`、`Users`、`Options`、`Files`。旧用户数据只用于显示历史作者，不再参与认证。
 - 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
@@ -77,6 +78,12 @@ python3 bin/import_microblog.py /path/to/microblog.db /path/to/blog/data.db --ap
 
 导入器不会删除目标数据；相同记录会跳过，ID 冲突但内容不同的记录会以新 ID 追加。执行前仍应备份两个数据库。
 
+## 前台主题
+
+登录后台后打开“站点设置 → 前台主题”，可在 **Bulma 经典** 与 **Studio 宋韵** 之间切换。保存后新请求立即使用所选主题，不需要重启服务；读者自己的日间/夜间偏好在两套主题中都会保留。
+
+Studio 宋韵延续管理后台的纸张色、墨绿色与卡片层次，中文正文优先使用系统自带的 `Songti SC`、`STSong` 或 `SimSun`，英文和数字使用 Georgia；代码仍使用等宽字体。
+
 ## 本地部署
 
 需要 Go 1.25+、Node.js 22+、npm 和 C 编译工具链（GORM SQLite 驱动需要 CGO）。
@@ -133,7 +140,7 @@ docker run --restart=always -d \
 
 ## 历史数据升级
 
-升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts`、`PageViews` 和 `BrowserSessions`）、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。明细统计从升级后开始积累，旧 `Pages.view` 累计值会继续保留。
+升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts`、`PageViews` 和 `BrowserSessions`）并补充缺失的默认设置。未选择主题的旧站点继续使用 `bulma`；后台切换后会保存所选主题。明细统计从升级后开始积累，旧 `Pages.view` 累计值会继续保留。
 
 旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。自动化管理统一使用由本站 device flow 签发且可撤销的 CLI token。
 

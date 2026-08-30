@@ -94,7 +94,7 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 		Robots:    "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
 		Canonical: canonical, SiteURL: base, SiteName: siteName, SiteInitial: firstRune(siteName), Motto: options["motto"], Author: author,
 		Year: time.Now().Year(), Favicon: favicon, BrandImage: brandImage,
-		SocialImage: publicAssetURL(base, socialImage), CodeTheme: codeTheme,
+		SocialImage: publicAssetURL(base, socialImage), CodeTheme: codeTheme, Theme: publicTheme(options["theme"]),
 		PrimaryNav: primaryNav, Nav: nav, Copyright: a.safeHTML(options["copyright"]),
 		ExtraFooter: a.safeHTML(options["extra_footer_text"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,
 		Nonce: fmt.Sprint(nonce),

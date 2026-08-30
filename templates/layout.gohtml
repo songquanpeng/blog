@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{.Lang}}">
+<html lang="{{.Lang}}" data-site-theme="{{.Theme}}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,11 +31,12 @@
   <meta name="twitter:description" content="{{.Description}}">
   {{if .SocialImage}}<meta name="twitter:image" content="{{.SocialImage}}">
   <meta name="twitter:image:alt" content="{{.Title}}">{{end}}
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="{{if eq .Theme "studio"}}#f4f5f1{{else}}#ffffff{{end}}">
   <script nonce="{{.Nonce}}">(()=>{try{const saved=localStorage.getItem('blog-theme');const dark=saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'dark':'light'}catch{document.documentElement.dataset.theme='light'}})()</script>
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
   <link rel="stylesheet" href="/static/main.css?v=bulma-reading-fixes-20260830">
+  {{if eq .Theme "studio"}}<link rel="stylesheet" href="/theme/studio/main.css?v=studio-20260830">{{end}}
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
@@ -114,7 +115,7 @@
     </div>
   </main>
 
-  <footer id="footer"><div class="content has-text-centered"><p>© {{.Year}} <a href="{{.SiteURL}}">{{.Author}}</a> {{.ExtraFooter}} 由 <a href="https://github.com/songquanpeng/blog">Blog</a> 驱动，主题 <a href="https://github.com/songquanpeng/blog/tree/master/themes/bulma">Bulma</a></p></div></footer>
+  <footer id="footer"><div class="content has-text-centered"><p>© {{.Year}} <a href="{{.SiteURL}}">{{.Author}}</a> {{.ExtraFooter}} 由 <a href="https://github.com/songquanpeng/blog">Blog</a> 驱动，主题 {{if eq .Theme "studio"}}Studio 宋韵{{else}}<a href="https://github.com/songquanpeng/blog/tree/master/themes/bulma">Bulma</a>{{end}}</p></div></footer>
 </div>
 </body>
 </html>

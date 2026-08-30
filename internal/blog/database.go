@@ -226,7 +226,7 @@ func (s *Store) migrate() error {
 	if err := s.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&defaultOptions).Error; err != nil {
 		return err
 	}
-	return s.db.Model(&dbOption{}).Where("key = ?", "theme").Update("value", "bulma").Error
+	return nil
 }
 
 func (s *Store) SaveBrowserSession(ctx context.Context, token string, entry session) error {
@@ -407,7 +407,7 @@ func (s *Store) Options(ctx context.Context) (map[string]string, error) {
 	for _, row := range rows {
 		result[row.Key] = row.Value
 	}
-	result["theme"] = "bulma"
+	result["theme"] = publicTheme(result["theme"])
 	return result, nil
 }
 
@@ -418,6 +418,9 @@ func (s *Store) OptionList(ctx context.Context) ([]Option, error) {
 	}
 	options := make([]Option, 0, len(rows))
 	for _, row := range rows {
+		if row.Key == "theme" {
+			row.Value = publicTheme(row.Value)
+		}
 		options = append(options, Option{Key: row.Key, Value: row.Value})
 	}
 	return options, nil
@@ -432,7 +435,7 @@ func (s *Store) UpdateOptions(ctx context.Context, options map[string]any) error
 			}
 			value := fmt.Sprint(raw)
 			if key == "theme" {
-				value = "bulma"
+				value = publicTheme(value)
 			}
 			if len(value) > 1<<20 {
 				return errors.New("设置值过大")
