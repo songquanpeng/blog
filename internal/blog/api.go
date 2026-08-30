@@ -2,6 +2,7 @@ package blog
 
 import (
 	"crypto/subtle"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -276,6 +277,26 @@ func (a *App) updateOptions(c *gin.Context) {
 	if err := c.ShouldBindJSON(&options); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "设置参数无效"})
 		return
+	}
+	if raw, ok := options["nav_links"]; ok {
+		var navigation []NavGroup
+		value, isString := raw.(string)
+		if !isString || strings.TrimSpace(value) == "" || strings.TrimSpace(value) == "null" || json.Unmarshal([]byte(value), &navigation) != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "导航配置格式无效"})
+			return
+		}
+		for _, group := range navigation {
+			if strings.TrimSpace(group.Key) == "" || len(group.Key) > 80 {
+				c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "导航分组名称不能为空或超过 80 个字符"})
+				return
+			}
+			for _, item := range group.Value {
+				if strings.TrimSpace(item.Text) == "" || len(item.Text) > 80 || len(item.Link) > 2048 || !safeNavigationURL(strings.TrimSpace(item.Link)) {
+					c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "导航链接名称或地址无效"})
+					return
+				}
+			}
+		}
 	}
 	if err := a.store.UpdateOptions(c.Request.Context(), options); err != nil {
 		a.apiFailure(c, "保存设置失败", err)

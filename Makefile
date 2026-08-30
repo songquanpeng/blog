@@ -53,7 +53,10 @@ dev:
 dev-admin:
 	npm run dev --prefix admin
 
-test: build-admin
+test:
+	npm ci --prefix admin
+	npm test --prefix admin
+	npm run build --prefix admin
 	go test -race ./...
 
 check: test vuln

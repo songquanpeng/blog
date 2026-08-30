@@ -47,7 +47,7 @@ Local builds require Go 1.25+, Node.js 22+, npm, and a C toolchain for the GORM 
 
 ```bash
 make install
-make test
+make test   # frontend unit tests/build + Go race tests
 make build
 
 export PUBLIC_URL=https://your-domain

@@ -163,7 +163,7 @@ docker run --restart=always -d \
 ## 测试
 
 ```bash
-make test   # Go race tests + React production build
+make test   # 前端单元测试与生产构建 + Go race tests
 make check  # 额外运行 go vet、govulncheck 与 npm audit
 ```
 

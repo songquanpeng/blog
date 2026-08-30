@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from './api.js';
+import { homePageMode, parseNavigationConfig, serializeNavigationConfig, validateNavigationGroups, valueForHomePageMode } from './settings.js';
 
 const ArticleWorkspace = lazy(() => import('./ArticleWorkspace.jsx'));
 
@@ -293,20 +294,78 @@ const SETTING_GROUPS = [
   { title: '域名与 SEO', description: '这些设置会影响 canonical、分享预览和搜索引擎识别。', fields: [
     ['domain', '公开域名', 'text', 'blog.example.com（不要包含路径）'], ['language', '内容语言', 'text', '例如 zh-CN'], ['favicon', 'Favicon 地址', 'text', '/favicon.ico'], ['brand_image', '品牌图片地址', 'text', '/upload/brand.webp'], ['social_image', '社交分享图地址', 'text', '/upload/og-cover.webp'],
   ] },
-  { title: '导航与页面', description: '自定义主导航、首页扩展内容和版权说明。', fields: [
-    ['nav_links', '导航配置（JSON）', 'code', ''], ['index_page_content', '自定义首页 HTML', 'code', '留空使用文章列表；输入 404 可禁用首页'], ['copyright', '文章版权说明', 'textarea', '显示在文章正文之后'],
-  ] },
 ];
+
+function moveItem(items, from, to) {
+  if (to < 0 || to >= items.length) return items;
+  const next = [...items];
+  const [item] = next.splice(from, 1);
+  next.splice(to, 0, item);
+  return next;
+}
+
+function NavigationEditor({ value, pages, onChange }) {
+  const parsed = useMemo(() => parseNavigationConfig(value), [value]);
+  const groups = parsed.groups;
+  const setGroups = (next) => onChange(serializeNavigationConfig(next));
+  const suggestions = useMemo(() => {
+    const builtIn = [['/', '首页'], ['/archive', '存档'], ['/tags', '标签'], ['/feed.xml', '订阅']];
+    return [...builtIn, ...pages.map((page) => [`/page/${page.link}`, page.title || page.link])];
+  }, [pages]);
+  function updateGroup(groupIndex, patch) { setGroups(groups.map((group, index) => index === groupIndex ? { ...group, ...patch } : group)); }
+  function updateLink(groupIndex, itemIndex, patch) {
+    updateGroup(groupIndex, { value: groups[groupIndex].value.map((item, index) => index === itemIndex ? { ...item, ...patch } : item) });
+  }
+  if (parsed.error) return <div className="nav-config-error" role="alert"><strong>现有导航配置无法读取</strong><p>{parsed.error}</p><textarea className="textarea code-input" rows="5" value={value || ''} onChange={(event) => onChange(event.target.value)} aria-label="原始导航 JSON" /><div className="button-row"><button className="button primary small" type="button" onClick={() => setGroups([{ key: '主导航', value: [{ text: '首页', link: '/' }, { text: '存档', link: '/archive' }] }])}>重建为默认导航</button></div><small>原始内容仍保留在上方，重建后请检查再保存。</small></div>;
+  return <div className="nav-editor">
+    <datalist id="navigation-link-suggestions">{suggestions.map(([link, label]) => <option value={link} key={link}>{label}</option>)}</datalist>
+    <div className="nav-editor-help"><div><strong>可视化导航</strong><p>第一个分组会直接显示在主导航，其余分组显示为下拉菜单。</p></div><span>{groups.reduce((sum, group) => sum + group.value.length, 0)} 个链接</span></div>
+    <div className="nav-group-list">{groups.map((group, groupIndex) => <section className="nav-group-card" key={`group-${groupIndex}`}>
+      <header><span className="nav-drag-handle" aria-hidden="true">⠿</span><label><span className="sr-only">分组名称</span><input className="input" value={group.key} onChange={(event) => updateGroup(groupIndex, { key: event.target.value })} placeholder={groupIndex === 0 ? '主导航' : '下拉菜单名称'} /></label>{groupIndex === 0 && <span className="nav-primary-badge">主导航</span>}<div className="nav-order-actions"><button className="icon-button" type="button" disabled={groupIndex === 0} onClick={() => setGroups(moveItem(groups, groupIndex, groupIndex - 1))} aria-label="上移分组">↑</button><button className="icon-button" type="button" disabled={groupIndex === groups.length - 1} onClick={() => setGroups(moveItem(groups, groupIndex, groupIndex + 1))} aria-label="下移分组">↓</button><button className="icon-button danger-text" type="button" onClick={() => setGroups(groups.filter((_, index) => index !== groupIndex))} aria-label="删除分组">×</button></div></header>
+      <div className="nav-link-list">{group.value.length === 0 && <p className="nav-empty-row">这个分组还没有链接。</p>}{group.value.map((item, itemIndex) => <div className="nav-link-row" key={`link-${itemIndex}`}><span className="nav-link-index">{itemIndex + 1}</span><label><span>显示名称</span><input className="input" value={item.text} onChange={(event) => updateLink(groupIndex, itemIndex, { text: event.target.value })} placeholder="例如：关于" /></label><label><span>链接地址</span><input className="input code-input" list="navigation-link-suggestions" value={item.link} onChange={(event) => updateLink(groupIndex, itemIndex, { link: event.target.value })} placeholder="/page/about 或 https://…" /></label><div className="nav-order-actions"><button className="icon-button" type="button" disabled={itemIndex === 0} onClick={() => updateGroup(groupIndex, { value: moveItem(group.value, itemIndex, itemIndex - 1) })} aria-label="上移链接">↑</button><button className="icon-button" type="button" disabled={itemIndex === group.value.length - 1} onClick={() => updateGroup(groupIndex, { value: moveItem(group.value, itemIndex, itemIndex + 1) })} aria-label="下移链接">↓</button><button className="icon-button danger-text" type="button" onClick={() => updateGroup(groupIndex, { value: group.value.filter((_, index) => index !== itemIndex) })} aria-label="删除链接">×</button></div></div>)}</div>
+      <button className="button subtle small nav-add-link" type="button" onClick={() => updateGroup(groupIndex, { value: [...group.value, { text: '', link: '' }] })}>＋ 添加链接</button>
+    </section>)}</div>
+    <button className="button subtle nav-add-group" type="button" onClick={() => setGroups([...groups, { key: '', value: [] }])}>＋ 添加下拉分组</button>
+    {groups.length === 0 && <button className="button primary nav-start-button" type="button" onClick={() => setGroups([{ key: '主导航', value: [{ text: '首页', link: '/' }] }])}>创建第一组导航</button>}
+  </div>;
+}
+
+function HomePageEditor({ value, onChange }) {
+  const mode = homePageMode(value);
+  const choices = [
+    ['list', '文章列表', '展示最新发布的文章，适合大多数博客。'],
+    ['custom', '自定义首页', '使用 HTML 构建欢迎页或作品集入口。'],
+    ['disabled', '关闭首页', '访问首页时返回 404。'],
+  ];
+  return <div className="home-page-editor"><div className="home-mode-grid" role="radiogroup" aria-label="首页展示方式">{choices.map(([key, title, description]) => <label className={mode === key ? 'is-selected' : ''} key={key}><input type="radio" name="home-page-mode" checked={mode === key} onChange={() => onChange(valueForHomePageMode(key, value))} /><span><strong>{title}</strong><small>{description}</small></span></label>)}</div>{mode === 'custom' && <label className="field"><span className="field-label">首页 HTML <code>index_page_content</code></span><textarea className="textarea code-input home-html-input" rows="10" value={value} onChange={(event) => onChange(event.target.value)} placeholder="<section>…</section>" /><small>保存后会替代文章列表。可在新窗口打开站点检查效果。</small></label>}</div>;
+}
 
 function Settings({ notify }) {
   const [options, setOptions] = useState({});
+  const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  useEffect(() => { api('/api/option').then((payload) => setOptions(Object.fromEntries(payload.options.map((item) => [item.key, item.value])))).catch((error) => notify(error.message, true)).finally(() => setLoading(false)); }, [notify]);
-  async function save(event) { event.preventDefault(); setSaving(true); try { await api('/api/option', { method: 'PUT', body: options }); notify('站点设置已保存'); } catch (error) { notify(error.message, true); } finally { setSaving(false); } }
+  const setOption = (key, value) => setOptions((current) => ({ ...current, [key]: value }));
+  useEffect(() => {
+    Promise.all([api('/api/option'), api('/api/page').catch(() => ({ pages: [] }))])
+      .then(([optionPayload, pagePayload]) => { setOptions(Object.fromEntries(optionPayload.options.map((item) => [item.key, item.value]))); setPages(pagePayload.pages || []); })
+      .catch((error) => notify(error.message, true)).finally(() => setLoading(false));
+  }, [notify]);
+  async function save(event) {
+    event.preventDefault();
+    const parsed = parseNavigationConfig(options.nav_links);
+    const navigationError = parsed.error || validateNavigationGroups(parsed.groups);
+    if (navigationError) { notify(navigationError, true); return; }
+    setSaving(true);
+    try { await api('/api/option', { method: 'PUT', body: { ...options, nav_links: serializeNavigationConfig(parsed.groups, true) } }); notify('站点设置已保存'); }
+    catch (error) { notify(error.message, true); } finally { setSaving(false); }
+  }
   if (loading) return <div className="loading-page"><div className="loading-bar"><i /></div></div>;
   return <form onSubmit={save}><PageHeader kicker="SITE CONFIGURATION" title="站点设置" description="管理品牌、搜索展示和全局内容。" actions={<button className="button primary" disabled={saving}>{saving ? '保存中…' : '保存全部设置'}</button>} />
-    <div className="settings-stack">{SETTING_GROUPS.map((group) => <section className="panel settings-group" key={group.title}><header><div><h2>{group.title}</h2><p>{group.description}</p></div></header><div className="settings-fields">{group.fields.map(([key, label, type, placeholder]) => <label className={`field ${type === 'code' || type === 'textarea' ? 'full' : ''}`} key={key}><span className="field-label">{label}<code>{key}</code></span>{type === 'text' ? <input className="input" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOptions({ ...options, [key]: event.target.value })} /> : <textarea className={`textarea ${type === 'code' ? 'code-input' : ''}`} rows={type === 'code' ? (key === 'nav_links' ? 8 : 6) : 3} value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOptions({ ...options, [key]: event.target.value })} />}</label>)}</div></section>)}</div>
+    <div className="settings-stack">{SETTING_GROUPS.map((group) => <section className="panel settings-group" key={group.title}><header><div><h2>{group.title}</h2><p>{group.description}</p></div></header><div className="settings-fields">{group.fields.map(([key, label, type, placeholder]) => <label className={`field ${type === 'textarea' ? 'full' : ''}`} key={key}><span className="field-label">{label}<code>{key}</code></span>{type === 'text' ? <input className="input" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOption(key, event.target.value)} /> : <textarea className="textarea" rows="3" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOption(key, event.target.value)} />}</label>)}</div></section>)}
+      <section className="panel settings-group navigation-settings"><header><div><h2>导航菜单</h2><p>添加链接、调整顺序，并把常用页面组织成下拉菜单。</p></div><a className="button subtle small" href="/" target="_blank" rel="noreferrer">查看站点 ↗</a></header><NavigationEditor value={options.nav_links || ''} pages={pages} onChange={(value) => setOption('nav_links', value)} /></section>
+      <section className="panel settings-group"><header><div><h2>首页与文章</h2><p>选择首页呈现方式，并设置每篇文章末尾的统一说明。</p></div></header><div className="settings-fields"><div className="full"><HomePageEditor value={options.index_page_content || ''} onChange={(value) => setOption('index_page_content', value)} /></div><label className="field full"><span className="field-label">文章版权说明 <code>copyright</code></span><textarea className="textarea" rows="4" value={options.copyright || ''} placeholder="例如：转载请注明作者与原文链接" onChange={(event) => setOption('copyright', event.target.value)} /><small>显示在所有文章正文之后，支持 HTML。</small></label></div></section>
+    </div>
     <aside className="info-callout warm"><strong>关于自定义 HTML</strong><p>本站是单一所有者写入模式，因此会完整保留你发布的 HTML。HTML 页面仍运行在隔离沙箱中，不会获得后台登录态。</p></aside>
   </form>;
 }

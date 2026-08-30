@@ -365,8 +365,16 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 	if recorder := do(http.MethodPut, "/api/option", "application/json", bytes.NewBufferString(`{"theme":"bootstrap5","site_name":"Regression"}`), true); recorder.Code != http.StatusOK {
 		t.Fatalf("update options = %d %s", recorder.Code, recorder.Body.String())
 	}
+	validNavigation := `{"nav_links":"[{\"key\":\"主导航\",\"value\":[{\"text\":\"首页\",\"link\":\"/\"}]}]"}`
+	if recorder := do(http.MethodPut, "/api/option", "application/json", bytes.NewBufferString(validNavigation), true); recorder.Code != http.StatusOK {
+		t.Fatalf("update navigation = %d %s", recorder.Code, recorder.Body.String())
+	}
+	invalidNavigation := `{"nav_links":"[{\"key\":\"主导航\",\"value\":[{\"text\":\"危险链接\",\"link\":\"javascript:alert(1)\"}]}]"}`
+	if recorder := do(http.MethodPut, "/api/option", "application/json", bytes.NewBufferString(invalidNavigation), true); recorder.Code != http.StatusBadRequest {
+		t.Fatalf("invalid navigation unexpectedly accepted = %d %s", recorder.Code, recorder.Body.String())
+	}
 	options, _ := store.Options(t.Context())
-	if options["theme"] != "bulma" || options["site_name"] != "Regression" {
+	if options["theme"] != "bulma" || options["site_name"] != "Regression" || !strings.Contains(options["nav_links"], "主导航") {
 		t.Fatalf("updated options = %#v", options)
 	}
 
