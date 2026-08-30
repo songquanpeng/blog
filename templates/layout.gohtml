@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
   <link rel="stylesheet" href="/static/main.css?v=bulma-reading-fixes-20260830">
-  {{if eq .Theme "studio"}}<link rel="stylesheet" href="/theme/studio/main.css?v=studio-essay-20260830">{{end}}
+  {{if eq .Theme "studio"}}<link rel="stylesheet" href="/theme/studio/main.css?v=studio-essay-nav-20260830">{{end}}
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
@@ -100,7 +100,7 @@
       {{else if eq .Kind "archive"}}
         <section class="archive-container"><h1 class="title is-3 archive-title">存档</h1><div class="table-container"><table class="table is-fullwidth is-hoverable is-bordered is-striped archive-table"><thead><tr><th>标题</th><th>发布时间</th><th>编辑时间</th></tr></thead><tbody>{{range .Pages}}<tr><td data-label="标题"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></td><td data-label="发布时间"><time datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time></td><td data-label="编辑时间"><time datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time></td></tr>{{end}}</tbody></table></div></section>
       {{else if eq .Kind "list"}}
-        <section class="archive-container"><h1 class="title is-3 archive-title">{{.ListTitle}}</h1><div class="page-card-list">{{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content"><h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></h2><time class="tag is-light" datetime="{{.UpdatedAt}}">{{date .UpdatedAt}}</time><div class="page-card-text">{{.Description}}</div></div></div></article></div>{{else}}<div class="notification is-light">没有匹配的文章。</div>{{end}}</div></section>
+        <section class="archive-container"><h1 class="title is-3 archive-title">{{.ListTitle}}</h1><div class="page-card-list">{{range .Pages}}<div class="box index-page-box"><article class="media index-page-media"><div class="media-content"><div class="content"><h2 class="page-card-title"><a href="/page/{{pathEscape .Link}}">{{.Title}}</a></h2><time class="tag is-light" datetime="{{.CreatedAt}}">{{date .CreatedAt}}</time><div class="page-card-text">{{.Description}}</div></div></div></article></div>{{else}}<div class="notification is-light">没有匹配的文章。</div>{{end}}</div></section>
       {{else if eq .Kind "message"}}
         <section class="notification is-light message-panel"><h1 class="title is-4">{{.Title}}</h1><p>{{.Message}}</p><p class="message-home"><a href="/">返回首页</a></p></section>
       {{else if eq .Kind "links"}}

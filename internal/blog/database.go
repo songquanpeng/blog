@@ -523,15 +523,15 @@ func (s *Store) findPages(query *gorm.DB) ([]Page, error) {
 }
 
 func (s *Store) PublicPages(ctx context.Context) ([]Page, error) {
-	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus IN ?", []int{StatusPublished, StatusTopped}).Order("p.pageStatus DESC, p.updatedAt DESC"))
+	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus IN ?", []int{StatusPublished, StatusTopped}).Order("p.pageStatus DESC, p.createdAt DESC, p.id DESC"))
 }
 
 func (s *Store) ArchivePages(ctx context.Context) ([]Page, error) {
-	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus != ?", StatusRecalled).Order("p.updatedAt ASC"))
+	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus != ?", StatusRecalled).Order("p.createdAt DESC, p.id DESC"))
 }
 
 func (s *Store) PagesByTag(ctx context.Context, tag string) ([]Page, error) {
-	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus != ? AND (';' || p.tag || ';') LIKE ?", StatusRecalled, "%;"+tag+";%").Order("p.updatedAt DESC"))
+	return s.findPages(s.pageQuery(ctx).Where("p.pageStatus != ? AND (';' || p.tag || ';') LIKE ?", StatusRecalled, "%;"+tag+";%").Order("p.createdAt DESC, p.id DESC"))
 }
 
 func (s *Store) PagesByMonth(ctx context.Context, year, month int) ([]Page, error) {
@@ -540,7 +540,7 @@ func (s *Store) PagesByMonth(ctx context.Context, year, month int) ([]Page, erro
 }
 
 func (s *Store) AllPages(ctx context.Context) ([]Page, error) {
-	return s.findPages(s.pageQuery(ctx).Order("p.updatedAt DESC"))
+	return s.findPages(s.pageQuery(ctx).Order("p.createdAt DESC, p.id DESC"))
 }
 
 func (s *Store) SearchPages(ctx context.Context, keyword string, pageType int) ([]Page, error) {
@@ -549,7 +549,7 @@ func (s *Store) SearchPages(ctx context.Context, keyword string, pageType int) (
 	if pageType >= 0 {
 		query = query.Where("p.type = ?", pageType)
 	}
-	return s.findPages(query.Order("p.updatedAt DESC"))
+	return s.findPages(query.Order("p.createdAt DESC, p.id DESC"))
 }
 
 func (s *Store) PageByID(ctx context.Context, id string) (Page, error) {

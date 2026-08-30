@@ -154,6 +154,43 @@ func TestSearchPagesMatchesBodyAndPreservesMetrics(t *testing.T) {
 	}
 }
 
+func TestPageListsOrderByPublicationTimeInsteadOfEditTime(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	olderPublished := time.Date(2023, time.November, 20, 10, 0, 0, 0, time.UTC)
+	newerPublished := time.Date(2026, time.August, 30, 10, 0, 0, 0, time.UTC)
+	rows := []dbPage{
+		{ID: "older-edited", Link: "older-edited", PageStatus: StatusPublished, Title: "Older but edited", Content: "shared phrase", Tag: "Essay", CreatedAt: olderPublished, UpdatedAt: newerPublished.Add(time.Hour)},
+		{ID: "newer-published", Link: "newer-published", PageStatus: StatusPublished, Title: "Newer publication", Content: "shared phrase", Tag: "Essay", CreatedAt: newerPublished, UpdatedAt: newerPublished},
+	}
+	if err := store.db.Create(&rows).Error; err != nil {
+		t.Fatal(err)
+	}
+
+	queries := []struct {
+		name string
+		load func() ([]Page, error)
+	}{
+		{name: "all", load: func() ([]Page, error) { return store.AllPages(t.Context()) }},
+		{name: "public", load: func() ([]Page, error) { return store.PublicPages(t.Context()) }},
+		{name: "archive", load: func() ([]Page, error) { return store.ArchivePages(t.Context()) }},
+		{name: "tag", load: func() ([]Page, error) { return store.PagesByTag(t.Context(), "Essay") }},
+		{name: "search", load: func() ([]Page, error) { return store.SearchPages(t.Context(), "shared phrase", -1) }},
+	}
+	for _, query := range queries {
+		pages, err := query.load()
+		if err != nil {
+			t.Fatalf("%s pages: %v", query.name, err)
+		}
+		if len(pages) != 2 || pages[0].ID != "newer-published" || pages[1].ID != "older-edited" {
+			t.Fatalf("%s pages ordered by edit time instead of publication time: %#v", query.name, pages)
+		}
+	}
+}
+
 func TestContentSanitizationAndFrontMatter(t *testing.T) {
 	app := &App{cfg: Config{AllowUnsafeHTML: false}}
 	page := Page{Type: PageArticle, Content: "---\ntitle: test\n---\n# Safe\n<script>alert(1)</script><a href=\"javascript:alert(2)\">bad</a><img src=\"https://example.com/qr.png\" alt=\"QR code\" onerror=\"alert(3)\">"}

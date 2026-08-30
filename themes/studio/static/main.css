@@ -38,52 +38,42 @@ body {
 ::selection { background: #d9d5cc; color: #171614; }
 :focus-visible { outline-color: color-mix(in srgb, var(--text) 32%, transparent); }
 
-/* The dark masthead gives the site a quiet cover-page edge without using colour. */
+/* A quiet, typographic masthead that reads as part of the essay page. */
 .navbar {
-  min-height: 64px;
-  margin-bottom: 38px;
-  border-bottom: 1px solid #353532;
-  background: var(--nav-bg);
+  min-height: 76px;
+  margin-bottom: 44px;
+  border-bottom: 1px solid var(--line);
+  background: var(--page);
 }
 .nav-shadow { box-shadow: none; }
-.navbar > .container { min-height: 64px; }
-.site-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: #f1f0ec !important;
+.navbar > .container { min-height: 76px; }
+.navbar-item, .navbar-link, .nav-group-label {
+  color: var(--muted);
   font-family: var(--studio-serif);
-  font-size: .94rem;
-  font-weight: 600;
-  letter-spacing: .04em;
-}
-.site-brand::before {
-  content: "B";
-  width: 32px;
-  height: 32px;
-  display: grid;
-  flex: 0 0 32px;
-  place-items: center;
-  border: 1px solid #66645f;
-  border-radius: 2px;
-  color: #f1f0ec;
-  font-family: Georgia, serif;
   font-size: 1rem;
   font-weight: 500;
+  letter-spacing: .055em;
 }
-.navbar-item, .navbar-link, .nav-group-label {
-  color: #aaa7a0;
-  font-family: var(--studio-sans);
-  font-size: .78rem;
-  font-weight: 500;
-  letter-spacing: .04em;
+.navbar-item.site-brand {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text) !important;
+  font-family: var(--studio-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: .045em;
 }
 .navbar-item:hover, .navbar-link:hover, .navbar-item:focus, .navbar-link:focus,
-.navbar-item.has-dropdown:hover .navbar-link { background: #2c2c29 !important; color: #fff !important; }
-.navbar-dropdown { border: 1px solid #3d3d39; border-radius: 0; background: #20201e; box-shadow: 0 18px 40px rgba(0,0,0,.2); }
-.navbar-dropdown .navbar-item, .navbar-burger { color: #aaa7a0; }
-.theme-toggle { border-color: #4a4945; background: transparent; color: #aaa7a0; }
-.theme-toggle:hover { border-color: #77746e; background: #2c2c29; color: #fff; }
+.navbar-item.has-dropdown:hover .navbar-link { background: transparent !important; color: var(--text) !important; }
+.navbar-start > .navbar-item:not(.has-dropdown):hover,
+.navbar-start > .navbar-item:not(.has-dropdown):focus,
+.nav-group-label:hover,
+.nav-group-label:focus { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .32em; }
+.navbar-dropdown { border: 1px solid var(--line); border-radius: 2px; background: var(--surface); box-shadow: var(--shadow); }
+.navbar-dropdown .navbar-item, .navbar-burger { color: var(--muted); }
+.navbar-dropdown .navbar-item:hover, .navbar-dropdown .navbar-item:focus { background: var(--surface-soft) !important; }
+.theme-toggle { border-color: var(--line-strong); background: transparent; color: var(--muted); }
+.theme-toggle:hover { border-color: var(--text); background: transparent; color: var(--text); }
 
 #content-wrap { padding-bottom: 6rem; }
 #content-wrap > .container { max-width: 1160px; }
@@ -252,8 +242,8 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 16.5p
 :root[data-theme="dark"] .protected-content :not(pre) > code { background: var(--surface-soft); color: var(--text); }
 
 @media screen and (max-width: 1023px) {
-  .navbar, .navbar > .container { min-height: 60px; }
-  .navbar-menu { border-top: 1px solid #3d3d39; background: #20201e; box-shadow: 0 18px 30px rgba(0,0,0,.2); }
+  .navbar, .navbar > .container { min-height: 68px; }
+  .navbar-menu { border-top: 1px solid var(--line); background: var(--page); box-shadow: 0 18px 30px rgba(28, 27, 24, .08); }
   .navbar-dropdown { border: 0; box-shadow: none; }
   .index-layout { gap: 16px; }
   .index-sidebar { padding-top: 36px; }
@@ -263,7 +253,6 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 16.5p
 @media screen and (max-width: 768px) {
   .navbar { margin-bottom: 22px; }
   .site-brand { padding-left: 14px; }
-  .site-brand::before { width: 30px; height: 30px; flex-basis: 30px; }
   .index-layout > .column { padding-inline: 18px; }
   .index-page-box { padding: 23px 0 25px; }
   .content h2.page-card-title { font-size: 1.3rem; line-height: 1.5; }
