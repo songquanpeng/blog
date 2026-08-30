@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from './api.js';
+
+const ArticleWorkspace = lazy(() => import('./ArticleWorkspace.jsx'));
 
 const PAGE_TYPES = ['文章', '代码', '公告', '讨论', '友链', 'HTML', '媒体', '时间线', '重定向', '文本'];
 const PAGE_STATES = ['已撤回', '已发布', '已置顶', '已隐藏'];
@@ -134,15 +136,28 @@ function Editor({ id, notify }) {
   const [saving, setSaving] = useState(false);
   useEffect(() => { if (!id) { setPage({ ...EMPTY_PAGE }); return; } api(`/api/page/${id}`).then((payload) => setPage(payload.page)).catch((error) => notify(error.message, true)); }, [id, notify]);
   function field(name, transform = (value) => value) { return (event) => setPage((current) => ({ ...current, [name]: transform(event.target.value) })); }
+  const changeContent = useCallback((content) => setPage((current) => ({ ...current, content })), []);
   async function save(event) {
-    event.preventDefault(); setSaving(true);
+    event?.preventDefault();
+    if (saving) return;
+    if (!(page.title || '').trim()) { notify('请先填写页面标题', true); return; }
+    if (!(page.link || '').trim()) { notify('请先设置固定链接', true); return; }
+    if (!(page.content || '').trim()) { notify('正文还没有内容', true); return; }
+    setSaving(true);
     try { const method = page.id ? 'PUT' : 'POST'; const payload = await api('/api/page', { method, body: { ...page, type: Number(page.type), pageStatus: Number(page.pageStatus), commentStatus: Number(page.commentStatus) } }); setPage((current) => ({ ...current, id: current.id || payload.id })); notify(page.id ? '页面已更新' : '页面已创建'); if (!page.id) go(`editor/${payload.id}`); }
     catch (error) { notify(error.message, true); } finally { setSaving(false); }
   }
+  useEffect(() => {
+    const shortcut = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') { event.preventDefault(); save(); }
+    };
+    window.addEventListener('keydown', shortcut);
+    return () => window.removeEventListener('keydown', shortcut);
+  });
   const tags = (page.tag || '').split(';').map((tag) => tag.trim()).filter(Boolean);
   const siteOrigin = window.location.origin;
-  return <form className="editor-page" onSubmit={save}><PageHeader kicker={page.id ? 'EDIT CONTENT' : 'NEW CONTENT'} title={page.id ? '编辑页面' : '写一篇新内容'} description={page.id ? '修改内容、SEO 摘要与发布设置。' : '从标题开始，把想法变成一篇可以被找到的文章。'} actions={<><button className="button subtle" type="button" onClick={() => go('posts')}>返回列表</button>{page.link && <a className="button subtle" href={`/page/${encodeURIComponent(page.link)}`} target="_blank" rel="noreferrer">预览 ↗</a>}<button className="button primary" disabled={saving}>{saving ? '保存中…' : '保存页面'}</button></>} />
-    <div className="editor-grid"><section className="editor-main panel"><label className="field"><span className="field-label">标题</span><input className="title-input" value={page.title || ''} onChange={field('title')} placeholder="一篇值得读下去的标题" required maxLength="300" /><small>{(page.title || '').length} / 300</small></label><label className="field"><span className="field-label">摘要 <em>用于搜索结果和文章列表</em></span><textarea className="textarea description-input" rows="3" value={page.description || ''} onChange={field('description')} placeholder="用一两句话概括这篇内容，建议 80–160 个字。" maxLength="220" /><small>{(page.description || '').length} / 220</small></label><label className="field content-field"><span className="field-label">正文 <em>支持 Markdown；HTML 类型保留原始代码</em></span><textarea className="textarea code-editor" value={page.content || ''} onChange={field('content')} spellCheck="false" placeholder="# 从这里开始写作…" required /><small>{(page.content || '').length.toLocaleString()} 字符</small></label></section>
+  return <form className="editor-page" onSubmit={save}><PageHeader kicker={page.id ? 'EDIT CONTENT' : 'NEW CONTENT'} title={page.id ? '编辑页面' : '写一篇新内容'} description={page.id ? '修改内容、SEO 摘要与发布设置。' : '从标题开始，把想法变成一篇可以被找到的文章。'} actions={<><button className="button subtle" type="button" onClick={() => go('posts')}>返回列表</button>{page.link && <a className="button subtle" href={`/page/${encodeURIComponent(page.link)}`} target="_blank" rel="noreferrer">站点预览 ↗</a>}<button className="button primary" disabled={saving} title="保存页面（⌘/Ctrl + S）">{saving ? '保存中…' : '保存页面'}</button></>} />
+    <div className="editor-grid"><section className="editor-main panel"><label className="field"><span className="field-label">标题</span><input className="title-input" value={page.title || ''} onChange={field('title')} placeholder="一篇值得读下去的标题" required maxLength="300" /><small>{(page.title || '').length} / 300</small></label><label className="field"><span className="field-label">摘要 <em>用于搜索结果和文章列表</em></span><textarea className="textarea description-input" rows="3" value={page.description || ''} onChange={field('description')} placeholder="用一两句话概括这篇内容，建议 80–160 个字。" maxLength="220" /><small>{(page.description || '').length} / 220</small></label><div className="field content-field"><span className="field-label">正文 <em>支持 Markdown、代码语法高亮与实时渲染；可拖放或粘贴图片</em></span><Suspense fallback={<div className="workspace-loading"><div className="loading-bar"><i /></div><span>正在准备写作环境…</span></div>}><ArticleWorkspace content={page.content || ''} onChange={changeContent} type={page.type} notify={notify} /></Suspense></div></section>
       <aside className="editor-sidebar"><section className="panel settings-panel"><div className="panel-heading"><div><h2>发布设置</h2><p>控制页面如何对外呈现</p></div></div><label className="field"><span className="field-label">固定链接</span><div className="slug-input"><span>/page/</span><input value={page.link || ''} onChange={field('link')} placeholder="my-post" required /></div></label><label className="field"><span className="field-label">内容类型</span><select className="select wide" value={page.type} onChange={field('type', Number)}>{PAGE_TYPES.map((label, index) => <option value={index} key={label}>{label}</option>)}</select></label><label className="field"><span className="field-label">发布状态</span><select className="select wide" value={page.pageStatus} onChange={field('pageStatus', Number)}>{PAGE_STATES.map((label, index) => <option value={index} key={label}>{label}{index === 3 ? '（noindex）' : ''}</option>)}</select></label><label className="field"><span className="field-label">标签 <em>用分号分隔</em></span><input className="input" value={page.tag || ''} onChange={field('tag')} /></label>{tags.length > 0 && <div className="tag-preview">{tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>}<label className="field"><span className="field-label">阅读密码 <em>留空即公开</em></span><input className="input" type="password" value={page.password || ''} onChange={field('password')} autoComplete="new-password" /></label><label className="switch-row"><input type="checkbox" checked={Number(page.commentStatus) === 1} onChange={(event) => setPage((current) => ({ ...current, commentStatus: event.target.checked ? 1 : 0 }))} /><span className="switch" /><span><strong>允许评论</strong><small>读者可以参与讨论</small></span></label></section>
         <section className="panel seo-preview"><div className="panel-heading"><span className="panel-icon">S</span><div><h2>搜索结果预览</h2><p>发布前快速检查</p></div></div><div className="search-snippet"><small>{siteOrigin} › page › {page.link || 'your-link'}</small><h3>{page.title || '页面标题会显示在这里'}</h3><p>{page.description || '填写摘要，让搜索引擎和读者更快理解这篇内容。'}</p></div><ul><li className={page.title ? 'done' : ''}>{page.title ? '标题已填写' : '需要页面标题'}</li><li className={(page.description || '').length >= 60 ? 'done' : ''}>{(page.description || '').length >= 60 ? '摘要长度良好' : '建议摘要至少 60 字'}</li><li className={page.link ? 'done' : ''}>{page.link ? '链接已设置' : '需要固定链接'}</li></ul></section>
       </aside></div>

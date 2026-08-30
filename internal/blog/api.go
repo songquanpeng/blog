@@ -149,6 +149,31 @@ func (a *App) getPage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "page": page})
 }
 
+func (a *App) previewPage(c *gin.Context) {
+	var input struct {
+		Type    int    `json:"type"`
+		Content string `json:"content"`
+	}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "预览参数无效"})
+		return
+	}
+	if input.Type < PageArticle || input.Type > PageText {
+		c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": "页面类型无效"})
+		return
+	}
+	if len(input.Content) > 8<<20 {
+		c.JSON(http.StatusRequestEntityTooLarge, gin.H{"status": false, "message": "页面内容不能超过 8 MiB"})
+		return
+	}
+	page := Page{Type: input.Type, Content: input.Content}
+	content := any(a.renderContent(page))
+	if input.Type == PageRaw {
+		content = stripFrontMatter(input.Content)
+	}
+	c.JSON(http.StatusOK, gin.H{"status": true, "message": "ok", "content": content, "raw": input.Type == PageRaw})
+}
+
 func (a *App) renderedPage(c *gin.Context) {
 	page, err := a.store.PageByID(c.Request.Context(), c.Param("id"))
 	if err != nil || page.PageStatus == StatusRecalled {

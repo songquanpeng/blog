@@ -298,6 +298,7 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 	admin := api.Group("")
 	admin.Use(app.adminRequired())
 	admin.POST("/page", app.createPage)
+	admin.POST("/page/preview", app.previewPage)
 	admin.GET("/page/:id", app.getPage)
 	admin.PUT("/page", app.updatePage)
 	admin.DELETE("/page/:id", app.deletePage)
@@ -337,6 +338,13 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 	}
 	if err := json.Unmarshal(createRecorder.Body.Bytes(), &created); err != nil || created.ID == "" {
 		t.Fatalf("create response = %s, %v", createRecorder.Body.String(), err)
+	}
+	preview := do(http.MethodPost, "/api/page/preview", "application/json", bytes.NewBufferString(`{"type":0,"content":"## Draft\n\n`+"```go\\nfmt.Println(1)\\n```"+`"}`), true)
+	var previewed struct {
+		Content string `json:"content"`
+	}
+	if err := json.Unmarshal(preview.Body.Bytes(), &previewed); preview.Code != http.StatusOK || err != nil || !strings.Contains(previewed.Content, "<h2") || !strings.Contains(previewed.Content, "<pre") {
+		t.Fatalf("preview page = %d %s", preview.Code, preview.Body.String())
 	}
 	legacyRequest := httptest.NewRequest(http.MethodPost, "/api/page", strings.NewReader(`{"title":"Blocked","link":"blocked","content":"x","pageStatus":1,"commentStatus":1}`))
 	legacyRequest.Header.Set("Content-Type", "application/json")

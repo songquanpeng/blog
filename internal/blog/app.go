@@ -145,6 +145,7 @@ func (a *App) routes() *gin.Engine {
 		admin := api.Group("")
 		admin.Use(a.adminRequired())
 		admin.POST("/page/search", a.searchPages)
+		admin.POST("/page/preview", a.previewPage)
 		admin.POST("/page", a.createPage)
 		admin.GET("/page", a.allPages)
 		admin.GET("/page/export/:id", a.exportPage)
