@@ -254,7 +254,7 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`theme-toggle-mobile`,
 		`theme-toggle-desktop`,
 		`data-site-theme="studio"`,
-		`href="/theme/studio/main.css?v=studio-profile-card-20260830"`,
+		`href="/theme/studio/main.css?v=studio-profile-card-20260831"`,
 		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {
@@ -278,6 +278,10 @@ func TestIndexRendersPersonalProfileSidebar(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
+	notice := Page{Type: PageArticle, Link: "notice", PageStatus: StatusRecalled, CommentStatus: 1, Title: "Legacy sidebar", Content: "REMOVED_GITHUB_STATS"}
+	if err := store.CreatePage(t.Context(), &notice); err != nil {
+		t.Fatal(err)
+	}
 
 	functions := template.FuncMap{
 		"date": shortDate, "dateTime": displayDateTime, "archiveURL": archiveURL, "splitTags": splitTags,
@@ -298,16 +302,15 @@ func TestIndexRendersPersonalProfileSidebar(t *testing.T) {
 	for _, expected := range []string{
 		`class="card profile-card"`, `id="profile-name" class="profile-name">Song</h2>`,
 		`Writing about software and quiet ideas.`, `src="https://blog.example/upload/avatar.webp"`,
-		`href="https://x.com/song"`, `href="https://github.com/song"`, `rel="me noopener noreferrer"`,
-		`href="https://www.zhihu.com/people/song"`, `>知乎</span>`, `href="https://space.bilibili.com/123"`, `>B 站</span>`,
-		`class="profile-wechat"`, `src="https://blog.example/upload/wechat.webp"`, `Song&#39;s Notes`,
 	} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("index is missing profile output %q", expected)
 		}
 	}
-	if strings.Contains(body, "javascript:alert") {
-		t.Error("index rendered an unsafe custom social URL")
+	for _, removed := range []string{"profile-social", "profile-wechat", `href="https://x.com/song"`, `href="https://github.com/song"`, `href="https://www.zhihu.com/people/song"`, `href="https://space.bilibili.com/123"`, "REMOVED_GITHUB_STATS"} {
+		if strings.Contains(body, removed) {
+			t.Errorf("index still renders removed profile content %q", removed)
+		}
 	}
 }
 

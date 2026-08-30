@@ -88,7 +88,6 @@ body {
   box-shadow: none;
   padding: 28px 4px 30px;
 }
-.index-page-box:first-child { border-top: 1px solid var(--line); }
 .index-page-box:hover { border-color: var(--line-strong); box-shadow: none; transform: none; }
 .box article.index-page-media { background: transparent; padding: 0; }
 .content h2.page-card-title {
@@ -140,17 +139,13 @@ body {
 .brand-image { margin-top: 16px; border-radius: 2px; filter: saturate(.72) contrast(.96); }
 .notice { margin-top: 34px; padding: 18px 0 0; }
 .notice .notice-image-fallback { border-left-color: var(--line-strong); background: transparent; color: var(--muted); font-family: var(--studio-sans); letter-spacing: .015em; }
-.profile-card-content { padding: 20px 0 0; }
-.profile-header { align-items: flex-start; }
-.profile-avatar { width: 68px; height: 68px; flex-basis: 68px; border-color: var(--line); border-radius: 2px; background: var(--surface-soft); font-family: var(--studio-serif); filter: saturate(.72) contrast(.96); }
-.profile-site { font-family: var(--studio-sans); font-size: .64rem; letter-spacing: .12em; }
-.profile-name { font-family: var(--studio-serif); font-size: 1.18rem; font-weight: 600; letter-spacing: .035em; }
-.profile-bio { margin-top: 19px; color: var(--muted); font-family: var(--studio-serif); font-size: .9rem; line-height: 1.9; }
-.profile-social { gap: 0; margin-top: 20px; border-top-color: var(--line); padding-top: 10px; }
-.profile-social-link { min-height: 32px; border: 0; border-radius: 0; padding: 6px 12px 6px 0; font-family: var(--studio-sans); font-size: .7rem; letter-spacing: .035em; }
-.profile-social-link:hover, .profile-social-link:focus-visible { border-color: transparent; background: transparent; color: var(--text); text-decoration: underline; text-underline-offset: .25em; }
-.profile-wechat-panel { margin-top: 8px; border-color: var(--line); border-radius: 2px; background: var(--surface-soft); }
-.profile-wechat-panel p { font-family: var(--studio-serif); }
+.profile-card-content { padding: 24px 0 2px; }
+.profile-header { align-items: center; gap: 16px; }
+.profile-avatar { width: 76px; height: 76px; flex-basis: 76px; border-color: var(--line); border-radius: 50%; background: var(--surface-soft); font-family: var(--studio-serif); filter: saturate(.82) contrast(.98); }
+.profile-identity { display: grid; gap: 4px; }
+.profile-site { margin: 0; font-family: var(--studio-sans); font-size: .64rem; letter-spacing: .14em; line-height: 1.45; }
+.profile-name { font-family: var(--studio-serif); font-size: 1.32rem; font-weight: 600; letter-spacing: .035em; line-height: 1.35; }
+.profile-bio { margin-top: 22px; color: var(--muted); font-family: var(--studio-serif); font-size: .92rem; letter-spacing: .015em; line-height: 1.95; }
 
 /* Reading pages keep the text measure and type scale deliberately narrow. */
 .article-container { line-height: 1.9; }
@@ -211,8 +206,26 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 16.5p
 .toc-title { color: var(--text); font-family: var(--studio-serif); }
 .related-container a, #toc a { color: var(--muted); font-family: var(--studio-serif); font-size: .78rem; }
 .related-container a.is-current { background: var(--surface-soft); color: var(--text); }
-.article-pagination .pagination-previous, .article-pagination .pagination-next,
-.pagination a { border: 1px solid var(--line); border-radius: 2px; background: transparent; box-shadow: none; }
+.pagination:not(.article-pagination) a {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+  font-family: var(--studio-serif);
+}
+.pagination:not(.article-pagination) a:hover { background: transparent; color: var(--text); text-decoration: underline !important; text-underline-offset: .25em; }
+.article-pagination { gap: 28px; margin-top: 42px; }
+.article-pagination .pagination-previous, .article-pagination .pagination-next {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 12px 2px;
+}
+.article-pagination a:hover { background: transparent; }
+.article-pagination a:hover .page-nav-title { color: var(--text); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em; }
 .article-pagination .page-nav-title { font-family: var(--studio-serif); }
 
 .archive-container { max-width: 980px; margin: 0 auto; }
@@ -282,4 +295,5 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 16.5p
   .microblog-header .title { font-size: 1.75rem; }
   .micro-post { padding: 23px 0; }
   .micro-post-content { font-size: 16px; }
+  .article-pagination { gap: 14px; margin-top: 34px; }
 }

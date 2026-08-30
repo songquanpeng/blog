@@ -226,12 +226,27 @@ function Editor({ id, notify }) {
 function Files({ notify }) {
   const [files, setFiles] = useState([]);
   const [upload, setUpload] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const load = useCallback(() => api('/api/file').then((payload) => setFiles(payload.files || [])).catch((error) => notify(error.message, true)), [notify]);
   useEffect(() => { load(); }, [load]);
-  async function submit(event) { event.preventDefault(); if (!upload) return; const body = new FormData(event.currentTarget); try { await api('/api/file', { method: 'POST', body }); event.currentTarget.reset(); setUpload(null); await load(); notify('文件已上传'); } catch (error) { notify(error.message, true); } }
+  async function submit(event) {
+    event.preventDefault();
+    if (!upload || uploading) return;
+    const form = event.currentTarget;
+    const body = new FormData(form);
+    setUploading(true);
+    try {
+      await api('/api/file', { method: 'POST', body });
+      form.reset();
+      setUpload(null);
+      await load();
+      notify('文件已上传');
+    } catch (error) { notify(error.message, true); }
+    finally { setUploading(false); }
+  }
   async function remove(id) { if (!window.confirm('确认删除这个文件？')) return; try { await api(`/api/file/${encodeURIComponent(id)}`, { method: 'DELETE' }); await load(); notify('文件已删除'); } catch (error) { notify(error.message, true); } }
   return <section><PageHeader kicker="MEDIA LIBRARY" title="媒体库" description="上传并管理文章所需的图片和附件。" />
-    <form className="upload-panel" onSubmit={submit}><label className="upload-drop"><input type="file" name="file" onChange={(event) => setUpload(event.target.files[0])} required /><span className="upload-icon">↑</span><strong>{upload ? upload.name : '选择一个文件上传'}</strong><small>{upload ? `${(upload.size / 1024).toFixed(1)} KB` : '点击选择文件，单个文件不超过站点限制'}</small></label><div className="upload-meta"><input className="input" name="description" placeholder="添加一段便于检索的描述（可选）" /><button className="button primary" disabled={!upload}>上传文件</button></div></form>
+    <form className="upload-panel" onSubmit={submit}><label className="upload-drop"><input type="file" name="file" onChange={(event) => setUpload(event.target.files[0] || null)} required disabled={uploading} /><span className="upload-icon">↑</span><strong>{uploading ? '正在上传…' : upload ? upload.name : '选择一个文件上传'}</strong><small>{upload ? `${(upload.size / 1024).toFixed(1)} KB` : '点击选择文件，单个文件不超过站点限制'}</small></label><div className="upload-meta"><input className="input" name="description" placeholder="添加一段便于检索的描述（可选）" disabled={uploading} /><button className="button primary" disabled={!upload || uploading}>{uploading ? '上传中…' : '上传文件'}</button></div></form>
     <section className="panel table-panel"><div className="panel-heading"><div><h2>全部文件</h2><p>{files.length} 个文件</p></div></div>{files.length === 0 ? <EmptyState title="媒体库还是空的" text="上传第一张图片或附件，它会显示在这里。" /> : <div className="table-scroll"><table><thead><tr><th>文件名</th><th>描述</th><th>地址</th><th /></tr></thead><tbody>{files.map((file) => <tr key={file.id}><td><strong>{file.filename}</strong></td><td className="muted-cell">{file.description || '—'}</td><td><a className="file-path" href={file.path} target="_blank" rel="noreferrer">{file.path} ↗</a></td><td><button className="button danger small" type="button" onClick={() => remove(file.id)}>删除</button></td></tr>)}</tbody></table></div>}</section>
   </section>;
 }
@@ -357,10 +372,6 @@ const SETTING_GROUPS = [
   ] },
   { title: '首页个人资料', description: '显示在文章列表右侧；未填写昵称、简介或头像时，会沿用作者、站点描述和品牌图片。', fields: [
     ['profile_name', '昵称', 'text', '例如：宋老师'], ['profile_bio', '一句话介绍', 'textarea', '用一两句话说明你是谁、在关注什么'], ['profile_avatar', '头像地址', 'text', '/upload/avatar.webp'],
-    ['social_x_url', 'X 主页链接', 'text', 'https://x.com/yourname'], ['social_github_url', 'GitHub 主页链接', 'text', 'https://github.com/yourname'],
-    ['social_zhihu_url', '知乎主页链接', 'text', 'https://www.zhihu.com/people/yourname'], ['social_xiaohongshu_url', '小红书主页链接', 'text', 'https://www.xiaohongshu.com/user/profile/…'],
-    ['wechat_name', '微信公众号名称', 'text', '例如：我的公众号'], ['wechat_qr', '微信公众号二维码', 'text', '/upload/wechat-qr.webp'],
-    ['social_custom_links', '其他社交链接', 'textarea', '每行一个，例如：B 站 | https://space.bilibili.com/123'],
   ] },
   { title: '域名与 SEO', description: '这些设置会影响 canonical、分享预览和搜索引擎识别。', fields: [
     ['domain', '公开域名', 'text', 'blog.example.com（不要包含路径）'], ['language', '内容语言', 'text', '例如 zh-CN'], ['favicon', 'Favicon 地址', 'text', '/favicon.ico'], ['brand_image', '品牌图片地址', 'text', '/upload/brand.webp'], ['social_image', '社交分享图地址', 'text', '/upload/og-cover.webp'],

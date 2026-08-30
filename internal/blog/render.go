@@ -84,7 +84,6 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 	if profileAvatar == "" {
 		profileAvatar = brandImage
 	}
-	profileSocialLinks := configuredProfileSocialLinks(options)
 	socialImage := strings.TrimSpace(options["social_image"])
 	if socialImage == "" {
 		socialImage = brandImage
@@ -102,52 +101,14 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 		Canonical: canonical, SiteURL: base, SiteName: siteName, SiteInitial: firstRune(siteName), Motto: options["motto"], Author: author,
 		Year: time.Now().Year(), Favicon: favicon, BrandImage: brandImage,
 		ProfileName: profileName, ProfileInitial: firstRune(profileName), ProfileBio: profileBio,
-		ProfileAvatar: publicAssetURL(base, profileAvatar), ProfileSocialLinks: profileSocialLinks,
-		WeChatName: strings.TrimSpace(options["wechat_name"]), WeChatQR: publicAssetURL(base, options["wechat_qr"]),
-		SocialImage: publicAssetURL(base, socialImage), CodeTheme: codeTheme, Theme: publicTheme(options["theme"]),
+		ProfileAvatar: publicAssetURL(base, profileAvatar),
+		SocialImage:   publicAssetURL(base, socialImage), CodeTheme: codeTheme, Theme: publicTheme(options["theme"]),
 		PrimaryNav: primaryNav, Nav: nav, Copyright: a.safeHTML(options["copyright"]),
 		ExtraFooter: a.safeHTML(options["extra_footer_text"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,
 		Nonce: fmt.Sprint(nonce),
 	}
 	data.JSONLD = siteJSONLD(data)
-	// The historical public theme treated the special notice page as site
-	// configuration, even when its regular page status was recalled.
-	if notice, err := a.store.PageByLink(c.Request.Context(), "notice"); err == nil {
-		data.Notice = a.renderContent(notice)
-	}
 	return data, nil
-}
-
-func configuredProfileSocialLinks(options map[string]string) []ProfileSocialLink {
-	configured := []struct {
-		option string
-		name   string
-		icon   string
-	}{
-		{"social_x_url", "X", "x"},
-		{"social_github_url", "GitHub", "github"},
-		{"social_zhihu_url", "知乎", "zhihu"},
-		{"social_xiaohongshu_url", "小红书", "xiaohongshu"},
-	}
-	links := make([]ProfileSocialLink, 0, len(configured)+4)
-	for _, item := range configured {
-		value := strings.TrimSpace(options[item.option])
-		if safeNavigationURL(value) {
-			links = append(links, ProfileSocialLink{Name: item.name, URL: value, Icon: item.icon})
-		}
-	}
-	for _, line := range strings.Split(options["social_custom_links"], "\n") {
-		parts := strings.SplitN(strings.Replace(line, "｜", "|", 1), "|", 2)
-		if len(parts) != 2 {
-			continue
-		}
-		name, value := strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])
-		if name == "" || len([]rune(name)) > 24 || !safeNavigationURL(value) {
-			continue
-		}
-		links = append(links, ProfileSocialLink{Name: name, URL: value, Icon: "custom"})
-	}
-	return links
 }
 
 func (a *App) publicURL(c *gin.Context, options map[string]string) string {
