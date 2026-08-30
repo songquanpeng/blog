@@ -144,12 +144,23 @@ function DraftPreview({ content, type }) {
   </div>;
 }
 
-export default function ArticleWorkspace({ content, onChange, type, notify }) {
-  const [mode, setMode] = useState(() => window.innerWidth < 900 ? 'write' : 'split');
+export default function ArticleWorkspace({ content, onChange, type, notify, compact = false, onSubmitShortcut }) {
+  const [mode, setMode] = useState(() => window.innerWidth < (compact ? 1180 : 900) ? 'write' : 'split');
+  const [fullscreen, setFullscreen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const viewRef = useRef(null);
   const editorExtensions = useMemo(() => [Number(type) === 5 ? html() : markdown({ codeLanguages: CODE_LANGUAGES }), EditorView.lineWrapping], [type]);
+
+  useEffect(() => {
+    document.body.classList.toggle('editor-fullscreen-open', fullscreen);
+    const leaveFullscreen = (event) => { if (event.key === 'Escape') setFullscreen(false); };
+    if (fullscreen) window.addEventListener('keydown', leaveFullscreen);
+    return () => {
+      window.removeEventListener('keydown', leaveFullscreen);
+      document.body.classList.remove('editor-fullscreen-open');
+    };
+  }, [fullscreen]);
 
   const insertText = useCallback((prefix, suffix = '', placeholder = '', block = false) => {
     const view = viewRef.current;
@@ -208,19 +219,26 @@ export default function ArticleWorkspace({ content, onChange, type, notify }) {
       if (!event.clipboardData?.files?.length) return false;
       event.preventDefault(); uploadDroppedFiles(event.clipboardData.files); return true;
     },
-  }), [uploadDroppedFiles]);
+    keydown(event) {
+      if (!onSubmitShortcut || !(event.metaKey || event.ctrlKey) || event.key !== 'Enter') return false;
+      event.preventDefault(); onSubmitShortcut(); return true;
+    },
+  }), [onSubmitShortcut, uploadDroppedFiles]);
 
-  return <section className={`writing-workspace mode-${mode}`}>
+  return <section className={`writing-workspace mode-${mode}${compact ? ' is-compact' : ''}${fullscreen ? ' is-fullscreen' : ''}`}>
     <div className="writing-toolbar">
       <div className="format-actions" aria-label="Markdown 格式工具">
         {Number(type) !== 5 && TOOLBAR.map((tool) => <button key={tool.title} type="button" title={mode === 'preview' ? '切换到写作视图后使用格式工具' : tool.title} disabled={mode === 'preview'} onClick={() => insertText(tool.prefix, tool.suffix, tool.placeholder, tool.block)} className={tool.label === 'B' ? 'is-bold' : tool.label === 'I' ? 'is-italic' : ''}>{tool.label}</button>)}
         <button className="insert-media-button" type="button" onClick={() => setPickerOpen(true)} title="插入图片或附件">▧ <span>文件</span></button>
         {uploading && <span className="toolbar-status">上传中…</span>}
       </div>
-      <div className="view-switch" aria-label="编辑器视图">
-        <button type="button" className={mode === 'write' ? 'is-active' : ''} onClick={() => setMode('write')}>写作</button>
-        <button type="button" className={mode === 'split' ? 'is-active' : ''} onClick={() => setMode('split')}>分栏</button>
-        <button type="button" className={mode === 'preview' ? 'is-active' : ''} onClick={() => setMode('preview')}>预览</button>
+      <div className="workspace-controls">
+        <div className="view-switch" aria-label="编辑器视图">
+          <button type="button" className={mode === 'write' ? 'is-active' : ''} onClick={() => setMode('write')}>写作</button>
+          <button type="button" className={mode === 'split' ? 'is-active' : ''} onClick={() => setMode('split')}>分栏</button>
+          <button type="button" className={mode === 'preview' ? 'is-active' : ''} onClick={() => setMode('preview')}>预览</button>
+        </div>
+        <button className="fullscreen-button" type="button" onClick={() => setFullscreen((value) => !value)} aria-pressed={fullscreen} title={fullscreen ? '退出全屏（Esc）' : '全屏写作'}><b aria-hidden="true">{fullscreen ? '×' : '⛶'}</b><span>{fullscreen ? '退出' : '全屏'}</span></button>
       </div>
     </div>
     <div className="writing-panes">

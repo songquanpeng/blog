@@ -83,11 +83,16 @@ func (a *App) baseView(c *gin.Context, title, description, canonicalPath string)
 	}
 	language := option(options, "language", "zh-CN")
 	author := option(options, "author", siteName)
+	favicon := option(options, "favicon", "/favicon.ico")
+	if favicon == "/favicon.ico" {
+		// Bust caches left behind by the briefly deployed justsong.cn favicon.
+		favicon = "/favicon.ico?v=8f4f79e7"
+	}
 	data := ViewData{
 		Lang: language, OGLocale: strings.ReplaceAll(language, "-", "_"), Title: title, Description: description,
 		Robots:    "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
 		Canonical: canonical, SiteURL: base, SiteName: siteName, SiteInitial: firstRune(siteName), Motto: options["motto"], Author: author,
-		Year: time.Now().Year(), Favicon: option(options, "favicon", "/favicon.ico"), BrandImage: brandImage,
+		Year: time.Now().Year(), Favicon: favicon, BrandImage: brandImage,
 		SocialImage: publicAssetURL(base, socialImage), CodeTheme: codeTheme,
 		PrimaryNav: primaryNav, Nav: nav, Copyright: a.safeHTML(options["copyright"]),
 		ExtraFooter: a.safeHTML(options["extra_footer_text"]), AllowUnsafe: a.cfg.AllowUnsafeHTML,

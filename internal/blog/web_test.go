@@ -51,6 +51,31 @@ func TestRootVerificationAssetsExposeOnlySafeTextFiles(t *testing.T) {
 	}
 }
 
+func TestIndexFilePrefersBundledHistoricalFavicon(t *testing.T) {
+	customDir := t.TempDir()
+	bundledDir := t.TempDir()
+	for _, file := range []struct {
+		dir, name, content string
+	}{
+		{customDir, "favicon.ico", "justsong"},
+		{bundledDir, "favicon.ico", "iamazing"},
+		{customDir, "manifest.json", "custom manifest"},
+		{bundledDir, "manifest.json", "bundled manifest"},
+	} {
+		if err := os.WriteFile(filepath.Join(file.dir, file.name), []byte(file.content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	app := &App{cfg: Config{IndexPath: customDir, DefaultIndexPath: bundledDir}}
+	if got := app.indexFile("favicon.ico"); got != filepath.Join(bundledDir, "favicon.ico") {
+		t.Fatalf("favicon path = %q", got)
+	}
+	if got := app.indexFile("manifest.json"); got != filepath.Join(customDir, "manifest.json") {
+		t.Fatalf("manifest path = %q", got)
+	}
+}
+
 func TestUploadedSVGIsRenderableWithIsolatedPolicy(t *testing.T) {
 	uploadDir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(uploadDir, "diagram.svg"), []byte(`<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M0 0h10v10z"/></svg>`), 0o600); err != nil {

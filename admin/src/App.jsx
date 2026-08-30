@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from './api.js';
 import { homePageMode, parseNavigationConfig, serializeNavigationConfig, validateNavigationGroups, valueForHomePageMode } from './settings.js';
 
@@ -188,6 +188,9 @@ function Microblog({ notify }) {
   const [saving, setSaving] = useState(false);
   const [configSaving, setConfigSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const composerRef = useRef(null);
+  const changeDraftContent = useCallback((content) => setDraft((current) => ({ ...current, content })), []);
+  const submitDraftShortcut = useCallback(() => composerRef.current?.requestSubmit(), []);
   const load = useCallback(async (offset = 0) => {
     try {
       const payload = await api(`/api/microblog?offset=${offset}`);
@@ -199,7 +202,10 @@ function Microblog({ notify }) {
   }, [notify]);
   useEffect(() => { load(); }, [load]);
   async function savePost(event) {
-    event.preventDefault(); setSaving(true);
+    event.preventDefault();
+    if (saving) return;
+    if (!draft.content.trim()) { notify('先写点内容再发布', true); return; }
+    setSaving(true);
     try {
       if (draft.id) await api(`/api/microblog/${draft.id}`, { method: 'PUT', body: draft });
       else await api('/api/microblog', { method: 'POST', body: draft });
@@ -225,7 +231,7 @@ function Microblog({ notify }) {
     <div className="metric-grid microblog-metrics"><Metric label="全部微博" value={total} detail="公开与私密" /><Metric label="当前已加载" value={posts.length} detail={`${publicCount} 条公开`} tone="green" /><Metric label="公开入口" value={config.enabled ? '运行中' : '已停用'} detail={publicPath} tone={config.enabled ? 'green' : ''} /></div>
     <div className="microblog-admin-grid">
       <div className="microblog-admin-main">
-        <form className="panel micro-composer" onSubmit={savePost}><div className="panel-heading with-action"><div><h2>{draft.id ? `编辑微博 #${draft.id}` : '写一条微博'}</h2><p>支持 Markdown，最多 64 KiB</p></div>{draft.id && <button className="button subtle small" type="button" onClick={() => setDraft({ ...EMPTY_MICRO_POST })}>取消编辑</button>}</div><textarea className="textarea code-input" rows="8" value={draft.content} onChange={(event) => setDraft({ ...draft, content: event.target.value })} placeholder="此刻在想什么？" required /><div className="composer-footer"><label className="field inline-field"><span className="field-label">可见性</span><select className="select" value={draft.status} onChange={(event) => setDraft({ ...draft, status: Number(event.target.value) })}><option value={1}>公开</option><option value={0}>私密</option></select></label><span className="character-count">{draft.content.length.toLocaleString()} 字符</span><button className="button primary" disabled={saving}>{saving ? '保存中…' : draft.id ? '保存修改' : '发布微博'}</button></div></form>
+        <form ref={composerRef} className="panel micro-composer" onSubmit={savePost}><div className="panel-heading with-action"><div><h2>{draft.id ? `编辑微博 #${draft.id}` : '写一条微博'}</h2><p>支持 Markdown、实时预览与图片粘贴，最多 64 KiB</p></div>{draft.id && <button className="button subtle small" type="button" onClick={() => setDraft({ ...EMPTY_MICRO_POST })}>取消编辑</button>}</div><Suspense fallback={<div className="micro-workspace-loading"><div className="loading-bar"><i /></div></div>}><ArticleWorkspace compact content={draft.content} onChange={changeDraftContent} type={0} notify={notify} onSubmitShortcut={submitDraftShortcut} /></Suspense><div className="composer-footer"><label className="field inline-field"><span className="field-label">可见性</span><select className="select" value={draft.status} onChange={(event) => setDraft({ ...draft, status: Number(event.target.value) })}><option value={1}>公开</option><option value={0}>私密</option></select></label><span className="composer-shortcut-hint">⌘/Ctrl + Enter {draft.id ? '保存' : '发布'}</span><span className="character-count">{draft.content.length.toLocaleString()} 字符</span><button className="button primary" disabled={saving}>{saving ? '保存中…' : draft.id ? '保存修改' : '发布微博'}</button></div></form>
         <section className="micro-post-admin-list" aria-label="微博列表">{posts.length === 0 ? <div className="panel"><EmptyState title="还没有微博" text="从上面的编辑器发布第一条短内容。" /></div> : posts.map((post) => <article className="panel micro-admin-card" key={post.id}><div className="micro-admin-meta"><span className={`status-badge state-${post.status ? 1 : 0}`}><i />{post.status ? '公开' : '私密'}</span><time dateTime={post.createdAt}>{new Date(post.createdAt).toLocaleString()}</time><span>#{post.id}</span></div><div className="micro-admin-content">{post.content}</div><div className="row-actions"><button className="button subtle small" type="button" onClick={() => { setDraft({ ...post }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>编辑</button><button className="button danger small" type="button" onClick={() => remove(post.id)}>删除</button></div></article>)}</section>
         {posts.length < total && <button className="button subtle wide load-more" type="button" onClick={() => load(posts.length)}>加载更多</button>}
       </div>
