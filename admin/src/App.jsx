@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from './api.js';
 import { homePageMode, parseNavigationConfig, serializeNavigationConfig, validateNavigationGroups, valueForHomePageMode } from './settings.js';
+import { clearEditorDraft, editorDraftKey, readEditorDraft, shouldRestoreEditorDraft, writeEditorDraft } from './editorDraft.js';
 
 const ArticleWorkspace = lazy(() => import('./ArticleWorkspace.jsx'));
 
@@ -15,7 +16,7 @@ function ThemeToggle() {
   function toggle() {
     const next = dark ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'dark' ? '#111712' : '#f4f5f1');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'dark' ? '#151514' : '#f3f2ef');
     try { window.localStorage.setItem(THEME_STORAGE_KEY, next); } catch { /* private mode */ }
     setTheme(next);
   }
@@ -135,9 +136,65 @@ function Metric({ label, value, detail, tone = '' }) { return <article className
 function Editor({ id, notify }) {
   const [page, setPage] = useState(EMPTY_PAGE);
   const [saving, setSaving] = useState(false);
-  useEffect(() => { if (!id) { setPage({ ...EMPTY_PAGE }); return; } api(`/api/page/${id}`).then((payload) => setPage(payload.page)).catch((error) => notify(error.message, true)); }, [id, notify]);
-  function field(name, transform = (value) => value) { return (event) => setPage((current) => ({ ...current, [name]: transform(event.target.value) })); }
-  const changeContent = useCallback((content) => setPage((current) => ({ ...current, content })), []);
+  const [draftReady, setDraftReady] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [draftSavedAt, setDraftSavedAt] = useState(null);
+  const [draftError, setDraftError] = useState(false);
+  const draftStorage = useMemo(() => { try { return window.localStorage; } catch { return null; } }, []);
+  const draftKey = editorDraftKey(id);
+  const pageRef = useRef(page);
+  useEffect(() => { pageRef.current = page; }, [page]);
+  useEffect(() => {
+    let active = true;
+    setDraftReady(false); setDirty(false); setDraftSavedAt(null); setDraftError(false);
+    const localDraft = readEditorDraft(draftStorage, draftKey);
+    if (!id) {
+      const restored = localDraft ? { ...EMPTY_PAGE, ...localDraft.page } : { ...EMPTY_PAGE };
+      setPage(restored); pageRef.current = restored;
+      setDirty(Boolean(localDraft)); setDraftSavedAt(localDraft?.savedAt || null); setDraftReady(true);
+      if (localDraft) notify('已恢复上次未保存的新文章草稿');
+      return () => { active = false; };
+    }
+    api(`/api/page/${id}`).then((payload) => {
+      if (!active) return;
+      const restore = shouldRestoreEditorDraft(localDraft, payload.page.updatedAt);
+      if (localDraft && !restore) clearEditorDraft(draftStorage, draftKey);
+      const loaded = restore ? { ...payload.page, ...localDraft.page, id: payload.page.id } : payload.page;
+      setPage(loaded); pageRef.current = loaded;
+      setDirty(restore); setDraftSavedAt(restore ? localDraft.savedAt : null); setDraftReady(true);
+      if (restore) notify('已恢复这篇文章在本机的未保存草稿');
+    }).catch((error) => { if (active) { notify(error.message, true); setDraftReady(true); } });
+    return () => { active = false; };
+  }, [id, draftKey, draftStorage, notify]);
+  const markChanged = useCallback((update) => {
+    setPage((current) => {
+      const next = typeof update === 'function' ? update(current) : update;
+      pageRef.current = next;
+      return next;
+    });
+    setDirty(true); setDraftError(false);
+  }, []);
+  function field(name, transform = (value) => value) { return (event) => markChanged((current) => ({ ...current, [name]: transform(event.target.value) })); }
+  const changeContent = useCallback((content) => markChanged((current) => ({ ...current, content })), [markChanged]);
+  const persistDraft = useCallback(() => {
+    if (!draftReady || !dirty) return;
+    try {
+      const draft = writeEditorDraft(draftStorage, draftKey, pageRef.current);
+      setDraftSavedAt(draft.savedAt); setDraftError(false);
+    } catch {
+      setDraftError(true);
+    }
+  }, [draftKey, draftReady, draftStorage, dirty]);
+  useEffect(() => {
+    if (!draftReady || !dirty) return undefined;
+    const timer = window.setTimeout(persistDraft, 650);
+    return () => window.clearTimeout(timer);
+  }, [page, draftReady, dirty, persistDraft]);
+  useEffect(() => {
+    const beforeUnload = () => persistDraft();
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
+  }, [persistDraft]);
   async function save(event) {
     event?.preventDefault();
     if (saving) return;
@@ -145,7 +202,7 @@ function Editor({ id, notify }) {
     if (!(page.link || '').trim()) { notify('请先设置固定链接', true); return; }
     if (!(page.content || '').trim()) { notify('正文还没有内容', true); return; }
     setSaving(true);
-    try { const method = page.id ? 'PUT' : 'POST'; const payload = await api('/api/page', { method, body: { ...page, type: Number(page.type), pageStatus: Number(page.pageStatus), commentStatus: Number(page.commentStatus) } }); setPage((current) => ({ ...current, id: current.id || payload.id })); notify(page.id ? '页面已更新' : '页面已创建'); if (!page.id) go(`editor/${payload.id}`); }
+    try { const method = page.id ? 'PUT' : 'POST'; const payload = await api('/api/page', { method, body: { ...page, type: Number(page.type), pageStatus: Number(page.pageStatus), commentStatus: Number(page.commentStatus) } }); clearEditorDraft(draftStorage, draftKey); setDirty(false); setDraftSavedAt(null); setPage((current) => ({ ...current, id: current.id || payload.id })); notify(page.id ? '页面已更新' : '页面已创建'); if (!page.id) go(`editor/${payload.id}`); }
     catch (error) { notify(error.message, true); } finally { setSaving(false); }
   }
   useEffect(() => {
@@ -157,9 +214,10 @@ function Editor({ id, notify }) {
   });
   const tags = (page.tag || '').split(';').map((tag) => tag.trim()).filter(Boolean);
   const siteOrigin = window.location.origin;
-  return <form className="editor-page" onSubmit={save}><PageHeader kicker={page.id ? 'EDIT CONTENT' : 'NEW CONTENT'} title={page.id ? '编辑页面' : '写一篇新内容'} description={page.id ? '修改内容、SEO 摘要与发布设置。' : '从标题开始，把想法变成一篇可以被找到的文章。'} actions={<><button className="button subtle" type="button" onClick={() => go('posts')}>返回列表</button>{page.link && <a className="button subtle" href={`/page/${encodeURIComponent(page.link)}`} target="_blank" rel="noreferrer">站点预览 ↗</a>}<button className="button primary" disabled={saving} title="保存页面（⌘/Ctrl + S）">{saving ? '保存中…' : '保存页面'}</button></>} />
+  const draftStatus = !draftReady ? '正在读取本地草稿…' : draftError ? '本地草稿保存失败' : dirty && draftSavedAt ? `草稿已存至本机 ${new Date(draftSavedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : dirty ? '正在保存本地草稿…' : '已与服务器同步';
+  return <form className="editor-page" onSubmit={save}><PageHeader kicker={page.id ? 'EDIT CONTENT' : 'NEW CONTENT'} title={page.id ? '编辑页面' : '写一篇新内容'} description={page.id ? '修改内容、SEO 摘要与发布设置。' : '从标题开始，把想法变成一篇可以被找到的文章。'} actions={<><span className={`draft-status ${draftError ? 'is-error' : ''}`} role="status"><i />{draftStatus}</span><button className="button subtle" type="button" onClick={() => go('posts')}>返回列表</button>{page.link && <a className="button subtle" href={`/page/${encodeURIComponent(page.link)}`} target="_blank" rel="noreferrer">站点预览 ↗</a>}<button className="button primary" disabled={saving} title="保存页面（⌘/Ctrl + S）">{saving ? '保存中…' : '保存页面'}</button></>} />
     <div className="editor-grid"><section className="editor-main panel"><label className="field"><span className="field-label">标题</span><input className="title-input" value={page.title || ''} onChange={field('title')} placeholder="一篇值得读下去的标题" required maxLength="300" /><small>{(page.title || '').length} / 300</small></label><label className="field"><span className="field-label">摘要 <em>用于搜索结果和文章列表</em></span><textarea className="textarea description-input" rows="3" value={page.description || ''} onChange={field('description')} placeholder="用一两句话概括这篇内容，建议 80–160 个字。" maxLength="220" /><small>{(page.description || '').length} / 220</small></label><div className="field content-field"><span className="field-label">正文 <em>支持 Markdown、代码语法高亮与实时渲染；可拖放或粘贴图片</em></span><Suspense fallback={<div className="workspace-loading"><div className="loading-bar"><i /></div><span>正在准备写作环境…</span></div>}><ArticleWorkspace content={page.content || ''} onChange={changeContent} type={page.type} notify={notify} /></Suspense></div></section>
-      <aside className="editor-sidebar"><section className="panel settings-panel"><div className="panel-heading"><div><h2>发布设置</h2><p>控制页面如何对外呈现</p></div></div><label className="field"><span className="field-label">固定链接</span><div className="slug-input"><span>/page/</span><input value={page.link || ''} onChange={field('link')} placeholder="my-post" required /></div></label><label className="field"><span className="field-label">内容类型</span><select className="select wide" value={page.type} onChange={field('type', Number)}>{PAGE_TYPES.map((label, index) => <option value={index} key={label}>{label}</option>)}</select></label><label className="field"><span className="field-label">发布状态</span><select className="select wide" value={page.pageStatus} onChange={field('pageStatus', Number)}>{PAGE_STATES.map((label, index) => <option value={index} key={label}>{label}{index === 3 ? '（noindex）' : ''}</option>)}</select></label><label className="field"><span className="field-label">标签 <em>用分号分隔</em></span><input className="input" value={page.tag || ''} onChange={field('tag')} /></label>{tags.length > 0 && <div className="tag-preview">{tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>}<label className="field"><span className="field-label">阅读密码 <em>留空即公开</em></span><input className="input" type="password" value={page.password || ''} onChange={field('password')} autoComplete="new-password" /></label><label className="switch-row"><input type="checkbox" checked={Number(page.commentStatus) === 1} onChange={(event) => setPage((current) => ({ ...current, commentStatus: event.target.checked ? 1 : 0 }))} /><span className="switch" /><span><strong>允许评论</strong><small>读者可以参与讨论</small></span></label></section>
+      <aside className="editor-sidebar"><section className="panel settings-panel"><div className="panel-heading"><div><h2>发布设置</h2><p>控制页面如何对外呈现</p></div></div><label className="field"><span className="field-label">固定链接</span><div className="slug-input"><span>/page/</span><input value={page.link || ''} onChange={field('link')} placeholder="my-post" required /></div></label><label className="field"><span className="field-label">内容类型</span><select className="select wide" value={page.type} onChange={field('type', Number)}>{PAGE_TYPES.map((label, index) => <option value={index} key={label}>{label}</option>)}</select></label><label className="field"><span className="field-label">发布状态</span><select className="select wide" value={page.pageStatus} onChange={field('pageStatus', Number)}>{PAGE_STATES.map((label, index) => <option value={index} key={label}>{label}{index === 3 ? '（noindex）' : ''}</option>)}</select></label><label className="field"><span className="field-label">标签 <em>用分号分隔</em></span><input className="input" value={page.tag || ''} onChange={field('tag')} /></label>{tags.length > 0 && <div className="tag-preview">{tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>}<label className="field"><span className="field-label">阅读密码 <em>留空即公开</em></span><input className="input" type="password" value={page.password || ''} onChange={field('password')} autoComplete="new-password" /></label><label className="switch-row"><input type="checkbox" checked={Number(page.commentStatus) === 1} onChange={(event) => markChanged((current) => ({ ...current, commentStatus: event.target.checked ? 1 : 0 }))} /><span className="switch" /><span><strong>允许评论</strong><small>读者可以参与讨论</small></span></label></section>
         <section className="panel seo-preview"><div className="panel-heading"><span className="panel-icon">S</span><div><h2>搜索结果预览</h2><p>发布前快速检查</p></div></div><div className="search-snippet"><small>{siteOrigin} › page › {page.link || 'your-link'}</small><h3>{page.title || '页面标题会显示在这里'}</h3><p>{page.description || '填写摘要，让搜索引擎和读者更快理解这篇内容。'}</p></div><ul><li className={page.title ? 'done' : ''}>{page.title ? '标题已填写' : '需要页面标题'}</li><li className={(page.description || '').length >= 60 ? 'done' : ''}>{(page.description || '').length >= 60 ? '摘要长度良好' : '建议摘要至少 60 字'}</li><li className={page.link ? 'done' : ''}>{page.link ? '链接已设置' : '需要固定链接'}</li></ul></section>
       </aside></div>
   </form>;
@@ -348,7 +406,7 @@ function HomePageEditor({ value, onChange }) {
 
 const SITE_THEMES = [
   { value: 'bulma', name: 'Bulma 经典', description: '保留现在简洁、紧凑的博客阅读体验。', preview: 'theme-preview-bulma' },
-  { value: 'studio', name: 'Studio 宋韵', description: '匹配管理后台的墨绿气质，用宋体与衬线字体重排长文。', preview: 'theme-preview-studio' },
+  { value: 'studio', name: 'Studio 宋韵', description: '黑灰与暖纸白的散文气质，用克制的宋体层级重排长文。', preview: 'theme-preview-studio' },
 ];
 
 function SiteThemeSettings({ value, onChange }) {

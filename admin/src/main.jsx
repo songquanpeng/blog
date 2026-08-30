@@ -7,7 +7,7 @@ try {
   const saved = window.localStorage.getItem('blog-theme');
   const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#111712' : '#f4f5f1');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#151514' : '#f3f2ef');
 } catch {
   document.documentElement.dataset.theme = 'light';
 }

@@ -31,18 +31,18 @@
   <meta name="twitter:description" content="{{.Description}}">
   {{if .SocialImage}}<meta name="twitter:image" content="{{.SocialImage}}">
   <meta name="twitter:image:alt" content="{{.Title}}">{{end}}
-  <meta name="theme-color" content="{{if eq .Theme "studio"}}#f4f5f1{{else}}#ffffff{{end}}">
+  <meta name="theme-color" content="{{if eq .Theme "studio"}}#f5f3ee{{else}}#ffffff{{end}}">
   <script nonce="{{.Nonce}}">(()=>{try{const saved=localStorage.getItem('blog-theme');const dark=saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'dark':'light'}catch{document.documentElement.dataset.theme='light'}})()</script>
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
   <link rel="stylesheet" href="/static/main.css?v=bulma-reading-fixes-20260830">
-  {{if eq .Theme "studio"}}<link rel="stylesheet" href="/theme/studio/main.css?v=studio-songti-20260830">{{end}}
+  {{if eq .Theme "studio"}}<link rel="stylesheet" href="/theme/studio/main.css?v=studio-essay-20260830">{{end}}
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
   <link rel="icon" href="{{.Favicon}}">
   <script defer src="/static/highlight.min.js"></script>
-  <script defer src="/static/main.js?v=bulma-theme-nav-20260830"></script>
+  <script defer src="/static/main.js?v=bulma-theme-nav-neutral-20260830"></script>
   {{if .JSONLD}}<script nonce="{{.Nonce}}" type="application/ld+json">{{.JSONLD}}</script>{{end}}
 </head>
 <body>
