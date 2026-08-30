@@ -56,7 +56,7 @@ func New() (*App, error) {
 	app := &App{
 		cfg: cfg, store: store, templates: templates,
 		sessions:    newSessionStore(cfg.SessionSecret, cfg.SessionTTL, store),
-		httpClient:  &http.Client{Timeout: 12 * time.Second},
+		httpClient:  directHTTPClient(12 * time.Second),
 		cliDistPath: env("CLI_DIST_PATH", "./dist/cli"),
 	}
 	app.router = app.routes()
@@ -159,6 +159,8 @@ func (a *App) routes() *gin.Engine {
 		admin.PUT("/option/", a.updateOptions)
 		admin.POST("/option/shutdown", a.shutdown)
 		admin.GET("/option/:name", a.getOption)
+		admin.GET("/network/github", a.getGitHubNetworkConfig)
+		admin.POST("/network/github/test", a.testGitHubNetwork)
 		admin.GET("/file", a.getFiles)
 		admin.GET("/file/", a.getFiles)
 		admin.GET("/file/:id", a.getFile)

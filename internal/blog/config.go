@@ -3,6 +3,7 @@ package blog
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -11,28 +12,31 @@ import (
 )
 
 type Config struct {
-	Port                string
-	DatabasePath        string
-	UploadPath          string
-	AdminPath           string
-	TemplateGlob        string
-	IndexPath           string
-	DefaultIndexPath    string
-	TrustedProxies      []string
-	SessionSecret       []byte
-	AllowUnsafeHTML     bool
-	EnableShutdown      bool
-	MaxUploadBytes      int64
-	SessionTTL          time.Duration
-	CLITokenTTL         time.Duration
-	DeviceCodeTTL       time.Duration
-	GitHubClientID      string
-	GitHubClientSecret  string
-	GitHubAllowedLogin  string
-	GitHubAllowedUserID int64
-	OAuthCallbackURL    string
-	PublicURL           string
-	AnalyticsLocation   *time.Location
+	Port                 string
+	DatabasePath         string
+	UploadPath           string
+	AdminPath            string
+	TemplateGlob         string
+	IndexPath            string
+	DefaultIndexPath     string
+	TrustedProxies       []string
+	SessionSecret        []byte
+	AllowUnsafeHTML      bool
+	EnableShutdown       bool
+	MaxUploadBytes       int64
+	SessionTTL           time.Duration
+	CLITokenTTL          time.Duration
+	DeviceCodeTTL        time.Duration
+	GitHubClientID       string
+	GitHubClientSecret   string
+	GitHubAllowedLogin   string
+	GitHubAllowedUserID  int64
+	OAuthCallbackURL     string
+	GitHubProxyMode      string
+	GitHubProxyURL       string
+	GitHubProxyForceMode string
+	PublicURL            string
+	AnalyticsLocation    *time.Location
 }
 
 func loadConfig() (Config, error) {
@@ -41,25 +45,38 @@ func loadConfig() (Config, error) {
 		return Config{}, err
 	}
 	cfg := Config{
-		Port:               env("PORT", "3000"),
-		DatabasePath:       env("SQLITE_PATH", "./data/data.db"),
-		UploadPath:         env("UPLOAD_PATH", "./data/upload"),
-		AdminPath:          env("ADMIN_PATH", "./public/admin"),
-		TemplateGlob:       env("TEMPLATE_GLOB", "./templates/*.gohtml"),
-		IndexPath:          env("INDEX_PATH", "./data/index"),
-		DefaultIndexPath:   env("DEFAULT_INDEX_PATH", "./data/index"),
-		AllowUnsafeHTML:    envBool("BLOG_ALLOW_UNSAFE_HTML", true),
-		EnableShutdown:     envBool("BLOG_ENABLE_SHUTDOWN", false),
-		MaxUploadBytes:     int64(envInt("MAX_UPLOAD_MB", 20)) << 20,
-		SessionTTL:         time.Duration(envInt("SESSION_TTL_HOURS", 365*24)) * time.Hour,
-		CLITokenTTL:        time.Duration(envInt("CLI_TOKEN_TTL_HOURS", 365*24)) * time.Hour,
-		DeviceCodeTTL:      time.Duration(envInt("CLI_DEVICE_CODE_TTL_MINUTES", 10)) * time.Minute,
-		GitHubClientID:     strings.TrimSpace(os.Getenv("GITHUB_CLIENT_ID")),
-		GitHubClientSecret: strings.TrimSpace(os.Getenv("GITHUB_CLIENT_SECRET")),
-		GitHubAllowedLogin: strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_LOGIN")),
-		OAuthCallbackURL:   strings.TrimSpace(os.Getenv("GITHUB_CALLBACK_URL")),
-		PublicURL:          strings.TrimRight(strings.TrimSpace(os.Getenv("PUBLIC_URL")), "/"),
-		AnalyticsLocation:  analyticsLocation,
+		Port:                 env("PORT", "3000"),
+		DatabasePath:         env("SQLITE_PATH", "./data/data.db"),
+		UploadPath:           env("UPLOAD_PATH", "./data/upload"),
+		AdminPath:            env("ADMIN_PATH", "./public/admin"),
+		TemplateGlob:         env("TEMPLATE_GLOB", "./templates/*.gohtml"),
+		IndexPath:            env("INDEX_PATH", "./data/index"),
+		DefaultIndexPath:     env("DEFAULT_INDEX_PATH", "./data/index"),
+		AllowUnsafeHTML:      envBool("BLOG_ALLOW_UNSAFE_HTML", true),
+		EnableShutdown:       envBool("BLOG_ENABLE_SHUTDOWN", false),
+		MaxUploadBytes:       int64(envInt("MAX_UPLOAD_MB", 20)) << 20,
+		SessionTTL:           time.Duration(envInt("SESSION_TTL_HOURS", 365*24)) * time.Hour,
+		CLITokenTTL:          time.Duration(envInt("CLI_TOKEN_TTL_HOURS", 365*24)) * time.Hour,
+		DeviceCodeTTL:        time.Duration(envInt("CLI_DEVICE_CODE_TTL_MINUTES", 10)) * time.Minute,
+		GitHubClientID:       strings.TrimSpace(os.Getenv("GITHUB_CLIENT_ID")),
+		GitHubClientSecret:   strings.TrimSpace(os.Getenv("GITHUB_CLIENT_SECRET")),
+		GitHubAllowedLogin:   strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_LOGIN")),
+		OAuthCallbackURL:     strings.TrimSpace(os.Getenv("GITHUB_CALLBACK_URL")),
+		GitHubProxyMode:      strings.ToLower(env("GITHUB_PROXY_MODE", "direct")),
+		GitHubProxyURL:       strings.TrimSpace(os.Getenv("GITHUB_PROXY_URL")),
+		GitHubProxyForceMode: strings.ToLower(strings.TrimSpace(os.Getenv("GITHUB_PROXY_FORCE_MODE"))),
+		PublicURL:            strings.TrimRight(strings.TrimSpace(os.Getenv("PUBLIC_URL")), "/"),
+		AnalyticsLocation:    analyticsLocation,
+	}
+	if cfg.GitHubProxyForceMode != "" && cfg.GitHubProxyForceMode != "direct" && cfg.GitHubProxyForceMode != "proxy" {
+		return Config{}, fmt.Errorf("GITHUB_PROXY_FORCE_MODE must be direct or proxy")
+	}
+	effectiveProxyMode := cfg.GitHubProxyMode
+	if cfg.GitHubProxyForceMode != "" {
+		effectiveProxyMode = cfg.GitHubProxyForceMode
+	}
+	if err := validateGitHubProxyConfig(githubProxyConfig{Mode: effectiveProxyMode, ProxyURL: cfg.GitHubProxyURL}); err != nil {
+		return Config{}, fmt.Errorf("GitHub proxy configuration: %w", err)
 	}
 	if id, err := strconv.ParseInt(strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_USER_ID")), 10, 64); err == nil {
 		cfg.GitHubAllowedUserID = id

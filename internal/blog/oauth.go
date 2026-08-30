@@ -73,14 +73,24 @@ func (a *App) githubCallback(c *gin.Context) {
 	}
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
-	accessToken, err := a.exchangeGitHubCode(ctx, code, entry.PKCEVerifier, a.callbackURL(c))
+	network, err := a.effectiveGitHubProxyConfig(ctx)
 	if err != nil {
-		a.renderError(c, http.StatusBadGateway, "GitHub 登录失败", err.Error())
+		a.renderError(c, http.StatusBadGateway, "GitHub 登录失败", "GitHub 网络设置无效："+err.Error())
 		return
 	}
-	user, err := a.fetchGitHubUser(ctx, accessToken)
+	client, err := a.githubHTTPClient(network)
 	if err != nil {
-		a.renderError(c, http.StatusBadGateway, "GitHub 身份校验失败", err.Error())
+		a.renderError(c, http.StatusBadGateway, "GitHub 登录失败", "无法建立 GitHub 网络出口："+err.Error())
+		return
+	}
+	accessToken, err := a.exchangeGitHubCodeWithClient(ctx, client, code, entry.PKCEVerifier, a.callbackURL(c))
+	if err != nil {
+		a.renderError(c, http.StatusBadGateway, "GitHub 登录失败", fmt.Sprintf("经 %s 出口请求失败：%v", network.RouteName, err))
+		return
+	}
+	user, err := a.fetchGitHubUserWithClient(ctx, client, accessToken)
+	if err != nil {
+		a.renderError(c, http.StatusBadGateway, "GitHub 身份校验失败", fmt.Sprintf("经 %s 出口请求失败：%v", network.RouteName, err))
 		return
 	}
 	if !a.allowedGitHubUser(user) {
@@ -143,6 +153,10 @@ func (a *App) callbackURL(c *gin.Context) string {
 }
 
 func (a *App) exchangeGitHubCode(ctx context.Context, code, verifier, callback string) (string, error) {
+	return a.exchangeGitHubCodeWithClient(ctx, a.httpClient, code, verifier, callback)
+}
+
+func (a *App) exchangeGitHubCodeWithClient(ctx context.Context, client *http.Client, code, verifier, callback string) (string, error) {
 	form := url.Values{
 		"client_id": {a.cfg.GitHubClientID}, "client_secret": {a.cfg.GitHubClientSecret},
 		"code": {code}, "redirect_uri": {callback}, "code_verifier": {verifier},
@@ -154,7 +168,7 @@ func (a *App) exchangeGitHubCode(ctx context.Context, code, verifier, callback s
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("User-Agent", "songquanpeng-blog")
-	response, err := a.httpClient.Do(req)
+	response, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -170,6 +184,10 @@ func (a *App) exchangeGitHubCode(ctx context.Context, code, verifier, callback s
 }
 
 func (a *App) fetchGitHubUser(ctx context.Context, token string) (GitHubUser, error) {
+	return a.fetchGitHubUserWithClient(ctx, a.httpClient, token)
+}
+
+func (a *App) fetchGitHubUserWithClient(ctx context.Context, client *http.Client, token string) (GitHubUser, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api.github.com/user", nil)
 	if err != nil {
 		return GitHubUser{}, err
@@ -178,7 +196,7 @@ func (a *App) fetchGitHubUser(ctx context.Context, token string) (GitHubUser, er
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
 	req.Header.Set("User-Agent", "songquanpeng-blog")
-	response, err := a.httpClient.Do(req)
+	response, err := client.Do(req)
 	if err != nil {
 		return GitHubUser{}, err
 	}

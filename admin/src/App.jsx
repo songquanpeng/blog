@@ -346,15 +346,48 @@ function HomePageEditor({ value, onChange }) {
   return <div className="home-page-editor"><div className="home-mode-grid" role="radiogroup" aria-label="首页展示方式">{choices.map(([key, title, description]) => <label className={mode === key ? 'is-selected' : ''} key={key}><input type="radio" name="home-page-mode" checked={mode === key} onChange={() => onChange(valueForHomePageMode(key, value))} /><span><strong>{title}</strong><small>{description}</small></span></label>)}</div>{mode === 'custom' && <label className="field"><span className="field-label">首页 HTML <code>index_page_content</code></span><textarea className="textarea code-input home-html-input" rows="10" value={value} onChange={(event) => onChange(event.target.value)} placeholder="<section>…</section>" /><small>保存后会替代文章列表。可在新窗口打开站点检查效果。</small></label>}</div>;
 }
 
+function GitHubNetworkSettings({ mode, proxyUrl, forced, onChange, notify }) {
+  const [testing, setTesting] = useState(false);
+  const [result, setResult] = useState(null);
+  const usingProxy = mode === 'proxy';
+  async function testConnection() {
+    setTesting(true);
+    setResult(null);
+    try {
+      const payload = await api('/api/network/github/test', { method: 'POST', body: { mode, proxyUrl } });
+      setResult(payload);
+      notify(`GitHub 连接正常，当前经 ${payload.route === 'proxy' ? '代理' : '直连'}出口`);
+    } catch (error) {
+      setResult({ error: error.message });
+      notify(error.message, true);
+    } finally { setTesting(false); }
+  }
+  return <section className="panel settings-group github-network-settings"><header><div><h2>GitHub 网络出口</h2><p>只影响 OAuth 换取令牌和身份校验，不代理博客的其他请求。</p></div><button className="button subtle small" type="button" disabled={testing} onClick={testConnection}>{testing ? '测试中…' : '测试连接'}</button></header>
+    <div className="home-mode-grid network-mode-grid" role="radiogroup" aria-label="GitHub 网络出口">
+      {[['direct', '直接连接', '由当前服务器直接访问 GitHub。'], ['proxy', '通过代理', '仅 GitHub 服务端请求使用指定代理。']].map(([value, title, description]) => <label className={mode === value ? 'is-selected' : ''} key={value}><input type="radio" name="github-network-mode" value={value} checked={mode === value} disabled={forced} onChange={() => { onChange('github_proxy_mode', value); setResult(null); }} /><span><strong>{title}</strong><small>{description}</small></span></label>)}
+    </div>
+    <label className="field"><span className="field-label">代理地址 <code>github_proxy_url</code></span><input className="input code-input" value={proxyUrl} disabled={forced} onChange={(event) => { onChange('github_proxy_url', event.target.value); setResult(null); }} placeholder="socks5://proxy.internal:1080" /><small>建议使用私有网络内的代理地址；不要填写包含用户名或密码的公网代理。</small></label>
+    {forced && <aside className="network-status is-forced"><strong>环境变量已接管</strong><span>当前出口由 GITHUB_PROXY_FORCE_MODE 强制指定，后台不能覆盖。</span></aside>}
+    {result && <aside className={`network-status ${result.error ? 'is-error' : 'is-ok'}`}><strong>{result.error ? '连接失败' : `连接正常 · ${result.route === 'proxy' ? '代理' : '直连'}`}</strong><span>{result.error || result.checks.map((check) => `${check.name} ${check.statusCode} · ${check.latencyMs} ms`).join('；')}</span></aside>}
+    {usingProxy && !proxyUrl && <aside className="network-status is-error"><strong>尚未填写代理地址</strong><span>保存或测试前请填写 SOCKS5 地址。</span></aside>}
+  </section>;
+}
+
 function Settings({ notify }) {
   const [options, setOptions] = useState({});
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [networkForced, setNetworkForced] = useState(false);
   const setOption = (key, value) => setOptions((current) => ({ ...current, [key]: value }));
   useEffect(() => {
-    Promise.all([api('/api/option'), api('/api/page').catch(() => ({ pages: [] }))])
-      .then(([optionPayload, pagePayload]) => { setOptions(Object.fromEntries(optionPayload.options.map((item) => [item.key, item.value]))); setPages(pagePayload.pages || []); })
+    Promise.all([api('/api/option'), api('/api/page').catch(() => ({ pages: [] })), api('/api/network/github')])
+      .then(([optionPayload, pagePayload, networkPayload]) => {
+        const loaded = Object.fromEntries(optionPayload.options.map((item) => [item.key, item.value]));
+        loaded.github_proxy_mode = networkPayload.config.mode;
+        loaded.github_proxy_url = networkPayload.config.proxyUrl || '';
+        setOptions(loaded); setPages(pagePayload.pages || []); setNetworkForced(Boolean(networkPayload.config.forced));
+      })
       .catch((error) => notify(error.message, true)).finally(() => setLoading(false));
   }, [notify]);
   async function save(event) {
@@ -369,6 +402,7 @@ function Settings({ notify }) {
   if (loading) return <div className="loading-page"><div className="loading-bar"><i /></div></div>;
   return <form onSubmit={save}><PageHeader kicker="SITE CONFIGURATION" title="站点设置" description="管理品牌、搜索展示和全局内容。" actions={<button className="button primary" disabled={saving}>{saving ? '保存中…' : '保存全部设置'}</button>} />
     <div className="settings-stack">{SETTING_GROUPS.map((group) => <section className="panel settings-group" key={group.title}><header><div><h2>{group.title}</h2><p>{group.description}</p></div></header><div className="settings-fields">{group.fields.map(([key, label, type, placeholder]) => <label className={`field ${type === 'textarea' ? 'full' : ''}`} key={key}><span className="field-label">{label}<code>{key}</code></span>{type === 'text' ? <input className="input" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOption(key, event.target.value)} /> : <textarea className="textarea" rows="3" value={options[key] || ''} placeholder={placeholder} onChange={(event) => setOption(key, event.target.value)} />}</label>)}</div></section>)}
+      <GitHubNetworkSettings mode={options.github_proxy_mode || 'direct'} proxyUrl={options.github_proxy_url || ''} forced={networkForced} onChange={setOption} notify={notify} />
       <section className="panel settings-group navigation-settings"><header><div><h2>导航菜单</h2><p>添加链接、调整顺序，并把常用页面组织成下拉菜单。</p></div><a className="button subtle small" href="/" target="_blank" rel="noreferrer">查看站点 ↗</a></header><NavigationEditor value={options.nav_links || ''} pages={pages} onChange={(value) => setOption('nav_links', value)} /></section>
       <section className="panel settings-group"><header><div><h2>首页与文章</h2><p>选择首页呈现方式，并设置每篇文章末尾的统一说明。</p></div></header><div className="settings-fields"><div className="full"><HomePageEditor value={options.index_page_content || ''} onChange={(value) => setOption('index_page_content', value)} /></div><label className="field full"><span className="field-label">文章版权说明 <code>copyright</code></span><textarea className="textarea" rows="4" value={options.copyright || ''} placeholder="例如：转载请注明作者与原文链接" onChange={(event) => setOption('copyright', event.target.value)} /><small>显示在所有文章正文之后，支持 HTML。</small></label></div></section>
     </div>

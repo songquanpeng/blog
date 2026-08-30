@@ -155,10 +155,15 @@ docker run --restart=always -d \
 | `SESSION_TTL_HOURS` | `8760` | 管理会话时长；会话持久化在 SQLite 中，部署重启不会清空 |
 | `CLI_TOKEN_TTL_HOURS` | `8760` | CLI token 有效期，默认 365 天 |
 | `CLI_DEVICE_CODE_TTL_MINUTES` | `10` | device flow 授权码有效期 |
+| `GITHUB_PROXY_MODE` | `direct` | GitHub 服务端请求的默认出口：`direct` 或 `proxy`；后台设置可覆盖 |
+| `GITHUB_PROXY_URL` | 空 | GitHub 专用代理地址，例如 `socks5://proxy.internal:1080` |
+| `GITHUB_PROXY_FORCE_MODE` | 空 | 紧急恢复用，强制 `direct` 或 `proxy` 并暂时禁止后台覆盖 |
 | `BLOG_ENABLE_SHUTDOWN` | `false` | 是否恢复旧远程关机接口 |
 | `BLOG_ALLOW_UNSAFE_HTML` | `true` | 是否完整保留站点所有者发布的 HTML；多人写入时建议设为 `false` |
 
 反向代理可继续使用仓库中的 [blog.conf](./blog.conf)，生产环境应启用 HTTPS。
+
+GitHub OAuth 的换 token 与用户身份请求可以单独使用 HTTP(S) 或 SOCKS5 代理，站点设置页可即时切换并测试连接。代理应由部署者放在可信私有网络内，地址不能包含用户名或密码。首次恢复登录可设置 `GITHUB_PROXY_MODE=proxy` 和 `GITHUB_PROXY_URL`；如后台配置导致无法登录，可用 `GITHUB_PROXY_FORCE_MODE` 临时强制恢复。
 
 ## 测试
 

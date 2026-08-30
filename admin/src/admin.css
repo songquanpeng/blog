@@ -287,6 +287,14 @@ td small { margin-top: 3px; color: var(--muted); }
 .settings-group header p { margin: 5px 0 0; color: var(--muted); font-size: .7rem; }
 .settings-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .settings-fields .full { grid-column: 1 / -1; }
+.github-network-settings > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.network-mode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 16px; }
+.network-status { display: grid; gap: 4px; margin-top: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-soft); padding: 11px 13px; }
+.network-status strong { font-size: .72rem; }
+.network-status span { color: var(--muted); font-size: .65rem; line-height: 1.5; }
+.network-status.is-ok { border-color: #a6cbb0; background: var(--accent-soft); color: var(--accent); }
+.network-status.is-error { border-color: #ecc8c4; background: var(--danger-soft); color: var(--danger); }
+.network-status.is-forced { border-color: #e1ca9c; background: #fff8e8; color: #8a651e; }
 .navigation-settings > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .nav-editor { display: grid; gap: 14px; }
 .nav-editor-help { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); padding: 13px 15px; }

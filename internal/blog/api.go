@@ -298,6 +298,34 @@ func (a *App) updateOptions(c *gin.Context) {
 			}
 		}
 	}
+	_, modeChanged := options[githubProxyModeOption]
+	_, proxyURLChanged := options[githubProxyURLOption]
+	if modeChanged || proxyURLChanged {
+		config := githubProxyConfig{Mode: a.cfg.GitHubProxyMode, ProxyURL: a.cfg.GitHubProxyURL}
+		if a.store != nil {
+			current, err := a.store.Options(c.Request.Context())
+			if err != nil {
+				a.apiFailure(c, "读取 GitHub 网络设置失败", err)
+				return
+			}
+			if value, ok := current[githubProxyModeOption]; ok {
+				config.Mode = value
+			}
+			if value, ok := current[githubProxyURLOption]; ok {
+				config.ProxyURL = value
+			}
+		}
+		if raw, ok := options[githubProxyModeOption]; ok {
+			config.Mode = fmt.Sprint(raw)
+		}
+		if raw, ok := options[githubProxyURLOption]; ok {
+			config.ProxyURL = fmt.Sprint(raw)
+		}
+		if err := validateGitHubProxyConfig(config); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"status": false, "message": err.Error()})
+			return
+		}
+	}
 	if err := a.store.UpdateOptions(c.Request.Context(), options); err != nil {
 		a.apiFailure(c, "保存设置失败", err)
 		return
