@@ -10,8 +10,8 @@
   --page: #f4f5f1;
   --nav-bg: #17221b;
   --shadow: 0 16px 50px rgba(31, 45, 34, .08);
-  --studio-serif: Georgia, "Songti SC", STSong, SimSun, "Noto Serif CJK SC", "Source Han Serif SC", serif;
-  --studio-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --studio-serif: "Songti SC", STSong, "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", SimSun, Georgia, serif;
+  --studio-sans: var(--studio-serif);
 }
 
 :root[data-theme="dark"] {
@@ -47,6 +47,7 @@ body { background: var(--page); font-family: var(--studio-sans); }
   font-family: var(--studio-serif);
   font-size: 1rem;
   font-weight: 700;
+  letter-spacing: .01em;
 }
 .site-brand::before {
   content: "B";
@@ -85,7 +86,7 @@ body { background: var(--page); font-family: var(--studio-sans); }
 }
 .index-page-box:hover { border-color: #bdcbbf; box-shadow: var(--shadow); transform: translateY(-2px); }
 .box article.index-page-media { background: transparent; padding: 0; }
-.content h2.page-card-title { margin-bottom: 8px; font-family: var(--studio-serif); font-size: 1.65rem; font-weight: 600; letter-spacing: -.025em; line-height: 1.36; }
+.content h2.page-card-title { margin-bottom: 8px; font-family: var(--studio-serif); font-size: 1.65rem; font-weight: 600; letter-spacing: 0; line-height: 1.42; }
 .page-card-title a, .page-card-title a:hover { color: var(--text); }
 .page-card-title a:hover { color: var(--link); }
 .page-card-meta { gap: 6px; }
@@ -128,8 +129,8 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 17px;
   font-family: var(--studio-serif);
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 600;
-  letter-spacing: -.035em;
-  line-height: 1.26;
+  letter-spacing: 0;
+  line-height: 1.34;
 }
 .article-summary {
   margin-bottom: 17px;
@@ -146,8 +147,8 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 17px;
   color: var(--text);
   font-family: var(--studio-serif);
   font-weight: 650;
-  letter-spacing: -.02em;
-  line-height: 1.42;
+  letter-spacing: 0;
+  line-height: 1.5;
 }
 .article-content h2, .protected-content h2 { border-bottom: 1px solid var(--line); padding-bottom: .35em; }
 .article-content a, .protected-content a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 38%, transparent); text-underline-offset: .22em; }
@@ -236,7 +237,7 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 17px;
   .site-brand::before { width: 34px; height: 34px; flex-basis: 34px; }
   .index-layout > .column { padding-inline: 10px; }
   .index-page-box { border-radius: 13px; padding: 19px 18px; }
-  .content h2.page-card-title { font-size: 1.45rem; }
+  .content h2.page-card-title { font-size: 1.45rem; line-height: 1.48; }
   .page-card-text { font-size: 1rem; }
   .article-container { padding-inline: 18px; }
   .title.page-title { font-size: 2rem; }

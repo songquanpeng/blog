@@ -235,7 +235,7 @@ func (a *App) rawPageContent(c *gin.Context) {
 	document.WriteString(template.HTMLEscapeString(page.Title))
 	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-theme-20260830\">")
 	if theme == publicThemeStudio {
-		document.WriteString("<link rel=\"stylesheet\" href=\"/theme/studio/main.css?v=studio-20260830\">")
+		document.WriteString("<link rel=\"stylesheet\" href=\"/theme/studio/main.css?v=studio-songti-20260830\">")
 	}
 	document.WriteString("</head><body><main class=\"raw\">")
 	document.WriteString(content)
