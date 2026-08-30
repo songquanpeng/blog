@@ -254,12 +254,60 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`theme-toggle-mobile`,
 		`theme-toggle-desktop`,
 		`data-site-theme="studio"`,
-		`href="/theme/studio/main.css?v=studio-essay-nav-20260830"`,
+		`href="/theme/studio/main.css?v=studio-profile-card-20260830"`,
 		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("page is missing SEO output %q", expected)
 		}
+	}
+}
+
+func TestIndexRendersPersonalProfileSidebar(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	if err := store.UpdateOptions(t.Context(), map[string]any{
+		"site_name": "Example Notes", "author": "Fallback Author", "description": "Fallback description",
+		"profile_name": "Song", "profile_bio": "Writing about software and quiet ideas.", "profile_avatar": "/upload/avatar.webp",
+		"social_x_url": "https://x.com/song", "social_github_url": "https://github.com/song",
+		"social_zhihu_url": "https://www.zhihu.com/people/song", "social_custom_links": "B 站 | https://space.bilibili.com/123\nBad | javascript:alert(1)",
+		"wechat_name": "Song's Notes", "wechat_qr": "/upload/wechat.webp",
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	functions := template.FuncMap{
+		"date": shortDate, "dateTime": displayDateTime, "archiveURL": archiveURL, "splitTags": splitTags,
+		"pathEscape": url.PathEscape, "add": func(a, b int) int { return a + b },
+	}
+	templates := template.Must(template.New("layout.gohtml").Funcs(functions).ParseGlob(filepath.Join("..", "..", "templates", "*.gohtml")))
+	gin.SetMode(gin.TestMode)
+	app := &App{store: store, templates: templates, cfg: Config{PublicURL: "https://blog.example"}}
+	router := gin.New()
+	router.GET("/", app.index)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("index response = %d %s", recorder.Code, recorder.Body.String())
+	}
+	body := recorder.Body.String()
+	for _, expected := range []string{
+		`class="card profile-card"`, `id="profile-name" class="profile-name">Song</h2>`,
+		`Writing about software and quiet ideas.`, `src="https://blog.example/upload/avatar.webp"`,
+		`href="https://x.com/song"`, `href="https://github.com/song"`, `rel="me noopener noreferrer"`,
+		`href="https://www.zhihu.com/people/song"`, `>知乎</span>`, `href="https://space.bilibili.com/123"`, `>B 站</span>`,
+		`class="profile-wechat"`, `src="https://blog.example/upload/wechat.webp"`, `Song&#39;s Notes`,
+	} {
+		if !strings.Contains(body, expected) {
+			t.Errorf("index is missing profile output %q", expected)
+		}
+	}
+	if strings.Contains(body, "javascript:alert") {
+		t.Error("index rendered an unsafe custom social URL")
 	}
 }
 

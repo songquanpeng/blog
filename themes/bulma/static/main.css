@@ -95,6 +95,60 @@ code { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "Microsoft YaHe
 .sidebar-content { padding: 0 16px 16px; }
 .brand-image { margin-top: 12px; border-radius: 6px; }
 .notice { margin-top: 32px; }
+.profile-card { overflow: visible; }
+.profile-card-content { padding: 22px; }
+.profile-header { display: flex; align-items: center; gap: 14px; }
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  flex: 0 0 64px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-family: Georgia, "Songti SC", serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+.profile-avatar img { width: 100%; height: 100%; max-height: none; object-fit: cover; }
+.profile-identity { min-width: 0; }
+.profile-site { margin: 0 0 2px; overflow: hidden; color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.profile-name { margin: 0; overflow-wrap: anywhere; color: var(--text); font-size: 1.2rem; font-weight: 600; line-height: 1.35; }
+.profile-bio { margin: 18px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.75; }
+.profile-social { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }
+.profile-social-link {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: .76rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+.profile-social-link:hover, .profile-social-link:focus-visible { border-color: #b7c5d5; background: var(--surface-soft); color: var(--text); }
+.profile-social-link svg { width: 14px; height: 14px; flex: 0 0 14px; fill: currentColor; }
+.profile-social-mark { width: 14px; height: 14px; display: inline-grid; flex: 0 0 14px; place-items: center; font-size: .68rem; font-weight: 700; line-height: 1; }
+.profile-wechat { position: relative; }
+.profile-wechat > summary { list-style: none; }
+.profile-wechat > summary::-webkit-details-marker { display: none; }
+.profile-wechat-cue { margin-left: 1px; color: var(--muted); font-size: .9rem; transition: transform .15s ease; }
+.profile-wechat[open] .profile-wechat-cue { transform: rotate(45deg); }
+.profile-wechat-panel { width: 100%; margin-top: 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); padding: 12px; text-align: center; }
+.profile-wechat-panel img { display: block; width: min(100%, 180px); height: auto; max-height: none; margin: 0 auto; border-radius: 4px; background: #fff; padding: 5px; }
+.profile-wechat-panel p { margin: 9px 0 0; color: var(--muted); font-size: .72rem; line-height: 1.55; }
+.profile-wechat-panel strong { color: var(--text); font-size: .78rem; font-weight: 600; }
+.profile-wechat:only-child, .profile-wechat:last-child { flex-basis: auto; }
+.profile-wechat[open] { flex-basis: 100%; }
 .archive-title { margin-top: 24px; }
 .archive-container { padding: 0 16px 40px; }
 .archive-container .table-container { border-radius: 7px; background: #fff; box-shadow: var(--shadow); }
@@ -106,7 +160,10 @@ code { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "Microsoft YaHe
 .shadow { box-shadow: var(--shadow); }
 .is-broken-image { display: none !important; }
 .image-fallback { display: flex; min-height: 56px; align-items: center; justify-content: center; border: 1px dashed #d8dde3; border-radius: 6px; background: #f7f8f9; color: #7a8490; padding: 12px; font-size: .78rem; line-height: 1.45; text-align: center; }
-.notice .image-fallback + .image-fallback { margin-top: 10px; }
+.notice .notice-image-fallback { min-height: 0; justify-content: flex-start; border: 0; border-left: 2px solid var(--line); border-radius: 0; background: var(--surface-soft); padding: 7px 10px; font-size: .7rem; line-height: 1.45; text-align: left; }
+.notice img { width: 100%; max-height: none; display: block; }
+.notice p:has(.notice-image-fallback) { margin-bottom: 7px; }
+.notice p:has(.notice-image-fallback):last-child { margin-bottom: 0; }
 .media-left .image-fallback { width: 48px; min-height: 48px; padding: 4px; font-size: .65rem; }
 
 .article-container { max-width: 960px; margin: auto; padding: 16px; overflow-wrap: break-word; word-break: break-word; line-height: 1.65; }
@@ -414,6 +471,8 @@ span.line { display: inline-block; margin-right: 4px; }
 [data-theme="dark"] .microblog-new-button { background: var(--surface); }
 [data-theme="dark"] .image-fallback { border-color: #3b4652; background: var(--surface-soft); color: var(--muted); }
 [data-theme="dark"] .link-entry-title { color: var(--text); }
+[data-theme="dark"] .profile-social-link:hover,
+[data-theme="dark"] .profile-social-link:focus-visible { border-color: #536273; }
 [data-theme="dark"] .microblog-new-button { color: #b9c4cf; box-shadow: 0 5px 18px rgba(0, 0, 0, .42); }
 [data-theme="dark"] .micro-post-content blockquote { background: transparent; }
 
@@ -423,6 +482,11 @@ span.line { display: inline-block; margin-right: 4px; }
   article h3 { font-size: 1.3em; }
   article h4 { font-size: 1.2em; }
   .toc { border-left: 0; padding-left: 0; }
+}
+
+@media screen and (min-width: 1024px) {
+  .index-layout > section.column { min-width: 0; flex: 1 1 auto; }
+  .index-layout > .index-sidebar { width: 300px; flex: 0 0 300px; }
 }
 
 /* Bulma's columns use negative outer margins. On the stacked home layout that
@@ -440,6 +504,7 @@ span.line { display: inline-block; margin-right: 4px; }
   .index-layout > .column { padding-inline: 12px; }
   .index-layout .page-card-list { margin-inline: 0; }
   .index-layout .index-sidebar { margin-top: 8px; }
+  .profile-card { max-width: 520px; }
 }
 
 @media screen and (max-width: 768px) {

@@ -72,11 +72,12 @@ function markImageUnavailable(image) {
   image.dataset.imageFallback = 'true';
   image.classList.add('is-broken-image');
   const fallback = document.createElement('span');
-  fallback.className = 'image-fallback';
+  const compact = Boolean(image.closest('.notice'));
+  fallback.className = compact ? 'image-fallback notice-image-fallback' : 'image-fallback';
   fallback.setAttribute('role', 'img');
   const label = (image.alt || '').trim();
   fallback.setAttribute('aria-label', label || '图片暂时无法加载');
-  fallback.textContent = label ? `${label}（暂时无法加载）` : '图片暂时无法加载';
+  fallback.textContent = compact && label ? `未能加载：${label}` : label ? `${label}（暂时无法加载）` : '图片暂时无法加载';
   image.insertAdjacentElement('afterend', fallback);
 }
 

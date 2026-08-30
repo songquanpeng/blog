@@ -139,6 +139,18 @@ body {
 .sidebar-content { padding: 15px 0 0; }
 .brand-image { margin-top: 16px; border-radius: 2px; filter: saturate(.72) contrast(.96); }
 .notice { margin-top: 34px; padding: 18px 0 0; }
+.notice .notice-image-fallback { border-left-color: var(--line-strong); background: transparent; color: var(--muted); font-family: var(--studio-sans); letter-spacing: .015em; }
+.profile-card-content { padding: 20px 0 0; }
+.profile-header { align-items: flex-start; }
+.profile-avatar { width: 68px; height: 68px; flex-basis: 68px; border-color: var(--line); border-radius: 2px; background: var(--surface-soft); font-family: var(--studio-serif); filter: saturate(.72) contrast(.96); }
+.profile-site { font-family: var(--studio-sans); font-size: .64rem; letter-spacing: .12em; }
+.profile-name { font-family: var(--studio-serif); font-size: 1.18rem; font-weight: 600; letter-spacing: .035em; }
+.profile-bio { margin-top: 19px; color: var(--muted); font-family: var(--studio-serif); font-size: .9rem; line-height: 1.9; }
+.profile-social { gap: 0; margin-top: 20px; border-top-color: var(--line); padding-top: 10px; }
+.profile-social-link { min-height: 32px; border: 0; border-radius: 0; padding: 6px 12px 6px 0; font-family: var(--studio-sans); font-size: .7rem; letter-spacing: .035em; }
+.profile-social-link:hover, .profile-social-link:focus-visible { border-color: transparent; background: transparent; color: var(--text); text-decoration: underline; text-underline-offset: .25em; }
+.profile-wechat-panel { margin-top: 8px; border-color: var(--line); border-radius: 2px; background: var(--surface-soft); }
+.profile-wechat-panel p { font-family: var(--studio-serif); }
 
 /* Reading pages keep the text measure and type scale deliberately narrow. */
 .article-container { line-height: 1.9; }
@@ -248,6 +260,10 @@ article { color: var(--text); font-family: var(--studio-serif); font-size: 16.5p
   .index-layout { gap: 16px; }
   .index-sidebar { padding-top: 36px; }
   .toc { position: static; border-top: 1px solid var(--line); padding: 20px 0 0; }
+}
+
+@media screen and (min-width: 1024px) {
+  .index-layout > .index-sidebar { width: 280px; flex-basis: 280px; }
 }
 
 @media screen and (max-width: 768px) {

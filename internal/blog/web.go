@@ -233,9 +233,9 @@ func (a *App) rawPageContent(c *gin.Context) {
 	document.WriteString(template.HTMLEscapeString(option(options, "language", "zh-CN")))
 	document.WriteString("\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>")
 	document.WriteString(template.HTMLEscapeString(page.Title))
-	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=bulma-theme-20260830\">")
+	document.WriteString("</title><link rel=\"stylesheet\" href=\"/static/bulma.min.css\"><link rel=\"stylesheet\" href=\"/static/main.css?v=profile-card-20260830\">")
 	if theme == publicThemeStudio {
-		document.WriteString("<link rel=\"stylesheet\" href=\"/theme/studio/main.css?v=studio-essay-nav-20260830\">")
+		document.WriteString("<link rel=\"stylesheet\" href=\"/theme/studio/main.css?v=studio-profile-card-20260830\">")
 	}
 	document.WriteString("</head><body><main class=\"raw\">")
 	document.WriteString(content)
