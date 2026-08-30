@@ -86,6 +86,24 @@ type dbMicroPost struct {
 
 func (dbMicroPost) TableName() string { return "MicroPosts" }
 
+// dbPageView stores only the information needed for first-party analytics.
+// Client IP addresses are never persisted; VisitorHash is derived from a
+// random first-party cookie with a server-side key.
+type dbPageView struct {
+	ID            uint64    `gorm:"column:id;primaryKey;autoIncrement"`
+	PageID        string    `gorm:"column:pageId;type:text;not null;index:page_views_page_day,priority:1"`
+	Path          string    `gorm:"column:path;type:text;not null"`
+	Day           string    `gorm:"column:day;type:text;not null;index:page_views_day;index:page_views_page_day,priority:2;index:page_views_day_visitor,priority:1"`
+	VisitorHash   string    `gorm:"column:visitorHash;type:text;not null;index:page_views_day_visitor,priority:2"`
+	Referrer      string    `gorm:"column:referrer;type:text;not null"`
+	SearchEngine  string    `gorm:"column:searchEngine;type:text;not null"`
+	SearchKeyword string    `gorm:"column:searchKeyword;type:text;not null"`
+	UserAgent     string    `gorm:"column:userAgent;type:text;not null"`
+	CreatedAt     time.Time `gorm:"column:createdAt;index"`
+}
+
+func (dbPageView) TableName() string { return "PageViews" }
+
 // CLI credentials live in dedicated tables so historical user access tokens
 // can never become administrator credentials by accident. Only SHA-256
 // digests of bearer and device codes are persisted.
@@ -184,7 +202,7 @@ func (s *Store) Close() error {
 func (s *Store) migrate() error {
 	// Do not auto-alter Sequelize-created tables. SQLite table reconstruction
 	// would be an unnecessary risk for historical installations.
-	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbMicroPost{}, &dbDeviceAuthorization{}, &dbCLIToken{}} {
+	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbMicroPost{}, &dbDeviceAuthorization{}, &dbCLIToken{}, &dbPageView{}} {
 		if !s.db.Migrator().HasTable(model) {
 			if err := s.db.AutoMigrate(model); err != nil {
 				return fmt.Errorf("gorm migrate: %w", err)
@@ -536,10 +554,6 @@ func (s *Store) UpdatePage(ctx context.Context, page Page) (bool, error) {
 func (s *Store) DeletePage(ctx context.Context, id string) (bool, error) {
 	result := s.db.WithContext(ctx).Where("id = ?", id).Delete(&dbPage{})
 	return result.RowsAffected == 1, result.Error
-}
-
-func (s *Store) IncrementView(ctx context.Context, id string) {
-	_ = s.db.WithContext(ctx).Model(&dbPage{}).Where("id = ?", id).UpdateColumn("view", gorm.Expr("COALESCE(view, 0) + 1")).Error
 }
 
 func (s *Store) Files(ctx context.Context, keyword string) ([]StoredFile, error) {

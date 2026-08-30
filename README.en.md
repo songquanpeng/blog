@@ -2,7 +2,7 @@
 
 A single-owner blog built with Gin, GORM, React, and Bulma. Public pages keep the classic Bulma theme and are server-rendered for SEO; the React admin uses its own management-focused design system and GitHub OAuth exclusively.
 
-The refactor preserves the historical SQLite tables and fields, URLs, API paths, port 3000, `/app/data` volume, and the `PORT`, `SQLITE_PATH`, and `UPLOAD_PATH` environment variables. Legacy users remain only as historical author references and are never used for authentication.
+The refactor preserves the historical SQLite tables and fields, URLs, API paths, port 3000, `/app/data` volume, and the `PORT`, `SQLITE_PATH`, and `UPLOAD_PATH` environment variables. Legacy users remain only as historical author references and are never used for authentication. The admin also includes first-party article analytics for PV, UV, daily trends, Referrers, recognized search engines and visible search terms, and User-Agent values without storing raw IP addresses.
 
 ## Microblog
 

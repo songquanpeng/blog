@@ -177,6 +177,7 @@ func (a *App) routes() *gin.Engine {
 		admin.GET("/microblog/:id", a.getMicroPost)
 		admin.PUT("/microblog/:id", a.updateMicroPost)
 		admin.DELETE("/microblog/:id", a.deleteMicroPost)
+		admin.GET("/analytics", a.analyticsReport)
 	}
 
 	router.GET("/admin", func(c *gin.Context) { c.Redirect(http.StatusMovedPermanently, "/admin/") })

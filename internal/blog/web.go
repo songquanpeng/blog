@@ -198,7 +198,7 @@ func (a *App) page(c *gin.Context) {
 		}
 	}
 	data.JSONLD = articleJSONLD(data, page)
-	a.store.IncrementView(c.Request.Context(), page.ID)
+	a.recordArticleView(c, page)
 	page.View++
 	a.render(c, http.StatusOK, data)
 }

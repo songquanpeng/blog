@@ -54,6 +54,7 @@ function Login({ route }) {
 function Layout({ user, route, children }) {
   const items = [
     ['posts', '文', '内容'],
+    ['analytics', '↗', '数据统计'],
     ['editor', '＋', '新建'],
     ['microblog', '◌', '微博客'],
     ['files', '↑', '媒体库'],
@@ -217,6 +218,59 @@ function Microblog({ notify }) {
   </section>;
 }
 
+function AnalyticsTrend({ daily }) {
+  const width = 760;
+  const height = 230;
+  const inset = 22;
+  const max = Math.max(1, ...daily.map((item) => Number(item.pv || 0)));
+  const point = (item, index, key) => {
+    const x = daily.length === 1 ? width / 2 : inset + (index * (width - inset * 2)) / (daily.length - 1);
+    const y = height - inset - (Number(item[key] || 0) / max) * (height - inset * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  };
+  const pvPoints = daily.map((item, index) => point(item, index, 'pv')).join(' ');
+  const uvPoints = daily.map((item, index) => point(item, index, 'uv')).join(' ');
+  const labels = daily.length ? [daily[0], daily[Math.floor((daily.length - 1) / 2)], daily[daily.length - 1]] : [];
+  return <div className="trend-chart">
+    <div className="chart-legend"><span className="pv-dot" />PV <span className="uv-dot" />UV</div>
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="每日 PV 和 UV 趋势">
+      {[0, .25, .5, .75, 1].map((ratio) => <line key={ratio} x1={inset} x2={width - inset} y1={inset + ratio * (height - inset * 2)} y2={inset + ratio * (height - inset * 2)} className="chart-grid-line" />)}
+      {daily.length > 0 && <><polyline className="chart-line pv-line" points={pvPoints} /><polyline className="chart-line uv-line" points={uvPoints} /></>}
+    </svg>
+    <div className="chart-labels">{labels.map((item, index) => <span key={`${item.date}-${index}`}>{item.date.slice(5)}</span>)}</div>
+  </div>;
+}
+
+function DimensionList({ items, empty }) {
+  const max = Math.max(1, ...items.map((item) => Number(item.pv || 0)));
+  if (!items.length) return <EmptyState title={empty} text="有访问后会自动显示在这里。" />;
+  return <div className="dimension-list">{items.map((item) => <div className="dimension-row" key={item.value} title={item.value}><div><span>{item.value}</span><strong>{Number(item.pv || 0).toLocaleString()}</strong></div><i><b style={{ width: `${(Number(item.pv || 0) / max) * 100}%` }} /></i></div>)}</div>;
+}
+
+function Analytics({ notify }) {
+  const [days, setDays] = useState(30);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { setData((await api(`/api/analytics?days=${days}`)).analytics); }
+    catch (error) { notify(error.message, true); }
+    finally { setLoading(false); }
+  }, [days, notify]);
+  useEffect(() => { load(); }, [load]);
+  const actions = <div className="range-switch" aria-label="统计周期">{[7, 30, 90, 365].map((value) => <button className={days === value ? 'is-active' : ''} type="button" key={value} onClick={() => setDays(value)}>{value === 365 ? '一年' : `${value} 天`}</button>)}</div>;
+  if (loading && !data) return <section><PageHeader kicker="AUDIENCE INSIGHTS" title="数据统计" description="了解文章阅读、访客与流量来源。" actions={actions} /><div className="loading-page"><div className="loading-bar"><i /></div></div></section>;
+  const summary = data?.summary || {};
+  const average = data?.days ? Number(summary.pv || 0) / data.days : 0;
+  return <section className={loading ? 'analytics-page is-refreshing' : 'analytics-page'}><PageHeader kicker="AUDIENCE INSIGHTS" title="数据统计" description="了解文章阅读、访客与流量来源。" actions={actions} />
+    <div className="metric-grid"><Metric label="浏览量 PV" value={Number(summary.pv || 0).toLocaleString()} detail={`过去 ${data?.days || days} 天`} tone="green" /><Metric label="访客数 UV" value={Number(summary.uv || 0).toLocaleString()} detail="周期内去重访客" /><Metric label="今日访问" value={`${Number(summary.todayPv || 0).toLocaleString()} / ${Number(summary.todayUv || 0).toLocaleString()}`} detail="PV / UV" /><Metric label="日均浏览" value={average.toLocaleString(undefined, { maximumFractionDigits: 1 })} detail={`${data?.startDate || ''} 起`} /></div>
+    <section className="panel analytics-trend-panel"><div className="panel-heading with-action"><div><h2>阅读趋势</h2><p>每日浏览量与独立访客</p></div><button className="button subtle small" type="button" onClick={load}>刷新</button></div><AnalyticsTrend daily={data?.daily || []} /></section>
+    <section className="panel table-panel analytics-pages"><div className="panel-heading"><div><h2>文章表现</h2><p>按所选周期内浏览量排序</p></div></div>{!data?.pages?.length ? <EmptyState title="还没有统计数据" text="新访问会从本次上线后开始记录。" /> : <div className="table-scroll"><table><thead><tr><th>文章</th><th>PV</th><th>UV</th><th>人均浏览</th></tr></thead><tbody>{data.pages.map((page) => <tr key={page.pageId}><td className="title-cell"><strong>{page.title || page.link || '已删除文章'}</strong>{page.link ? <a href={`/page/${encodeURIComponent(page.link)}`} target="_blank" rel="noreferrer">/{page.link} ↗</a> : <small>{page.pageId}</small>}</td><td>{Number(page.pv || 0).toLocaleString()}</td><td>{Number(page.uv || 0).toLocaleString()}</td><td>{page.uv ? (Number(page.pv) / Number(page.uv)).toFixed(1) : '—'}</td></tr>)}</tbody></table></div>}</section>
+    <div className="analytics-dimensions"><section className="panel"><div className="panel-heading"><div><h2>Referrer 来源</h2><p>前 12 个来源域名</p></div></div><DimensionList items={data?.referrers || []} empty="暂无来源数据" /></section><section className="panel"><div className="panel-heading"><div><h2>搜索引擎</h2><p>从 Referrer 自动识别</p></div></div><DimensionList items={data?.searchEngines || []} empty="暂无搜索来源" /></section><section className="panel"><div className="panel-heading"><div><h2>搜索关键词</h2><p>仅展示搜索引擎仍提供的查询词</p></div></div><DimensionList items={data?.searchKeywords || []} empty="暂无可见关键词" /></section><section className="panel"><div className="panel-heading"><div><h2>User-Agent</h2><p>前 12 个访问客户端</p></div></div><DimensionList items={data?.agents || []} empty="暂无 UA 数据" /></section></div>
+    <aside className="info-callout"><strong>隐私与关键词说明</strong><p>统计不保存原始 IP；UV 使用随机的一方访客标识做不可逆摘要。普通 Referrer 仅保留来源域名；识别为搜索引擎时会额外保存其明确提供的搜索词。多数 HTTPS 搜索引擎已隐藏查询词，因此搜索流量通常会多于可见关键词。</p></aside>
+  </section>;
+}
+
 const SETTING_GROUPS = [
   { title: '品牌与基础信息', description: '决定站点在首页、浏览器和分享卡片中的身份。', fields: [
     ['site_name', '站点名称', 'text', '例如：山海之间'], ['motto', '首页主标题 / Slogan', 'text', '一句最能代表这个博客的话'], ['description', '站点描述', 'textarea', '用于首页介绍和搜索引擎摘要'], ['author', '作者名称', 'text', '显示在页脚与结构化数据中'],
@@ -255,6 +309,7 @@ export default function App() {
   const editorMatch = route.match(/^editor(?:\/(.+))?$/);
   let content = <Posts notify={notify} />;
   if (editorMatch) content = <Editor id={editorMatch[1]} notify={notify} />;
+  else if (route === 'analytics') content = <Analytics notify={notify} />;
   else if (route === 'microblog') content = <Microblog notify={notify} />;
   else if (route === 'files') content = <Files notify={notify} />;
   else if (route === 'settings') content = <Settings notify={notify} />;

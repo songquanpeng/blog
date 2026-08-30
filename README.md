@@ -10,6 +10,7 @@
 - 后台仅支持一个 GitHub OAuth 管理员，推荐使用不可变的 GitHub User ID 建立白名单。
 - 内置 `blog-cli`：通过本站 device flow 授权，覆盖页面与微博客 CRUD、正文统一检索、页面发布状态、站点标题与侧边栏、全部设置和文件管理；token 默认有效一年并可随时撤销。
 - 内置微博客子功能：公开短内容位于独立路径（默认 `/microblog`），支持 Markdown、公开/私密状态、分页和完整后台 CRUD；启停、访问路径、标题与简介均可即时调整，停用不会删除数据。
+- 内置隐私友好的文章统计：后台可查看 PV、UV、每日趋势、文章排行、Referrer、搜索引擎与可见关键词、User-Agent；不保存原始 IP。
 - Markdown 经过安全渲染；站点所有者发布的 HTML 会被完整保留，其中独立 HTML 页面运行在无同源权限的沙箱中。应用还包含 CSP、安全 Cookie、OAuth state + PKCE、同源检查、请求体限制和安全文件上传。
 - 历史 Raw 工具页在无 `same-origin` 权限的 CSP sandbox 中运行，保留脚本交互但不能读取主站 Cookie、后台 API 响应或父页面 DOM。
 - 保留 `PORT`、`SQLITE_PATH`、`UPLOAD_PATH`、3000 端口、`/app/data` 卷、旧 URL 与主要 `/api` 路径。
@@ -132,7 +133,7 @@ docker run --restart=always -d \
 
 ## 历史数据升级
 
-升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts`）、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。
+升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts` 和 `PageViews`）、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。明细统计从升级后开始积累，旧 `Pages.view` 累计值会继续保留。
 
 旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。自动化管理统一使用由本站 device flow 签发且可撤销的 CLI token。
 
@@ -149,6 +150,7 @@ docker run --restart=always -d \
 | `UPLOAD_PATH` | `./data/upload` | 上传目录 |
 | `PUBLIC_URL` | 自动推断 | canonical、sitemap、feed 基础 URL |
 | `TRUSTED_PROXIES` | 空 | 逗号分隔的可信反向代理 CIDR/IP |
+| `BLOG_ANALYTICS_TIMEZONE` | `Asia/Shanghai` | 统计数据按日归属的 IANA 时区 |
 | `MAX_UPLOAD_MB` | `20` | 单文件上限 |
 | `SESSION_TTL_HOURS` | `24` | 管理会话时长 |
 | `CLI_TOKEN_TTL_HOURS` | `8760` | CLI token 有效期，默认 365 天 |

@@ -32,9 +32,14 @@ type Config struct {
 	GitHubAllowedUserID int64
 	OAuthCallbackURL    string
 	PublicURL           string
+	AnalyticsLocation   *time.Location
 }
 
 func loadConfig() (Config, error) {
+	analyticsLocation, err := time.LoadLocation(env("BLOG_ANALYTICS_TIMEZONE", "Asia/Shanghai"))
+	if err != nil {
+		return Config{}, err
+	}
 	cfg := Config{
 		Port:               env("PORT", "3000"),
 		DatabasePath:       env("SQLITE_PATH", "./data/data.db"),
@@ -54,6 +59,7 @@ func loadConfig() (Config, error) {
 		GitHubAllowedLogin: strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_LOGIN")),
 		OAuthCallbackURL:   strings.TrimSpace(os.Getenv("GITHUB_CALLBACK_URL")),
 		PublicURL:          strings.TrimRight(strings.TrimSpace(os.Getenv("PUBLIC_URL")), "/"),
+		AnalyticsLocation:  analyticsLocation,
 	}
 	if id, err := strconv.ParseInt(strings.TrimSpace(os.Getenv("GITHUB_ALLOWED_USER_ID")), 10, 64); err == nil {
 		cfg.GitHubAllowedUserID = id

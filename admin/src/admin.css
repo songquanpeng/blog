@@ -209,6 +209,32 @@ td small { margin-top: 3px; color: var(--muted); }
 .microblog-config { position: sticky; top: 24px; }
 .load-more { margin-top: 2px; }
 
+.analytics-page.is-refreshing { opacity: .72; }
+.range-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); padding: 3px; }
+.range-switch button { min-height: 34px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; padding: 6px 11px; font-size: .7rem; font-weight: 750; }
+.range-switch button:hover { color: var(--ink); }
+.range-switch button.is-active { background: var(--accent); color: #fff; }
+.analytics-trend-panel, .analytics-pages { margin-bottom: 16px; }
+.trend-chart { position: relative; }
+.trend-chart svg { display: block; width: 100%; min-height: 210px; overflow: visible; }
+.chart-grid-line { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.chart-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.pv-line { stroke: var(--accent); }
+.uv-line { stroke: #c4844f; }
+.chart-legend { display: flex; align-items: center; justify-content: flex-end; gap: 7px; color: var(--muted); font-size: .65rem; }
+.chart-legend span { width: 8px; height: 8px; margin-left: 7px; border-radius: 50%; }
+.chart-legend .pv-dot { background: var(--accent); }
+.chart-legend .uv-dot { background: #c4844f; }
+.chart-labels { display: flex; justify-content: space-between; color: var(--muted); padding: 0 4px; font-size: .63rem; }
+.analytics-dimensions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dimension-list { display: grid; gap: 15px; }
+.dimension-row { min-width: 0; }
+.dimension-row > div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.dimension-row span { overflow: hidden; color: var(--ink); font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+.dimension-row strong { flex: 0 0 auto; color: var(--muted); font-size: .68rem; }
+.dimension-row > i { height: 4px; display: block; overflow: hidden; margin-top: 6px; border-radius: 999px; background: var(--surface-soft); }
+.dimension-row > i > b { height: 100%; display: block; border-radius: inherit; background: var(--accent); }
+
 .toast { position: fixed; z-index: 100; top: 22px; right: 26px; display: flex; align-items: center; gap: 9px; max-width: min(420px, calc(100vw - 30px)); border: 1px solid #caddce; border-radius: 12px; background: #f5fbf6; box-shadow: var(--shadow); color: var(--accent); padding: 12px 14px; font-size: .75rem; font-weight: 700; }
 .toast.is-error { border-color: #ecc8c4; background: #fff6f5; color: var(--danger); }
 .toast-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
@@ -256,10 +282,12 @@ td small { margin-top: 3px; color: var(--muted); }
 [data-theme="dark"] .toast { border-color: #395343; background: #1c2b20; }
 [data-theme="dark"] .toast.is-error { border-color: #65403d; background: #342321; }
 [data-theme="dark"] .login-shell { background: radial-gradient(circle at 15% 20%, #1d2d21, transparent 30%), var(--paper); }
+[data-theme="dark"] .range-switch button.is-active { color: #102116; }
 
 @media (max-width: 1050px) {
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .editor-grid, .microblog-admin-grid { grid-template-columns: 1fr; }
+	.analytics-dimensions { grid-template-columns: 1fr; }
   .editor-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .microblog-config { position: static; }
 }
@@ -274,6 +302,8 @@ td small { margin-top: 3px; color: var(--muted); }
   .admin-content { padding: 24px 14px 50px; }
   .page-heading { align-items: flex-start; flex-direction: column; gap: 18px; margin-bottom: 24px; }
   .page-actions { width: 100%; justify-content: flex-start; }
+	.range-switch { width: 100%; }
+	.range-switch button { flex: 1; }
   .content-grid.two-column, .editor-sidebar, .settings-fields { grid-template-columns: 1fr; }
   .settings-fields .full { grid-column: 1; }
   .content-toolbar { align-items: stretch; flex-wrap: wrap; }
