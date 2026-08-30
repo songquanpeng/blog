@@ -244,6 +244,9 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`"@type":"BreadcrumbList"`,
 		`"@type":"BlogPosting"`,
 		`data-theme-toggle`,
+		`class="navbar-end"`,
+		`theme-toggle-mobile`,
+		`theme-toggle-desktop`,
 		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {

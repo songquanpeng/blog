@@ -3,6 +3,7 @@ package blog
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -134,6 +135,19 @@ type dbCLIToken struct {
 
 func (dbCLIToken) TableName() string { return "CLITokens" }
 
+// Browser sessions are persisted separately from historical users so a
+// container restart cannot silently sign the administrator out. Only a hash
+// of the random cookie token is stored.
+type dbBrowserSession struct {
+	TokenHash string    `gorm:"column:tokenHash;primaryKey;type:text"`
+	Payload   string    `gorm:"column:payload;type:text;not null"`
+	ExpiresAt time.Time `gorm:"column:expiresAt;index;not null"`
+	CreatedAt time.Time `gorm:"column:createdAt"`
+	UpdatedAt time.Time `gorm:"column:updatedAt"`
+}
+
+func (dbBrowserSession) TableName() string { return "BrowserSessions" }
+
 type CLITokenInfo struct {
 	ID           string `json:"id"`
 	ClientName   string `json:"clientName"`
@@ -202,7 +216,7 @@ func (s *Store) Close() error {
 func (s *Store) migrate() error {
 	// Do not auto-alter Sequelize-created tables. SQLite table reconstruction
 	// would be an unnecessary risk for historical installations.
-	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbMicroPost{}, &dbDeviceAuthorization{}, &dbCLIToken{}, &dbPageView{}} {
+	for _, model := range []any{&dbUser{}, &dbPage{}, &dbOption{}, &dbFile{}, &dbMicroPost{}, &dbDeviceAuthorization{}, &dbCLIToken{}, &dbBrowserSession{}, &dbPageView{}} {
 		if !s.db.Migrator().HasTable(model) {
 			if err := s.db.AutoMigrate(model); err != nil {
 				return fmt.Errorf("gorm migrate: %w", err)
@@ -213,6 +227,44 @@ func (s *Store) migrate() error {
 		return err
 	}
 	return s.db.Model(&dbOption{}).Where("key = ?", "theme").Update("value", "bulma").Error
+}
+
+func (s *Store) SaveBrowserSession(ctx context.Context, token string, entry session) error {
+	payload, err := json.Marshal(entry)
+	if err != nil {
+		return err
+	}
+	now := time.Now().UTC()
+	_ = s.db.WithContext(ctx).Where("expiresAt < ?", now).Delete(&dbBrowserSession{}).Error
+	row := dbBrowserSession{TokenHash: credentialHash(token), Payload: string(payload), ExpiresAt: entry.ExpiresAt, CreatedAt: now, UpdatedAt: now}
+	return s.db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "tokenHash"}},
+		DoUpdates: clause.AssignmentColumns([]string{"payload", "expiresAt", "updatedAt"}),
+	}).Create(&row).Error
+}
+
+func (s *Store) BrowserSession(ctx context.Context, token string) (*session, error) {
+	var row dbBrowserSession
+	result := s.db.WithContext(ctx).Where("tokenHash = ?", credentialHash(token)).Limit(1).Find(&row)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	if time.Now().After(row.ExpiresAt) {
+		_ = s.DeleteBrowserSession(ctx, token)
+		return nil, gorm.ErrRecordNotFound
+	}
+	var entry session
+	if err := json.Unmarshal([]byte(row.Payload), &entry); err != nil {
+		return nil, err
+	}
+	return &entry, nil
+}
+
+func (s *Store) DeleteBrowserSession(ctx context.Context, token string) error {
+	return s.db.WithContext(ctx).Where("tokenHash = ?", credentialHash(token)).Delete(&dbBrowserSession{}).Error
 }
 
 func (s *Store) CreateDeviceAuthorization(ctx context.Context, deviceCode, userCode, clientName string, expiresAt time.Time) error {

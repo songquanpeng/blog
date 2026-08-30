@@ -40,12 +40,15 @@ func (a *App) githubLogin(c *gin.Context) {
 		a.renderError(c, http.StatusInternalServerError, "无法生成 PKCE verifier", err.Error())
 		return
 	}
-	a.sessions.update(token, func(entry *session) {
+	if err := a.sessions.update(token, func(entry *session) {
 		entry.OAuthState = state
 		entry.PKCEVerifier = verifier
 		entry.OAuthExpires = time.Now().Add(10 * time.Minute)
 		entry.OAuthReturnTo = safeOAuthReturnTo(c.Query("return_to"))
-	})
+	}); err != nil {
+		a.renderError(c, http.StatusInternalServerError, "无法保存登录会话", err.Error())
+		return
+	}
 	query := url.Values{
 		"client_id":             {a.cfg.GitHubClientID},
 		"redirect_uri":          {a.callbackURL(c)},
@@ -87,13 +90,16 @@ func (a *App) githubCallback(c *gin.Context) {
 	}
 	user.IsAdmin = true
 	returnTo := entry.OAuthReturnTo
-	a.sessions.update(token, func(entry *session) {
+	if err := a.sessions.update(token, func(entry *session) {
 		entry.User = &user
 		entry.OAuthState = ""
 		entry.PKCEVerifier = ""
 		entry.OAuthExpires = time.Time{}
 		entry.OAuthReturnTo = ""
-	})
+	}); err != nil {
+		a.renderError(c, http.StatusInternalServerError, "无法保存登录会话", err.Error())
+		return
+	}
 	if returnTo == "" {
 		returnTo = "/admin/"
 	}

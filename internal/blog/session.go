@@ -1,6 +1,7 @@
 package blog
 
 import (
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"crypto/subtle"
@@ -31,10 +32,15 @@ type sessionStore struct {
 	sessions map[string]*session
 	secret   []byte
 	ttl      time.Duration
+	store    *Store
 }
 
-func newSessionStore(secret []byte, ttl time.Duration) *sessionStore {
-	return &sessionStore{sessions: make(map[string]*session), secret: secret, ttl: ttl}
+func newSessionStore(secret []byte, ttl time.Duration, stores ...*Store) *sessionStore {
+	s := &sessionStore{sessions: make(map[string]*session), secret: secret, ttl: ttl}
+	if len(stores) > 0 {
+		s.store = stores[0]
+	}
+	return s
 }
 
 func (s *sessionStore) new(c *gin.Context) (string, *session, error) {
@@ -51,6 +57,12 @@ func (s *sessionStore) new(c *gin.Context) (string, *session, error) {
 	}
 	s.sessions[token] = entry
 	s.mu.Unlock()
+	if s.store != nil {
+		if err := s.store.SaveBrowserSession(c.Request.Context(), token, *entry); err != nil {
+			s.deleteToken(token)
+			return "", nil, err
+		}
+	}
 	s.setCookie(c, token)
 	return token, entry, nil
 }
@@ -67,6 +79,15 @@ func (s *sessionStore) get(c *gin.Context) (string, *session, bool) {
 	s.mu.RLock()
 	entry, ok := s.sessions[token]
 	s.mu.RUnlock()
+	if !ok && s.store != nil {
+		entry, err = s.store.BrowserSession(c.Request.Context(), token)
+		if err == nil {
+			s.mu.Lock()
+			s.sessions[token] = entry
+			s.mu.Unlock()
+			ok = true
+		}
+	}
 	if !ok || time.Now().After(entry.ExpiresAt) {
 		if ok {
 			s.deleteToken(token)
@@ -83,13 +104,21 @@ func (s *sessionStore) ensure(c *gin.Context) (string, *session, error) {
 	return s.new(c)
 }
 
-func (s *sessionStore) update(token string, mutate func(*session)) {
+func (s *sessionStore) update(token string, mutate func(*session)) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if entry, ok := s.sessions[token]; ok {
-		mutate(entry)
-		entry.ExpiresAt = time.Now().Add(s.ttl)
+		updated := cloneSession(entry)
+		mutate(updated)
+		updated.ExpiresAt = time.Now().Add(s.ttl)
+		if s.store != nil {
+			if err := s.store.SaveBrowserSession(context.Background(), token, *updated); err != nil {
+				return err
+			}
+		}
+		s.sessions[token] = updated
 	}
+	return nil
 }
 
 func (s *sessionStore) delete(c *gin.Context) {
@@ -103,14 +132,27 @@ func (s *sessionStore) deleteToken(token string) {
 	s.mu.Lock()
 	delete(s.sessions, token)
 	s.mu.Unlock()
+	if s.store != nil {
+		_ = s.store.DeleteBrowserSession(context.Background(), token)
+	}
 }
 
 func (s *sessionStore) setCookie(c *gin.Context, token string) {
 	value := token + "." + s.sign(token)
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name: sessionCookie, Value: value, Path: "/", MaxAge: int(s.ttl.Seconds()),
+		Expires:  time.Now().Add(s.ttl),
 		HttpOnly: true, Secure: requestSecure(c), SameSite: http.SameSiteLaxMode,
 	})
+}
+
+func cloneSession(entry *session) *session {
+	cloned := *entry
+	if entry.User != nil {
+		user := *entry.User
+		cloned.User = &user
+	}
+	return &cloned
 }
 
 func (s *sessionStore) sign(token string) string {

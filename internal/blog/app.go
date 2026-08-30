@@ -55,7 +55,7 @@ func New() (*App, error) {
 	}
 	app := &App{
 		cfg: cfg, store: store, templates: templates,
-		sessions:    newSessionStore(cfg.SessionSecret, cfg.SessionTTL),
+		sessions:    newSessionStore(cfg.SessionSecret, cfg.SessionTTL, store),
 		httpClient:  &http.Client{Timeout: 12 * time.Second},
 		cliDistPath: env("CLI_DIST_PATH", "./dist/cli"),
 	}

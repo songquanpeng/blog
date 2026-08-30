@@ -62,7 +62,9 @@ code { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "Microsoft YaHe
 .nav-shadow { box-shadow: 0 2px 8px rgba(26, 26, 26, .07); }
 .navbar-item { transition: background-color .15s ease, color .15s ease; }
 .nav-group-label { width: 100%; border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; text-align: left; }
-.theme-toggle { align-self: center; width: 38px; height: 38px; display: grid; flex: 0 0 38px; place-items: center; margin-left: auto; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--muted); cursor: pointer; padding: 8px; transition: border-color .15s ease, background .15s ease, color .15s ease, transform .15s ease; }
+.theme-toggle { align-self: center; width: 38px; height: 38px; display: grid; flex: 0 0 38px; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--muted); cursor: pointer; padding: 8px; transition: border-color .15s ease, background .15s ease, color .15s ease, transform .15s ease; }
+.theme-toggle-item { padding-inline: .75rem; }
+.theme-toggle-mobile { display: none; margin-left: auto; }
 .theme-toggle:hover { border-color: #b7c5d5; color: var(--link); transform: translateY(-1px); }
 .theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .theme-icon-sun { display: none; }
@@ -423,6 +425,9 @@ span.line { display: inline-block; margin-right: 4px; }
    cancels the column gutter and makes cards look flush against mobile screens. */
 @media screen and (max-width: 1023px) {
   .navbar-brand { width: 100%; }
+  .theme-toggle-mobile { display: grid; }
+  .theme-toggle-desktop { display: none; }
+  .navbar-burger { margin-left: 0; }
   .navbar-menu.is-active { max-height: calc(100dvh - 52px); overflow-y: auto; overscroll-behavior: contain; }
   .nav-group .navbar-dropdown { display: none; }
   .nav-group.is-open .navbar-dropdown { display: block; }

@@ -133,7 +133,7 @@ docker run --restart=always -d \
 
 ## 历史数据升级
 
-升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts` 和 `PageViews`）、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。明细统计从升级后开始积累，旧 `Pages.view` 累计值会继续保留。
+升级前请备份 `data/data.db` 和 `data/upload`。应用对已有 Sequelize 表不执行 GORM AutoMigrate，避免 SQLite 重建旧表；只会补建缺失表（包括 `MicroPosts`、`PageViews` 和 `BrowserSessions`）、补充缺失的默认设置，并把 `theme` 固定为 `bulma`。明细统计从升级后开始积累，旧 `Pages.view` 累计值会继续保留。
 
 旧 `Users` 表不会删除，以免破坏文章作者外键和历史展示，但所有密码、角色及 access token 均不再用于认证。自动化管理统一使用由本站 device flow 签发且可撤销的 CLI token。
 
@@ -152,7 +152,7 @@ docker run --restart=always -d \
 | `TRUSTED_PROXIES` | 空 | 逗号分隔的可信反向代理 CIDR/IP |
 | `BLOG_ANALYTICS_TIMEZONE` | `Asia/Shanghai` | 统计数据按日归属的 IANA 时区 |
 | `MAX_UPLOAD_MB` | `20` | 单文件上限 |
-| `SESSION_TTL_HOURS` | `24` | 管理会话时长 |
+| `SESSION_TTL_HOURS` | `8760` | 管理会话时长；会话持久化在 SQLite 中，部署重启不会清空 |
 | `CLI_TOKEN_TTL_HOURS` | `8760` | CLI token 有效期，默认 365 天 |
 | `CLI_DEVICE_CODE_TTL_MINUTES` | `10` | device flow 授权码有效期 |
 | `BLOG_ENABLE_SHUTDOWN` | `false` | 是否恢复旧远程关机接口 |

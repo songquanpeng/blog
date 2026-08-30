@@ -35,13 +35,13 @@
   <script nonce="{{.Nonce}}">(()=>{try{const saved=localStorage.getItem('blog-theme');const dark=saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'dark':'light'}catch{document.documentElement.dataset.theme='light'}})()</script>
   <link rel="stylesheet" href="/static/bulma.min.css">
   <link rel="stylesheet" href="/static/fontawesome.min.css">
-  <link rel="stylesheet" href="/static/main.css?v=bulma-theme-20260830">
+  <link rel="stylesheet" href="/static/main.css?v=bulma-theme-nav-20260830">
   {{if .CodeTheme}}<link rel="stylesheet" href="{{.CodeTheme}}">{{end}}
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon512.png">
   <link rel="icon" href="{{.Favicon}}">
   <script defer src="/static/highlight.min.js"></script>
-  <script defer src="/static/main.js?v=bulma-theme-20260830"></script>
+  <script defer src="/static/main.js?v=bulma-theme-nav-20260830"></script>
   {{if .JSONLD}}<script nonce="{{.Nonce}}" type="application/ld+json">{{.JSONLD}}</script>{{end}}
 </head>
 <body>
@@ -51,7 +51,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item site-brand" href="/">{{.SiteName}}</a>
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换到夜间主题" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="theme-icon-moon" d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/><path class="theme-icon-sun" d="M12 3.4V1.8M12 22.2v-1.6M20.6 12h1.6M1.8 12h1.6M18.1 5.9l1.1-1.1M4.8 19.2l1.1-1.1M18.1 18.1l1.1 1.1M4.8 4.8l1.1 1.1M16.4 12a4.4 4.4 0 1 1-8.8 0 4.4 4.4 0 0 1 8.8 0Z"/></svg></button>
+        <button class="theme-toggle theme-toggle-mobile" type="button" data-theme-toggle aria-label="切换到夜间主题" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="theme-icon-moon" d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/><path class="theme-icon-sun" d="M12 3.4V1.8M12 22.2v-1.6M20.6 12h1.6M1.8 12h1.6M18.1 5.9l1.1-1.1M4.8 19.2l1.1-1.1M18.1 18.1l1.1 1.1M4.8 4.8l1.1 1.1M16.4 12a4.4 4.4 0 1 1-8.8 0 4.4 4.4 0 0 1 8.8 0Z"/></svg></button>
         <button class="navbar-burger burger" type="button" aria-label="菜单" aria-expanded="false" data-target="mainNavbar">
           <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
         </button>
@@ -60,6 +60,9 @@
         <div class="navbar-start">
           {{range .PrimaryNav}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}
           {{range .Nav}}{{if .Value}}<div class="navbar-item has-dropdown is-hoverable nav-group"><button class="navbar-link nav-group-label" type="button" aria-expanded="false">{{.Key}}</button><div class="navbar-dropdown">{{range .Value}}<a class="navbar-item" href="{{.Link}}">{{.Text}}</a>{{end}}</div></div>{{end}}{{end}}
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item theme-toggle-item"><button class="theme-toggle theme-toggle-desktop" type="button" data-theme-toggle aria-label="切换到夜间主题" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="theme-icon-moon" d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/><path class="theme-icon-sun" d="M12 3.4V1.8M12 22.2v-1.6M20.6 12h1.6M1.8 12h1.6M18.1 5.9l1.1-1.1M4.8 19.2l1.1-1.1M18.1 18.1l1.1 1.1M4.8 4.8l1.1 1.1M16.4 12a4.4 4.4 0 1 1-8.8 0 4.4 4.4 0 0 1 8.8 0Z"/></svg></button></div>
         </div>
       </div>
     </div>

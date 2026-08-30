@@ -51,7 +51,7 @@ func loadConfig() (Config, error) {
 		AllowUnsafeHTML:    envBool("BLOG_ALLOW_UNSAFE_HTML", true),
 		EnableShutdown:     envBool("BLOG_ENABLE_SHUTDOWN", false),
 		MaxUploadBytes:     int64(envInt("MAX_UPLOAD_MB", 20)) << 20,
-		SessionTTL:         time.Duration(envInt("SESSION_TTL_HOURS", 24)) * time.Hour,
+		SessionTTL:         time.Duration(envInt("SESSION_TTL_HOURS", 365*24)) * time.Hour,
 		CLITokenTTL:        time.Duration(envInt("CLI_TOKEN_TTL_HOURS", 365*24)) * time.Hour,
 		DeviceCodeTTL:      time.Duration(envInt("CLI_DEVICE_CODE_TTL_MINUTES", 10)) * time.Minute,
 		GitHubClientID:     strings.TrimSpace(os.Getenv("GITHUB_CLIENT_ID")),
