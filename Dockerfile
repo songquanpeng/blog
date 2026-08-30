@@ -32,7 +32,7 @@ WORKDIR /app
 COPY --from=backend /out/blog /app/blog
 COPY --from=backend /out/cli /app/cli-dist
 COPY --from=backend /src/templates /app/templates
-COPY --from=backend /src/themes/bulma /app/themes/bulma
+COPY --from=backend /src/themes /app/themes
 COPY --from=backend /src/data/index /app/default-index
 COPY --from=backend /src/public/admin /app/public/admin
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
