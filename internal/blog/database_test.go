@@ -127,13 +127,16 @@ func TestSearchPagesMatchesBodyAndPreservesMetrics(t *testing.T) {
 
 func TestContentSanitizationAndFrontMatter(t *testing.T) {
 	app := &App{cfg: Config{AllowUnsafeHTML: false}}
-	page := Page{Type: PageArticle, Content: "---\ntitle: test\n---\n# Safe\n<script>alert(1)</script><a href=\"javascript:alert(2)\">bad</a>"}
+	page := Page{Type: PageArticle, Content: "---\ntitle: test\n---\n# Safe\n<script>alert(1)</script><a href=\"javascript:alert(2)\">bad</a><img src=\"https://example.com/qr.png\" alt=\"QR code\" onerror=\"alert(3)\">"}
 	rendered := string(app.renderContent(page))
-	if strings.Contains(rendered, "<script") || strings.Contains(rendered, "javascript:") {
+	if strings.Contains(rendered, "<script") || strings.Contains(rendered, "javascript:") || strings.Contains(rendered, "onerror") {
 		t.Fatalf("unsafe HTML survived sanitization: %s", rendered)
 	}
 	if !strings.Contains(rendered, "Safe") {
 		t.Fatalf("expected markdown content, got %s", rendered)
+	}
+	if !strings.Contains(rendered, `<img src="https://example.com/qr.png" alt="QR code">`) {
+		t.Fatalf("safe owner-authored image was omitted: %s", rendered)
 	}
 }
 

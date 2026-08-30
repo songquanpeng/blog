@@ -15,6 +15,7 @@ import (
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 var uploadedSVGSourcePattern = regexp.MustCompile(`(?i)(\bsrc=["']/upload/[^"'?#]+\.svg)(["'])`)
@@ -181,6 +182,7 @@ func (a *App) renderContent(page Page) template.HTML {
 	markdown := goldmark.New(
 		goldmark.WithExtensions(extension.GFM, extension.Footnote),
 		goldmark.WithParserOptions(parser.WithAutoHeadingID()),
+		goldmark.WithRendererOptions(html.WithUnsafe()),
 	)
 	var rendered bytes.Buffer
 	if err := markdown.Convert([]byte(content), &rendered); err != nil {

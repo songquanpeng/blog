@@ -223,7 +223,11 @@ span.line { display: inline-block; margin-right: 4px; }
 .article-content a, .protected-content a { color: #007bff; text-decoration: none; }
 .article-content a:hover, .protected-content a:hover { color: #007bff; text-decoration: none; }
 .article-content strong, .protected-content strong { color: #24292f; font-weight: 700; }
-.article-content ul, .article-content ol, .protected-content ul, .protected-content ol { margin-bottom: 1.25rem; padding-left: 2em; }
+.article-content ul, .protected-content ul { margin-bottom: 1.25rem; padding-left: 2em; list-style: disc outside; }
+.article-content ol, .protected-content ol { margin-bottom: 1.25rem; padding-left: 2em; list-style: decimal outside; }
+.article-content :is(ul, ol) :is(ul, ol), .protected-content :is(ul, ol) :is(ul, ol) { margin-top: .25em; margin-bottom: 0; }
+.article-content :is(ul, ol) ul, .protected-content :is(ul, ol) ul { list-style-type: circle; }
+.article-content :is(ul, ol) :is(ul, ol) ul, .protected-content :is(ul, ol) :is(ul, ol) ul { list-style-type: square; }
 .article-content li + li, .protected-content li + li { margin-top: .25em; }
 .article-content .task-list-item, .protected-content .task-list-item { list-style: none; }
 .article-content .task-list-item input, .protected-content .task-list-item input { width: 1em; height: 1em; margin: 0 .55em 0 -1.45em; accent-color: var(--link); vertical-align: -.08em; }
@@ -254,7 +258,7 @@ span.line { display: inline-block; margin-right: 4px; }
   background: rgba(175, 184, 193, .2);
   color: #24292f;
   padding: .065em .4em;
-  font-size: inherit;
+  font-size: .875em;
   white-space: break-spaces;
 }
 .article-content pre, .protected-content pre {
