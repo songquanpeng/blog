@@ -254,7 +254,7 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`theme-toggle-mobile`,
 		`theme-toggle-desktop`,
 		`data-site-theme="studio"`,
-		`href="/theme/studio/main.css?v=studio-profile-card-20260831"`,
+		`href="/theme/studio/main.css?v=studio-profile-social-nav-20260831"`,
 		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {
@@ -302,12 +302,15 @@ func TestIndexRendersPersonalProfileSidebar(t *testing.T) {
 	for _, expected := range []string{
 		`class="card profile-card"`, `id="profile-name" class="profile-name">Song</h2>`,
 		`Writing about software and quiet ideas.`, `src="https://blog.example/upload/avatar.webp"`,
+		`class="profile-social"`, `class="profile-wechat"`, `href="https://x.com/song"`,
+		`href="https://github.com/song"`, `href="https://www.zhihu.com/people/song"`,
+		`href="https://space.bilibili.com/123"`, `src="https://blog.example/upload/wechat.webp"`,
 	} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("index is missing profile output %q", expected)
 		}
 	}
-	for _, removed := range []string{"profile-social", "profile-wechat", `href="https://x.com/song"`, `href="https://github.com/song"`, `href="https://www.zhihu.com/people/song"`, `href="https://space.bilibili.com/123"`, "REMOVED_GITHUB_STATS"} {
+	for _, removed := range []string{"javascript:alert", "REMOVED_GITHUB_STATS"} {
 		if strings.Contains(body, removed) {
 			t.Errorf("index still renders removed profile content %q", removed)
 		}

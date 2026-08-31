@@ -207,9 +207,8 @@ func (a *App) requestLogger() gin.HandlerFunc {
 
 func (a *App) indexFile(name string) string {
 	// Keep the public favicon tied to the historical iamazing.cn branding.
-	// Legacy Docker data volumes may contain the later justsong.cn favicon, so
-	// unlike the other customizable index assets this file prefers the copy
-	// shipped with the current application image.
+	// Use the verified copy restored from the old site in the image so a
+	// stale data volume cannot bring back the GitHub placeholder icon.
 	if name == "favicon.ico" {
 		bundled := filepath.Join(a.cfg.DefaultIndexPath, name)
 		if info, err := os.Stat(bundled); err == nil && !info.IsDir() {

@@ -41,8 +41,10 @@ button, input, textarea, select { color: inherit; font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
 
-.admin-shell { min-height: 100vh; display: grid; grid-template-columns: 224px minmax(0, 1fr); }
-.admin-sidebar { position: static; align-self: start; z-index: 10; height: 100vh; display: flex; flex-direction: column; border-right: 1px solid #30302e; background: #20201e; color: #f0efeb; padding: 24px 15px 17px; }
+.admin-shell { --sidebar-width: 224px; min-height: 100vh; padding-left: var(--sidebar-width); }
+/* Pin to the viewport: ancestor overflow can prevent sticky positioning. */
+.admin-sidebar { position: fixed; inset: 0 auto 0 0; width: var(--sidebar-width); z-index: 10; height: 100vh; height: 100dvh; overflow-y: auto; overscroll-behavior-y: contain; display: flex; flex-direction: column; border-right: 1px solid #30302e; background: #20201e; color: #f0efeb; padding: 24px 15px 17px; }
+.admin-sidebar > * { flex-shrink: 0; }
 .admin-brand-row { display: flex; align-items: center; gap: 8px; margin: 0 7px 34px; }
 .admin-brand { min-width: 0; display: flex; flex: 1; align-items: center; gap: 12px; }
 .admin-brand-mark { width: 38px; height: 38px; display: grid; flex: 0 0 38px; place-items: center; border: 1px solid #5a5955; border-radius: 8px; background: transparent; color: #f0efeb; font-family: Georgia, serif; font-size: 1.16rem; font-weight: 700; }
@@ -469,8 +471,8 @@ td small { margin-top: 3px; color: var(--muted); }
 }
 
 @media (max-width: 760px) {
-  .admin-shell { display: block; }
-  .admin-sidebar { position: static; height: auto; overflow-x: hidden; padding: 14px; }
+  .admin-shell { padding-left: 0; }
+  .admin-sidebar { position: static; width: auto; height: auto; overflow: visible; padding: 14px; }
   .admin-brand-row { margin: 0 0 12px; }
   .admin-nav { display: flex; overflow-x: auto; padding-bottom: 3px; }
   .admin-nav a { flex: 0 0 auto; grid-template-columns: 24px auto; }

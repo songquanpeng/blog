@@ -373,6 +373,12 @@ const SETTING_GROUPS = [
   { title: '首页个人资料', description: '显示在文章列表右侧；未填写昵称、简介或头像时，会沿用作者、站点描述和品牌图片。', fields: [
     ['profile_name', '昵称', 'text', '例如：宋老师'], ['profile_bio', '一句话介绍', 'textarea', '用一两句话说明你是谁、在关注什么'], ['profile_avatar', '头像地址', 'text', '/upload/avatar.webp'],
   ] },
+  { title: '社交媒体', description: '显示在首页个人资料下方；留空即可隐藏，已有配置会自动保留。', fields: [
+    ['social_x_url', 'X 主页链接', 'text', 'https://x.com/yourname'], ['social_github_url', 'GitHub 主页链接', 'text', 'https://github.com/yourname'],
+    ['social_zhihu_url', '知乎主页链接', 'text', 'https://www.zhihu.com/people/yourname'], ['social_xiaohongshu_url', '小红书主页链接', 'text', 'https://www.xiaohongshu.com/user/profile/…'],
+    ['wechat_name', '微信公众号名称', 'text', '例如：我的公众号'], ['wechat_qr', '微信公众号二维码', 'text', '/upload/wechat-qr.webp'],
+    ['social_custom_links', '其他社交链接', 'textarea', '每行一个，例如：B 站 | https://space.bilibili.com/123'],
+  ] },
   { title: '域名与 SEO', description: '这些设置会影响 canonical、分享预览和搜索引擎识别。', fields: [
     ['domain', '公开域名', 'text', 'blog.example.com（不要包含路径）'], ['language', '内容语言', 'text', '例如 zh-CN'], ['favicon', 'Favicon 地址', 'text', '/favicon.ico'], ['brand_image', '品牌图片地址', 'text', '/upload/brand.webp'], ['social_image', '社交分享图地址', 'text', '/upload/og-cover.webp'],
   ] },
