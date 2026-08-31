@@ -376,8 +376,9 @@ const SETTING_GROUPS = [
   { title: '社交媒体', description: '显示在首页个人资料下方；留空即可隐藏，已有配置会自动保留。', fields: [
     ['social_x_url', 'X 主页链接', 'text', 'https://x.com/yourname'], ['social_github_url', 'GitHub 主页链接', 'text', 'https://github.com/yourname'],
     ['social_zhihu_url', '知乎主页链接', 'text', 'https://www.zhihu.com/people/yourname'], ['social_xiaohongshu_url', '小红书主页链接', 'text', 'https://www.xiaohongshu.com/user/profile/…'],
+    ['social_bilibili_url', 'B 站主页链接', 'text', 'https://space.bilibili.com/123'],
     ['wechat_name', '微信公众号名称', 'text', '例如：我的公众号'], ['wechat_qr', '微信公众号二维码', 'text', '/upload/wechat-qr.webp'],
-    ['social_custom_links', '其他社交链接', 'textarea', '每行一个，例如：B 站 | https://space.bilibili.com/123'],
+    ['social_custom_links', '其他社交链接', 'textarea', '每行一个，例如：个人主页 | https://example.com'],
   ] },
   { title: '域名与 SEO', description: '这些设置会影响 canonical、分享预览和搜索引擎识别。', fields: [
     ['domain', '公开域名', 'text', 'blog.example.com（不要包含路径）'], ['language', '内容语言', 'text', '例如 zh-CN'], ['favicon', 'Favicon 地址', 'text', '/favicon.ico'], ['brand_image', '品牌图片地址', 'text', '/upload/brand.webp'], ['social_image', '社交分享图地址', 'text', '/upload/og-cover.webp'],

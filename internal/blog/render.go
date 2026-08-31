@@ -122,6 +122,7 @@ func configuredProfileSocialLinks(options map[string]string) []ProfileSocialLink
 		{"social_github_url", "GitHub", "github"},
 		{"social_zhihu_url", "知乎", "zhihu"},
 		{"social_xiaohongshu_url", "小红书", "xiaohongshu"},
+		{"social_bilibili_url", "B 站", "bilibili"},
 	}
 	links := make([]ProfileSocialLink, 0, len(configured)+4)
 	for _, item := range configured {

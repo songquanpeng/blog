@@ -273,8 +273,9 @@ func TestIndexRendersPersonalProfileSidebar(t *testing.T) {
 		"site_name": "Example Notes", "author": "Fallback Author", "description": "Fallback description",
 		"profile_name": "Song", "profile_bio": "Writing about software and quiet ideas.", "profile_avatar": "/upload/avatar.webp",
 		"social_x_url": "https://x.com/song", "social_github_url": "https://github.com/song",
-		"social_zhihu_url": "https://www.zhihu.com/people/song", "social_custom_links": "B 站 | https://space.bilibili.com/123\nBad | javascript:alert(1)",
-		"wechat_name": "Song's Notes", "wechat_qr": "/upload/wechat.webp",
+		"social_zhihu_url": "https://www.zhihu.com/people/song", "social_bilibili_url": "https://space.bilibili.com/123",
+		"social_custom_links": "个人主页 | https://example.com\nBad | javascript:alert(1)",
+		"wechat_name":         "Song's Notes", "wechat_qr": "/upload/wechat.webp",
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -305,6 +306,7 @@ func TestIndexRendersPersonalProfileSidebar(t *testing.T) {
 		`class="profile-social"`, `class="profile-wechat"`, `href="https://x.com/song"`,
 		`href="https://github.com/song"`, `href="https://www.zhihu.com/people/song"`,
 		`href="https://space.bilibili.com/123"`, `src="https://blog.example/upload/wechat.webp"`,
+		`aria-label="访问 Song 的 B 站"><svg`, `</svg><span>B 站</span></a>`, `href="https://example.com"`,
 	} {
 		if !strings.Contains(body, expected) {
 			t.Errorf("index is missing profile output %q", expected)
