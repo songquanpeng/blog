@@ -69,6 +69,15 @@ body {
 .navbar-start > .navbar-item:not(.has-dropdown):focus,
 .nav-group-label:hover,
 .nav-group-label:focus { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .32em; }
+/* Keep the dropdown cue as quiet as the masthead, including dark/hover states. */
+.nav-group-label.navbar-link:not(.is-arrowless)::after {
+  width: .4em;
+  height: .4em;
+  margin-top: -.3em;
+  border-width: 0 0 1px 1px;
+  border-radius: 0;
+  border-color: currentColor;
+}
 .navbar-dropdown { border: 1px solid var(--line); border-radius: 2px; background: var(--surface); box-shadow: var(--shadow); }
 .navbar-dropdown .navbar-item, .navbar-burger { color: var(--muted); }
 .navbar-dropdown .navbar-item:hover, .navbar-dropdown .navbar-item:focus { background: var(--surface-soft) !important; }

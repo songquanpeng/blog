@@ -254,7 +254,7 @@ func TestPublicPageEmitsCompleteSEOMetadata(t *testing.T) {
 		`theme-toggle-mobile`,
 		`theme-toggle-desktop`,
 		`data-site-theme="studio"`,
-		`href="/theme/studio/main.css?v=studio-profile-social-nav-20260831"`,
+		`href="/theme/studio/main.css?v=studio-nav-chevron-20260901"`,
 		`href="/page/related-guide">Related Guide</a>`,
 	} {
 		if !strings.Contains(body, expected) {
