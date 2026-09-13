@@ -1,6 +1,7 @@
 package blog
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"html/template"
@@ -162,7 +163,13 @@ func (a *App) page(c *gin.Context) {
 		page.Rendered = a.renderContent(page)
 	}
 	data.Kind, data.Page = "article", &page
-	if page.PageStatus == StatusHidden || page.Password != "" {
+	options, _ := a.store.Options(c.Request.Context())
+	seo := pageSEOOptions(options)[page.Link]
+	if seo.Language != "" && validPageLanguage(seo.Language) {
+		data.Lang = seo.Language
+		data.OGLocale = strings.ReplaceAll(seo.Language, "-", "_")
+	}
+	if (page.PageStatus == StatusHidden && !seo.IndexHidden) || page.Password != "" {
 		data.Robots = "noindex,follow,noarchive"
 	}
 	if page.Type == PageCode {
@@ -260,7 +267,7 @@ type sitemapURL struct {
 }
 
 func (a *App) sitemap(c *gin.Context) {
-	pages, err := a.store.PublicPages(c.Request.Context())
+	pages, err := a.store.ArchivePages(c.Request.Context())
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
@@ -282,7 +289,11 @@ func (a *App) sitemap(c *gin.Context) {
 		set.URLs = append(set.URLs, sitemapURL{Location: base + "/" + microblog.Path, Modified: modified})
 	}
 	tags := make(map[string]struct{})
+	seoOptions := pageSEOOptions(options)
 	for _, page := range pages {
+		if page.Password != "" || (page.PageStatus == StatusHidden && !seoOptions[page.Link].IndexHidden) {
+			continue
+		}
 		set.URLs = append(set.URLs, sitemapURL{Location: base + "/page/" + url.PathEscape(page.Link), Modified: shortDate(page.UpdatedAt)})
 		for _, tag := range splitTags(page.Tag) {
 			tags[tag] = struct{}{}
@@ -368,4 +379,32 @@ func (a *App) robots(c *gin.Context) {
 func optionMap(a *App, c *gin.Context) map[string]string {
 	options, _ := a.store.Options(c.Request.Context())
 	return options
+}
+
+// page_seo explicitly opts individual hidden pages into search without changing
+// their homepage visibility or the defaults for any other hidden page.
+type pageSEO struct {
+	IndexHidden bool   `json:"index_hidden"`
+	Language    string `json:"language"`
+}
+
+func pageSEOOptions(options map[string]string) map[string]pageSEO {
+	var result map[string]pageSEO
+	if json.Unmarshal([]byte(options["page_seo"]), &result) != nil {
+		return nil
+	}
+	return result
+}
+func validPageLanguage(language string) bool {
+	for _, part := range strings.Split(language, "-") {
+		if len(part) < 2 || len(part) > 8 {
+			return false
+		}
+		for _, ch := range part {
+			if !(ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9') {
+				return false
+			}
+		}
+	}
+	return true
 }

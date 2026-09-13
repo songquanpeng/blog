@@ -184,3 +184,13 @@ make check  # 额外运行 go vet、govulncheck 与 npm audit
 ## License
 
 MIT
+
+### 首页隐藏与搜索收录
+
+`hidden` 默认仍为 noindex。可通过 `blog-cli settings set page_seo` 为指定 slug 设置 JSON：
+
+```json
+{"example-guide":{"index_hidden":true,"language":"en"}}
+```
+
+显式允许的隐藏页面保留首页隐藏，输出 index 并进入 sitemap。密码页和撤回页不会因此进入 sitemap；密码页仍 noindex。`language` 同步 HTML、Open Graph 和文章 JSON-LD。设置整个映射时应保留已有条目。

@@ -497,3 +497,63 @@ func TestAdminCRUDAndUploadWorkflow(t *testing.T) {
 		t.Fatalf("unauthenticated admin request = %d", recorder.Code)
 	}
 }
+
+func TestHiddenPageSEOOptIn(t *testing.T) {
+	store, err := openStore(filepath.Join(t.TempDir(), "data.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	err = store.UpdateOptions(t.Context(), map[string]any{"page_seo": `{"landing":{"index_hidden":true,"language":"en"},"locked":{"index_hidden":true},"recalled":{"index_hidden":true}}`})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range []Page{
+		{Type: PageArticle, Link: "landing", Title: "Landing", Content: "Useful article", PageStatus: StatusHidden},
+		{Type: PageArticle, Link: "legacy", Title: "Legacy", Content: "Old hidden article", PageStatus: StatusHidden},
+		{Type: PageArticle, Link: "locked", Title: "Locked", Content: "Private", Password: "secret", PageStatus: StatusHidden},
+		{Type: PageArticle, Link: "recalled", Title: "Recalled", Content: "Draft", PageStatus: StatusRecalled},
+	} {
+		if err := store.CreatePage(t.Context(), &p); err != nil {
+			t.Fatal(err)
+		}
+		if p.Link == "recalled" {
+			p.PageStatus = StatusRecalled
+			if _, err := store.UpdatePage(t.Context(), p); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	templates := template.Must(template.New("layout.gohtml").Parse(`{{define "layout.gohtml"}}{{.Robots}}|{{.Lang}}{{range .Pages}}|{{.Link}}{{end}}{{end}}`))
+	gin.SetMode(gin.TestMode)
+	app := &App{store: store, templates: templates, cfg: Config{PublicURL: "https://blog.example"}}
+	router := gin.New()
+	router.GET("/", app.index)
+	router.GET("/page/:link", app.page)
+	router.GET("/sitemap.xml", app.sitemap)
+	get := func(path string) string {
+		r := httptest.NewRecorder()
+		router.ServeHTTP(r, httptest.NewRequest(http.MethodGet, path, nil))
+		return r.Body.String()
+	}
+	if body := get("/page/landing"); strings.Contains(body, "noindex") || !strings.Contains(body, "|en") {
+		t.Fatal(body)
+	}
+	for _, path := range []string{"/page/legacy", "/page/locked"} {
+		if body := get(path); !strings.Contains(body, "noindex") {
+			t.Fatal(body)
+		}
+	}
+	if body := get("/"); strings.Contains(body, "landing") {
+		t.Fatal(body)
+	}
+	body := get("/sitemap.xml")
+	if !strings.Contains(body, "/page/landing") {
+		t.Fatal(body)
+	}
+	for _, link := range []string{"legacy", "locked", "recalled"} {
+		if strings.Contains(body, "/page/"+link) {
+			t.Fatal(body)
+		}
+	}
+}
